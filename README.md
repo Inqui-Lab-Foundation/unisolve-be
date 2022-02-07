@@ -72,7 +72,7 @@ repository](https://github.com/PurpleBooth/a-good-readme-template/tags).
 
 ## Authors
 
-  - **Pradeep Gandla** - 
+  - **Pradeep Gandla**
 
 See also the list of
 [contributors](https://github.com/PurpleBooth/a-good-readme-template/contributors)
