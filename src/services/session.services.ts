@@ -1,8 +1,8 @@
 import { get } from "lodash";
 import config from 'config'
-import { signJwt, verifyJwt } from "@src/utils/jwt";
-import { session } from "@src/models/session.model";
-import { student } from "@src/models/student.model";
+import { signJwt, verifyJwt } from "../utils/jwt";
+import { session } from "../models/session.model";
+import { student } from "../models/student.model";
 
 class sessionService {
     async createSession(input: any) {

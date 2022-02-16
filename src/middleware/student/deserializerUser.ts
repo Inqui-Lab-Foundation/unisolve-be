@@ -1,5 +1,5 @@
 /*Importing the dependencies*/
-import sessionService from '@src/services/session.services';
+import sessionService from '../../services/session.services';
 import { verifyJwt } from "../../utils/jwt";
 import { NextFunction, Request, Response } from "express";
 import { get } from "lodash";
@@ -35,8 +35,8 @@ const deserializeUser = async (
         if (newAccessToken) {
             res.setHeader("x-access-token", newAccessToken);
         }
-        const result = verifyJwt(newAccessToken as string);
-        res.locals.user = result.decoded;
+        const { decoded } = verifyJwt(newAccessToken as string);
+        res.locals.user = decoded;
         return next();
     }
     return next();

@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
-
-import logger from '@src/utils/logger'
-import studentServices from "@src/services/student.services";
-import sessionServices from "@src/services/session.services";
-import { CreateUserInput } from "@src/schemas/student/studentRegistration.schema";
-import { signJwt } from "@src/utils/jwt";
 import config from "config";
+
+import logger from '../utils/logger'
+import studentServices from "../services/student.services";
+import sessionServices from "../services/session.services";
+import { CreateUserInput } from "../schemas/student/studentRegistration.schema";
+import { signJwt } from "../utils/jwt";
+import { CreateUserPassword } from "../schemas/student/studentForgetPassword.schema";
 
 
 class studentController {
@@ -30,9 +31,9 @@ class studentController {
         try {
             const record = await studentServices.authenticateStudent(req.body);
             if (!record) {
-                return res.status(401).json({ message: "Invalid email or password"})
+                return res.status(401).json({ message: "Invalid email or password" })
             }
-            const input = { userId: record.id, userAgent: req.get("user-agent") || "", valid: true}
+            const input = { userId: record.id, userAgent: req.get("user-agent") || "", valid: true }
             const session = await sessionServices.createSession(input);
             const accessToken = signJwt(
                 { record, session: session.getDataValue('id') },
@@ -48,30 +49,25 @@ class studentController {
             logger.error(error);
             return res.status(409).send(error.message)
         }
+    };
+    async changePasswordHandler(
+        req: Request<{}, {}, CreateUserPassword["body"]>,
+        res: Response) {
+        try {
+            const record = await studentServices.changePassword(req.body);
+            return res.status(202).json({ message: "Password updated successfully" })
+        } catch (error) {
+            return res.status(405).json({ message: "Method Not Allowed" })
+        }
+    };
+    async logoutHandler(req: Request, res: Response) {
+        try {
+            res.clearCookie('jwt');
+            res.status(200).json({ message: "cleared student session successfully" })
+        } catch (error: any) {
+            res.status(404).json({message: "bad request"})
+        }
     }
 }
-
-/**
- * try {
-        const user = await validatePassword(req.body);
-        if (!user) {
-            return res.status(401).send("Invalid email or password")
-        }
-        const session = await createSession(user._id, req.get("user-agent") || "");
-        const accessToken = signJwt(
-            { ...user.toObject(), session: session._id },
-            { expiresIn: config.get<string>('accessTokenTtl') }
-        );
-        const refreshToken = signJwt(
-            { ...user.toObject(), session: session._id },
-            { expiresIn: config.get<string>('refreshTokenTtl') }
-        );
-        const { _id, email, name, createdAt, updatedAt } = user
-        return res.send({ _id, name, email, createdAt, updatedAt, accessToken, refreshToken });
-    } catch (error: any) {
-        logger.error(error);
-        return res.status(409).send(error.message)
-    }
- */
 
 export default new studentController();

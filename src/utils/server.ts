@@ -1,5 +1,5 @@
 import Express from 'express';
-import deserializerUser from '@src/middleware/student/deserializerUser';
+import deserializerUser from '../middleware/student/deserializerUser';
 import routes from '../routes';
 
 /**
