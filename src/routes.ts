@@ -1,9 +1,12 @@
 /*Importing the dependencies*/
 import { Express, Request, Response } from 'express';
 import studentControllers from './controllers/student.controllers';
+import requiredUser from './middleware/student/requiredlogin';
 
 import validate from './middleware/validateResource';
+import { userPasswordSchema } from './schemas/student/studentForgetPassword.schema';
 import { userLoginSchema } from './schemas/student/studentLogin.schema';
+import { userLogout } from './schemas/student/studentLogout.schema';
 import { userRegisterSchema } from './schemas/student/studentRegistration.schema';
 
 /**
@@ -17,20 +20,11 @@ function routes(App: Express) {
 
     App.post('/api/student/register', validate(userRegisterSchema), studentControllers.registerHandler);
 
-    App.post('/api/student/login', validate(userLoginSchema), studentControllers.loginHandler)
+    App.post('/api/student/login', validate(userLoginSchema), studentControllers.loginHandler);
 
-    //   App.get('/api/user/sessions', requiredUser, getUserSessionsHandler);
+    App.post('/api/student/changePassword', validate(userPasswordSchema), studentControllers.changePasswordHandler)
 
-    //   App.delete('/api/user/sessions', requiredUser, deleteUserSessionHandler);
-
-    //   App.post("/api/products", [requiredUser, validate(createProductSchema)],
-    // createProductHandler);
-
-    //   App.get("/api/products/:productId", getProductHandler);
-
-    //   App.put("/api/products/:productId", updateProductHandler );
-
-    //   App.delete("/api/products/:productId", requiredUser, deleteProductHandler);
+    App.get('/api/student/logout', validate(userLogout), requiredUser, studentControllers.logoutHandler);
 }
 
 export default routes;
@@ -38,10 +32,10 @@ export default routes;
 
 /**
     * @openapi
-    * /healthcheck:
+    * /api/healthCheck:
     *  get:
     *     tags:
-    *     - Healthcheck
+    *     - Health Checker
     *     description: Responds if the app is up and running
     *     parameters: 
     *       Null 
@@ -52,11 +46,11 @@ export default routes;
 
 /**
     * @openapi
-    * '/api/users/signup':
+    * '/api/student/register':
     *  post:
     *     tags:
-    *     - User
-    *     summary: Register a User
+    *     - Student
+    *     summary: Register a student
     *     requestBody:
     *      required: true
     *      content: 
@@ -78,11 +72,11 @@ export default routes;
 
 /**
     * @openapi
-    * '/api/users/signin':
+    * '/api/student/login':
     *  post:
     *     tags:
-    *     - User
-    *     summary: Login a User
+    *     - Student
+    *     summary: Login a student
     *     requestBody:
     *      required: true
     *      content: 
@@ -106,133 +100,46 @@ export default routes;
 
 /**
     * @openapi
-    * '/api/user/sessions':
-    *  get:
+    * '/api/student/changePassword':
+    *  post:
     *     tags:
-    *     - User
-    *     summary: List of sessions
+    *     - Student
+    *     summary: Change password of a  student
+    *     requestBody:
+    *      required: true
+    *      content: 
+    *        application/json:
+    *           schema: 
+    *              $ref: '#/components/schemas/userChangePassword'
     *     responses:
-    *       200:
-    *         description: Success
-    *       401:
-    *         description: Unauthorized 
-    *       400:
-    *         description: Bad request
-    */
-
-/**
-    * @openapi
-    * '/api/sessions':
-    *  delete:
-    *     tags:
-    *     - User
-    *     summary: Delete session
-    *     responses:
-    *       200:
-    *         description: Success
-    *       401:
-    *         description: Unauthorized 
-    *       400:
-    *         description: Bad request
-    */
-
-/**
-  * @openapi
-  * '/api/products':
-  *  post:
-  *     tags:
-  *     - Products
-  *     summary: Create a new product
-  *     requestBody:
-  *      required: true
-  *      content: 
-  *        application/json:
-  *           schema: 
-  *              $ref: '#/components/schemas/CreateProduct'
-  *     responses:
-  *       200:
-  *         description: Success
-  *         content:
-  *           application/json:
-  *             schema: 
-  *                ref: '#/components/schemas/ProductResponse'
-  *       403:
-  *         description: Forbidden 
-  *       400:
-  *         description: Bad request
-  */
-
-/**
-    * @openapi
-    * '/api/products/{productId}':
-    *  get:
-    *     tags:
-    *     - Products
-    *     summary: Get a single product by the productId
-    *     parameters:
-    *      - name: productId
-    *        in: path
-    *        description: The id of the product
-    *        required: true
-    *     responses:
-    *       200:
+    *       202:
     *         description: Success
     *         content:
-    *          application/json:
-    *           schema:
-    *              $ref: '#/components/schemas/GetProduct'
-    *       404:
-    *         description: Product not found
+    *           application/json:
+    *             schema: 
+    *                ref: '#/components/schemas/userChangePasswordResponse'
+    *       401:
+    *         description: Unauthorized 
+    *       405:
+    *         description: Method Not Allowed
+    *       400:
+    *         description: Bad Request
     */
 
 /**
-  * @openapi
-  * '/api/products/{productId}':
-  *  put:
-  *     tags:
-  *     - Products
-  *     summary: Update single product by the productId
-  *     parameters:
-  *      - name: productId
-  *        in: path
-  *        description: The id of the product
-  *        required: true
-  *     requestBody:
-  *      required: true
-  *      content: 
-  *        application/json:
-  *           schema: 
-  *              $ref: '#/components/schemas/CreateProduct'
-  *     responses:
-  *       200:
-  *         description: Success
-  *         content:
-  *           application/json:
-  *             schema: 
-  *                ref: '#/components/schemas/ProductResponse'
-  *       403:
-  *         description: Forbidden 
-  *       400:
-  *         description: Bad request
-  */
-
-/**
     * @openapi
-    * '/api/products/{productId}':
-    *  delete:
+    * '/api/student/logout':
+    *  get:
     *     tags:
-    *     - Products
-    *     summary: Delete single product by productId
-    *     parameters:
-    *      - name: productId
-    *        in: path
-    *        description: The id of product
-    *        required: true
+    *     - Student
+    *     summary: logout student
     *     responses:
-    *       200:
+    *       202:
     *         description: Success
     *       401:
     *         description: Unauthorized 
+    *       405:
+    *         description: Method Not Allowed
     *       400:
-    *         description: Bad request
+    *         description: Bad Request
     */

@@ -68,5 +68,26 @@
  *        accessToken: 
  *          type: string  
  *        refreshToken: 
- *          type: string  
+ *          type: string
+ *    userChangePassword:
+ *      type: object
+ *      required: 
+ *        - email
+ *        - newPassword
+ *        - passwordConfirmation
+ *      properties:
+ *        email: 
+ *          type: string
+ *          default: vamshi@someunnameweb.com
+ *        newPassword: 
+ *          type: string
+ *          default: vamshi@1234
+ *        passwordConfirmation: 
+ *          type: string
+ *          default: vamshi@1234
+ *    userChangePasswordResponse:
+ *      type: object
+ *      properties:
+ *        message: 
+ *          type: string
  */
