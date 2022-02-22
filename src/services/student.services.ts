@@ -6,6 +6,11 @@ import { correctPassword } from "../models/student.model";
 import { student } from "../models/student.model";
 
 class studentService {
+    /**
+     * 
+     * @param input as request body from the express application
+     * @returns object after create the entry in database
+     */
     async buildStudent(input: any) {
         const id = UUIDV4();
         try {
@@ -15,6 +20,11 @@ class studentService {
             throw new Error(error.message)
         }
     };
+    /**
+     * 
+     * @param input as request body from the express application
+     * @returns object with query result 
+     */
     async findStudent(input: any) {
         const { email } = input;
         try {
@@ -24,6 +34,11 @@ class studentService {
             return error.message
         }
     };
+    /**
+     * 
+     * @param param0 email and password as strings
+     * @returns student details post verifying the password with actual password 
+     */
     async authenticateStudent({ email, password }: { email: string, password: string }) {
         const findEntry = await student.findOne({ where: { email } });
         const foundStudentDetails = findEntry?.toJSON();
@@ -32,6 +47,11 @@ class studentService {
         if (!authenticate) return false;
         return omit(foundStudentDetails, 'password')
     };
+    /**
+     * 
+     * @param input as request body from the express application
+     * @returns user details object post changing the password
+     */
     async changePassword(input: any) {
         const { email, newPassword } = input;
         await student.findOne({ where: { email } }).then(user => {

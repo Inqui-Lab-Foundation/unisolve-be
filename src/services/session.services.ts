@@ -5,10 +5,20 @@ import { session } from "../models/session.model";
 import { student } from "../models/student.model";
 
 class sessionService {
+    /**
+     * 
+     * @param input as request body from the express application
+     * @returns object after creating session
+     */
     async createSession(input: any) {
         const newEntry = await session.create(input);
         return newEntry;
     };
+    /**
+     * 
+     * @param param0 refresh token
+     * @returns verify the token and return access token
+     */
     async reIssuesAccessToken({ refreshToken }: { refreshToken: any }) {
         const { decoded } = verifyJwt(refreshToken);
         if (!decoded || get(decoded, "session")) return false;
