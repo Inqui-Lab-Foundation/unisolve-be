@@ -1,7 +1,7 @@
 /*Importing the dependencies*/
 import { Express, Request, Response } from 'express';
 import studentControllers from './controllers/student.controllers';
-import requiredUser from './middleware/student/requiredlogin';
+import requiredUser from './middleware/student/requiredLogin';
 
 import validate from './middleware/validateResource';
 import { userPasswordSchema } from './schemas/student/studentForgetPassword.schema';
@@ -30,6 +30,7 @@ function routes(App: Express) {
 export default routes;
 
 
+//swagger documentation
 /**
     * @openapi
     * /api/healthCheck:

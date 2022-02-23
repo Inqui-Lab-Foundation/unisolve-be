@@ -14,6 +14,7 @@ export const userLoginResponse = {
     "refreshToken": expect.any(String)
 }
 
+// test cases for student
 describe("Student test cases", () => {
 
     describe("GET: /api/healthCheck", () => {
@@ -104,5 +105,10 @@ describe("Student test cases", () => {
         });
     });
     
-    // need to add test case for logout
+    describe("GET: /api/student/logout", () => {
+        test("should return a 200 status", async () => {
+            await supertest(app).get(`/api/student/logout`)
+                .expect(200);
+        });
+    });
 });

@@ -1,3 +1,4 @@
+// importing dependence
 import { Request, Response } from "express";
 import config from "config";
 
@@ -8,8 +9,13 @@ import { CreateUserInput } from "../schemas/student/studentRegistration.schema";
 import { signJwt } from "../utils/jwt";
 import { CreateUserPassword } from "../schemas/student/studentForgetPassword.schema";
 
-
 class studentController {
+    /**
+     * 
+     * @param req express request
+     * @param res express response
+     * @returns JSON with created student details and successfully message or error message
+     */
     async registerHandler(
         req: Request<{}, {}, CreateUserInput["body"]>,
         res: Response) {
@@ -25,6 +31,12 @@ class studentController {
             })
         }
     };
+    /**
+     * 
+     * @param req express request
+     * @param res express response
+     * @returns JSON with student details and access token, refresh token or error message
+     */
     async loginHandler(
         req: Request<{}, {}, CreateUserInput["body"]>,
         res: Response) {
@@ -50,6 +62,12 @@ class studentController {
             return res.status(409).send(error.message)
         }
     };
+    /**
+     * 
+     * @param req express request
+     * @param res express response
+     * @returns JSON with success message or error message
+     */
     async changePasswordHandler(
         req: Request<{}, {}, CreateUserPassword["body"]>,
         res: Response) {
@@ -60,6 +78,12 @@ class studentController {
             return res.status(405).json({ message: "Method Not Allowed" })
         }
     };
+    /**
+     * 
+     * @param req express request
+     * @param res express response
+     * @returns JSON with success message or error message
+     */
     async logoutHandler(req: Request, res: Response) {
         try {
             res.clearCookie('jwt');
