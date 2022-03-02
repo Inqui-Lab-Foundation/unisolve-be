@@ -55,8 +55,8 @@ class studentController {
                 { record, session: session.getDataValue('id') },
                 { expiresIn: config.get<string>('refreshTokenTtl') }
             );
-            const { id, email, name, } = record
-            return res.send({ id, name, email, accessToken, refreshToken });
+            const { id, email, student_name, } = record
+            return res.send({ id, student_name, email, accessToken, refreshToken });
         } catch (error: any) {
             logger.error(error);
             return res.status(409).send(error.message)

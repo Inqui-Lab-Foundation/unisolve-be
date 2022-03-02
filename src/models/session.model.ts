@@ -30,6 +30,6 @@ session.init(
     },
     {
         sequelize: db,
-        tableName: 'sessions',
+        tableName: 'Sessions',
     }
 );
