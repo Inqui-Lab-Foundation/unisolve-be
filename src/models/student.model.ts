@@ -4,9 +4,19 @@ import db from '../../config/database.config';
 
 export interface studentAttributes {
     id: string;
-    name: string;
-    email: string,
-    password: string
+    team_id: string;
+    student_name: string;
+    mobile: number;
+    email: string;
+    password: string;
+    date_of_birth: string;
+    institute_name: string;
+    stream: string;
+    city: string;
+    district: string;
+    state: string;
+    country: string;
+    statue: Enumerator;
 }
 
 export class student extends Model<studentAttributes> { }
@@ -20,9 +30,17 @@ student.init(
             },
             primaryKey: true
         },
-        name: {
+        team_id: {
+            type: DataTypes.STRING
+        },
+        student_name: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        mobile: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            unique: true
         },
         email: {
             type: DataTypes.STRING,
@@ -32,6 +50,32 @@ student.init(
         password: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        date_of_birth: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        institute_name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        stream: {
+            type: DataTypes.STRING
+        },
+        city: {
+            type: DataTypes.STRING,
+        },
+        district: {
+            type: DataTypes.STRING
+        },
+        state: {
+            type: DataTypes.STRING
+        },
+        country: {
+            type: DataTypes.STRING
+        },
+        statue: {
+            type: DataTypes.ENUM('Active', 'Inactive')
         }
     },
     {
@@ -45,7 +89,7 @@ student.init(
             }
         },
         sequelize: db,
-        tableName: 'students',
+        tableName: 'Students',
     }
 );
 
@@ -56,4 +100,3 @@ export const correctPassword = (enteredPassword: string, originalPassword: strin
 function generateMyId() {
     return UUIDV4;
 }
-
