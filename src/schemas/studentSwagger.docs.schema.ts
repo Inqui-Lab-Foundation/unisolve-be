@@ -6,36 +6,42 @@
  *    userRegisterInput:
  *      type: object
  *      required: 
+ *        - student_name
  *        - email
- *        - name
  *        - password
  *        - passwordConfirmation
+ *        - date_of_birth
+ *        - mobile
+ *        - institute_name
  *      properties:
+ *        student_name: 
+ *          type: string
+ *          default: vamshi
  *        email: 
  *          type: string
  *          default: vamshi@someunnameweb.com
- *        name: 
- *          type: string
- *          default: vamshi
  *        password: 
  *          type: string
  *          default: vamshi@1234
  *        passwordConfirmation: 
  *          type: string
  *          default: vamshi@1234
+ *        date_of_birth: 
+ *          type: string
+ *          default: 25/05/1995
+ *        mobile: 
+ *          type: number
+ *          default: 1234567891
+ *        institute_name: 
+ *          type: string
+ *          default: something institute of tech
  *    userRegisterResponse:
  *      type: object
  *      properties:
- *        email: 
- *          type: string
- *        name: 
- *          type: string
- *        _id: 
- *          type: string
- *        createdAt: 
- *          type: string  
- *        updateAt: 
- *          type: string  
+ *        record: 
+ *          type: object
+ *        message: 
+ *          type: string 
  *    userLoginInput:
  *      type: object
  *      required: 
@@ -90,4 +96,46 @@
  *      properties:
  *        message: 
  *          type: string
+ *    createCoursePayload:
+ *      type: object
+ *      required:
+ *        - module
+ *        - courser_id
+ *        - statue
+ *      properties:
+ *        module:
+ *          type: string
+ *          default: 1
+ *        courser_id:
+ *          type: string
+ *          default: 244244
+ *        statue:
+ *          type: string
+ *          default: "Completed"
+ *    createCourseResponse:
+ *      type: object
+ *      properties:
+ *        id:
+ *         type: string
+ *        module:
+ *         type: string
+ *        courser_id:
+ *         type: string
+ *        statue:
+ *         type: string
+ *        updatedAt:
+ *         type: string       
+ *        createdAt:
+ *         type: string
+ *    courseUpdatePayload:             
+ *      type: object
+ *      required:
+ *        - statue
+ *      properties:
+ *        statue:
+ *          type: sting
+ *          default: "Complete"         
+ *    courseUpdateRepose:
+ *      type: array                                                      
+ * 
  */

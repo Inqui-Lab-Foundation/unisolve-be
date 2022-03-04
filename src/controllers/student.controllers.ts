@@ -19,13 +19,12 @@ class studentController {
     async registerHandler(
         req: Request<{}, {}, CreateUserInput["body"]>,
         res: Response) {
-
         try {
             const record = await studentServices.buildStudent(req.body)
             return res.status(200).json({ record, message: "Student successfully Registered" })
-        } catch (error) {
+        } catch (error: any) {
             return res.json({
-                message: "failed to register student, something went wrong",
+                message: error.message,
                 status: 500,
                 router: '/api/student/register'
             })
