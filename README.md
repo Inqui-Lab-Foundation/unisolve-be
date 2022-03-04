@@ -1,8 +1,8 @@
 # Student's Learning Platform backend
 
-# Project Title
+# UNISLOVE-BE
 
-One Paragraph of the project description
+Unislove backend containing All list API's and server hosted in port <3002>
 
 ## Getting Started
 
@@ -12,29 +12,83 @@ for notes on deploying the project on a live system.
 
 ### Prerequisites
 
+- Node.js 
+- Typescript 
+- Express
+- MySQL
+
 Requirements for the software and other tools to build, test and push 
 - [Example 1](https://www.example.com)
 - [Example 2](https://www.example.com)
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development
-environment running
+1. You need to install PostgreSQL
+   - For Windows
+     - Install mySql and set following environment variable C:\Program Files\mysql\10\bin
+   - For Ubuntu
+     - Installation 
+        sudo apt update 
+        sudo apt-get install mysql
+  
+2. rename .env-sample to .env in the file the DB connection string need to be updated according to your credentials. ex : mysql://<YourUserName>:<YourPassword>@localhost:5432/<YourDatabase>
 
-Say what the step will be
+3. you can find the DB and other details under unislove-be/config there is a file called database.config.js you are changed the database username password
 
-    Give the example
+4. install all dependencies need for application to run locally 
+   - git clone https://github.com/Inqui-Lab-Foundation/unisolve-be.git
+   - yarn install || npm install
+   - yarn start:dev || npm start:dev This will start the application in development mode
+   - yarn start:prod || npm start:prod  This will start the application and run on port 3002
 
-And repeat
+5. you can change port and others details in `config.json` file check path: `./config/default.ts`
 
-    until finished
+## Folder Structure
 
-End with an example of getting some data out of the system or using it
-for a little demo
+```
+config
+└───database.config.ts
+└───default.ts
+src
+└───__test__             # API Testing files
+└───controllers          # Express route controllers for all the endpoints of the app
+└───middleware           # express middleware
+└───models               # DB Models (mysql)
+└───schemas              # validation schemas for API Request object validations
+└───services             # All the database interaction logic is here
+└───utils                # third party service required application to up and running
+└───index.ts             # Application entry point
+└───routes.ts            # Application routes / endpoints
+
+```
+## Features
+
+- CRUD operations for student
+- Authentication for student
+- REST API Request object validations - Basic
+- Error Logs
+- Setup docs
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+yarn run test || npm run test
+
+testing with converge of the files
+
+yarn run test:coverage || npm run test:coverage
+
+## Planned
+
+- \[x] JWT login
+- \[x] Unit Testing
+- \[x] Postman collections
+- \[x] Improve request Object Validations
+- \[x] Improve Error Messages for request failures
+- \[x] Swagger Docs
+- \[x] Security
+- \[x] SQL Database
+- \[ ] Hosting
+
 
 ### Sample Tests
 
@@ -46,7 +100,7 @@ Explain what these tests test and why
 
 Checks if the best practices and the right coding style has been used.
 
-    Give an example
+    Es-lint
 
 ## Deployment
 
@@ -72,11 +126,15 @@ repository](https://github.com/PurpleBooth/a-good-readme-template/tags).
 
 ## Authors
 
-  - **Pradeep Gandla** - 
+  - **Pradeep Gandla**
 
 See also the list of
 [contributors](https://github.com/PurpleBooth/a-good-readme-template/contributors)
 who participated in this project.
+
+## Recommended / Preferred
+
+[VSCode](https://code.visualstudio.com/download)
 
 ## License
 
