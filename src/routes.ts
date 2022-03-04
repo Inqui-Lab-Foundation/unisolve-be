@@ -1,5 +1,6 @@
 /*Importing the dependencies*/
 import { Express, Request, Response } from 'express';
+
 import courseControllers from './controllers/course.controllers';
 import studentControllers from './controllers/student.controllers';
 import requiredUser from './middleware/student/requiredLogin';
@@ -18,7 +19,6 @@ import { userRegisterSchema } from './schemas/student/studentRegistration.schema
  * @called from index file.
  */
 function routes(App: Express) {
-
     //health checking api
     App.get('/api/healthCheck', (req: Request, res: Response) => { res.sendStatus(200) });
 
@@ -35,8 +35,6 @@ function routes(App: Express) {
     App.put('/api/course/update/:courseId', validate(CourseUpdate), requiredUser, courseControllers.updateCourse);
     App.delete('/api/course/delete/:courseId', requiredUser, courseControllers.deleteCourse)
 }
-
-
 export default routes;
 
 
@@ -66,9 +64,9 @@ export default routes;
     *     summary: Register a student
     *     requestBody:
     *      required: true
-    *      content:
+    *      content: 
     *        application/json:
-    *           schema:
+    *           schema: 
     *              $ref: '#/components/schemas/userRegisterInput'
     *     responses:
     *       200:

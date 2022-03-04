@@ -138,16 +138,4 @@
  *    courseUpdateRepose:
  *      type: array                                                      
  * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
  */
