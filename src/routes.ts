@@ -2,6 +2,7 @@
 import { Express, Request, Response } from 'express';
 
 import courseControllers from './controllers/course.controllers';
+import mentorControllers from './controllers/mentor.controllers';
 import studentControllers from './controllers/student.controllers';
 import requiredUser from './middleware/student/requiredLogin';
 
@@ -33,7 +34,14 @@ function routes(App: Express) {
     App.get('/api/course/courseList', requiredUser, courseControllers.getCourse);
     App.get('/api/course/:courseId', requiredUser, courseControllers.getCourseById);
     App.put('/api/course/update/:courseId', validate(CourseUpdate), requiredUser, courseControllers.updateCourse);
-    App.delete('/api/course/delete/:courseId', requiredUser, courseControllers.deleteCourse)
+    App.delete('/api/course/delete/:courseId', requiredUser, courseControllers.deleteCourse);
+
+    //mentor
+    App.post('/api/mentor/create', mentorControllers.createMentor);
+    App.get('/api/mentor/courseList', mentorControllers.getMentor);
+    App.get('/api/mentor/:courseId', mentorControllers.getMentorById);
+    App.put('/api/mentor/update/:courseId', requiredUser, mentorControllers.updateMentor);
+    App.delete('/api/mentor/delete/:courseId', mentorControllers.deleteMentor)
 }
 export default routes;
 
@@ -64,9 +72,9 @@ export default routes;
     *     summary: Register a student
     *     requestBody:
     *      required: true
-    *      content: 
+    *      content:
     *        application/json:
-    *           schema: 
+    *           schema:
     *              $ref: '#/components/schemas/userRegisterInput'
     *     responses:
     *       200:

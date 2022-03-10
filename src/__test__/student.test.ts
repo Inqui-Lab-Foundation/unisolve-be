@@ -1,8 +1,8 @@
 import supertest from "supertest";
 import { omit } from "lodash";
 
-import createServer from "../../utils/server";
-import { student } from "../../models/student.model";
+import createServer from "../utils/server";
+import { student } from "../models/student.model";
 
 const app = createServer();
 
