@@ -8,7 +8,9 @@ import requiredUser from './middleware/student/requiredLogin';
 
 import validate from './middleware/validateResource';
 import { courserPayload } from './schemas/course/courseCreatePayload.schema';
-import { CourseUpdate } from './schemas/course/courseUpdatePayload.schema';
+import { courseUpdate } from './schemas/course/courseUpdatePayload.schema';
+import { mentorPayload } from './schemas/mentor/mentorCreatePayload.schema';
+import { mentorUpdate } from './schemas/mentor/mentorUpdatePayload.schema';
 import { userPasswordSchema } from './schemas/student/studentForgetPassword.schema';
 import { userLoginSchema } from './schemas/student/studentLogin.schema';
 import { userLogout } from './schemas/student/studentLogout.schema';
@@ -33,15 +35,15 @@ function routes(App: Express) {
     App.post('/api/course/create', validate(courserPayload), requiredUser, courseControllers.createCourse);
     App.get('/api/course/courseList', requiredUser, courseControllers.getCourse);
     App.get('/api/course/:courseId', requiredUser, courseControllers.getCourseById);
-    App.put('/api/course/update/:courseId', validate(CourseUpdate), requiredUser, courseControllers.updateCourse);
+    App.put('/api/course/update/:courseId', validate(courseUpdate), requiredUser, courseControllers.updateCourse);
     App.delete('/api/course/delete/:courseId', requiredUser, courseControllers.deleteCourse);
 
     //mentor
-    App.post('/api/mentor/create', mentorControllers.createMentor);
-    App.get('/api/mentor/courseList', mentorControllers.getMentor);
-    App.get('/api/mentor/:courseId', mentorControllers.getMentorById);
-    App.put('/api/mentor/update/:courseId', requiredUser, mentorControllers.updateMentor);
-    App.delete('/api/mentor/delete/:courseId', mentorControllers.deleteMentor)
+    App.post('/api/mentor/create', validate(mentorPayload), mentorControllers.createMentor);
+    App.get('/api/mentor/mentorList', mentorControllers.getMentor);
+    App.get('/api/mentor/:mentorId', mentorControllers.getMentorById);
+    App.put('/api/mentor/update/:mentorId', validate(mentorUpdate), requiredUser, mentorControllers.updateMentor);
+    App.delete('/api/mentor/delete/:mentorId', mentorControllers.deleteMentor)
 }
 export default routes;
 
@@ -173,6 +175,109 @@ export default routes;
     *     summary: Create a course entry
     *     requestBody:
     *      required: true
+    *      content:
+    *        application/json:
+    *           schema:
+    *              $ref: '#/components/schemas/createCoursePayload'
+    *     responses:
+    *       200:
+    *         description: Success
+    *         content:
+    *           application/json:
+    *             schema:
+    *                ref: '#/components/schemas/createCourseResponse'
+    *       409:
+    *         description: Conflict
+    *       400:
+    *         description: Bad request
+    */
+/**
+ * @openapi
+ * '/api/course/courseList':
+ *  get:
+ *     tags:
+ *     - Course
+ *     summary: Get the list of the course
+ *     responses:
+ *       202:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ *       405:
+ *         description: Method Not Allowed
+ *       400:
+ *         description: Bad Request
+ */
+/**
+ * @openapi
+ * '/api/course/{course_id}':
+ *  get:
+ *     tags:
+ *     - Course
+ *     summary: Get the single course
+ *     responses:
+ *       202:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized
+ *       405:
+ *         description: Method Not Allowed
+ *       400:
+ *         description: Bad Request
+ */
+/**
+    * @openapi
+    * '/api/course/update/{course_id}':
+    *  put:
+    *     tags:
+    *     - Course
+    *     summary: Create a course entry
+    *     requestBody:
+    *      required: true
+    *      content:
+    *        application/json:
+    *           schema:
+    *              $ref: '#/components/schemas/courseUpdatePayload'
+    *     responses:
+    *       200:
+    *         description: Success
+    *         content:
+    *           application/json:
+    *             schema:
+    *                ref: '#/components/schemas/courseUpdateRepose'
+    *       409:
+    *         description: Conflict
+    *       400:
+    *         description: Bad request
+    */
+/**
+* @openapi
+* '/api/course/delete/{course_id}':
+*  delete:
+*     tags:
+*     - Course
+*     summary: delete the single entry with course id
+*     responses:
+*       202:
+*         description: Success
+*       401:
+*         description: Unauthorized
+*       405:
+*         description: Method Not Allowed
+*       400:
+*         description: Bad Request
+*/
+
+//mentor API's
+/**
+    * @openapi
+    * '/api/mentor/create':
+    *  post:
+    *     tags:
+    *     - Mentor
+    *     summary: Create a Mentor entry
+    *     requestBody:
+    *      required: true
     *      content: 
     *        application/json:
     *           schema: 
@@ -191,11 +296,11 @@ export default routes;
     */
 /**
  * @openapi
- * '/api/course/courseList':
+ * '/api/mentor/mentorList':
  *  get:
  *     tags:
- *     - Course
- *     summary: Get the list of the course
+ *     - Mentor
+ *     summary: Get the list of the mentors
  *     responses:
  *       202:
  *         description: Success
@@ -208,11 +313,11 @@ export default routes;
  */
 /**
  * @openapi
- * '/api/course/{course_id}':
+ * '/api/mentor/{mentorId}':
  *  get:
  *     tags:
- *     - Course
- *     summary: Get the single course
+ *     - Mentor
+ *     summary: Get the single mentor with Id
  *     responses:
  *       202:
  *         description: Success
@@ -225,11 +330,11 @@ export default routes;
  */
 /**
     * @openapi
-    * '/api/course/update/{course_id}':
+    * '/api/mentor/update/{mentorId}':
     *  put:
     *     tags:
-    *     - Course
-    *     summary: Create a course entry
+    *     - Mentor
+    *     summary: update the correction to the registered mentor
     *     requestBody:
     *      required: true
     *      content: 
@@ -250,11 +355,11 @@ export default routes;
     */
 /**
 * @openapi
-* '/api/course/delete/{course_id}':
+* '/api/mentor/delete/{mentorId}':
 *  delete:
 *     tags:
-*     - Course
-*     summary: delete the single entry with course id
+*     - Mentor
+*     summary: remove the entry from the database
 *     responses:
 *       202:
 *         description: Success

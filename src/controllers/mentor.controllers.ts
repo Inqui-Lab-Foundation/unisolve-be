@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 
 import mentorServices from "../services/mentor.services";
-// import { mentorPayloadInput } from "../schemas/mentor/mentorCreatePayload.schema";
+import { mentorPayloadInput } from "../schemas/mentor/mentorCreatePayload.schema";
 import { mentor } from "../models/mentor.model";
 
 class mentorController {
     async createMentor(
-        req: Request<{}, {}/*, mentorPayloadInput["body"]*/>,
+        req: Request<{}, {}, mentorPayloadInput["body"]>,
         res: Response) {
-        const { module, mentor_id, statue } = req.body;
-        const product = await mentorServices.buildMentor({ module, mentor_id, statue });
+        const { mentor_name, mobile, email, statue } = req.body;
+        const product = await mentorServices.buildMentor({ mentor_name, mobile, email, statue });
         return res.send(product)
     }
     async getMentor(

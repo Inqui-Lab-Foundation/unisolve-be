@@ -1,5 +1,3 @@
-import { Query } from "mysql2";
-import { QueryOptionsTransactionRequired, where } from "sequelize/types";
 import { mentor } from "../models/mentor.model";
 
 class mentorService {

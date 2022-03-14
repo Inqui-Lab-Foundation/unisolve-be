@@ -2,8 +2,6 @@
 import { object, string, z, TypeOf,  } from "zod";
 import { Omit } from 'lodash';
 
-const values = ['Complete', 'Incomplete']
-
 export const courserPayload = object({
     body: object({
         module: string({
@@ -18,5 +16,3 @@ export const courserPayload = object({
 
 
 export type courserPayloadInput = Omit<TypeOf<typeof courserPayload>, "body.passwordConfirmation">;
-
-
