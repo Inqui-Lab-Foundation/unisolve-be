@@ -23,7 +23,7 @@ evaluator.init(
             allowNull: false
         },
         mobile: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.BIGINT,
             allowNull: false,
             unique: true
         },
