@@ -8,8 +8,8 @@ class mentorController {
     async createMentor(
         req: Request<{}, {}, mentorPayloadInput["body"]>,
         res: Response) {
-        const { mentor_name, mobile, email, statue } = req.body;
-        const product = await mentorServices.buildMentor({ mentor_name, mobile, email, statue });
+        const { mentor_name, mobile, email } = req.body;
+        const product = await mentorServices.buildMentor({ mentor_name, mobile, email });
         return res.send(product)
     }
     async getMentor(

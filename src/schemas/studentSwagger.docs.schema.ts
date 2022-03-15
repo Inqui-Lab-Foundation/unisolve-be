@@ -96,6 +96,7 @@
  *      properties:
  *        message: 
  *          type: string
+ * 
  *    createCoursePayload:
  *      type: object
  *      required:
@@ -136,6 +137,90 @@
  *          type: sting
  *          default: "Complete"         
  *    courseUpdateRepose:
- *      type: array                                                      
+ *      type: array
+ * 
+ *    createMentorPayload:
+ *      type: object
+ *      required:
+ *        - mentor_name
+ *        - mobile
+ *        - email
+ *      properties:
+ *        mentor_name:
+ *          type: string
+ *          default: "abcd"
+ *        mobile:
+ *          type: string
+ *          default: 24424454544
+ *        email:
+ *          type: string
+ *          default: "gmail@Completed.com"
+ *    createMentorResponse:
+ *      type: object
+ *      properties:
+ *        id:
+ *         type: string
+ *        mentor_name:
+ *         type: string
+ *        mobile:
+ *         type: string
+ *        email:
+ *         type: string
+ *        updatedAt:
+ *         type: string       
+ *        createdAt:
+ *         type: string
+ *    mentorUpdatePayload:             
+ *      type: object
+ *      required:
+ *        - statue
+ *      properties:
+ *        statue:
+ *          type: sting
+ *          default: "Active"         
+ *    mentorUpdateRepose:
+ *      type: array  
+ * 
+ *    createEvaluatorPayload:
+ *      type: object
+ *      required:
+ *        - evaluator_name
+ *        - mobile
+ *        - email
+ *      properties:
+ *        evaluator_name:
+ *          type: string
+ *          default: "abcd"
+ *        mobile:
+ *          type: string
+ *          default: 24424454544
+ *        email:
+ *          type: string
+ *          default: "gmail@Completed.com"
+ *    createEvaluatorResponse:
+ *      type: object
+ *      properties:
+ *        id:
+ *         type: string
+ *        evaluator_name:
+ *         type: string
+ *        mobile:
+ *         type: string
+ *        email:
+ *         type: string
+ *        updatedAt:
+ *         type: string       
+ *        createdAt:
+ *         type: string
+ *    evaluatorUpdatePayload:             
+ *      type: object
+ *      required:
+ *        - statue
+ *      properties:
+ *        statue:
+ *          type: sting
+ *          default: "Active"         
+ *    evaluatorUpdateRepose:
+ *      type: array                                                 
  * 
  */
