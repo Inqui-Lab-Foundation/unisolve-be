@@ -2,6 +2,7 @@
 import { Express, Request, Response } from 'express';
 
 import courseControllers from './controllers/course.controllers';
+import evaluatorControllers from './controllers/evaluator.controllers';
 import mentorControllers from './controllers/mentor.controllers';
 import studentControllers from './controllers/student.controllers';
 import requiredUser from './middleware/student/requiredLogin';
@@ -9,6 +10,8 @@ import requiredUser from './middleware/student/requiredLogin';
 import validate from './middleware/validateResource';
 import { courserPayload } from './schemas/course/courseCreatePayload.schema';
 import { courseUpdate } from './schemas/course/courseUpdatePayload.schema';
+import { evaluatorPayload } from './schemas/evaluator/evaluatorCreatePayload.schema';
+import { evaluatorUpdate } from './schemas/evaluator/evaluatorUpdatePayload.schema';
 import { mentorPayload } from './schemas/mentor/mentorCreatePayload.schema';
 import { mentorUpdate } from './schemas/mentor/mentorUpdatePayload.schema';
 import { userPasswordSchema } from './schemas/student/studentForgetPassword.schema';
@@ -32,18 +35,25 @@ function routes(App: Express) {
     App.get('/api/student/logout', validate(userLogout), requiredUser, studentControllers.logoutHandler);
 
     //courses
-    App.post('/api/course/create', validate(courserPayload), requiredUser, courseControllers.createCourse);
-    App.get('/api/course/courseList', requiredUser, courseControllers.getCourse);
-    App.get('/api/course/:courseId', requiredUser, courseControllers.getCourseById);
+    App.post('/api/course/create', validate(courserPayload), courseControllers.createCourse);
+    App.get('/api/course/courseList', courseControllers.getCourse);
+    App.get('/api/course/:courseId', courseControllers.getCourseById);
     App.put('/api/course/update/:courseId', validate(courseUpdate), requiredUser, courseControllers.updateCourse);
-    App.delete('/api/course/delete/:courseId', requiredUser, courseControllers.deleteCourse);
+    App.delete('/api/course/delete/:courseId', courseControllers.deleteCourse);
 
     //mentor
     App.post('/api/mentor/create', validate(mentorPayload), mentorControllers.createMentor);
     App.get('/api/mentor/mentorList', mentorControllers.getMentor);
     App.get('/api/mentor/:mentorId', mentorControllers.getMentorById);
-    App.put('/api/mentor/update/:mentorId', validate(mentorUpdate), requiredUser, mentorControllers.updateMentor);
+    App.put('/api/mentor/update/:mentorId', validate(mentorUpdate), mentorControllers.updateMentor);
     App.delete('/api/mentor/delete/:mentorId', mentorControllers.deleteMentor)
+
+    //evaluator
+    App.post('/api/evaluator/create', validate(evaluatorPayload), evaluatorControllers.createEvaluator);
+    App.get('/api/evaluator/evaluatorList', evaluatorControllers.getEvaluator);
+    App.get('/api/evaluator/:evaluatorId', evaluatorControllers.getEvaluatorById);
+    App.put('/api/evaluator/update/:evaluatorId', validate(evaluatorUpdate), evaluatorControllers.updateEvaluator);
+    App.delete('/api/evaluator/delete/:evaluatorId', evaluatorControllers.deleteEvaluator)
 }
 export default routes;
 
@@ -281,14 +291,14 @@ export default routes;
     *      content: 
     *        application/json:
     *           schema: 
-    *              $ref: '#/components/schemas/createCoursePayload'
+    *              $ref: '#/components/schemas/createMentorPayload'
     *     responses:
     *       200:
     *         description: Success
     *         content:
     *           application/json:
     *             schema: 
-    *                ref: '#/components/schemas/createCourseResponse'
+    *                ref: '#/components/schemas/createMentorResponse'
     *       409:
     *         description: Conflict 
     *       400:
@@ -340,14 +350,14 @@ export default routes;
     *      content: 
     *        application/json:
     *           schema: 
-    *              $ref: '#/components/schemas/courseUpdatePayload'
+    *              $ref: '#/components/schemas/mentorUpdatePayload'
     *     responses:
     *       200:
     *         description: Success
     *         content:
     *           application/json:
     *             schema: 
-    *                ref: '#/components/schemas/courseUpdateRepose'
+    *                ref: '#/components/schemas/mentorUpdateRepose'
     *       409:
     *         description: Conflict 
     *       400:
@@ -359,6 +369,109 @@ export default routes;
 *  delete:
 *     tags:
 *     - Mentor
+*     summary: remove the entry from the database
+*     responses:
+*       202:
+*         description: Success
+*       401:
+*         description: Unauthorized 
+*       405:
+*         description: Method Not Allowed
+*       400:
+*         description: Bad Request
+*/
+
+//evaluator API's
+/**
+    * @openapi
+    * '/api/evaluator/create':
+    *  post:
+    *     tags:
+    *     - Evaluator
+    *     summary: Create a evaluator entry
+    *     requestBody:
+    *      required: true
+    *      content: 
+    *        application/json:
+    *           schema: 
+    *              $ref: '#/components/schemas/createEvaluatorPayload'
+    *     responses:
+    *       200:
+    *         description: Success
+    *         content:
+    *           application/json:
+    *             schema: 
+    *                ref: '#/components/schemas/createEvaluatorResponse'
+    *       409:
+    *         description: Conflict 
+    *       400:
+    *         description: Bad request
+    */
+/**
+ * @openapi
+ * '/api/evaluator/evaluatorList':
+ *  get:
+ *     tags:
+ *     - Evaluator
+ *     summary: Get the list of the evaluators
+ *     responses:
+ *       202:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized 
+ *       405:
+ *         description: Method Not Allowed
+ *       400:
+ *         description: Bad Request
+ */
+/**
+ * @openapi
+ * '/api/evaluator/{evaluatorId}':
+ *  get:
+ *     tags:
+ *     - Evaluator
+ *     summary: Get the single evaluator with Id
+ *     responses:
+ *       202:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized 
+ *       405:
+ *         description: Method Not Allowed
+ *       400:
+ *         description: Bad Request
+ */
+/**
+    * @openapi
+    * '/api/evaluator/update/{evaluatorId}':
+    *  put:
+    *     tags:
+    *     - Evaluator
+    *     summary: update the correction to the registered evaluator
+    *     requestBody:
+    *      required: true
+    *      content: 
+    *        application/json:
+    *           schema: 
+    *              $ref: '#/components/schemas/evaluatorUpdatePayload'
+    *     responses:
+    *       200:
+    *         description: Success
+    *         content:
+    *           application/json:
+    *             schema: 
+    *                ref: '#/components/schemas/evaluatorUpdateRepose'
+    *       409:
+    *         description: Conflict 
+    *       400:
+    *         description: Bad request
+    */
+/**
+* @openapi
+* '/api/evaluator/delete/{evaluatorId}':
+*  delete:
+*     tags:
+*     - Evaluator
 *     summary: remove the entry from the database
 *     responses:
 *       202:
