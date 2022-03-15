@@ -22,8 +22,8 @@ mentor.init(
             type: DataTypes.STRING,
             allowNull: false
         },
-        mobile: {
-            type: DataTypes.INTEGER,
+        mobile: {   
+            type: DataTypes.BIGINT,
             allowNull: false,
             unique: true
         },
