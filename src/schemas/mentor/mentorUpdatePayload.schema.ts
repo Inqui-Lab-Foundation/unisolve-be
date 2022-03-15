@@ -4,7 +4,7 @@ import { Omit } from 'lodash';
 
 export const mentorUpdate = object({
     body: object({
-        statue: z.enum(["Completed", "Incomplete"])
+        statue: z.enum(["Active", "Inactive"])
     })
 });
 
