@@ -1,5 +1,5 @@
 /*Importing the dependencies*/
-import { object, string, TypeOf, number } from "zod";
+import { object, string, TypeOf, number, z} from "zod";
 import { Omit } from 'lodash';
 
 export const evaluatorPayload = object({
@@ -14,3 +14,14 @@ export const evaluatorPayload = object({
 
 
 export type evaluatorPayloadInput = Omit<TypeOf<typeof evaluatorPayload>, "body.passwordConfirmation">;
+
+export const evaluatorUpdate = object({
+    body: object({
+        statue: z.enum(["Active", "Inactive"])
+    })
+});
+
+
+export type MentorUpdateInput = Omit<TypeOf<typeof evaluatorUpdate>, "body.passwordConfirmation">;
+
+

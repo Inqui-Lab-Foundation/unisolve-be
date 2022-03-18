@@ -14,3 +14,14 @@ export const mentorPayload = object({
 
 
 export type mentorPayloadInput = Omit<TypeOf<typeof mentorPayload>, "body.passwordConfirmation">;
+
+export const mentorUpdate = object({
+    body: object({
+        statue: z.enum(["Active", "Inactive"])
+    })
+});
+
+
+export type MentorUpdateInput = Omit<TypeOf<typeof mentorUpdate>, "body.passwordConfirmation">;
+
+
