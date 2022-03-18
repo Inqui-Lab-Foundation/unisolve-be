@@ -5,17 +5,13 @@ import config from "config";
 import logger from '../utils/logger'
 import studentServices from "../services/student.services";
 import sessionServices from "../services/session.services";
-import { CreateUserInput } from "../schemas/student/studentRegistration.schema";
+import { CreateUserInput, CreateUserPassword } from "../schemas/student.schema";
 import { signJwt } from "../utils/jwt";
-import { CreateUserPassword } from "../schemas/student/studentForgetPassword.schema";
 
+/**
+ * Controller class for all student API's 
+ */
 class studentController {
-    /**
-     * 
-     * @param req express request
-     * @param res express response
-     * @returns JSON with created student details and successfully message or error message
-     */
     async registerHandler(
         req: Request<{}, {}, CreateUserInput["body"]>,
         res: Response) {
@@ -27,15 +23,9 @@ class studentController {
                 message: error.message,
                 status: 500,
                 router: '/api/student/register'
-            })
+            })  
         }
     };
-    /**
-     * 
-     * @param req express request
-     * @param res express response
-     * @returns JSON with student details and access token, refresh token or error message
-     */
     async loginHandler(
         req: Request<{}, {}, CreateUserInput["body"]>,
         res: Response) {
@@ -77,12 +67,6 @@ class studentController {
             return res.status(405).json({ message: "Method Not Allowed" })
         }
     };
-    /**
-     * 
-     * @param req express request
-     * @param res express response
-     * @returns JSON with success message or error message
-     */
     async logoutHandler(req: Request, res: Response) {
         try {
             res.clearCookie('jwt');

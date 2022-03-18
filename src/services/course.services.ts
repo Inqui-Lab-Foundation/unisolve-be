@@ -2,12 +2,10 @@ import { Query } from "mysql2";
 import { QueryOptionsTransactionRequired, where } from "sequelize/types";
 import { courses } from "../models/course.model";
 
+/**
+ * service for all the courser controllers logic isolated
+ */
 class courseService {
-    /**
-     * 
-     * @param input as request body from the express application
-     * @returns object after create the entry in database
-     */
     async buildCourse(input: any) {
         // const id = UUIDV4();
         try {

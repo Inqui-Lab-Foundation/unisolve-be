@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 
 import evaluatorServices from "../services/evaluator.services";
-import { evaluatorPayloadInput } from "../schemas/evaluator/evaluatorCreatePayload.schema";
+import { evaluatorPayloadInput } from "../schemas/evaluator.schema";
 import { evaluator } from "../models/evaluator.model";
 
+/**
+ * Controller class for all evaluator API's 
+ */
 class evaluatorController {
     async createEvaluator(
         req: Request<{}, {}, evaluatorPayloadInput["body"]>,
@@ -31,7 +34,6 @@ class evaluatorController {
         }
         return res.send({ product });
     }
-
     async updateEvaluator(
         req: Request,
         res: Response
@@ -45,7 +47,6 @@ class evaluatorController {
         const updatedEvaluator = await evaluatorServices.updateEvaluator(update, evaluator_Id);
         return res.send(updatedEvaluator);
     };
-
     async deleteEvaluator(
         req: Request,
         res: Response

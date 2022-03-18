@@ -1,11 +1,9 @@
 import { mentor } from "../models/mentor.model";
 
+/**
+ * service for all the mentor controllers logic isolated
+ */
 class mentorService {
-    /**
-     * 
-     * @param input as request body from the express application
-     * @returns object after create the entry in database
-     */
     async buildMentor(input: any) {
         // const id = UUIDV4();
         try {

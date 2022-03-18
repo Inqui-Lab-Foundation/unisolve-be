@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { AnyZodObject } from "zod";
 
 /**
- * this is middleware function validates the request with help scheme
+ * middleware function validates the request with zod scheme
  * @param Schema it's Zod object with list of required fields pre-settee.
  * @returns next if the request body match the schema,
  * @throws error with status code 400 if the validation fails.
