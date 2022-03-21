@@ -6,8 +6,8 @@ import logger from './utils/logger';
 import swaggerDocs from './utils/swagger';
 
 // initialing the express application with createServer;
-const App = createServer();
 const PORT = config.get<number>('port');
+const App = createServer(PORT);
 
 // mySQL connection
 db.sync()
@@ -17,5 +17,5 @@ db.sync()
 // application listening
 App.listen(PORT, async () => {
     logger.info(`App is running at http://localhost:${PORT}`);
-    swaggerDocs(App, PORT);
+    
 })

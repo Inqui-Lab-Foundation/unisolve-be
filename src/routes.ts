@@ -6,7 +6,7 @@ import evaluatorControllers from './controllers/evaluator.controllers';
 import mentorControllers from './controllers/mentor.controllers';
 import studentControllers from './controllers/student.controllers';
 
-import requiredUser from './middleware/student/requiredLogin';
+import requiredUser from './middleware/student/requiredlogin';
 import validate from './middleware/validateResource';
 
 import { courserPayload, courseUpdate } from './schemas/course.schema';
@@ -57,7 +57,7 @@ export default routes;
 //Swagger Documentation
 /**
     * @openapi
-    * /api/healthCheck:
+    * '/api/v1/healthCheck':
     *  get:
     *     tags:
     *     - Health Checker
@@ -72,7 +72,7 @@ export default routes;
 /**
     * Student API Documentation 
     * @openapi
-    * '/api/student/register':
+    * '/api/v1/student/register':
     *  post:
     *     tags:
     *     - Student
@@ -98,7 +98,7 @@ export default routes;
 
 /**
     * @openapi
-    * '/api/student/login':
+    * '/api/v1/student/login':
     *  post:
     *     tags:
     *     - Student
@@ -126,7 +126,7 @@ export default routes;
 
 /**
     * @openapi
-    * '/api/student/changePassword':
+    * '/api/v1/student/changePassword':
     *  post:
     *     tags:
     *     - Student
@@ -154,7 +154,7 @@ export default routes;
 
 /**
     * @openapi
-    * '/api/student/logout':
+    * '/api/v1/student/logout':
     *  get:
     *     tags:
     *     - Student
@@ -173,7 +173,7 @@ export default routes;
 /**
     * Course API Documentation  
     * @openapi
-    * '/api/course/create':
+    * '/api/v1/course/create':
     *  post:
     *     tags:
     *     - Course
@@ -198,7 +198,7 @@ export default routes;
     */
 /**
  * @openapi
- * '/api/course/courseList':
+ * '/api/v1/course/courseList':
  *  get:
  *     tags:
  *     - Course
@@ -215,7 +215,7 @@ export default routes;
  */
 /**
  * @openapi
- * '/api/course/{course_id}':
+ * '/api/v1/course/{course_id}':
  *  get:
  *     tags:
  *     - Course
@@ -232,7 +232,7 @@ export default routes;
  */
 /**
     * @openapi
-    * '/api/course/update/{course_id}':
+    * '/api/v1/course/update/{course_id}':
     *  put:
     *     tags:
     *     - Course
@@ -257,7 +257,7 @@ export default routes;
     */
 /**
 * @openapi
-* '/api/course/delete/{course_id}':
+* '/api/v1/course/delete/{course_id}':
 *  delete:
 *     tags:
 *     - Course
@@ -276,7 +276,7 @@ export default routes;
 /**
     * Mentor API Documentation  
     * @openapi
-    * '/api/mentor/create':
+    * '/api/v1/mentor/create':
     *  post:
     *     tags:
     *     - Mentor
@@ -301,7 +301,7 @@ export default routes;
     */
 /**
  * @openapi
- * '/api/mentor/mentorList':
+ * '/api/v1/mentor/mentorList':
  *  get:
  *     tags:
  *     - Mentor
@@ -318,7 +318,7 @@ export default routes;
  */
 /**
  * @openapi
- * '/api/mentor/{mentorId}':
+ * '/api/v1/mentor/{mentorId}':
  *  get:
  *     tags:
  *     - Mentor
@@ -335,7 +335,7 @@ export default routes;
  */
 /**
     * @openapi
-    * '/api/mentor/update/{mentorId}':
+    * '/api/v1/mentor/update/{mentorId}':
     *  put:
     *     tags:
     *     - Mentor
@@ -360,7 +360,7 @@ export default routes;
     */
 /**
 * @openapi
-* '/api/mentor/delete/{mentorId}':
+* '/api/v1/mentor/delete/{mentorId}':
 *  delete:
 *     tags:
 *     - Mentor
@@ -379,7 +379,7 @@ export default routes;
 /**
     * Evaluator API Documentation
     * @openapi
-    * '/api/evaluator/create':
+    * '/api/v1/evaluator/create':
     *  post:
     *     tags:
     *     - Evaluator
@@ -404,7 +404,7 @@ export default routes;
     */
 /**
  * @openapi
- * '/api/evaluator/evaluatorList':
+ * '/api/v1/evaluator/evaluatorList':
  *  get:
  *     tags:
  *     - Evaluator
@@ -421,7 +421,7 @@ export default routes;
  */
 /**
  * @openapi
- * '/api/evaluator/{evaluatorId}':
+ * '/api/v1/evaluator/{evaluatorId}':
  *  get:
  *     tags:
  *     - Evaluator
@@ -438,7 +438,7 @@ export default routes;
  */
 /**
     * @openapi
-    * '/api/evaluator/update/{evaluatorId}':
+    * '/api/v1/evaluator/update/{evaluatorId}':
     *  put:
     *     tags:
     *     - Evaluator
@@ -463,7 +463,7 @@ export default routes;
     */
 /**
 * @openapi
-* '/api/evaluator/delete/{evaluatorId}':
+* '/api/v1/evaluator/delete/{evaluatorId}':
 *  delete:
 *     tags:
 *     - Evaluator

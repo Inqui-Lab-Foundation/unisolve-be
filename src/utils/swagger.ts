@@ -7,14 +7,28 @@ import logger from './logger';
 // define Swagger options with specific properties
 const options: swaggerJSDoc.Options = {
     definition: {
-        openapi: "3.0.0",
+        openapi: "3.0.1",
         info: {
             title: "Unislove API Docs",
             description: "Unislove backend applications api documentation with in details API description",
             version,
+            license: {
+                name: 'Apache 2.0',
+                url: 'https://www.apache.org/licenses/LICENSE-2.0.html',
+            },
         },
+        servers: [
+            {
+                url: 'http://localhost:3002',
+                description: 'Local Server',
+            },
+            {
+                url: 'http://15.207.254.154:3002',
+                description: 'Production Server',
+            },
+        ],
         components: {
-            securitySchemas: {
+            securitySchemes: {
                 bearerAuth: {
                     type: "http",
                     scheme: "bearer",
