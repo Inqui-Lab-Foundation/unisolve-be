@@ -16,3 +16,14 @@ export const courserPayload = object({
 
 
 export type courserPayloadInput = Omit<TypeOf<typeof courserPayload>, "body.passwordConfirmation">;
+
+export const courseUpdate = object({
+    body: object({
+        statue: z.enum(["Completed", "Incomplete"])
+    })
+});
+
+
+export type CourseUpdateInput = Omit<TypeOf<typeof courseUpdate>, "body.passwordConfirmation">;
+
+

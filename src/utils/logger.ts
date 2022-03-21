@@ -2,7 +2,7 @@ import logger from 'pino';
 import dayjs from 'dayjs';
 
 /**
- * this logger service from pino package
+ * logger service from pino package
  * @param no parameters.
  * @return log message with timestamp.
  */

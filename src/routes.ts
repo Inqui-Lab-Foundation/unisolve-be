@@ -5,61 +5,56 @@ import courseControllers from './controllers/course.controllers';
 import evaluatorControllers from './controllers/evaluator.controllers';
 import mentorControllers from './controllers/mentor.controllers';
 import studentControllers from './controllers/student.controllers';
-import requiredUser from './middleware/student/requiredLogin';
 
+import requiredUser from './middleware/student/requiredLogin';
 import validate from './middleware/validateResource';
-import { courserPayload } from './schemas/course/courseCreatePayload.schema';
-import { courseUpdate } from './schemas/course/courseUpdatePayload.schema';
-import { evaluatorPayload } from './schemas/evaluator/evaluatorCreatePayload.schema';
-import { evaluatorUpdate } from './schemas/evaluator/evaluatorUpdatePayload.schema';
-import { mentorPayload } from './schemas/mentor/mentorCreatePayload.schema';
-import { mentorUpdate } from './schemas/mentor/mentorUpdatePayload.schema';
-import { userPasswordSchema } from './schemas/student/studentForgetPassword.schema';
-import { userLoginSchema } from './schemas/student/studentLogin.schema';
-import { userLogout } from './schemas/student/studentLogout.schema';
-import { userRegisterSchema } from './schemas/student/studentRegistration.schema';
+
+import { courserPayload, courseUpdate } from './schemas/course.schema';
+import { evaluatorPayload, evaluatorUpdate } from './schemas/evaluator.schema';
+import { mentorPayload, mentorUpdate } from './schemas/mentor.schema';
+import { userPasswordSchema, userLoginSchema, userLogout, userRegisterSchema } from './schemas/student.schema';
 
 /**
- * This is function API's file.
- * @param App express app from express @package.
- * @called from index file.
+ * API's handler functions 
+ * @param App Express.
+ * @called from single src server.ts
  */
 function routes(App: Express) {
+
     //health checking api
-    App.get('/api/healthCheck', (req: Request, res: Response) => { res.sendStatus(200) });
+    App.get('/api/v1/healthCheck', (req: Request, res: Response) => { res.sendStatus(200) });
 
     //authentication
-    App.post('/api/student/register', validate(userRegisterSchema), studentControllers.registerHandler);
-    App.post('/api/student/login', validate(userLoginSchema), studentControllers.loginHandler);
-    App.post('/api/student/changePassword', validate(userPasswordSchema), studentControllers.changePasswordHandler)
-    App.get('/api/student/logout', validate(userLogout), requiredUser, studentControllers.logoutHandler);
+    App.post('/api/v1/student/register', validate(userRegisterSchema), studentControllers.registerHandler);
+    App.post('/api/v1/student/login', validate(userLoginSchema), studentControllers.loginHandler);
+    App.post('/api/v1/student/changePassword', validate(userPasswordSchema), studentControllers.changePasswordHandler)
+    App.get('/api/v1/student/logout', validate(userLogout), requiredUser, studentControllers.logoutHandler);
 
     //courses
-    App.post('/api/course/create', validate(courserPayload), courseControllers.createCourse);
-    App.get('/api/course/courseList', courseControllers.getCourse);
-    App.get('/api/course/:courseId', courseControllers.getCourseById);
-    App.put('/api/course/update/:courseId', validate(courseUpdate), requiredUser, courseControllers.updateCourse);
-    App.delete('/api/course/delete/:courseId', courseControllers.deleteCourse);
+    App.post('/api/v1/course/create', validate(courserPayload), requiredUser, courseControllers.createCourse);
+    App.get('/api/v1/course/list', requiredUser, courseControllers.getCourse);
+    App.get('/api/v1/course/:courseId', requiredUser, courseControllers.getCourseById);
+    App.put('/api/v1/course/:courseId', validate(courseUpdate), requiredUser, courseControllers.updateCourse);
+    App.delete('/api/v1/course/:courseId', requiredUser, courseControllers.deleteCourse);
 
     //mentor
-    App.post('/api/mentor/create', validate(mentorPayload), mentorControllers.createMentor);
-    App.get('/api/mentor/mentorList', mentorControllers.getMentor);
-    App.get('/api/mentor/:mentorId', mentorControllers.getMentorById);
-    App.put('/api/mentor/update/:mentorId', validate(mentorUpdate), mentorControllers.updateMentor);
-    App.delete('/api/mentor/delete/:mentorId', mentorControllers.deleteMentor)
+    App.post('/api/v1/mentor/create', validate(mentorPayload), requiredUser, mentorControllers.createMentor);
+    App.get('/api/v1/mentor/list', requiredUser, mentorControllers.getMentor);
+    App.get('/api/v1/mentor/:mentorId', requiredUser, mentorControllers.getMentorById);
+    App.put('/api/v1/mentor/:mentorId', validate(mentorUpdate), requiredUser, mentorControllers.updateMentor);
+    App.delete('/api/v1/mentor/:mentorId', requiredUser, mentorControllers.deleteMentor)
 
     //evaluator
-    App.post('/api/evaluator/create', validate(evaluatorPayload), evaluatorControllers.createEvaluator);
-    App.get('/api/evaluator/evaluatorList', evaluatorControllers.getEvaluator);
-    App.get('/api/evaluator/:evaluatorId', evaluatorControllers.getEvaluatorById);
-    App.put('/api/evaluator/update/:evaluatorId', validate(evaluatorUpdate), evaluatorControllers.updateEvaluator);
-    App.delete('/api/evaluator/delete/:evaluatorId', evaluatorControllers.deleteEvaluator)
+    App.post('/api/v1/evaluator/create', validate(evaluatorPayload), requiredUser, evaluatorControllers.createEvaluator);
+    App.get('/api/v1/evaluator/list', requiredUser, evaluatorControllers.getEvaluator);
+    App.get('/api/v1/evaluator/:evaluatorId', requiredUser, evaluatorControllers.getEvaluatorById);
+    App.put('/api/v1/evaluator/:evaluatorId', validate(evaluatorUpdate), requiredUser, evaluatorControllers.updateEvaluator);
+    App.delete('/api/v1/evaluator/:evaluatorId', requiredUser, evaluatorControllers.deleteEvaluator)
 }
 export default routes;
 
 
-//swagger documentation
-// healthcheck
+//Swagger Documentation
 /**
     * @openapi
     * /api/healthCheck:
@@ -74,8 +69,8 @@ export default routes;
     *         description: App is up and running
     */
 
-// student API's
 /**
+    * Student API Documentation 
     * @openapi
     * '/api/student/register':
     *  post:
@@ -175,8 +170,8 @@ export default routes;
     *         description: Bad Request
     */
 
-//course API's
 /**
+    * Course API Documentation  
     * @openapi
     * '/api/course/create':
     *  post:
@@ -278,8 +273,8 @@ export default routes;
 *         description: Bad Request
 */
 
-//mentor API's
 /**
+    * Mentor API Documentation  
     * @openapi
     * '/api/mentor/create':
     *  post:
@@ -288,19 +283,19 @@ export default routes;
     *     summary: Create a Mentor entry
     *     requestBody:
     *      required: true
-    *      content: 
+    *      content:
     *        application/json:
-    *           schema: 
+    *           schema:
     *              $ref: '#/components/schemas/createMentorPayload'
     *     responses:
     *       200:
     *         description: Success
     *         content:
     *           application/json:
-    *             schema: 
+    *             schema:
     *                ref: '#/components/schemas/createMentorResponse'
     *       409:
-    *         description: Conflict 
+    *         description: Conflict
     *       400:
     *         description: Bad request
     */
@@ -315,7 +310,7 @@ export default routes;
  *       202:
  *         description: Success
  *       401:
- *         description: Unauthorized 
+ *         description: Unauthorized
  *       405:
  *         description: Method Not Allowed
  *       400:
@@ -332,7 +327,7 @@ export default routes;
  *       202:
  *         description: Success
  *       401:
- *         description: Unauthorized 
+ *         description: Unauthorized
  *       405:
  *         description: Method Not Allowed
  *       400:
@@ -347,19 +342,19 @@ export default routes;
     *     summary: update the correction to the registered mentor
     *     requestBody:
     *      required: true
-    *      content: 
+    *      content:
     *        application/json:
-    *           schema: 
+    *           schema:
     *              $ref: '#/components/schemas/mentorUpdatePayload'
     *     responses:
     *       200:
     *         description: Success
     *         content:
     *           application/json:
-    *             schema: 
+    *             schema:
     *                ref: '#/components/schemas/mentorUpdateRepose'
     *       409:
-    *         description: Conflict 
+    *         description: Conflict
     *       400:
     *         description: Bad request
     */
@@ -374,15 +369,15 @@ export default routes;
 *       202:
 *         description: Success
 *       401:
-*         description: Unauthorized 
+*         description: Unauthorized
 *       405:
 *         description: Method Not Allowed
 *       400:
 *         description: Bad Request
 */
 
-//evaluator API's
 /**
+    * Evaluator API Documentation
     * @openapi
     * '/api/evaluator/create':
     *  post:

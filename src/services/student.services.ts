@@ -5,6 +5,9 @@ import bcrypt from 'bcrypt';
 import { correctPassword } from "../models/student.model";
 import { student } from "../models/student.model";
 
+/**
+ * service for all the student controllers logic isolated
+ */
 class studentService {
     /**
      * 

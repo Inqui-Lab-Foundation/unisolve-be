@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 
 import mentorServices from "../services/mentor.services";
-import { mentorPayloadInput } from "../schemas/mentor/mentorCreatePayload.schema";
+import { mentorPayloadInput } from "../schemas/mentor.schema";
 import { mentor } from "../models/mentor.model";
 
+/**
+ * Controller class for all mentor API's 
+ */
 class mentorController {
     async createMentor(
         req: Request<{}, {}, mentorPayloadInput["body"]>,
@@ -31,7 +34,6 @@ class mentorController {
         }
         return res.send({ product });
     }
-
     async updateMentor(
         req: Request,
         res: Response
@@ -45,7 +47,6 @@ class mentorController {
         const updatedMentor = await mentorServices.updateMentor(update, mentor_id);
         return res.send(updatedMentor);
     };
-
     async deleteMentor(
         req: Request,
         res: Response

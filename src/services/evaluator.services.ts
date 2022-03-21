@@ -1,11 +1,9 @@
 import { evaluator } from "../models/evaluator.model";
 
+/**
+ * service for all the evaluator controllers logic isolated
+ */
 class evaluatorService {
-    /**
-     * 
-     * @param input as request body from the express application
-     * @returns object after create the entry in database
-     */
     async buildEvaluator(input: any) {
         // const id = UUIDV4();
         try {

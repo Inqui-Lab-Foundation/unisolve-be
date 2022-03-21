@@ -4,6 +4,9 @@ import { signJwt, verifyJwt } from "../utils/jwt";
 import { session } from "../models/session.model";
 import { student } from "../models/student.model";
 
+/**
+ * service for all the user session controllers logic isolated
+ */
 class sessionService {
     /**
      * 

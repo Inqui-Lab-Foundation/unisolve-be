@@ -4,11 +4,9 @@ import deserializerUser from '../middleware/student/deserializerUser';
 import routes from '../routes';
 
 /**
- * middleware's
- * expressJSON to parse the JSON
- * Deserializer help in application authorization 
+ * create the express server when it's called.
+ * @returns App
  */
-
 function createServer() {
     const App = Express();
     App.use(Express.json());

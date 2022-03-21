@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 
 import courseServices from "../services/course.services";
-import { courserPayloadInput } from "../schemas/course/courseCreatePayload.schema";
+import { courserPayloadInput } from "../schemas/course.schema";
 import { courses } from "../models/course.model";
 
+/**
+ * Controller class for all  courser API's 
+ */
 class courseController {
     async createCourse(
         req: Request<{}, {}, courserPayloadInput["body"]>,

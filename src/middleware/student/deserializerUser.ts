@@ -5,11 +5,11 @@ import { NextFunction, Request, Response } from "express";
 import { get } from "lodash";
 
 /**
- * this is middleware function help the application in authorization,
- * check the access and refresh @token with the help of jwt @package.
- * @param req Request as req from express @package.
- * @param res Response as res from express @package.
- * @param next nextFunction as next from express @package.
+ * middleware function help the application in authorization,
+ * check the access and refresh token with the help of jwt.
+ * @param req Request from express @package.
+ * @param res Response from express @package.
+ * @param next nextFunction from express @package.
  * @returns next if the user as access/refresh token.
  */
 const deserializeUser = async (

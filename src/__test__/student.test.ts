@@ -1,84 +1,73 @@
-import supertest from "supertest";
-import { omit } from "lodash";
+import supertest, { agent } from "supertest";
 
 import createServer from "../utils/server";
 import { student } from "../models/student.model";
 
 const app = createServer();
 
-export const userLoginResponse = {
-    "_id": expect.any(String),
-    "name": "vamshi krishna",
-    "email": "Vamshi@someone.com",
-    "accessToken": expect.any(String),
-    "refreshToken": expect.any(String)
-}
-
-// test cases for student
+// test cases for Student  API's
 describe("Student test cases", () => {
 
-    describe("GET: /api/healthCheck", () => {
+    describe("Server health check API", () => {
         test("should return a 200 status", async () => {
-            await supertest(app).get(`/api/healthCheck`)
+            await supertest(app).get(`/api/v1/healthCheck`)
                 .expect(200);
         });
     });
 
-    describe("POST: register the student /student/register", () => {
+    describe("Student: Registration API", () => {
         const Payload = {
-            "email": "vamshi@someone.com",
-            "name": "vamshi Krishna",
-            "password": "password@23",
-            "passwordConfirmation": "password@23"
-        };
-
+            "student_name": "VamshiKrishnaHasanabada",
+            "email": "Vamshi@gmail.com",
+            "password": "vamshi@123",
+            "passwordConfirmation": "vamshi@123",
+            "date_of_birth": "25/05/1995",
+            "mobile": 8005860992,
+            "institute_name": "Vishwa Vishwani Institute of technology"
+        }
+        const validationPayload = {
+            "student_name": "VamshiKrishnaHasanabada",
+            "email": "Vamshi@gmail.com",
+            "password": "vamshi@123",
+            "passwordConfirmation": "vamshi@123",
+            "institute_name": "Vishwa Vishwani Institute of technology"
+        }
         test("Should return 200 & create account", async () => {
             const mockCreateIntense = jest.fn((): any => Payload)
-            jest
-                .spyOn(student, "create")
+            jest.spyOn(student, "create")
                 .mockImplementation(() => mockCreateIntense());
             const { statusCode, body } = await supertest(app)
-                .post("/api/student/register")
+                .post("/api/v1/student/register")
                 .send(Payload)
-            expect(statusCode).toBe(200)
+            expect(statusCode).toBe(200);
         });
-
-        test("Should handle exception", async () => {
-            const mockCreateError = jest.fn((): any => {
-                throw "error";
-            });
+        test("Should handle validation", async () => {
+            const mockCreateError = jest.fn((): any => validationPayload);
             jest.spyOn(student, "create")
                 .mockImplementation(() => mockCreateError());
             const res = await supertest(app)
-                .post("/api/student/register")
-                .send(Payload)
-            expect(mockCreateError).toHaveBeenCalledTimes(1);
-            expect(res.body).toEqual({
-                message: "failed to register student, something went wrong",
-                status: 500,
-                router: "/api/student/register",
-            });
+                .post("/api/v1/student/register")
+                .send(validationPayload)
+            expect(res.statusCode).toBe(400);
         });
     });
 
-    describe("POST: login the student /student/login", () => {
+    describe("Student: Authentication API", () => {
         const Payload = {
-            "name": "Vamshi",
-            "email": "Vamshi@1234.com",
-            "password": "Vamshi@1234",
-            "passwordConfirmation": "Vamshi@1234"
+            "name": "VamshiKrishna",
+            "email": "Vamshi@gmail.com",
+            "password": "vamshi@123",
+            "passwordConfirmation": "vamshi@123"
         }
-
         test("Should return 200 & login into account", async () => {
-            const { statusCode, body } = await supertest(app)
-                .post("/api/student/login")
+            const { statusCode } = await supertest(app)
+                .post("/api/v1/student/login")
                 .send(Payload)
-            expect(statusCode).toBe(200)
-        });
-
+            expect(statusCode).toBe(200);
+        });                                                                              
         test("Should handle exception", async () => {
             const res = await supertest(app)
-                .post("/api/student/login")
+                .post("/api/v1/student/login")
                 .send({
                     "name": "Vinay",
                     "email": "Vinay@1234.com",
@@ -89,26 +78,36 @@ describe("Student test cases", () => {
         });
     });
 
-    describe("POST: change password student /student/changePassword", () => {
+    describe("Student: Change password API", () => {
         const Payload = {
             "email": "Vamshi@1234.com",
             "newPassword": "Vamshi@1234",
             "passwordConfirmation": "Vamshi@1234"
         }
-
+        const validationPayload = {
+            "email": "Vamshi@1234.com",
+            "newPassword": "Vamshi@1234",
+        }
         test("Should return 202 & change the password", async () => {
             const { statusCode, body } = await supertest(app)
-                .post("/api/student/changePassword")
+                .post("/api/v1/student/changePassword")
                 .send(Payload)
+                console.log(body)
             expect(statusCode).toBe(202)
             expect(body).toHaveProperty("message")
         });
-    });
-    
-    describe("GET: /api/student/logout", () => {
-        test("should return a 200 status", async () => {
-            await supertest(app).get(`/api/student/logout`)
-                .expect(200);
+        test("Should return 400 & validation error", async () => {
+            await supertest(app)
+                .post("/api/v1/student/changePassword")
+                .send(validationPayload)
+                .expect(400)
         });
     });
+
+    // describe("Student: Logout API", () => {
+    //     test("should return a 200 status", async () => {
+    //         await supertest(app).get(`/api/v1/student/logout`)
+    //             .expect(200);
+    //     });
+    // });
 });
