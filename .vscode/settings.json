@@ -3,6 +3,7 @@
         "Healthcheck",
         "openapi",
         "pino",
+        "requiredlogin",
         "Unislove",
         "UUIDV4",
         "vamshi",
