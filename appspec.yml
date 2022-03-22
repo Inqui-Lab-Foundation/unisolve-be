@@ -8,7 +8,7 @@ hooks:
   ApplicationStop:
     - location: scripts/app_stop.sh
       timeout: 300
-  ApplicationStart:
+  AfterInstall:
    - location: scripts/app_start.sh
      timeout: 300
 permissions:
