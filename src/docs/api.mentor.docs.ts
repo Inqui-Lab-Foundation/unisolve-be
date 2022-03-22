@@ -62,38 +62,10 @@ export const methodNotAllowedError = {
         }
     }
 }
-
-export const createCourseBody = {
-    type: 'object',
-    properties: {
-        module: {
-            type: 'string',
-            example: '1',
-        },
-        courser_id: {
-            type: 'string',
-            example: '126546654695',
-        },
-        statue: {
-            type: 'string',
-            example: "Completed"
-        }
-    }
-};
-export const courseUpdatesBody = {
-    type: 'object',
-    properties: {
-        statue: {
-            type: 'string',
-            example: 'Completed',
-        }
-    },
-};
-
-export const createCourse = {
-    tags: ['Course'],
-    description: 'Create a course entry',
-    operationId: 'createCourse',
+export const createMentor = {
+    tags: ['Mentor'],
+    description: 'Create a mentor entry',
+    operationId: 'createMentor',
     security: [
         {
             bearerAuth: [],
@@ -104,12 +76,12 @@ export const createCourse = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createCourseBody'
+                    $ref: '#/components/schemas/createUserBody'
                 },
             },
         },
     },
-    responses: {
+    response: {
         '200': {
             description: 'New Entry added successfully',
             content: {
@@ -123,16 +95,13 @@ export const createCourse = {
                             module: {
                                 type: 'string'
                             },
-                            course_id: {
+                            mentor_id: {
                                 type: 'string'
                             },
                             status: {
                                 type: 'string'
                             },
-                            updatedAt: {
-                                type: 'string'
-                            },
-                            createdAt: {
+                            updateAt: {
                                 type: 'string'
                             }
                         }
@@ -144,10 +113,10 @@ export const createCourse = {
         '404': badRequestError,
     }
 }
-export const courseList = {
-    tags: ['Course'],
-    description: 'Get the list of the course',
-    operationId: 'CourseList',
+export const mentorList = {
+    tags: ['Mentor'],
+    description: 'Get the list of the mentor',
+    operationId: 'mentorList',
     security: [
         {
             bearerAuth: [],
@@ -162,21 +131,15 @@ export const courseList = {
     '405': methodNotAllowedError,
     '404': badRequestError,
 }
-export const courseById = {
-    tags: ['Course'],
-    description: 'Get the single course',
-    operationId: 'courseById',
+export const mentorById = {
+    tags: ['Mentor'],
+    description: 'Get the single mentor',
+    operationId: 'mentorById',
     security: [
         {
             bearerAuth: [],
         },
     ],
-    parameters: {
-        name: 'course_id',
-        in: "query",
-        description: "courser_id number",
-        required: true
-    },
     responses: {
         '202': {
             description: 'Success',
@@ -186,10 +149,10 @@ export const courseById = {
     '405': methodNotAllowedError,
     '404': badRequestError,
 }
-export const courseByIdUpdate = {
-    tags: ['Course'],
-    description: 'update a course entry',
-    operationId: 'courseByIdUpdate',
+export const mentorByIdUpdate = {
+    tags: ['Mentor'],
+    description: 'update a mentor entry',
+    operationId: 'mentorByIdUpdate',
     security: [
         {
             bearerAuth: [],
@@ -200,7 +163,7 @@ export const courseByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/courseUpdatesBody'
+                    $ref: '#/components/schemas/createUserBody'
                 },
             },
         },
@@ -221,15 +184,25 @@ export const courseByIdUpdate = {
     '409': conflictError,
     '404': badRequestError,
 }
-export const courseByIdDelete = {
-    tags: ['Course'],
-    description: 'delete the single entry with course id',
-    operationId: 'courseByIdDelete',
+export const mentorByIdDelete = {
+    tags: ['Mentor'],
+    description: 'delete the single entry with mentor id',
+    operationId: 'mentorByIdDelete',
     security: [
         {
             bearerAuth: [],
         },
     ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    $ref: '#/components/schemas/createUserBody'
+                },
+            },
+        },
+    },
     responses: {
         '202': {
             description: 'Server is up and running',
