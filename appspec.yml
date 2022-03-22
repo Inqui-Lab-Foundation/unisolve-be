@@ -8,12 +8,12 @@ hooks:
   ApplicationStop:
     - location: scripts/app_stop.sh
       timeout: 300
-      runas: ubuntu
+      runas: root
   BeforeInstall:
     - location: scripts/install_dependencies.sh
       timeout: 300
-      runas: ubuntu
+      runas: root
   ApplicationStart:
    - location: scripts/app_start.sh
      timeout: 300
-     runas: ubuntu
+     runas: root
