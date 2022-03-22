@@ -5,9 +5,6 @@ files:
     destination: /home/ubuntu/unisolve-be
 file_exists_behavior: OVERWRITE
 hooks:
-  ApplicationStop:
-    - location: scripts/app_stop.sh
-      timeout: 300
   AfterInstall:
    - location: scripts/app_start.sh
      timeout: 300
