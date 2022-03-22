@@ -1,2 +1,2 @@
 #!/bin/bash
-npm run start:prod
+pm2 start ./dist/src/index.js
