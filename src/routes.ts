@@ -22,52 +22,59 @@ import { userPasswordSchema, userLoginSchema, userLogout, userRegisterSchema } f
 function routes(App: Express) {
 
     //health checking api
-    App.get('/api/v1/healthCheck', (req: Request, res: Response) => { res.sendStatus(200) });
+    App.get('/api/v1/healthCheck', (req: Request, res: Response) => {
+        res.status(200).send({
+            message: "server is running"
+        })
+    });
 
     //authentication
     App.post('/api/v1/student/register', validate(userRegisterSchema), studentControllers.registerHandler);
     App.post('/api/v1/student/login', validate(userLoginSchema), studentControllers.loginHandler);
     App.post('/api/v1/student/changePassword', validate(userPasswordSchema), studentControllers.changePasswordHandler)
-    App.get('/api/v1/student/logout', validate(userLogout), requiredUser, studentControllers.logoutHandler);
+    App.get('/api/v1/student/logout', requiredUser, studentControllers.logoutHandler);
 
     //courses
     App.post('/api/v1/course/create', validate(courserPayload), requiredUser, courseControllers.createCourse);
     App.get('/api/v1/course/list', requiredUser, courseControllers.getCourse);
-    App.get('/api/v1/course/:courseId', requiredUser, courseControllers.getCourseById);
-    App.put('/api/v1/course/:courseId', validate(courseUpdate), requiredUser, courseControllers.updateCourse);
-    App.delete('/api/v1/course/:courseId', requiredUser, courseControllers.deleteCourse);
+    App.get('/api/v1/course/get/:courseId', requiredUser, courseControllers.getCourseById);
+    App.put('/api/v1/course/update/:courseId', validate(courseUpdate), requiredUser, courseControllers.updateCourse);
+    App.delete('/api/v1/course/delete/:courseId', requiredUser, courseControllers.deleteCourse);
 
     //mentor
     App.post('/api/v1/mentor/create', validate(mentorPayload), requiredUser, mentorControllers.createMentor);
     App.get('/api/v1/mentor/list', requiredUser, mentorControllers.getMentor);
-    App.get('/api/v1/mentor/:mentorId', requiredUser, mentorControllers.getMentorById);
-    App.put('/api/v1/mentor/:mentorId', validate(mentorUpdate), requiredUser, mentorControllers.updateMentor);
-    App.delete('/api/v1/mentor/:mentorId', requiredUser, mentorControllers.deleteMentor)
+    App.get('/api/v1/mentor/get/:mentorId', requiredUser, mentorControllers.getMentorById);
+    App.put('/api/v1/mentor/update/:mentorId', validate(mentorUpdate), requiredUser, mentorControllers.updateMentor);
+    App.delete('/api/v1/mentor/delete/:mentorId', requiredUser, mentorControllers.deleteMentor)
 
     //evaluator
     App.post('/api/v1/evaluator/create', validate(evaluatorPayload), requiredUser, evaluatorControllers.createEvaluator);
     App.get('/api/v1/evaluator/list', requiredUser, evaluatorControllers.getEvaluator);
-    App.get('/api/v1/evaluator/:evaluatorId', requiredUser, evaluatorControllers.getEvaluatorById);
-    App.put('/api/v1/evaluator/:evaluatorId', validate(evaluatorUpdate), requiredUser, evaluatorControllers.updateEvaluator);
-    App.delete('/api/v1/evaluator/:evaluatorId', requiredUser, evaluatorControllers.deleteEvaluator)
+    App.get('/api/v1/evaluator/get/:evaluatorId', requiredUser, evaluatorControllers.getEvaluatorById);
+    App.put('/api/v1/evaluator/update/:evaluatorId', validate(evaluatorUpdate), requiredUser, evaluatorControllers.updateEvaluator);
+    App.delete('/api/v1/evaluator/delete/:evaluatorId', requiredUser, evaluatorControllers.deleteEvaluator)
 }
 export default routes;
 
 
 //Swagger Documentation
-/**
-    * @openapi
-    * '/api/v1/healthCheck':
-    *  get:
-    *     tags:
-    *     - Health Checker
-    *     description: Responds if the app is up and running
-    *     parameters:
-    *       Null
-    *     responses:
-    *       200:
-    *         description: App is up and running
-    */
+    /**
+        * @openapi
+        * '/api/v1/healthCheck':
+        *  get:
+        *     tags:
+        *     - Health Checker
+        *     description: Responds if the app is up and running
+        *     parameters:
+        *       Null
+        *     responses:
+        *       200:
+        *         description: App is up and running
+        *         content:
+        *           application/json:
+        *                
+        */
 
 /**
     * Student API Documentation 
