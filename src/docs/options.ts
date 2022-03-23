@@ -66,13 +66,13 @@ const options = {
         '/api/v1/course/list': {
             get: courseList
         },
-        '/api/v1/course/get/{course_id}': {
+        '/api/v1/course/get/{courseId}': {
             get: courseById
         },
-        '/api/v1/course/update/{course_id}': {
+        '/api/v1/course/update/{courseId}': {
             put: courseByIdUpdate
         },
-        '/api/v1/course/delete/{course_id}': {
+        '/api/v1/course/delete/{courseId}': {
             delete: courseByIdDelete
         },
         '/api/v1/mentor/create': {
@@ -81,13 +81,13 @@ const options = {
         '/api/v1/mentor/list': {
             get: mentorList
         },
-        '/api/v1/mentor/get/{course_id}': {
+        '/api/v1/mentor/get/{courseId}': {
             get: mentorById
         },
-        '/api/v1/mentor/update/{course_id}': {
+        '/api/v1/mentor/update/{courseId}': {
             put: mentorByIdUpdate
         },
-        '/api/v1/mentor/delete/{course_id}': {
+        '/api/v1/mentor/delete/{courseId}': {
             delete: mentorByIdDelete
         },
         '/api/v1/evaluator/create': {
@@ -96,13 +96,13 @@ const options = {
         '/api/v1/evaluator/list': {
             get: evaluatorList
         },
-        '/api/v1/evaluator/get/{course_id}': {
+        '/api/v1/evaluator/get/{courseId}': {
             get: evaluatorById
         },
-        '/api/v1/evaluator/update/{course_id}': {
+        '/api/v1/evaluator/update/{courseId}': {
             put: evaluatorByIdUpdate
         },
-        '/api/v1/evaluator/delete/{course_id}': {
+        '/api/v1/evaluator/delete/{courseId}': {
             delete: evaluatorByIdDelete
         },
 
