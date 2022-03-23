@@ -18,9 +18,9 @@ class evaluatorController {
     async getEvaluator(
         req: Request<{}, {}>,
         res: Response) {
-        const product = await evaluator.findAll()
+        const product = await evaluatorServices.findEvaluators();
         if (!product) {
-            return res.sendStatus(404);
+            return res.status(406).send({ message: 'product not found' });
         }
         return res.send({ product });
     }
@@ -28,9 +28,9 @@ class evaluatorController {
         req: Request,
         res: Response) {
         const id = req.params.evaluatorId;
-        const product = await evaluator.findOne({ where: { id } })
+        const product = await evaluatorServices.findEvaluator(id)
         if (!product) {
-            return res.sendStatus(404);
+            return res.status(406).send({ message: 'product not found' });
         }
         return res.send({ product });
     }
@@ -42,7 +42,7 @@ class evaluatorController {
         const update = req.body;
         const entry = await evaluatorServices.findEvaluator(evaluator_Id);
         if (!entry) {
-            return res.sendStatus(404);
+            return res.status(406).send({ message: 'product not found' });
         }
         const updatedEvaluator = await evaluatorServices.updateEvaluator(update, evaluator_Id);
         return res.send(updatedEvaluator);
@@ -54,7 +54,7 @@ class evaluatorController {
         const evaluator_Id = req.params.evaluatorId;
         const entry = await evaluatorServices.findEvaluator(evaluator_Id);
         if (!entry) {
-            return res.sendStatus(404);
+            return res.status(406).send({ message: 'product not found' });
         }
         const deleteEvaluator = await evaluatorServices.destroyEvaluator(evaluator_Id);
         return res.send({ deleteEvaluator, text: 'successfully delete the entry' })

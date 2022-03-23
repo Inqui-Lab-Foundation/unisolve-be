@@ -36,7 +36,7 @@ class studentController {
         try {
             const record = await studentServices.authenticateStudent(req.body);
             if (!record) {
-                return res.status(401).json({ message: "Invalid email or password" })
+                return res.status(403).json({ message: "Invalid email or password" })
             }
             const input = { userId: record.id, userAgent: req.get("user-agent") || "", valid: true }
             const session = await sessionServices.createSession(input);
@@ -71,14 +71,23 @@ class studentController {
             return res.status(405).json({ message: "Method Not Allowed" })
         }
     };
+    // Todo 
     async logoutHandler(req: Request, res: Response) {
+        const userID = res.locals.user.record.id
         try {
+            const findSession = await sessionServices.findSession({ userID });
+            if (!findSession) {
+                res.status(409).send({ message: 'session not found' })
+            }
+            findSession.setDataValue('valid', false);
+            findSession.save();
             res.clearCookie('jwt');
             res.status(200).json({ message: "cleared student session successfully" })
         } catch (error: any) {
-            res.status(404).json({ message: "bad request" })
+            res.status(400).json({ message: "bad request" })
         }
     }
+    
 }
 
 export default new studentController();

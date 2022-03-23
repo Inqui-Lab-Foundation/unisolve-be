@@ -11,16 +11,18 @@ class courseController {
     async createCourse(
         req: Request<{}, {}, courserPayloadInput["body"]>,
         res: Response) {
-        const { module, courser_id, statue } = req.body;
-        const product = await courseServices.buildCourse({ module, courser_id, statue });
+        const product = await courseServices.buildCourse(req.body);
+        if (!product) {
+            return res.status(406).send({ message: 'product not found' });
+        }
         return res.send(product)
     }
     async getCourse(
         req: Request<{}, {}>,
         res: Response) {
-        const product = await courses.findAll()
+        const product = await courseServices.findCourses();
         if (!product) {
-            return res.sendStatus(404);
+            return res.status(406).send({ message: 'product not found' });
         }
         return res.send({ product });
     }
@@ -28,9 +30,9 @@ class courseController {
         req: Request,
         res: Response) {
         const courser_id = req.params.courseId;
-        const product = await courses.findOne({ where: { courser_id } })
+        const product = await courseServices.findCourse(courser_id)
         if (!product) {
-            return res.sendStatus(404);
+            return res.status(406).send({ message: 'product not found' });
         }
         return res.send({ product });
     }
@@ -43,7 +45,7 @@ class courseController {
         const update = req.body;
         const entry = await courseServices.findCourse(courser_id);
         if (!entry) {
-            return res.sendStatus(404);
+            return res.status(406).send({ message: 'product not found' });
         }
         const updatedCourse = await courseServices.updateCourse(update, courser_id);
         return res.send(updatedCourse);
@@ -56,10 +58,10 @@ class courseController {
         const courser_id = req.params.courseId;
         const entry = await courseServices.findCourse(courser_id);
         if (!entry) {
-            return res.sendStatus(404);
+            return res.status(406).send({ message: 'product not found' });
         }
         const deleteCourse = await courseServices.destroyCourse(courser_id);
-        return res.send({deleteCourse, text: 'successfully delete the entry'})
+        return res.send({ deleteCourse, text: 'successfully delete the entry' })
     }
 }
 

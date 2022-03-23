@@ -20,7 +20,7 @@ class mentorController {
         res: Response) {
         const product = await mentor.findAll()
         if (!product) {
-            return res.sendStatus(404);
+            return res.status(406).send({message:'Product not found'});
         }
         return res.send({ product });
     }
@@ -30,7 +30,7 @@ class mentorController {
         const id = req.params.mentorId;
         const product = await mentor.findOne({ where: { id } })
         if (!product) {
-            return res.sendStatus(404);
+            return res.status(406).send({message:'Product not found'});
         }
         return res.send({ product });
     }
@@ -42,7 +42,7 @@ class mentorController {
         const update = req.body;
         const entry = await mentorServices.findMentor(mentor_id);
         if (!entry) {
-            return res.sendStatus(404);
+            return res.status(406).send({message:'Product not found'});
         }
         const updatedMentor = await mentorServices.updateMentor(update, mentor_id);
         return res.send(updatedMentor);
@@ -54,7 +54,7 @@ class mentorController {
         const mentor_id = req.params.mentorId;
         const entry = await mentorServices.findMentor(mentor_id);
         if (!entry) {
-            return res.sendStatus(404);
+            return res.status(406).send({message:'Product not found'});
         }
         const deleteMentor = await mentorServices.destroyMentor(mentor_id);
         return res.send({ deleteMentor, text: 'successfully delete the entry' })
