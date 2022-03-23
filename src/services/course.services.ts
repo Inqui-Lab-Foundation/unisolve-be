@@ -1,39 +1,42 @@
 import { Query } from "mysql2";
 import { QueryOptionsTransactionRequired, where } from "sequelize/types";
 import { courses } from "../models/course.model";
+import dbServices from './database.services';
 
 /**
  * service for all the courser controllers logic isolated
  */
 class courseService {
-    async buildCourse(input: any) {
-        // const id = UUIDV4();
+    buildCourse(input: any) {
         try {
-            const newEntry = await courses.create(input);
-            return newEntry.toJSON()
+            const newEntry = dbServices.buildFunction(courses, { ...input });
+            return newEntry;
         } catch (error: any) {
             return error.message
         }
     };
-    async findCourse(courser_id: string) {
+    findCourse(courser_id: string) {
         try {
-            const result = await courses.findOne({ where: { courser_id } });
+            const result = dbServices.findOneFunction(courses, { where: { courser_id } });
             return result
         } catch (error: any) {
             return error.message
         }
     };
-    async updateCourse(update: object, query: string) {
+    findCourses() {
+        return dbServices.findAllFunction(courses)
+    }
+    updateCourse(update: object, query: string) {
         try {
-            const result = await courses.update(update, { where: { courser_id: query } });
+            const result = dbServices.updateFunction(courses, update, { where: { courser_id: query } });
             return result;
         } catch (error: any) {
             return error.message
         }
     };
-    async destroyCourse(courser_id: string) {
+    destroyCourse(courser_id: string) {
         try {
-            const result = await courses.destroy({ where: { courser_id } });
+            const result = dbServices.deleteFunction(courses, { where: { courser_id } });
             return result;
         } catch (error: any) {
             return error.message

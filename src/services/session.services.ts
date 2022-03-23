@@ -3,6 +3,7 @@ import config from 'config'
 import { signJwt, verifyJwt } from "../utils/jwt";
 import { session } from "../models/session.model";
 import { student } from "../models/student.model";
+import dbServices from "./database.services";
 
 /**
  * service for all the user session controllers logic isolated
@@ -14,8 +15,21 @@ class sessionService {
      * @returns object after creating session
      */
     async createSession(input: any) {
-        const newEntry = await session.create(input);
-        return newEntry;
+        try {
+            const newEntry = await dbServices.buildFunction(session, input);
+            return newEntry;
+        } catch (error: any) {
+            return error.message
+        }
+    };
+    async findSession(input: any) {
+        const { userId } = input;
+        try {
+            const record = dbServices.findOneFunction(session, { where: { userId } });
+            return record;
+        } catch (error: any) {
+            return error.message
+        }
     };
     /**
      * 
@@ -25,9 +39,9 @@ class sessionService {
     async reIssuesAccessToken({ refreshToken }: { refreshToken: any }) {
         const { decoded } = verifyJwt(refreshToken);
         if (!decoded || get(decoded, "session")) return false;
-        const record = await session.findByPk(get(decoded, "session"));
+        const record = await dbServices.findByPkFunction(session, get(decoded, "session"));
         if (!record || record.getDataValue('valid')) return false;
-        const user = await student.findOne({ where: { id: record.getDataValue('userId') } });
+        const user = await dbServices.findOneFunction(student, { where: { id: record.getDataValue('userId') } });
         if (!user) return false;
         const accessToken = signJwt(
             { ...user, session: record.getDataValue('id') },
@@ -35,6 +49,7 @@ class sessionService {
         );
         return accessToken;
     }
+
 }
 
 export default new sessionService();
