@@ -166,17 +166,17 @@ export const courseById = {
     tags: ['Course'],
     description: 'Get the single course',
     operationId: 'courseById',
+    parameters: {
+        name: 'courseId',
+        in: "path",
+        description: "courseId to fetch",
+        required: true
+    },
     security: [
         {
             bearerAuth: [],
         },
     ],
-    parameters: {
-        name: 'course_id',
-        in: "query",
-        description: "courser_id number",
-        required: true
-    },
     responses: {
         '202': {
             description: 'Success',
