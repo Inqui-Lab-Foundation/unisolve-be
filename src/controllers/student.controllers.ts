@@ -15,15 +15,19 @@ class studentController {
     async registerHandler(
         req: Request<{}, {}, CreateUserInput["body"]>,
         res: Response) {
+        const { email } = req.body
+        const findEntry = await studentServices.findStudent({ email });
+        if (findEntry) {
+            return res.status(406).send({ message: "account already exist", Record: findEntry })
+        }
         try {
             const record = await studentServices.buildStudent(req.body)
             return res.status(200).json({ record, message: "Student successfully Registered" })
         } catch (error: any) {
-            return res.json({
-                message: error.message,
-                status: 500,
-                router: '/api/student/register'
-            })  
+            return res.status(500).send({
+                error: error.message,
+                router: '/api/v1/student/register'
+            })
         }
     };
     async loginHandler(
@@ -32,7 +36,7 @@ class studentController {
         try {
             const record = await studentServices.authenticateStudent(req.body);
             if (!record) {
-                return res.status(401).json({ message: "Invalid email or password" })
+                return res.status(403).json({ message: "Invalid email or password" })
             }
             const input = { userId: record.id, userAgent: req.get("user-agent") || "", valid: true }
             const session = await sessionServices.createSession(input);
@@ -67,14 +71,23 @@ class studentController {
             return res.status(405).json({ message: "Method Not Allowed" })
         }
     };
+    // Todo 
     async logoutHandler(req: Request, res: Response) {
+        const userID = res.locals.user.record.id
         try {
+            const findSession = await sessionServices.findSession({ userID });
+            if (!findSession) {
+                res.status(409).send({ message: 'session not found' })
+            }
+            findSession.setDataValue('valid', false);
+            findSession.save();
             res.clearCookie('jwt');
             res.status(200).json({ message: "cleared student session successfully" })
         } catch (error: any) {
-            res.status(404).json({message: "bad request"})
+            res.status(400).json({ message: "bad request" })
         }
     }
+    
 }
 
 export default new studentController();

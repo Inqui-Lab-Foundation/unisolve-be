@@ -93,10 +93,6 @@ student.init(
     }
 );
 
-export const correctPassword = (enteredPassword: string, originalPassword: string) => {
-    return bcrypt.compareSync(enteredPassword, originalPassword);
-}
-
 function generateMyId() {
     return UUIDV4;
 }

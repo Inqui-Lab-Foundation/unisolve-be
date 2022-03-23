@@ -44,7 +44,7 @@ export const unauthorizedError = {
                 }
             }
         }
-    } 
+    }
 }
 export const methodNotAllowedError = {
     description: 'Method Not Allowed Request',
@@ -70,36 +70,58 @@ export const studentRegistrationBody = {
         student_name: {
             type: 'string',
             example: 'Shakti',
+            describe: 'mandatory field'
         },
         email: {
             type: 'string',
             example: 'Shakti@email.com',
+            describe: 'mandatory field'
         },
         password: {
             type: 'string',
             example: 'Shakti@12345',
+            describe: 'mandatory field'
         },
         date_of_birth: {
             type: 'string',
             example: '29/05/2003',
+            describe: 'mandatory field'
         },
         mobile: {
             type: 'number',
             example: '1234567891',
+            describe: 'mandatory field'
         },
         institute_name: {
             type: 'string',
             example: 'something institute of tech',
+            describe: 'mandatory field'
         },
+        city: {
+            type: 'string',
+            example: 'Hyderabad',
+            describe: 'optional field'
+        },
+        district: {
+            type: 'string',
+            example: 'rangareddy',
+            describe: 'optional field'
+        },
+        state: {
+            type: 'string',
+            example: 'telangana',
+            describe: 'optional field'
+        },
+        country: {
+            type: 'string',
+            example: 'india',
+            describe: 'optional field'
+        }
     },
 };
 export const studentLoginBody = {
     type: 'object',
     properties: {
-        student_name: {
-            type: 'string',
-            example: 'John Snow',
-        },
         email: {
             type: 'string',
             example: 'john.snow@email.com',
@@ -111,19 +133,7 @@ export const studentLoginBody = {
         passwordConfirmation: {
             type: 'string',
             example: '!1234aWe1Ro3$#',
-        },
-        date_of_birth: {
-            type: 'string',
-            example: '29/05/2003',
-        },
-        mobile: {
-            type: 'number',
-            example: '1234567891',
-        },
-        institute_name: {
-            type: 'string',
-            example: 'something institute of tech',
-        },
+        }
     },
 };
 export const studentChangePasswordBody = {
@@ -164,8 +174,24 @@ export const studentRegistration = {
             },
         },
     },
-    response: {
+    responses: {
         '200': {
+            description: 'Success',
+            content: {
+                'application/ json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            record: {
+                                type: 'object'
+                            },
+                            message: {
+                                type: 'string'
+                            }
+                        }
+                    }
+                }
+            }
         },
         '409': conflictError,
         '404': badRequestError,
@@ -191,7 +217,7 @@ export const studentLogin = {
             },
         },
     },
-    response: {
+    responses: {
         '200': {
             description: 'Student Logged in successfully',
             content: {
@@ -202,16 +228,10 @@ export const studentLogin = {
                             id: {
                                 type: 'object'
                             },
+                            student_name: {
+                                type: 'string'
+                            },
                             email: {
-                                type: 'string'
-                            },
-                            name: {
-                                type: 'string'
-                            },
-                            createdAt: {
-                                type: 'string'
-                            },
-                            updateAt: {
                                 type: 'string'
                             },
                             accessToken: {
@@ -249,7 +269,7 @@ export const studentChangePassword = {
             },
         },
     },
-    response: {
+    responses: {
         '202': {
             description: 'Update the password successfully',
             content: {
@@ -280,7 +300,7 @@ export const studentLogout = {
             bearerAuth: [],
         },
     ],
-    response: {
+    responses: {
         '202': {
             description: 'success',
             content: {

@@ -19,13 +19,12 @@ session.init(
         },
         valid: {
             type: DataTypes.BOOLEAN,
-            defaultValue: true,
+            defaultValue: false,
             allowNull: false,
         },
         userId: DataTypes.STRING,
         userAgent: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.STRING
         }
     },
     {
