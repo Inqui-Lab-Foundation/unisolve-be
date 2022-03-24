@@ -12,47 +12,58 @@ import { signJwt } from "../utils/jwt";
  * Controller class for all student API's 
  */
 class studentController {
+
     async registerHandler(
         req: Request<{}, {}, CreateUserInput["body"]>,
         res: Response) {
-        const { email } = req.body
-        const findEntry = await studentServices.findStudent({ email });
+        const { email } = req.body;
+        const findEntry = await studentServices.findStudent(email);
         if (findEntry) {
+            logger.info(`Account already exist ${JSON.stringify(findEntry)}`)
             return res.status(406).send({ message: "account already exist", Record: findEntry })
         }
         try {
-            const record = await studentServices.buildStudent(req.body)
-            return res.status(200).json({ record, message: "Student successfully Registered" })
+            const newRecord = await studentServices.buildStudent(req.body);
+            logger.info(`Student successfully registered ${JSON.stringify(newRecord)}`)
+            return res.status(200).json({ record: newRecord, message: "Student successfully Registered" })
         } catch (error: any) {
-            return res.status(500).send({
-                error: error.message,
-                router: '/api/v1/student/register'
-            })
+            logger.error(error.message);
+            return res.status(500).send({ error: error.message })
         }
     };
+
     async loginHandler(
         req: Request<{}, {}, CreateUserInput["body"]>,
         res: Response) {
-        try {
-            const record = await studentServices.authenticateStudent(req.body);
-            if (!record) {
-                return res.status(403).json({ message: "Invalid email or password" })
+        const { email, password } = req.body;
+        const findEntry = await studentServices.findStudent(email);
+        if (findEntry) {
+            const userId = findEntry.id;
+            await sessionServices.destroySession(userId);
+            try {
+                const record = await studentServices.authenticateStudent(email, password);
+                if (!record) {
+                    logger.error(`Invalid email or password`);
+                    return res.status(403).json({ message: "Invalid email or password" });
+                }
+                const input = { userId: record.id, userAgent: req.get("user-agent") || "", valid: true };
+                const session = await sessionServices.createSession(input);
+                logger.info(`Session Created, ${JSON.stringify(session)}`);
+                const accessToken = signJwt(
+                    { record, session: session.id },
+                    { expiresIn: config.get<string>('accessTokenTtl') }
+                );
+                const refreshToken = signJwt(
+                    { record, session: session.id },
+                    { expiresIn: config.get<string>('refreshTokenTtl') }
+                );
+                const { id, res_email, student_name } = record
+                logger.info(`Student logged in ${JSON.stringify(record)}`)
+                return res.send({ id, student_name, res_email, accessToken, refreshToken });
+            } catch (error: any) {
+                logger.error(error);
+                return res.status(409).send(error.message)
             }
-            const input = { userId: record.id, userAgent: req.get("user-agent") || "", valid: true }
-            const session = await sessionServices.createSession(input);
-            const accessToken = signJwt(
-                { record, session: session.getDataValue('id') },
-                { expiresIn: config.get<string>('accessTokenTtl') }
-            );
-            const refreshToken = signJwt(
-                { record, session: session.getDataValue('id') },
-                { expiresIn: config.get<string>('refreshTokenTtl') }
-            );
-            const { id, email, student_name, } = record
-            return res.send({ id, student_name, email, accessToken, refreshToken });
-        } catch (error: any) {
-            logger.error(error);
-            return res.status(409).send(error.message)
         }
     };
     /**
@@ -71,7 +82,7 @@ class studentController {
             return res.status(405).json({ message: "Method Not Allowed" })
         }
     };
-    // Todo 
+    // Todo: need to update the logout API
     async logoutHandler(req: Request, res: Response) {
         const userID = res.locals.user.record.id
         try {
@@ -87,7 +98,7 @@ class studentController {
             res.status(400).json({ message: "bad request" })
         }
     }
-    
+
 }
 
 export default new studentController();
