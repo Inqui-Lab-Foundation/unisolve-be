@@ -79,15 +79,15 @@ student.init(
         }
     },
     {
-        hooks: {
-            beforeCreate: async (user, option) => {
-                if (user.getDataValue('password')) {
-                    const salt = await bcrypt.genSaltSync(10, 'a');
-                    const hashPassword = bcrypt.hashSync(user.getDataValue('password'), salt);
-                    user.setDataValue('password', hashPassword)
-                }
-            }
-        },
+        // hooks: {
+        //     beforeCreate: async (user, option) => {
+        //         if (user.getDataValue('password')) {
+        //             const salt = await bcrypt.genSaltSync(10, 'a');
+        //             const hashPassword = bcrypt.hashSync(user.getDataValue('password'), salt);
+        //             user.setDataValue('password', hashPassword)
+        //         }
+        //     }
+        // },
         sequelize: db,
         tableName: 'Students',
     }

@@ -2,23 +2,23 @@ import bcrypt from 'bcrypt'
 
 
 class dbService {
-    async buildFunction(databaseName: any, input: object) {
-        return await databaseName.create(input);
+    async buildFunction(tableName: any, input: object) {
+        return await tableName.create(input);
     }
-    async findOneFunction(databaseName: any, input: object) {
-        return await databaseName.findOne(input);
+    async findOneFunction(tableName: any, input: object) {
+        return await tableName.findOne(input);
     }
-    async findAllFunction(databaseName: any) {
-        return await databaseName.findAll();
+    async findAllFunction(tableName: any) {
+        return await tableName.findAll();
     }
-    async findByPkFunction(databaseName: any, input: string) {
-        return await databaseName.findByPk(input);
+    async findByPkFunction(tableName: any, input: string) {
+        return await tableName.findByPk(input);
     }
-    async updateFunction(databaseName: any, dataToBeUpdated: object, input: object) {
-        return await databaseName.update(dataToBeUpdated, input);
+    async updateFunction(tableName: any, dataToBeUpdated: object, input: object) {
+        return await tableName.update(dataToBeUpdated, input);
     }
-    async deleteFunction(databaseName: any, input: object) {
-        return await databaseName.destroy(input);
+    async deleteFunction(tableName: any, input: object) {
+        return await tableName.destroy(input);
     }
     async correctPassword(enteredPassword: string, originalPassword: string) {
         return bcrypt.compareSync(enteredPassword, originalPassword);
