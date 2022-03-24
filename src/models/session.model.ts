@@ -22,7 +22,10 @@ session.init(
             defaultValue: false,
             allowNull: false,
         },
-        userId: DataTypes.STRING,
+        userId: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         userAgent: {
             type: DataTypes.STRING
         }
