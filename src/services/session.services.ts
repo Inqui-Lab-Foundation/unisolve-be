@@ -35,7 +35,7 @@ class sessionService {
     async destroySession(data: string) {
         try {
             const result = dbServices.deleteFunction(session, { where: { userId: data } });
-            logger.info(`Message: Session deleted, ${JSON.stringify(result)}`)
+            logger.info(`Session deleted, ${JSON.stringify(result)}`)
             return result
         } catch (error: any) {
             logger.error(error.message)

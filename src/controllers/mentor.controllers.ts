@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import mentorServices from "../services/mentor.services";
 import { mentorPayloadInput } from "../schemas/mentor.schema";
 import { mentor } from "../models/mentor.model";
+import logger from '../utils/logger'
 
 /**
  * Controller class for all mentor API's 
@@ -13,6 +14,7 @@ class mentorController {
         res: Response) {
         const { mentor_name, mobile, email } = req.body;
         const product = await mentorServices.buildMentor({ mentor_name, mobile, email });
+        logger.info(`Id found ${JSON.stringify(product)}`)
         return res.send(product)
     }
     async getMentor(
@@ -20,8 +22,10 @@ class mentorController {
         res: Response) {
         const product = await mentor.findAll()
         if (!product) {
-            return res.status(406).send({message:'Product not found'});
+            logger.error(`Id found ${JSON.stringify(product)}`)
+            return res.status(406).send({ message: 'Product not found' });
         }
+        logger.info(`Id found ${JSON.stringify(product)}`)
         return res.send({ product });
     }
     async getMentorById(
@@ -30,8 +34,10 @@ class mentorController {
         const id = req.params.mentorId;
         const product = await mentor.findOne({ where: { id } })
         if (!product) {
-            return res.status(406).send({message:'Product not found'});
+            logger.error(`Id found ${JSON.stringify(product)}`)
+            return res.status(406).send({ message: 'Product not found' });
         }
+        logger.info(`Id found ${JSON.stringify(product)}`)
         return res.send({ product });
     }
     async updateMentor(
@@ -42,9 +48,11 @@ class mentorController {
         const update = req.body;
         const entry = await mentorServices.findMentor(mentor_id);
         if (!entry) {
-            return res.status(406).send({message:'Product not found'});
+            logger.error(`Id found ${JSON.stringify(entry)}`)
+            return res.status(406).send({ message: 'Product not found' });
         }
         const updatedMentor = await mentorServices.updateMentor(update, mentor_id);
+        logger.info(`Id updated ${JSON.stringify(updatedMentor)}`)
         return res.send(updatedMentor);
     };
     async deleteMentor(
@@ -54,9 +62,11 @@ class mentorController {
         const mentor_id = req.params.mentorId;
         const entry = await mentorServices.findMentor(mentor_id);
         if (!entry) {
-            return res.status(406).send({message:'Product not found'});
+            logger.error(`Id not found ${JSON.stringify(entry)}`)
+            return res.status(406).send({ message: 'Product not found' });
         }
         const deleteMentor = await mentorServices.destroyMentor(mentor_id);
+        logger.info(`Id deleted ${JSON.stringify(deleteMentor)}`)
         return res.send({ deleteMentor, text: 'successfully delete the entry' })
     }
 }
