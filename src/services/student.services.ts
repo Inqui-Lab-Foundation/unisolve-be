@@ -30,7 +30,7 @@ class studentService {
      * @param input as request body from the express application
      * @returns object with query result 
      */
-    findStudent(email: string) {
+    findStudentByEmail(email: string) {
         if (email) {
             const result = dbService.findOneFunction(student, { where: { email } });
             return result;
@@ -38,23 +38,34 @@ class studentService {
         logger.error('please check your emailId');
         throw new Error('please check your emailId ');
     };
+    findStudentByMobile(mobile: number) {
+        if (mobile) {
+            const result = dbService.findOneFunction(student, { where: { mobile } });
+            return result;
+        }
+        logger.error('please check your mobile');
+        throw new Error('please check your mobile');
+    };
+    findStudentByStudentName(student_name: string) {
+        if (student_name) {
+            const result = dbService.findOneFunction(student, { where: { student_name } });
+            return result;
+        }
+        logger.error('please check your student_name');
+        throw new Error('please check your student_name ');
+    };
     /**
      * 
      * @param param0 email and password as strings
      * @returns student details post verifying the password with actual password 
      */
-    async authenticateStudent(email: string, password: string) {
-        const findEntry = await this.findStudent(email);
-        if (!findEntry) {
-            logger.error(`Can't find student details`);
-            return false;
-        }
-        const authenticate = dbService.correctPassword(password, findEntry.password);
+    async authenticateStudent(password: string, oldPassword: string) {
+        const authenticate = dbService.correctPassword(password, oldPassword);
         if (!authenticate) {
             logger.error(`Can't validate the password please check and try again`)
             return false;
         }
-        return omit(omit(findEntry.dataValues, 'password'));
+        return true;
     };
     /**
      * 
