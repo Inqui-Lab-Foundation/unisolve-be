@@ -17,7 +17,7 @@ class studentController {
         req: Request<{}, {}, CreateUserInput["body"]>,
         res: Response) {
         const { email } = req.body;
-        const findEntry = await studentServices.findStudent(email);
+        const findEntry = await studentServices.findStudentByEmail(email);
         if (findEntry) {
             logger.info(`Account already exist ${JSON.stringify(findEntry)}`)
             return res.status(406).send({ message: "account already exist", Record: findEntry })
@@ -35,36 +35,45 @@ class studentController {
     async loginHandler(
         req: Request<{}, {}, CreateUserInput["body"]>,
         res: Response) {
-        const { email, password } = req.body;
-        const findEntry = await studentServices.findStudent(email);
+        const { student_name, mobile, email, password } = req.body;
+        let findEntry;
+        if (email) {
+            findEntry = await studentServices.findStudentByEmail(email);
+        }
+        if (mobile) {
+            findEntry = await studentServices.findStudentByMobile(mobile);
+        }
+        if (student_name) {
+            findEntry = await studentServices.findStudentByStudentName(student_name);
+        }
         if (findEntry) {
             const userId = findEntry.id;
             await sessionServices.destroySession(userId);
             try {
-                const record = await studentServices.authenticateStudent(email, password);
+                const record = await studentServices.authenticateStudent(password, findEntry.password);
                 if (!record) {
                     logger.error(`Invalid email or password`);
                     return res.status(403).json({ message: "Invalid email or password" });
                 }
-                const input = { userId: record.id, userAgent: req.get("user-agent") || "", valid: true };
+                const input = { userId: findEntry.id, userAgent: req.get("user-agent") || "", valid: true };
                 const session = await sessionServices.createSession(input);
                 logger.info(`Session Created, ${JSON.stringify(session)}`);
                 const accessToken = signJwt(
-                    { record, session: session.id },
+                    { findEntry, session: session.id },
                     { expiresIn: config.get<string>('accessTokenTtl') }
                 );
                 const refreshToken = signJwt(
-                    { record, session: session.id },
+                    { findEntry, session: session.id },
                     { expiresIn: config.get<string>('refreshTokenTtl') }
                 );
-                const { id, res_email, student_name } = record
+                const { id, res_email, student_name } = findEntry
                 logger.info(`Student logged in ${JSON.stringify(record)}`)
                 return res.send({ id, student_name, res_email, accessToken, refreshToken });
             } catch (error: any) {
                 logger.error(error);
                 return res.status(409).send(error.message)
             }
-        }
+        } res.status(500).send({ message: "Can't find the student please check the payload" })
     };
     /**
      * 
@@ -84,9 +93,10 @@ class studentController {
     };
     // Todo: need to update the logout API
     async logoutHandler(req: Request, res: Response) {
-        const userID = res.locals.user.record.id
+        const userId = res.locals.user.findEntry.id;
+        console.log(userId)
         try {
-            const findSession = await sessionServices.findSession({ userID });
+            const findSession = await sessionServices.findSession({ userId });
             if (!findSession) {
                 res.status(409).send({ message: 'session not found' })
             }
@@ -98,7 +108,6 @@ class studentController {
             res.status(400).json({ message: "bad request" })
         }
     }
-
 }
 
 export default new studentController();
