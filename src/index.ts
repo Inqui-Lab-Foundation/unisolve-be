@@ -17,5 +17,4 @@ db.sync()
 // application listening
 App.listen(PORT, async () => {
     logger.info(`App is running at http://localhost:${PORT}`);
-    
 })
