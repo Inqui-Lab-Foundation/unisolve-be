@@ -7,4 +7,4 @@ npm install -g pm2@latest
 export PM2_HOME=/home/ubuntu/.pm2
 pm2 list
 cd /home/ubuntu/
-pm2 start ./dist/src/index.js
+pm2 start ./unisolve-be/src/index.js
