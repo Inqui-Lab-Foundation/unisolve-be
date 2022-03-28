@@ -19,14 +19,11 @@ const options = {
     },
     servers: [
         {
-            url: 'http://localhost:3002',
-            description: 'Local Server',
-        },
-        {
             url: 'http://15.207.254.154:3002',
             description: 'Production Server',
         },
     ],
+    schemes: ['https', 'http'],
     tags: [
         {
             name: 'HealthCheck',
