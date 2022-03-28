@@ -126,11 +126,11 @@ export const evaluatorList = {
     responses: {
         '202': {
             description: 'Success',
-        }
+        },
+        '401': unauthorizedError,
+        '405': methodNotAllowedError,
+        '404': badRequestError
     },
-    '401': unauthorizedError,
-    '405': methodNotAllowedError,
-    '404': badRequestError,
 }
 export const evaluatorById = {
     tags: ['Evaluator'],
@@ -141,14 +141,26 @@ export const evaluatorById = {
             bearerAuth: [],
         },
     ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'courseId',
+            schema: {
+                type: 'integer',
+                default: 963258
+            },
+            required: true,
+            description: "courseId to fetch",
+        }
+    ],
     responses: {
         '202': {
             description: 'Success',
-        }
-    },
-    '401': unauthorizedError,
-    '405': methodNotAllowedError,
-    '404': badRequestError,
+        },
+        '401': unauthorizedError,
+        '405': methodNotAllowedError,
+        '404': badRequestError
+    }
 }
 export const evaluatorByIdUpdate = {
     tags: ['Evaluator'],
@@ -169,6 +181,18 @@ export const evaluatorByIdUpdate = {
             },
         },
     },
+    parameters: [
+        {
+            in: 'path',
+            name: 'courseId',
+            schema: {
+                type: 'integer',
+                default: 963258
+            },
+            required: true,
+            description: "courseId to fetch",
+        }
+    ],
     responses: {
         '200': {
             description: 'updated',
@@ -179,11 +203,11 @@ export const evaluatorByIdUpdate = {
                     }
                 }
             }
-        }
-    },
-    '401': unauthorizedError,
-    '409': conflictError,
-    '404': badRequestError,
+        },
+        '401': unauthorizedError,
+        '409': conflictError,
+        '404': badRequestError
+    }
 }
 export const evaluatorByIdDelete = {
     tags: ['Evaluator'],
@@ -204,12 +228,24 @@ export const evaluatorByIdDelete = {
             },
         },
     },
+    parameters: [
+        {
+            in: 'path',
+            name: 'courseId',
+            schema: {
+                type: 'integer',
+                default: 963258
+            },
+            required: true,
+            description: "courseId to fetch",
+        }
+    ],
     responses: {
         '202': {
             description: 'Server is up and running',
-        }
-    },
-    '401': unauthorizedError,
-    '405': methodNotAllowedError,
-    '404': badRequestError,
+        },
+        '401': unauthorizedError,
+        '405': methodNotAllowedError,
+        '404': badRequestError
+    }
 }

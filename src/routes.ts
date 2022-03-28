@@ -31,7 +31,7 @@ function routes(App: Express) {
     //authentication
     App.post('/api/v1/student/register', validate(userRegisterSchema), studentControllers.registerHandler);
     App.post('/api/v1/student/login', studentControllers.loginHandler);
-    App.post('/api/v1/student/changePassword', validate(userPasswordSchema), studentControllers.changePasswordHandler)
+    App.post('/api/v1/student/changePassword',requiredUser, validate(userPasswordSchema), studentControllers.changePasswordHandler)
     App.get('/api/v1/student/logout', requiredUser, studentControllers.logoutHandler);
 
     //courses

@@ -156,35 +156,41 @@ export const courseList = {
     responses: {
         '202': {
             description: 'Success',
-        }
-    },
-    '401': unauthorizedError,
-    '405': methodNotAllowedError,
-    '404': badRequestError,
+        },
+        '401': unauthorizedError,
+        '405': methodNotAllowedError,
+        '404': badRequestError,
+    }
 }
 export const courseById = {
     tags: ['Course'],
     description: 'Get the single course',
     operationId: 'courseById',
-    parameters: {
-        name: 'courseId',
-        in: "path",
-        description: "courseId to fetch",
-        required: true
-    },
     security: [
         {
             bearerAuth: [],
         },
     ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'courseId',
+            schema: {
+                type: 'integer',
+                default: 963258
+            },
+            required: true,
+            description: "courseId to fetch",
+        }
+    ],
     responses: {
         '202': {
             description: 'Success',
-        }
-    },
-    '401': unauthorizedError,
-    '405': methodNotAllowedError,
-    '404': badRequestError,
+        },
+        '401': unauthorizedError,
+        '405': methodNotAllowedError,
+        '404': badRequestError,
+    }
 }
 export const courseByIdUpdate = {
     tags: ['Course'],
@@ -205,6 +211,18 @@ export const courseByIdUpdate = {
             },
         },
     },
+    parameters: [
+        {
+            in: 'path',
+            name: 'courseId',
+            schema: {
+                type: 'integer',
+                default: 963258
+            },
+            required: true,
+            description: "courseId to fetch",
+        }
+    ],
     responses: {
         '200': {
             description: 'updated',
@@ -215,11 +233,11 @@ export const courseByIdUpdate = {
                     }
                 }
             }
-        }
-    },
-    '401': unauthorizedError,
-    '409': conflictError,
-    '404': badRequestError,
+        },
+        '401': unauthorizedError,
+        '409': conflictError,
+        '404': badRequestError,
+    }
 }
 export const courseByIdDelete = {
     tags: ['Course'],
@@ -230,12 +248,24 @@ export const courseByIdDelete = {
             bearerAuth: [],
         },
     ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'courseId',
+            schema: {
+                type: 'integer',
+                default: 963258
+            },
+            required: true,
+            description: "courseId to fetch",
+        }
+    ],
     responses: {
         '202': {
             description: 'Server is up and running',
-        }
-    },
-    '401': unauthorizedError,
-    '405': methodNotAllowedError,
-    '404': badRequestError,
+        },
+        '401': unauthorizedError,
+        '405': methodNotAllowedError,
+        '404': badRequestError
+    }
 }

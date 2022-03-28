@@ -139,17 +139,17 @@ export const studentLoginBody = {
 export const studentChangePasswordBody = {
     type: 'object',
     properties: {
-        email: {
+        userId: {
             type: 'string',
-            example: 'john.snow@email.com',
+            example: '4bfa41c2-04a8-8l8u-9bd4-290c28030238',
+        },
+        oldPassword: {
+            type: 'string',
+            example: '$2a$10$CwTycUXWue0Thq9StjUM0u6jJCkkxtMhaiy49nUxSRfWuKKZTji0K',
         },
         newPassword: {
             type: 'string',
-            example: '!1234aWe1Ro3$#',
-        },
-        passwordConfirmation: {
-            type: 'string',
-            example: '!1234aWe1Ro3$#',
+            example: '$2a$10$CwTycUXWue0Thq9StjUM0udvtNYI4lZ50Nfy1IBiW.W0fZhVIRNRav',
         }
     },
 };
@@ -314,11 +314,10 @@ export const studentLogout = {
                         }
                     }
                 }
-            }
-        },
-        '401': unauthorizedError,
-        '405': methodNotAllowedError,
-        '404': badRequestError,
-
+            },
+            '401': unauthorizedError,
+            '405': methodNotAllowedError,
+            '404': badRequestError,
+        }
     }
 }
