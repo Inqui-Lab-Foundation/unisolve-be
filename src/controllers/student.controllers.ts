@@ -51,24 +51,26 @@ class studentController {
             await sessionServices.destroySession(userId);
             try {
                 const record = await studentServices.authenticateStudent(password, findEntry.password);
-                if (!record) {
-                    logger.error(`Invalid email or password`);
-                    return res.status(403).json({ message: "Invalid email or password" });
+                console.log(record)
+                if (record === false) {
+                    logger.error(`Invalid email or password Can't validate the password please check and try again`);
+                    return res.status(403).json({ message: "Invalid email or password Can't validate the password please check and try again" });
+                } else {
+                    const input = { userId: findEntry.id, userAgent: req.get("user-agent") || "", valid: true };
+                    const session = await sessionServices.createSession(input);
+                    logger.info(`Session Created, ${JSON.stringify(session)}`);
+                    const accessToken = signJwt(
+                        { findEntry, session: session.id },
+                        { expiresIn: config.get<string>('accessTokenTtl') }
+                    );
+                    const refreshToken = signJwt(
+                        { findEntry, session: session.id },
+                        { expiresIn: config.get<string>('refreshTokenTtl') }
+                    );
+                    const { id, res_email, student_name } = findEntry
+                    logger.info(`Student logged in ${JSON.stringify(record)}`)
+                    return res.send({ id, student_name, res_email, accessToken, refreshToken });
                 }
-                const input = { userId: findEntry.id, userAgent: req.get("user-agent") || "", valid: true };
-                const session = await sessionServices.createSession(input);
-                logger.info(`Session Created, ${JSON.stringify(session)}`);
-                const accessToken = signJwt(
-                    { findEntry, session: session.id },
-                    { expiresIn: config.get<string>('accessTokenTtl') }
-                );
-                const refreshToken = signJwt(
-                    { findEntry, session: session.id },
-                    { expiresIn: config.get<string>('refreshTokenTtl') }
-                );
-                const { id, res_email, student_name } = findEntry
-                logger.info(`Student logged in ${JSON.stringify(record)}`)
-                return res.send({ id, student_name, res_email, accessToken, refreshToken });
             } catch (error: any) {
                 logger.error(error);
                 return res.status(409).send(error.message)
@@ -86,15 +88,18 @@ class studentController {
         res: Response) {
         try {
             const record = await studentServices.changePassword(req.body);
-            return res.status(202).json({ message: "Password updated successfully" })
+            if (record.error) {
+                return res.status(503).json({ message: "service unavailable" })
+
+            } else {
+                return res.status(202).json({ message: "Password updated successfully" })
+            }
         } catch (error) {
             return res.status(405).json({ message: "Method Not Allowed" })
         }
     };
-    // Todo: need to update the logout API
     async logoutHandler(req: Request, res: Response) {
         const userId = res.locals.user.findEntry.id;
-        console.log(userId)
         try {
             const findSession = await sessionServices.findSession({ userId });
             if (!findSession) {

@@ -1,6 +1,4 @@
 import bcrypt from 'bcrypt'
-
-
 class dbService {
     async buildFunction(tableName: any, input: object) {
         return await tableName.create(input);
