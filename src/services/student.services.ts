@@ -1,6 +1,6 @@
 import { v4 as UUIDV4 } from 'uuid'
-import { find, omit, Omit } from "lodash";
-import bcrypt from 'bcrypt';
+import { omit } from "lodash";
+
 
 import { student } from "../models/student.model";
 import dbService from './database.services'
@@ -60,12 +60,9 @@ class studentService {
      * @returns student details post verifying the password with actual password 
      */
     async authenticateStudent(password: string, oldPassword: string) {
-        const authenticate = dbService.correctPassword(password, oldPassword);
-        if (!authenticate) {
-            logger.error(`Can't validate the password please check and try again`)
-            return false;
-        }
-        return true;
+        if (password === oldPassword) {
+            return true;
+        } return false;
     };
     /**
      * 
@@ -76,16 +73,16 @@ class studentService {
         const { userId, oldPassword, newPassword } = input;
         const findEntry = await dbService.findByPkFunction(student, userId);
         if (findEntry) {
-            const authenticate = dbService.correctPassword(oldPassword, findEntry.getDataValue('password'));
-            if (!authenticate) {
-                logger.error(`something went wrong while updating the password`)
-                return { message: "something went wrong while updating the password" }
+            const authenticate = await this.authenticateStudent(oldPassword, findEntry.getDataValue('password'));
+            if (authenticate === false) {
+                logger.error(`password not validate`)
+                return { error: "password not validate" }
             }
             findEntry.setDataValue('password', newPassword);
             findEntry.save();
             logger.info(`Password update successfully ${JSON.stringify(findEntry)}`)
             return findEntry.dataValues;
-        }
+        } return { error: 'User not found' }
     };
 };
 
