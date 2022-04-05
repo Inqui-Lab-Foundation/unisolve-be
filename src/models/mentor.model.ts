@@ -24,7 +24,7 @@ mentor.init(
         },
         mobile: {   
             type: DataTypes.BIGINT,
-            allowNull: false,
+            allowNull: true,
             unique: true
         },
         email: {
