@@ -62,7 +62,32 @@ export const methodNotAllowedError = {
         }
     }
 }
-
+export const createEvaluatorBody = {
+    type: 'object',
+    properties: {
+        evaluator_name: {
+            type: 'string',
+            example: 'SundarPichai',
+        },
+        mobile: {
+            type: 'number',
+            example: 126546654695,
+        },
+        email: {
+            type: 'string',
+            example: "SundarPichai@gmail.com"
+        }
+    }
+};
+export const evaluatorUpdateBody = {
+    type: 'object',
+    properties: {
+        statue: {
+            type: 'string',
+            example: 'Completed',
+        }
+    },
+};
 export const createEvaluator = {
     tags: ['Evaluator'],
     description: 'Create a evaluator entry',
