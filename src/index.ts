@@ -7,7 +7,7 @@ import swaggerDocs from './utils/swagger';
 
 // initialing the express application with createServer;
 const PORT = config.get<number>('port');
-const App = createServer(PORT);
+const App = createServer();
 
 // mySQL connection
 db.sync()
