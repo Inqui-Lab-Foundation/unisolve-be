@@ -1,5 +1,5 @@
 {
-  "name": "Project-main",
+  "name": "Unisolve_API",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -7,9 +7,10 @@
     "start:dev": "nodemon",
     "start:prod": "pm2 start ./dist/src/index.js",
     "build": "tsc -p tsconfig.prod.json",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
-    "test:coverage": "jest --coverage"
+    "set-node-env": "set NODE_ENV=test",
+    "test": "npm run set-node-env && jest --verbose --silent",
+    "test:watch": "npm run set-node-env && jest --watchAll --verbose --silent",
+    "test:coverage": "npm run set-node-env jest --coverage --verbose --silent"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

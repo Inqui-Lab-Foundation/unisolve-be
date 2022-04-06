@@ -1,9 +1,41 @@
 import healthCheck from "./apiCheck.api.docs";
 import { version } from '../../package.json';
-import { studentRegistration, studentLogin, studentChangePassword, studentLogout, studentRegistrationBody, studentLoginBody, studentChangePasswordBody } from "./api.student.docs";
-import { courseList, createCourse, courseById, courseByIdUpdate, courseByIdDelete, createCourseBody, courseUpdatesBody } from "./api.course.docs";
-import { createMentor, mentorById, mentorByIdDelete, mentorByIdUpdate, mentorList } from "./api.mentor.docs";
-import { createEvaluator, evaluatorById, evaluatorByIdDelete, evaluatorByIdUpdate, evaluatorList } from "./api.evaluator.docs";
+import {
+    studentRegistration,
+    studentLogin,
+    studentChangePassword,
+    studentLogout,
+    studentRegistrationBody,
+    studentLoginBody,
+    studentChangePasswordBody
+} from "./api.student.docs";
+import {
+    courseList,
+    createCourse,
+    courseById,
+    courseByIdUpdate,
+    courseByIdDelete,
+    createCourseBody,
+    courseUpdatesBody
+} from "./api.course.docs";
+import {
+    createMentor,
+    mentorById,
+    createMentorBody,
+    mentorUpdateBody,
+    mentorByIdDelete,
+    mentorByIdUpdate,
+    mentorList
+} from "./api.mentor.docs";
+import {
+    createEvaluator,
+    evaluatorById,
+    evaluatorByIdDelete,
+    evaluatorByIdUpdate,
+    evaluatorList,
+    createEvaluatorBody,
+    evaluatorUpdateBody
+} from "./api.evaluator.docs";
 
 // define Swagger options with specific properties
 const options = {
@@ -117,7 +149,11 @@ const options = {
             studentLoginBody,
             studentChangePasswordBody,
             createCourseBody,
-            courseUpdatesBody
+            courseUpdatesBody,
+            createMentorBody,
+            mentorUpdateBody,
+            createEvaluatorBody,
+            evaluatorUpdateBody
         },
     },
 };

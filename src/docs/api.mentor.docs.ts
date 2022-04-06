@@ -62,6 +62,32 @@ export const methodNotAllowedError = {
         }
     }
 }
+export const createMentorBody = {
+    type: 'object',
+    properties: {
+        mentor_name: {
+            type: 'string',
+            example: 'SundarPichai',
+        },
+        mobile: {
+            type: 'number',
+            example: 126546654695,
+        },
+        email: {
+            type: 'string',
+            example: "SundarPichai@gmail.com"
+        }
+    }
+};
+export const mentorUpdateBody = {
+    type: 'object',
+    properties: {
+        statue: {
+            type: 'string',
+            example: 'Completed',
+        }
+    },
+};
 export const createMentor = {
     tags: ['Mentor'],
     description: 'Create a mentor entry',
@@ -76,7 +102,7 @@ export const createMentor = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createUserBody'
+                    $ref: '#/components/schemas/createMentorBody'
                 },
             },
         },
@@ -175,7 +201,7 @@ export const mentorByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createUserBody'
+                    $ref: '#/components/schemas/mentorUpdateBody'
                 },
             },
         },

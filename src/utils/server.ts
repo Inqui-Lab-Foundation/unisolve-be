@@ -1,5 +1,7 @@
 import Express, { Request, Response } from 'express';
-import cors from 'cors'
+import cors from 'cors';
+import config from 'config';
+
 import deserializerUser from '../middleware/student/deserializerUser';
 import routes from '../routes';
 import swaggerDocs from './swagger';
@@ -9,8 +11,9 @@ import swaggerDocs from './swagger';
  * create the express server when it's called.
  * @returns App
  */
-function createServer(Port: number) {
+function createServer() {
     const App = Express();
+    const Port = config.get<number>("port");
     App.use(Express.json());
     App.use(Express.urlencoded({ extended: true }));
     App.use(cors())
