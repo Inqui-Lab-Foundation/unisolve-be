@@ -18,9 +18,9 @@ class dbService {
     async deleteFunction(tableName: any, input: object) {
         return await tableName.destroy(input);
     }
-    async correctPassword(enteredPassword: string, originalPassword: string) {
-        return bcrypt.compareSync(enteredPassword, originalPassword);
-    }
+    // async correctPassword(enteredPassword: string, originalPassword: string) {
+    //     return bcrypt.compareSync(enteredPassword, originalPassword);
+    // }
 }
 
 export default new dbService();
