@@ -51,7 +51,6 @@ class studentController {
             await sessionServices.destroySession(userId);
             try {
                 const record = await studentServices.authenticateStudent(password, findEntry.password);
-                console.log(record)
                 if (record === false) {
                     logger.error(`Invalid email or password Can't validate the password please check and try again`);
                     return res.status(403).json({ message: "Invalid email or password Can't validate the password please check and try again" });
