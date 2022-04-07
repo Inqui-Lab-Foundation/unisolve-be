@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": false,
+        "amount": 5
+    },
+    "auditLog": "D:\\Projects\\unisolve-be\\src\\logs\\.6c669ffc1f17bd4e65d424c6a7b3d9191739e725-audit.json",
+    "files": [
+        {
+            "date": 1649234283495,
+            "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-06.log",
+            "hash": "eb87683e90ca7a5aa3e73d8282fd3ac6"
+        }
+    ],
+    "hashType": "md5"
+}
