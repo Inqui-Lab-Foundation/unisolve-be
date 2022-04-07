@@ -32,7 +32,7 @@ class mentorController {
         req: Request,
         res: Response) {
         const id = req.params.mentorId;
-        const product = await mentor.findOne({ where: { id } })
+        const product = await mentorServices.findMentor(id)
         if (!product) {
             logger.error(`Id found ${JSON.stringify(product)}`)
             return res.status(406).send({ message: 'Product not found' });
@@ -48,11 +48,11 @@ class mentorController {
         const update = req.body;
         const entry = await mentorServices.findMentor(mentor_id);
         if (!entry) {
-            logger.error(`Id found ${JSON.stringify(entry)}`)
+            logger.error(`Id found ${JSON.stringify(entry)} `)
             return res.status(406).send({ message: 'Product not found' });
         }
         const updatedMentor = await mentorServices.updateMentor(update, mentor_id);
-        logger.info(`Id updated ${JSON.stringify(updatedMentor)}`)
+        logger.info(`Id updated ${JSON.stringify(updatedMentor)} `)
         return res.send(updatedMentor);
     };
     async deleteMentor(
@@ -62,11 +62,11 @@ class mentorController {
         const mentor_id = req.params.mentorId;
         const entry = await mentorServices.findMentor(mentor_id);
         if (!entry) {
-            logger.error(`Id not found ${JSON.stringify(entry)}`)
+            logger.error(`Id not found ${JSON.stringify(entry)} `)
             return res.status(406).send({ message: 'Product not found' });
         }
         const deleteMentor = await mentorServices.destroyMentor(mentor_id);
-        logger.info(`Id deleted ${JSON.stringify(deleteMentor)}`)
+        logger.info(`Id deleted ${JSON.stringify(deleteMentor)} `)
         return res.send({ deleteMentor, text: 'successfully delete the entry' })
     }
 }
