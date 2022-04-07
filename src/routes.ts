@@ -1,5 +1,5 @@
 /*Importing the dependencies*/
-import { Express, Request, Response } from 'express';
+import e, { Express, Request, Response } from 'express';
 
 import courseControllers from './controllers/course.controllers';
 import evaluatorControllers from './controllers/evaluator.controllers';
@@ -23,9 +23,17 @@ function routes(App: Express) {
 
     //health checking api
     App.get('/api/v1/healthCheck', (req: Request, res: Response) => {
-        res.status(200).send({
-            message: "server is running"
-        })
+        const healthcheck = {
+            uptime: process.uptime(),
+            message: 'OK',
+            timestamp: Date.now()
+        };
+        try {
+            res.send(healthcheck);
+        } catch (error: any) {
+            healthcheck.message = error;
+            res.status(503).send(error);
+        }
     });
 
     //authentication
