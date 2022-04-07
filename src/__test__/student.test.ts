@@ -10,8 +10,9 @@ describe("Student test cases", () => {
 
     describe("Server health check API", () => {
         test("should return a 200 status", async () => {
-            await request(app).get(`/api/v1/healthCheck`)
+            const res = await request(app).get(`/api/v1/healthCheck`)
                 .expect(200);
+            expect(res.body.uptime).toBeGreaterThan(0);
         });
     });
 
