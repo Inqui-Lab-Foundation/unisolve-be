@@ -1,6 +1,4 @@
-import { Query } from "mysql2";
-import { QueryOptionsTransactionRequired, where } from "sequelize/types";
-import { courses } from "../models/course.model";
+import { course } from "../models/course.model";
 import dbServices from './database.services';
 
 /**
@@ -9,40 +7,39 @@ import dbServices from './database.services';
 class courseService {
     buildCourse(input: any) {
         try {
-            const newEntry = dbServices.buildFunction(courses, { ...input });
+            const newEntry = dbServices.buildFunction({ tableName: course, input: { ...input } });
             return newEntry;
         } catch (error: any) {
             return error.message
         }
     };
-    findCourse(courser_id: string) {
+    findCourse(id: string) {
         try {
-            const result = dbServices.findOneFunction(courses, { where: { courser_id } });
+            const result = dbServices.findOneFunction(course, { where: { id } });
             return result
         } catch (error: any) {
             return error.message
         }
     };
     findCourses() {
-        return dbServices.findAllFunction(courses)
+        return dbServices.findAllFunction(course)
     }
     updateCourse(update: object, query: string) {
         try {
-            const result = dbServices.updateFunction(courses, update, { where: { courser_id: query } });
+            const result = dbServices.updateFunction(course, update, { where: { id : query } });
             return result;
         } catch (error: any) {
             return error.message
         }
     };
-    destroyCourse(courser_id: string) {
+    destroyCourse(id: string) {
         try {
-            const result = dbServices.deleteFunction(courses, { where: { courser_id } });
+            const result = dbServices.deleteFunction(course, { where: { id } });
             return result;
         } catch (error: any) {
             return error.message
         }
     }
-
 }
 
 export default new courseService();
