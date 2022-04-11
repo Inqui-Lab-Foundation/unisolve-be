@@ -49,7 +49,7 @@ describe("mentor test cases", () => {
         const coursePayload = {
             "id": "1", "mentor_name": "vamshi", mobile: "7896541236", email: "vamshi@gmail.com"
         }
-        const updatepayload = { "statue": "Active" }
+        const updatepayload = { "status": "Active" }
         const payload = [updatepayload, 1];
         test("Should return 200", async () => {
             const mockCreateIntenseCourse = jest.fn((): any => coursePayload.id);

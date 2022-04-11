@@ -102,7 +102,7 @@
  *      required:
  *        - module
  *        - courser_id
- *        - statue
+ *        - status
  *      properties:
  *        module:
  *          type: string
@@ -110,7 +110,7 @@
  *        courser_id:
  *          type: string
  *          default: 244244
- *        statue:
+ *        status:
  *          type: string
  *          default: "Completed"
  *    createCourseResponse:
@@ -122,7 +122,7 @@
  *         type: string
  *        courser_id:
  *         type: string
- *        statue:
+ *        status:
  *         type: string
  *        updatedAt:
  *         type: string       
@@ -131,9 +131,9 @@
  *    courseUpdatePayload:             
  *      type: object
  *      required:
- *        - statue
+ *        - status
  *      properties:
- *        statue:
+ *        status:
  *          type: sting
  *          default: "Complete"         
  *    courseUpdateRepose:
@@ -173,9 +173,9 @@
  *    mentorUpdatePayload:             
  *      type: object
  *      required:
- *        - statue
+ *        - status
  *      properties:
- *        statue:
+ *        status:
  *          type: sting
  *          default: "Active"         
  *    mentorUpdateRepose:
@@ -215,9 +215,9 @@
  *    evaluatorUpdatePayload:             
  *      type: object
  *      required:
- *        - statue
+ *        - status
  *      properties:
- *        statue:
+ *        status:
  *          type: sting
  *          default: "Active"         
  *    evaluatorUpdateRepose:

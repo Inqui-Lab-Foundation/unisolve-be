@@ -46,7 +46,7 @@ describe("evaluator test cases", () => {
         });
     });
     describe("evaluator: update the single evaluator", () => {
-        const updatepayload = { "statue": "Active" }
+        const updatepayload = { "status": "Active" }
         const payload = [updatepayload, 1];
         const coursePayload = {
             "id": "1", "evaluator_name": "vamshi", mobile: "7896541236", email: "vamshi@gmail.com"

@@ -17,7 +17,7 @@ class sessionService {
      */
     async createSession(input: any) {
         try {
-            const newEntry = await dbServices.buildFunction(session, input);
+            const newEntry = await dbServices.buildFunction({ tableName: session, input });
             return newEntry.dataValues;
         } catch (error: any) {
             return error.message

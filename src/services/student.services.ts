@@ -18,7 +18,7 @@ class studentService {
     buildStudent(data: object) {
         const id = UUIDV4(); // generate new UUID
         try {
-            const newEntry = dbService.buildFunction(student, { id, ...data });
+            const newEntry = dbService.buildFunction({ tableName: student, input: { id, ...data } });
             return omit(newEntry, "password");
         } catch (error: any) {
             logger.error(error.message);

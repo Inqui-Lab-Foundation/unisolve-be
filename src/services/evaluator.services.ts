@@ -7,7 +7,7 @@ import dbServices from "./database.services";
 class evaluatorService {
     async buildEvaluator(input: any) {
         try {
-            const newEntry = await dbServices.buildFunction(evaluator, input);
+            const newEntry = await dbServices.buildFunction({ tableName: evaluator, input });
             return newEntry;
         } catch (error: any) {
             return error.message

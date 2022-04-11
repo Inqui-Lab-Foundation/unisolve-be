@@ -17,7 +17,7 @@ export type mentorPayloadInput = Omit<TypeOf<typeof mentorPayload>, "body.passwo
 
 export const mentorUpdate = object({
     body: object({
-        statue: z.enum(["Active", "Inactive"])
+        status: z.enum(["Active", "Inactive"])
     })
 });
 

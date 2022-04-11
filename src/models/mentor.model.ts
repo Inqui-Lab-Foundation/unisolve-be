@@ -6,7 +6,7 @@ export interface mentorAttributes {
     mentor_name: string;
     mobile: number;
     email: string;
-    statue: Enumerator;
+    status: Enumerator;
 }
 
 export class mentor extends Model<mentorAttributes> { }
@@ -22,9 +22,8 @@ mentor.init(
             type: DataTypes.STRING,
             allowNull: false
         },
-        mobile: {   
+        mobile: {
             type: DataTypes.BIGINT,
-            allowNull: true,
             unique: true
         },
         email: {
@@ -32,12 +31,12 @@ mentor.init(
             allowNull: false,
             unique: true
         },
-        statue: {
+        status: {
             type: DataTypes.ENUM('Active', 'Inactive')
         }
     },
     {
         sequelize: db,
-        tableName: 'Mentors',
+        tableName: 'mentor',
     }
 );

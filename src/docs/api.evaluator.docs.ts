@@ -82,7 +82,7 @@ export const createEvaluatorBody = {
 export const evaluatorUpdateBody = {
     type: 'object',
     properties: {
-        statue: {
+        status: {
             type: 'string',
             example: 'Completed',
         }

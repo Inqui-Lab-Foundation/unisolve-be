@@ -5,7 +5,7 @@ export interface teamAttributes {
     id: number;
     team_name: string;
     mentor_id: string;
-    statue: Enumerator;
+    status: Enumerator;
 }
 
 export class teams extends Model<teamAttributes> { }
@@ -26,12 +26,12 @@ teams.init(
             allowNull: false,
             unique: true
         },
-        statue: {
+        status: {
             type: DataTypes.ENUM('Active', 'Inactive')
         }
     },
     {
         sequelize: db,
-        tableName: 'Teams',
+        tableName: 'team',
     }
 );

@@ -82,7 +82,7 @@ export const createMentorBody = {
 export const mentorUpdateBody = {
     type: 'object',
     properties: {
-        statue: {
+        status: {
             type: 'string',
             example: 'Completed',
         }

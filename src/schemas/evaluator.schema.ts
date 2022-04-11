@@ -1,5 +1,5 @@
 /*Importing the dependencies*/
-import { object, string, TypeOf, number, z} from "zod";
+import { object, string, TypeOf, number, z } from "zod";
 import { Omit } from 'lodash';
 
 export const evaluatorPayload = object({
@@ -17,7 +17,7 @@ export type evaluatorPayloadInput = Omit<TypeOf<typeof evaluatorPayload>, "body.
 
 export const evaluatorUpdate = object({
     body: object({
-        statue: z.enum(["Active", "Inactive"])
+        status: z.enum(["Active", "Inactive"])
     })
 });
 
