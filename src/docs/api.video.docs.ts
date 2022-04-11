@@ -63,14 +63,14 @@ export const methodNotAllowedError = {
     }
 }
 
-export const createCourseBody = {
+export const createVideosBody = {
     type: 'object',
     properties: {
         module: {
             type: 'string',
             example: '1',
         },
-        courser_id: {
+        video_id: {
             type: 'string',
             example: '126546654695',
         },
@@ -80,7 +80,7 @@ export const createCourseBody = {
         }
     }
 };
-export const courseUpdatesBody = {
+export const videosUpdatesBody = {
     type: 'object',
     properties: {
         status: {
@@ -90,10 +90,10 @@ export const courseUpdatesBody = {
     },
 };
 
-export const createCourse = {
-    tags: ['Course'],
-    description: 'Create a course entry',
-    operationId: 'createCourse',
+export const createVideos = {
+    tags: ['videos'],
+    description: 'Create a videos entry',
+    operationId: 'createVideos',
     security: [
         {
             bearerAuth: [],
@@ -104,7 +104,7 @@ export const createCourse = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createCourseBody'
+                    $ref: '#/components/schemas/createVideosBody'
                 },
             },
         },
@@ -123,7 +123,7 @@ export const createCourse = {
                             module: {
                                 type: 'string'
                             },
-                            course_id: {
+                            videos_id: {
                                 type: 'string'
                             },
                             status: {
@@ -144,10 +144,10 @@ export const createCourse = {
         '404': badRequestError,
     }
 }
-export const courseList = {
-    tags: ['Course'],
-    description: 'Get the list of the course',
-    operationId: 'CourseList',
+export const videosList = {
+    tags: ['videos'],
+    description: 'Get the list of the videos',
+    operationId: 'videosList',
     security: [
         {
             bearerAuth: [],
@@ -162,10 +162,10 @@ export const courseList = {
         '404': badRequestError,
     }
 }
-export const courseById = {
-    tags: ['Course'],
-    description: 'Get the single course',
-    operationId: 'courseById',
+export const videosById = {
+    tags: ['videos'],
+    description: 'Get the single videos',
+    operationId: 'videosById',
     security: [
         {
             bearerAuth: [],
@@ -174,13 +174,13 @@ export const courseById = {
     parameters: [
         {
             in: 'path',
-            name: 'courseId',
+            name: 'videosId',
             schema: {
                 type: 'integer',
                 default: 963258
             },
             required: true,
-            description: "courseId to fetch",
+            description: "videosId to fetch",
         }
     ],
     responses: {
@@ -192,10 +192,10 @@ export const courseById = {
         '404': badRequestError,
     }
 }
-export const courseByIdUpdate = {
-    tags: ['Course'],
-    description: 'update a course entry',
-    operationId: 'courseByIdUpdate',
+export const videosByIdUpdate = {
+    tags: ['videos'],
+    description: 'update a videos entry',
+    operationId: 'videosByIdUpdate',
     security: [
         {
             bearerAuth: [],
@@ -206,7 +206,7 @@ export const courseByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/courseUpdatesBody'
+                    $ref: '#/components/schemas/videosUpdatesBody'
                 },
             },
         },
@@ -214,13 +214,13 @@ export const courseByIdUpdate = {
     parameters: [
         {
             in: 'path',
-            name: 'courseId',
+            name: 'videosId',
             schema: {
                 type: 'integer',
                 default: 963258
             },
             required: true,
-            description: "courseId to fetch",
+            description: "videosId to fetch",
         }
     ],
     responses: {
@@ -239,10 +239,10 @@ export const courseByIdUpdate = {
         '404': badRequestError,
     }
 }
-export const courseByIdDelete = {
-    tags: ['Course'],
-    description: 'delete the single entry with course id',
-    operationId: 'courseByIdDelete',
+export const videosByIdDelete = {
+    tags: ['videos'],
+    description: 'delete the single entry with videos id',
+    operationId: 'videosByIdDelete',
     security: [
         {
             bearerAuth: [],
@@ -251,13 +251,13 @@ export const courseByIdDelete = {
     parameters: [
         {
             in: 'path',
-            name: 'courseId',
+            name: 'videosId',
             schema: {
                 type: 'integer',
                 default: 963258
             },
             required: true,
-            description: "courseId to fetch",
+            description: "videosId to fetch",
         }
     ],
     responses: {
