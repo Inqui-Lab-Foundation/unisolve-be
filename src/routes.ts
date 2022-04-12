@@ -41,35 +41,42 @@ function routes(App: Express) {
     //authentication
     App.post('/api/v1/student/register', validate(userRegisterSchema), studentControllers.registerHandler);
     App.post('/api/v1/student/login', studentControllers.loginHandler);
-    App.post('/api/v1/student/changePassword',requiredUser, validate(userPasswordSchema), studentControllers.changePasswordHandler)
+    App.post('/api/v1/student/changePassword', requiredUser, validate(userPasswordSchema), studentControllers.changePasswordHandler)
     App.get('/api/v1/student/logout', requiredUser, studentControllers.logoutHandler);
 
     //videos
-    App.post('/api/v1/video/create', validate(videoPayload), requiredUser, videoControllers.createVideo);
-    App.get('/api/v1/video/list', requiredUser, videoControllers.getVideos);
-    App.get('/api/v1/video/get/:videoId', requiredUser, videoControllers.getVideoById);
-    App.put('/api/v1/video/update/:videoId', validate(videoUpdate), requiredUser, videoControllers.updateVideo);
-    App.delete('/api/v1/video/delete/:videoId', requiredUser, videoControllers.deleteVideo);
+    App.post('/api/v1/video/create', validate(videoPayload), requiredUser, videoControllers.createHandler);
+    App.get('/api/v1/video/list', requiredUser, videoControllers.getHandler);
+    App.get('/api/v1/video/get/:videoId', requiredUser, videoControllers.getByIdHandler);
+    App.put('/api/v1/video/update/:videoId', validate(videoUpdate), requiredUser, videoControllers.updateHandler);
+    App.delete('/api/v1/video/delete/:videoId', requiredUser, videoControllers.deleteHandler);
 
     //course
-    App.post('/api/v1/course/create', validate(coursePayload), requiredUser, courseControllers.createCourse);
-    App.get('/api/v1/course/list', requiredUser, courseControllers.getCourses);
-    App.get('/api/v1/course/get/:courseId', requiredUser, courseControllers.getCourseById);
-    App.put('/api/v1/course/update/:courseId', validate(courseUpdate), requiredUser, courseControllers.updateCourse);
-    App.delete('/api/v1/course/delete/:courseId', requiredUser, courseControllers.deleteCourse);
+    App.post('/api/v1/course/create', validate(coursePayload), requiredUser, courseControllers.createHandler);
+    App.get('/api/v1/course/list', requiredUser, courseControllers.getHandler);
+    App.get('/api/v1/course/get/:courseId', requiredUser, courseControllers.getByIdHandler);
+    App.put('/api/v1/course/update/:courseId', validate(courseUpdate), requiredUser, courseControllers.updateHandler);
+    App.delete('/api/v1/course/delete/:courseId', requiredUser, courseControllers.deleteHandler);
+
+    //modules
+    App.post('/api/v1/modules/create', validate(coursePayload), requiredUser, courseControllers.createHandler);
+    App.get('/api/v1/modules/list', requiredUser, courseControllers.getHandler);
+    App.get('/api/v1/modules/get/:courseId', requiredUser, courseControllers.getByIdHandler);
+    App.put('/api/v1/modules/update/:courseId', validate(courseUpdate), requiredUser, courseControllers.updateHandler);
+    App.delete('/api/v1/modules/delete/:courseId', requiredUser, courseControllers.deleteHandler);
 
     //mentor
-    App.post('/api/v1/mentor/create', validate(mentorPayload), requiredUser, mentorControllers.createMentor);
-    App.get('/api/v1/mentor/list', requiredUser, mentorControllers.getMentor);
-    App.get('/api/v1/mentor/get/:mentorId', requiredUser, mentorControllers.getMentorById);
-    App.put('/api/v1/mentor/update/:mentorId', validate(mentorUpdate), requiredUser, mentorControllers.updateMentor);
-    App.delete('/api/v1/mentor/delete/:mentorId', requiredUser, mentorControllers.deleteMentor)
+    App.post('/api/v1/mentor/create', validate(mentorPayload), requiredUser, mentorControllers.createHandler);
+    App.get('/api/v1/mentor/list', requiredUser, mentorControllers.getHandler);
+    App.get('/api/v1/mentor/get/:mentorId', requiredUser, mentorControllers.getByIdHandler);
+    App.put('/api/v1/mentor/update/:mentorId', validate(mentorUpdate), requiredUser, mentorControllers.updateHandler);
+    App.delete('/api/v1/mentor/delete/:mentorId', requiredUser, mentorControllers.deleteHandler)
 
     //evaluator
-    App.post('/api/v1/evaluator/create', validate(evaluatorPayload), requiredUser, evaluatorControllers.createEvaluator);
-    App.get('/api/v1/evaluator/list', requiredUser, evaluatorControllers.getEvaluator);
-    App.get('/api/v1/evaluator/get/:evaluatorId', requiredUser, evaluatorControllers.getEvaluatorById);
-    App.put('/api/v1/evaluator/update/:evaluatorId', validate(evaluatorUpdate), requiredUser, evaluatorControllers.updateEvaluator);
-    App.delete('/api/v1/evaluator/delete/:evaluatorId', requiredUser, evaluatorControllers.deleteEvaluator)
+    App.post('/api/v1/evaluator/create', validate(evaluatorPayload), requiredUser, evaluatorControllers.createHandler);
+    App.get('/api/v1/evaluator/list', requiredUser, evaluatorControllers.getHandler);
+    App.get('/api/v1/evaluator/get/:evaluatorId', requiredUser, evaluatorControllers.getByIdHandler);
+    App.put('/api/v1/evaluator/update/:evaluatorId', validate(evaluatorUpdate), requiredUser, evaluatorControllers.updateHandler);
+    App.delete('/api/v1/evaluator/delete/:evaluatorId', requiredUser, evaluatorControllers.deleteHandler)
 }
 export default routes;

@@ -3,7 +3,7 @@ import config from 'config'
 import { signJwt, verifyJwt } from "../utils/jwt";
 import { session } from "../models/session.model";
 import { student } from "../models/student.model";
-import dbServices from "./database.services";
+import OperationalService from "./operational.services";
 import logger from '../utils/logger';
 
 /**
@@ -17,7 +17,7 @@ class sessionService {
      */
     async createSession(input: any) {
         try {
-            const newEntry = await dbServices.buildFunction({ tableName: session, input });
+            const newEntry = await OperationalService.build(input, session);
             return newEntry.dataValues;
         } catch (error: any) {
             return error.message
@@ -26,15 +26,15 @@ class sessionService {
     async findSession(input: any) {
         const { userId } = input;
         try {
-            const record = dbServices.findOneFunction(session, { where: { userId } });
+            const record = OperationalService.findOne(userId, session);
             return record;
         } catch (error: any) {
             return error.message
         }
     };
-    async destroySession(data: string) {
+    async destroySession(id: string) {
         try {
-            const result = dbServices.deleteFunction(session, { where: { userId: data } });
+            const result = OperationalService.destroyOne(id, session);
             logger.info(`Session deleted, ${JSON.stringify(result)}`)
             return result
         } catch (error: any) {
@@ -49,9 +49,9 @@ class sessionService {
     async reIssuesAccessToken({ refreshToken }: { refreshToken: any }) {
         const { decoded } = verifyJwt(refreshToken);
         if (!decoded || get(decoded, "session")) return false;
-        const record = await dbServices.findByPkFunction(session, get(decoded, "session"));
+        const record = await OperationalService.findByPk(session, get(decoded, "session"));
         if (!record || record.getDataValue('valid')) return false;
-        const user = await dbServices.findOneFunction(student, { where: { id: record.getDataValue('userId') } });
+        const user = await OperationalService.findOne(record.getDataValue('userId'), student);
         if (!user) return false;
         const accessToken = signJwt(
             { ...user, session: record.getDataValue('id') },

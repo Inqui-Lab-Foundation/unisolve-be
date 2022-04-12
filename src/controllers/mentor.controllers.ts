@@ -1,73 +1,72 @@
 import { Request, Response } from "express";
 
-import mentorServices from "../services/mentor.services";
-import { mentorPayloadInput } from "../schemas/mentor.schema";
+import operationalServices from "../services/operational.services";
 import { mentor } from "../models/mentor.model";
 import logger from '../utils/logger'
-
 /**
  * Controller class for all mentor API's 
  */
 class mentorController {
-    async createMentor(
-        req: Request<{}, {}, mentorPayloadInput["body"]>,
-        res: Response) {
-        const { mentor_name, email } = req.body;
-        const product = await mentorServices.buildMentor({ mentor_name, email });
-        logger.info(`Id found ${JSON.stringify(product)}`)
-        return res.send(product)
-    }
-    async getMentor(
-        req: Request<{}, {}>,
-        res: Response) {
-        const product = await mentor.findAll()
+    async createHandler(req: Request, res: Response) {
+        const product = await operationalServices.build(req.body, mentor);
         if (!product) {
-            logger.error(`Id found ${JSON.stringify(product)}`)
-            return res.status(406).send({ message: 'Product not found' });
+            logger.error(`something went wrong while creating the entry please check the payload`);
+            return res.status(406).send({ message: 'something went wrong while creating the entry please check the payload' });
         }
-        logger.info(`Id found ${JSON.stringify(product)}`)
         return res.send({ product });
     }
-    async getMentorById(
-        req: Request,
-        res: Response) {
-        const id = req.params.mentorId;
-        const product = await mentorServices.findMentor(id)
-        if (!product) {
-            logger.error(`Id found ${JSON.stringify(product)}`)
-            return res.status(406).send({ message: 'Product not found' });
+    async getHandler(req: Request, res: Response) {
+        const products = await operationalServices.findsAll(mentor);
+        if (!products) {
+            logger.error(`Can not find the entry please try again`);
+            return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        logger.info(`Id found ${JSON.stringify(product)}`)
+        logger.info(`Entry: ${JSON.stringify(products)}`);
+        return res.send({ products });
+    }
+    async getByIdHandler(req: Request, res: Response) {
+        const request_id = req.params.mentorId;
+        const product = await operationalServices.findOne(mentor, {
+            where: {
+                id: request_id
+            }
+        })
+        if (!product) {
+            logger.error(`Can not find the entry please try again`);
+            return res.status(406).send({ message: 'Can not find the entry please try again' });
+        }
+        logger.info(`Entry Found`)
         return res.send({ product });
     }
-    async updateMentor(
-        req: Request,
-        res: Response
-    ) {
-        const mentor_id = req.params.mentorId;
-        const update = req.body;
-        const entry = await mentorServices.findMentor(mentor_id);
-        if (!entry) {
-            logger.error(`Id found ${JSON.stringify(entry)} `)
-            return res.status(406).send({ message: 'Product not found' });
+    async updateHandler(req: Request, res: Response) {
+        const request_id = req.params.mentorId;
+        const updateObject = req.body;
+        const product = await operationalServices.findOne(mentor, {
+            where: { id: request_id }
+        });
+        console.log(product);
+        if (!product) {
+            logger.error(`Can not find the entry please try again`);
+            return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const updatedMentor = await mentorServices.updateMentor(update, mentor_id);
-        logger.info(`Id updated ${JSON.stringify(updatedMentor)} `)
-        return res.send(updatedMentor);
+        const response = await operationalServices.updateOne(updateObject, request_id, mentor);
+        logger.info(`Product updated ${JSON.stringify(response)}`)
+        return res.send({ response });
     };
-    async deleteMentor(
-        req: Request,
-        res: Response
-    ) {
-        const mentor_id = req.params.mentorId;
-        const entry = await mentorServices.findMentor(mentor_id);
-        if (!entry) {
-            logger.error(`Id not found ${JSON.stringify(entry)} `)
-            return res.status(406).send({ message: 'Product not found' });
+    async deleteHandler(req: Request, res: Response) {
+        const request_id = req.params.mentorId;
+        const product = await operationalServices.findOne(mentor, {
+            where: {
+                id: request_id
+            }
+        });
+        if (!product) {
+            logger.error(`Can not find the entry please try again`);
+            return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const deleteMentor = await mentorServices.destroyMentor(mentor_id);
-        logger.info(`Id deleted ${JSON.stringify(deleteMentor)} `)
-        return res.send({ deleteMentor, text: 'successfully delete the entry' })
+        const response = await operationalServices.destroyOne(request_id, mentor);
+        logger.info(`Product delete}`);
+        return res.send({ deletedMentor: response, text: 'successfully delete the entry' })
     }
 }
 

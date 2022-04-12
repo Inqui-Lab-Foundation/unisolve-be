@@ -1,5 +1,4 @@
-import { videos } from "../models/video.model";
-import dbServices from './database.services';
+import { video } from "../models/video.model";
 
 /**
  * service for all the courser controllers logic isolated

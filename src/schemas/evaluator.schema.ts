@@ -13,8 +13,6 @@ export const evaluatorPayload = object({
 });
 
 
-export type evaluatorPayloadInput = Omit<TypeOf<typeof evaluatorPayload>, "body.passwordConfirmation">;
-
 export const evaluatorUpdate = object({
     body: object({
         status: z.enum(["Active", "Inactive"])

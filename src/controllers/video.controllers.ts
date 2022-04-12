@@ -1,62 +1,61 @@
 import { Request, Response } from "express";
 
-import videoServices from "../services/video.services";
-import { videoPayloadInput } from "../schemas/video.schema";
-import { videos } from "../models/video.model";
+import operationalServices from "../services/operational.services";
+import { video } from "../models/video.model";
 import logger from '../utils/logger'
 /**
- * Controller class for all  courser API's 
+ * Controller class for all video API's 
  */
 class videoController {
-    async createVideo(req: Request<{}, {}, videoPayloadInput["body"]>, res: Response) {
-        const product = await videoServices.buildVideo(req.body);
+    async createHandler(req: Request, res: Response) {
+        const product = await operationalServices.build(req.body, video);
         if (!product) {
-            logger.error(`error create a video`)
-            return res.status(406).send({ message: 'error create a video' });
+            logger.error(`something went wrong while creating the entry please check the payload`);
+            return res.status(406).send({ message: 'something went wrong while creating the entry please check the payload' });
         }
-        return res.send(product)
-    }
-    async getVideos(req: Request<{}, {}>, res: Response) {
-        const videos = await videoServices.findVideos();
-        if (!videos) {
-            logger.error(`Videos not found`)
-            return res.status(406).send({ message: 'Videos not found' });
-        }
-        logger.info(`Videos found ${JSON.stringify(videos)}`)
-        return res.send({ videos });
-    }
-    async getVideoById(req: Request, res: Response) {
-        const video_id = req.params.courseId;
-        const product = await videoServices.findVideo(video_id)
-        if (!product) {
-            logger.error(`video not found}`)
-            return res.status(406).send({ message: 'video not found' });
-        }
-        logger.info(`video found`)
         return res.send({ product });
     }
-    async updateVideo(req: Request, res: Response) {
-        const video_id = req.params.videoId;
-        const update = req.body;
-        const entry = await videoServices.findVideo(video_id);
-        if (!entry) {
-            logger.error(`Product not found}`)
-            return res.status(406).send({ message: 'product not found' });
+    async getHandler(req: Request, res: Response) {
+        const products = await operationalServices.findsAll(video);
+        if (!products) {
+            logger.error(`Can not find the entry please try again`);
+            return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const updatedVideo = await videoServices.updateVideo(update, video_id);
-        logger.info(`Product update ${JSON.stringify(updatedVideo)}`)
-        return res.send(updatedVideo);
+        logger.info(`Entry: ${JSON.stringify(products)}`);
+        return res.send({ products });
+    }
+    async getByIdHandler(req: Request, res: Response) {
+        const request_id = req.params.videoId;
+        const product = await operationalServices.findOne(request_id, video)
+        if (!product) {
+            logger.error(`Can not find the entry please try again`);
+            return res.status(406).send({ message: 'Can not find the entry please try again' });
+        }
+        logger.info(`Entry Found`)
+        return res.send({ product });
+    }
+    async updateHandler(req: Request, res: Response) {
+        const request_id = req.params.videoId;
+        const updateObject = req.body;
+        const product = await operationalServices.findOne(request_id, video);
+        if (!product) {
+            logger.error(`Can not find the entry please try again`);
+            return res.status(406).send({ message: 'Can not find the entry please try again' });
+        }
+        const response = await operationalServices.updateOne(updateObject, request_id, video);
+        logger.info(`Product updated ${JSON.stringify(response)}`)
+        return res.send({ response });
     };
-    async deleteVideo(req: Request, res: Response) {
-        const video_id = req.params.videoId;
-        const entry = await videoServices.findVideo(video_id);
-        if (!entry) {
-            logger.error(`Product not found}`)
-            return res.status(406).send({ message: 'product not found' });
+    async deleteHandler(req: Request, res: Response) {
+        const request_id = req.params.videoId;
+        const product = await operationalServices.findOne(request_id, video);
+        if (!product) {
+            logger.error(`Can not find the entry please try again`);
+            return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const deleteVideo = await videoServices.destroyVideo(video_id);
-        logger.info(`Product delete}`)
-        return res.send({ deleteVideo, text: 'successfully delete the entry' })
+        const response = await operationalServices.destroyOne(request_id, video);
+        logger.info(`Product delete}`);
+        return res.send({ deletedVideo: response, text: 'successfully delete the entry' })
     }
 }
 

@@ -3,7 +3,7 @@ import { omit } from "lodash";
 
 
 import { student } from "../models/student.model";
-import dbService from './database.services'
+import OperationalService from './operational.services'
 import logger from '../utils/logger'
 
 /**
@@ -18,7 +18,7 @@ class studentService {
     buildStudent(data: object) {
         const id = UUIDV4(); // generate new UUID
         try {
-            const newEntry = dbService.buildFunction({ tableName: student, input: { id, ...data } });
+            const newEntry = OperationalService.build({ id, ...data }, student);
             return omit(newEntry, "password");
         } catch (error: any) {
             logger.error(error.message);
@@ -32,7 +32,7 @@ class studentService {
      */
     findStudentByEmail(email: string) {
         if (email) {
-            const result = dbService.findOneFunction(student, { where: { email } });
+            const result = OperationalService.findOne(student, { where: { email } });
             return result;
         }
         logger.error('please check your emailId');
@@ -40,7 +40,7 @@ class studentService {
     };
     findStudentByMobile(mobile: number) {
         if (mobile) {
-            const result = dbService.findOneFunction(student, { where: { mobile } });
+            const result = OperationalService.findOne(student, { where: { mobile } });
             return result;
         }
         logger.error('please check your mobile');
@@ -48,7 +48,7 @@ class studentService {
     };
     findStudentByStudentName(student_name: string) {
         if (student_name) {
-            const result = dbService.findOneFunction(student, { where: { student_name } });
+            const result = OperationalService.findOne(student, { where: { student_name } });
             return result;
         }
         logger.error('please check your student_name');
@@ -71,7 +71,7 @@ class studentService {
      */
     async changePassword(input: any) {
         const { userId, oldPassword, newPassword } = input;
-        const findEntry = await dbService.findByPkFunction(student, userId);
+        const findEntry = await OperationalService.findByPk(student, userId);
         if (findEntry) {
             const authenticate = await this.authenticateStudent(oldPassword, findEntry.getDataValue('password'));
             if (authenticate === false) {

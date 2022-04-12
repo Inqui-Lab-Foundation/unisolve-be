@@ -1,30 +1,29 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../../config/database.config';
 
-export interface videosAttributes {
+export interface courseAttributes {
     id: number;
-    module: string;
-    video_id: string;
+    course_id: string;
+    description: string;
     status: Enumerator;
 }
 
-export class video extends Model<videosAttributes> { }
+export class modules extends Model<courseAttributes> { }
 
-video.init(
+modules.init(
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        module: {
+        course_id: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        video_id: {
+        description: {
             type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
+            allowNull: false
         },
         status: {
             type: DataTypes.ENUM('Completed', 'Incomplete')
@@ -32,6 +31,6 @@ video.init(
     },
     {
         sequelize: db,
-        tableName: 'video',
+        tableName: 'modules',
     }
 );
