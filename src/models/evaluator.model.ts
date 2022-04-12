@@ -6,7 +6,7 @@ export interface evaluatorAttributes {
     evaluator_name: string;
     mobile: number;
     email: string;
-    statue: Enumerator;
+    status: Enumerator;
 }
 
 export class evaluator extends Model<evaluatorAttributes> { }
@@ -32,12 +32,12 @@ evaluator.init(
             allowNull: false,
             unique: true
         },
-        statue: {
+        status: {
             type: DataTypes.ENUM('Active', 'Inactive')
         }
     },
     {
         sequelize: db,
-        tableName: 'Evaluators',
+        tableName: 'evaluator',
     }
 );

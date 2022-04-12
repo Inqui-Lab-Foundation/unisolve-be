@@ -7,7 +7,7 @@ import dbServices from "./database.services";
 class mentorService {
     async buildMentor(input: any) {
         try {
-            const newEntry = await dbServices.buildFunction(mentor, input);
+            const newEntry = await dbServices.buildFunction({ tableName: mentor, input });
             return newEntry;
         } catch (error: any) {
             return error.message

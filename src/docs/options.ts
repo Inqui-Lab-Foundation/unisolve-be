@@ -19,6 +19,15 @@ import {
     courseUpdatesBody
 } from "./api.course.docs";
 import {
+    videosList,
+    createVideos,
+    videosById,
+    videosByIdUpdate,
+    videosByIdDelete,
+    createVideosBody,
+    videosUpdatesBody
+} from "./api.video.docs";
+import {
     createMentor,
     mentorById,
     createMentorBody,
@@ -67,6 +76,9 @@ const options = {
             name: 'Course',
         },
         {
+            name: 'videos',
+        },
+        {
             name: 'Mentor',
         },
         {
@@ -103,6 +115,21 @@ const options = {
         },
         '/api/v1/course/delete/{courseId}': {
             delete: courseByIdDelete
+        },
+        '/api/v1/video/create': {
+            post: createVideos
+        },
+        '/api/v1/video/list': {
+            get: videosList
+        },
+        '/api/v1/video/get/{videoId}': {
+            get: videosById
+        },
+        '/api/v1/video/update/{videoId}': {
+            put: videosByIdUpdate
+        },
+        '/api/v1/video/delete/{videoId}': {
+            delete: videosByIdDelete
         },
         '/api/v1/mentor/create': {
             post: createMentor
@@ -149,6 +176,7 @@ const options = {
             studentLoginBody,
             studentChangePasswordBody,
             createCourseBody,
+            createVideosBody,
             courseUpdatesBody,
             createMentorBody,
             mentorUpdateBody,

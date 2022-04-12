@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 class dbService {
-    async buildFunction(tableName: any, input: object) {
+    async buildFunction({ tableName, input }: { tableName: any; input: object; }) {
         return await tableName.create(input);
     }
     async findOneFunction(tableName: any, input: object) {

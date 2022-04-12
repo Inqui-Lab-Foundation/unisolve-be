@@ -1,37 +1,36 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../../config/database.config';
 
-export interface coursesAttributes {
+export interface courseAttributes {
     id: number;
-    module: string;
-    courser_id: string;
-    statue: Enumerator;
+    course_name: string;
+    description: string;
+    status: Enumerator;
 }
 
-export class courses extends Model<coursesAttributes> { }
+export class course extends Model<courseAttributes> { }
 
-courses.init(
+course.init(
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        module: {
+        course_name: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        courser_id: {
+        description: {
             type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
+            allowNull: false
         },
-        statue: {
+        status: {
             type: DataTypes.ENUM('Completed', 'Incomplete')
         }
     },
     {
         sequelize: db,
-        tableName: 'Courses',
+        tableName: 'course',
     }
 );

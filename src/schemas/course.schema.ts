@@ -1,29 +1,24 @@
 /*Importing the dependencies*/
-import { object, string, z, TypeOf,  } from "zod";
+import { object, string, z, TypeOf, } from "zod";
 import { Omit } from 'lodash';
 
-export const courserPayload = object({
+export const coursePayload = object({
     body: object({
-        module: string({
-            required_error: 'Name is required field'
-        }),
-        courser_id: string({
-            required_error: 'Password is required field'
-        }).min(6, 'Password should be minimum of 6 characters'),
-        statue: z.enum(["Completed", "Incomplete"])
+        course_name: string({required_error: 'Name is required field'}),
+        description: string({ required_error: 'description is required field'})
     })
 });
 
 
-export type courserPayloadInput = Omit<TypeOf<typeof courserPayload>, "body.passwordConfirmation">;
+export type coursePayloadInput = Omit<TypeOf<typeof coursePayload>, "body.passwordConfirmation">;
 
 export const courseUpdate = object({
     body: object({
-        statue: z.enum(["Completed", "Incomplete"])
+        status: z.enum(["Completed", "Incomplete"])
     })
 });
 
 
-export type CourseUpdateInput = Omit<TypeOf<typeof courseUpdate>, "body.passwordConfirmation">;
+export type courseUpdateInput = Omit<TypeOf<typeof courseUpdate>, "body.passwordConfirmation">;
 
 

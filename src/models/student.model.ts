@@ -16,7 +16,7 @@ export interface studentAttributes {
     district: string;
     state: string;
     country: string;
-    statue: Enumerator;
+    status: Enumerator;
 }
 
 export class student extends Model<studentAttributes> { }
@@ -74,14 +74,14 @@ student.init(
         country: {
             type: DataTypes.STRING
         },
-        statue: {
+        status: {
             type: DataTypes.ENUM('Active', 'Inactive')
         }
     },
     {
         hooks: {},
         sequelize: db,
-        tableName: 'Students',
+        tableName: 'student',
     }
 );
 
