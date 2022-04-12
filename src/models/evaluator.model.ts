@@ -33,7 +33,8 @@ evaluator.init(
             unique: true
         },
         status: {
-            type: DataTypes.ENUM('Active', 'Inactive')
+            type: DataTypes.ENUM('Active', 'Inactive'),
+            defaultValue: "Active"
         }
     },
     {

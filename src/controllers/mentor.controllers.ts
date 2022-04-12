@@ -12,8 +12,8 @@ class mentorController {
     async createMentor(
         req: Request<{}, {}, mentorPayloadInput["body"]>,
         res: Response) {
-        const { mentor_name, mobile, email } = req.body;
-        const product = await mentorServices.buildMentor({ mentor_name, mobile, email });
+        const { mentor_name, email } = req.body;
+        const product = await mentorServices.buildMentor({ mentor_name, email });
         logger.info(`Id found ${JSON.stringify(product)}`)
         return res.send(product)
     }
