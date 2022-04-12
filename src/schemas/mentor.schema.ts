@@ -7,8 +7,7 @@ export const mentorPayload = object({
         mentor_name: string({
             required_error: 'Name is required field'
         }),
-        email: string({ required_error: 'Email is required field' }).email('not a valid email'),
-        mobile: number({ required_error: 'required field' }).min(10, "Enter the right format mobile number"),
+        email: string({ required_error: 'Email is required field' }).email('not a valid email')
     })
 });
 
