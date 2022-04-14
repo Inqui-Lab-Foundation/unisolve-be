@@ -25,7 +25,7 @@ class moduleController {
         return res.send({ products });
     }
     async getByIdHandler(req: Request, res: Response) {
-        const request_id = req.params.courseId;
+        const request_id = req.params.moduleId;
         const product = await operationalServices.findOne(modules, {
             where: {
                 id: request_id
@@ -39,7 +39,7 @@ class moduleController {
         return res.send({ product });
     }
     async updateHandler(req: Request, res: Response) {
-        const request_id = req.params.courseId;
+        const request_id = req.params.moduleId;
         const updateObject = req.body;
         const product = await operationalServices.findOne(modules, {
             where: {
@@ -55,7 +55,7 @@ class moduleController {
         return res.send({ response });
     };
     async deleteHandler(req: Request, res: Response) {
-        const request_id = req.params.courseId;
+        const request_id = req.params.moduleId;
         const product = await operationalServices.findOne(modules, {
             where: {
                 id: request_id

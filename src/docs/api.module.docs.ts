@@ -62,24 +62,21 @@ export const methodNotAllowedError = {
         }
     }
 }
-export const createVideosBody = {
+
+export const createModuleBody = {
     type: 'object',
     properties: {
-        module: {
-            type: 'string',
-            example: '1',
-        },
-        video_id: {
+        course_id: {
             type: 'string',
             example: '126546654695',
         },
-        status: {
+        description: {
             type: 'string',
-            example: "Completed"
+            example: 'Voluptas recusandae quo ut et est. Enim quibusdam et veniam nostrum est dolor reiciendis et. Delectus officiis impedit facilis assumenda dolor quia facere. Eos temporibus autem beatae eos repellat et voluptas. Commodi dignissimos dignissimos temporibus quia voluptate inventore. Et incidunt vero quia autem autem.'
         }
     }
 };
-export const videosUpdatesBody = {
+export const moduleUpdatesBody = {
     type: 'object',
     properties: {
         status: {
@@ -88,10 +85,11 @@ export const videosUpdatesBody = {
         }
     },
 };
-export const createVideos = {
-    tags: ['Videos'],
-    description: 'Create a videos entry',
-    operationId: 'createVideos',
+
+export const createModule = {
+    tags: ['Modules'],
+    description: 'Create a module entry',
+    operationId: 'createModule',
     security: [
         {
             bearerAuth: [],
@@ -102,7 +100,7 @@ export const createVideos = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createVideosBody'
+                    $ref: '#/components/schemas/createModuleBody'
                 },
             },
         },
@@ -118,10 +116,10 @@ export const createVideos = {
                             id: {
                                 type: 'string'
                             },
-                            module: {
+                            course_id: {
                                 type: 'string'
                             },
-                            videos_id: {
+                            description: {
                                 type: 'string'
                             },
                             status: {
@@ -142,10 +140,10 @@ export const createVideos = {
         '404': badRequestError,
     }
 }
-export const videosList = {
-    tags: ['Videos'],
-    description: 'Get the list of the videos',
-    operationId: 'videosList',
+export const moduleList = {
+    tags: ['Modules'],
+    description: 'Get the list of the module',
+    operationId: 'modulesList',
     security: [
         {
             bearerAuth: [],
@@ -160,10 +158,10 @@ export const videosList = {
         '404': badRequestError,
     }
 }
-export const videosById = {
-    tags: ['Videos'],
-    description: 'Get the single videos',
-    operationId: 'videosById',
+export const moduleById = {
+    tags: ['Modules'],
+    description: 'Get the single module',
+    operationId: 'moduleById',
     security: [
         {
             bearerAuth: [],
@@ -172,13 +170,13 @@ export const videosById = {
     parameters: [
         {
             in: 'path',
-            name: 'videosId',
+            name: 'moduleId',
             schema: {
                 type: 'integer',
                 default: 963258
             },
             required: true,
-            description: "videosId to fetch",
+            description: "moduleId to fetch",
         }
     ],
     responses: {
@@ -190,10 +188,10 @@ export const videosById = {
         '404': badRequestError,
     }
 }
-export const videosByIdUpdate = {
-    tags: ['Videos'],
-    description: 'update a videos entry',
-    operationId: 'videosByIdUpdate',
+export const moduleByIdUpdate = {
+    tags: ['Modules'],
+    description: 'update a module entry',
+    operationId: 'moduleByIdUpdate',
     security: [
         {
             bearerAuth: [],
@@ -204,7 +202,7 @@ export const videosByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/videosUpdatesBody'
+                    $ref: '#/components/schemas/moduleUpdatesBody'
                 },
             },
         },
@@ -212,13 +210,13 @@ export const videosByIdUpdate = {
     parameters: [
         {
             in: 'path',
-            name: 'videosId',
+            name: 'moduleId',
             schema: {
                 type: 'integer',
                 default: 963258
             },
             required: true,
-            description: "videosId to fetch",
+            description: "moduleId to fetch",
         }
     ],
     responses: {
@@ -237,10 +235,10 @@ export const videosByIdUpdate = {
         '404': badRequestError,
     }
 }
-export const videosByIdDelete = {
-    tags: ['Videos'],
-    description: 'delete the single entry with videos id',
-    operationId: 'videosByIdDelete',
+export const moduleByIdDelete = {
+    tags: ['Modules'],
+    description: 'delete the single entry with module id',
+    operationId: 'moduleByIdDelete',
     security: [
         {
             bearerAuth: [],
@@ -249,13 +247,13 @@ export const videosByIdDelete = {
     parameters: [
         {
             in: 'path',
-            name: 'videosId',
+            name: 'moduleId',
             schema: {
                 type: 'integer',
                 default: 963258
             },
             required: true,
-            description: "videosId to fetch",
+            description: "moduleId to fetch",
         }
     ],
     responses: {

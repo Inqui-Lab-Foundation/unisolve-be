@@ -15,6 +15,7 @@ import { mentorPayload, mentorUpdate } from './schemas/mentor.schema';
 import { userPasswordSchema, userLoginSchema, userRegisterSchema } from './schemas/student.schema';
 import { coursePayload, courseUpdate } from './schemas/course.schema';
 import courseControllers from './controllers/course.controllers';
+import moduleControllers from './controllers/module.controllers';
 
 /**
  * API's handler functions 
@@ -59,11 +60,11 @@ function routes(App: Express) {
     App.delete('/api/v1/course/delete/:courseId', requiredUser, courseControllers.deleteHandler);
 
     //modules
-    App.post('/api/v1/modules/create', validate(coursePayload), requiredUser, courseControllers.createHandler);
-    App.get('/api/v1/modules/list', requiredUser, courseControllers.getHandler);
-    App.get('/api/v1/modules/get/:courseId', requiredUser, courseControllers.getByIdHandler);
-    App.put('/api/v1/modules/update/:courseId', validate(courseUpdate), requiredUser, courseControllers.updateHandler);
-    App.delete('/api/v1/modules/delete/:courseId', requiredUser, courseControllers.deleteHandler);
+    App.post('/api/v1/modules/create', requiredUser, moduleControllers.createHandler);
+    App.get('/api/v1/modules/list', requiredUser, moduleControllers.getHandler);
+    App.get('/api/v1/modules/get/:moduleId', requiredUser, moduleControllers.getByIdHandler);
+    App.put('/api/v1/modules/update/:moduleId', requiredUser, moduleControllers.updateHandler);
+    App.delete('/api/v1/modules/delete/:moduleId', requiredUser, moduleControllers.deleteHandler);
 
     //mentor
     App.post('/api/v1/mentor/create', validate(mentorPayload), requiredUser, mentorControllers.createHandler);
