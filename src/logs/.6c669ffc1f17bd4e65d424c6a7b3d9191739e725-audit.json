@@ -6,11 +6,6 @@
     "auditLog": "D:\\Projects\\unisolve-be\\src\\logs\\.6c669ffc1f17bd4e65d424c6a7b3d9191739e725-audit.json",
     "files": [
         {
-            "date": 1649234283495,
-            "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-06.log",
-            "hash": "eb87683e90ca7a5aa3e73d8282fd3ac6"
-        },
-        {
             "date": 1649337900821,
             "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-07.log",
             "hash": "eb9d5e8186869c316516d31820583c11"
@@ -29,6 +24,11 @@
             "date": 1649740948942,
             "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-12.log",
             "hash": "836aebdf61343b56a79b4351a9af6c8f"
+        },
+        {
+            "date": 1649924964631,
+            "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-14.log",
+            "hash": "1ed8b63b1985f012641829c26bb08f8b"
         }
     ],
     "hashType": "md5"

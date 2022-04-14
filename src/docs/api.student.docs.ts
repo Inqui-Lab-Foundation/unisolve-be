@@ -79,7 +79,7 @@ export const studentRegistrationBody = {
         },
         password: {
             type: 'string',
-            example: 'Shakti@12345',
+            example: '33a4da31c6569c14921f7b068a94b18e',
             describe: 'mandatory field'
         },
         date_of_birth: {
@@ -124,15 +124,11 @@ export const studentLoginBody = {
     properties: {
         email: {
             type: 'string',
-            example: 'john.snow@email.com',
+            example: 'Shakti@email.com',
         },
         password: {
             type: 'string',
-            example: '!1234aWe1Ro3$#',
-        },
-        passwordConfirmation: {
-            type: 'string',
-            example: '!1234aWe1Ro3$#',
+            example: '33a4da31c6569c14921f7b068a94b18e',
         }
     },
 };
@@ -141,15 +137,15 @@ export const studentChangePasswordBody = {
     properties: {
         userId: {
             type: 'string',
-            example: '4bfa41c2-04a8-8l8u-9bd4-290c28030238',
+            example: 'b0174e75-f9cb-41a0-b71e-916a270ebbc5',
         },
         oldPassword: {
             type: 'string',
-            example: '$2a$10$CwTycUXWue0Thq9StjUM0u6jJCkkxtMhaiy49nUxSRfWuKKZTji0K',
+            example: '33a4da31c6569c14921f7b068a94b18e',
         },
         newPassword: {
             type: 'string',
-            example: '$2a$10$CwTycUXWue0Thq9StjUM0udvtNYI4lZ50Nfy1IBiW.W0fZhVIRNRav',
+            example: '17d3f297d157cfa29bd7fa04023bc56f',
         }
     },
 };

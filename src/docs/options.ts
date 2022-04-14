@@ -19,6 +19,15 @@ import {
     courseUpdatesBody
 } from "./api.course.docs";
 import {
+    moduleList,
+    createModule,
+    moduleById,
+    moduleByIdUpdate,
+    moduleByIdDelete,
+    createModuleBody,
+    moduleUpdatesBody
+} from "./api.module.docs";
+import {
     videosList,
     createVideos,
     videosById,
@@ -63,6 +72,10 @@ const options = {
             url: 'http://15.207.254.154:3002',
             description: 'Production Server',
         },
+        {
+            url: 'http://localhost:3002',
+            description: 'development Server',
+        },
     ],
     schemes: ['https', 'http'],
     tags: [
@@ -76,7 +89,10 @@ const options = {
             name: 'Course',
         },
         {
-            name: 'videos',
+            name: 'Modules',
+        },
+        {
+            name: 'Videos',
         },
         {
             name: 'Mentor',
@@ -115,6 +131,21 @@ const options = {
         },
         '/api/v1/course/delete/{courseId}': {
             delete: courseByIdDelete
+        },
+        '/api/v1/modules/create': {
+            post: createModule
+        },
+        '/api/v1/modules/list': {
+            get: moduleList
+        },
+        '/api/v1/modules/get/{moduleId}': {
+            get: moduleById
+        },
+        '/api/v1/modules/update/{moduleId}': {
+            put: moduleByIdUpdate
+        },
+        '/api/v1/modules/delete/{moduleId}': {
+            delete: moduleByIdDelete
         },
         '/api/v1/video/create': {
             post: createVideos
@@ -176,8 +207,11 @@ const options = {
             studentLoginBody,
             studentChangePasswordBody,
             createCourseBody,
+            createModuleBody,
             createVideosBody,
             courseUpdatesBody,
+            moduleUpdatesBody,
+            videosUpdatesBody,
             createMentorBody,
             mentorUpdateBody,
             createEvaluatorBody,
