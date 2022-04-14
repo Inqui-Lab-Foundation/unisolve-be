@@ -17,7 +17,7 @@ class sessionService {
      */
     async createSession(input: any) {
         try {
-            const newEntry = await OperationalService.build(input, session);
+            const newEntry = await OperationalService.build(session, input);
             return newEntry.dataValues;
         } catch (error: any) {
             return error.message
@@ -26,7 +26,7 @@ class sessionService {
     async findSession(input: any) {
         const { userId } = input;
         try {
-            const record = OperationalService.findOne(userId, session);
+            const record = OperationalService.findOne(session, userId);
             return record;
         } catch (error: any) {
             return error.message
@@ -34,7 +34,9 @@ class sessionService {
     };
     async destroySession(id: string) {
         try {
-            const result = OperationalService.destroyOne(id, session);
+            const result = OperationalService.destroyOne(session, {
+                where: { id }
+            });
             logger.info(`Session deleted, ${JSON.stringify(result)}`)
             return result
         } catch (error: any) {
@@ -51,7 +53,7 @@ class sessionService {
         if (!decoded || get(decoded, "session")) return false;
         const record = await OperationalService.findByPk(session, get(decoded, "session"));
         if (!record || record.getDataValue('valid')) return false;
-        const user = await OperationalService.findOne(record.getDataValue('userId'), student);
+        const user = await OperationalService.findOne(student, record.getDataValue('userId'));
         if (!user) return false;
         const accessToken = signJwt(
             { ...user, session: record.getDataValue('id') },

@@ -1,6 +1,6 @@
 /*Importing the dependencies*/
-import sessionService from '../../services/session.services';
-import { verifyJwt } from "../../utils/jwt";
+import sessionService from '../services/session.services';
+import { verifyJwt } from "../utils/jwt";
 import { NextFunction, Request, Response } from "express";
 import { get } from "lodash";
 

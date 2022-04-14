@@ -8,7 +8,7 @@ import logger from '../utils/logger'
  */
 class moduleController {
     async createHandler(req: Request, res: Response) {
-        const product = await operationalServices.build(req.body, modules);
+        const product = await operationalServices.build(modules, req.body);
         if (!product) {
             logger.error(`something went wrong while creating the entry please check the payload`);
             return res.status(406).send({ message: 'something went wrong while creating the entry please check the payload' });
@@ -50,7 +50,11 @@ class moduleController {
             logger.error(`Can not find the entry please try again`);
             return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const response = await operationalServices.updateOne(updateObject, request_id, modules);
+        const response = await operationalServices.updateOne(modules, updateObject, {
+            where: {
+                id: request_id
+            }
+        });
         logger.info(`Product updated ${JSON.stringify(response)}`)
         return res.send({ response });
     };
@@ -65,7 +69,11 @@ class moduleController {
             logger.error(`Can not find the entry please try again`);
             return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const response = await operationalServices.destroyOne(request_id, modules);
+        const response = await operationalServices.destroyOne(modules, {
+            where: {
+                id: request_id
+            }
+        });
         logger.info(`Product delete}`);
         return res.send({ deletedModule: response, text: 'successfully delete the entry' })
     }

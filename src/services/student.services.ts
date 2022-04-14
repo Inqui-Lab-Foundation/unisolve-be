@@ -18,7 +18,7 @@ class studentService {
     buildStudent(data: object) {
         const id = UUIDV4(); // generate new UUID
         try {
-            const newEntry = OperationalService.build({ id, ...data }, student);
+            const newEntry = OperationalService.build(student, { id, ...data });
             return omit(newEntry, "password");
         } catch (error: any) {
             logger.error(error.message);

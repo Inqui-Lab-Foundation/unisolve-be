@@ -1,21 +1,21 @@
 /*Importing the dependencies*/
-import e, { Express, Request, Response } from 'express';
+import { Express, Request, Response } from 'express';
 
-import videoControllers from './controllers/video.controllers';
-import evaluatorControllers from './controllers/evaluator.controllers';
-import mentorControllers from './controllers/mentor.controllers';
-import studentControllers from './controllers/student.controllers';
+import videoControllers from '../controllers/video.controllers';
+import evaluatorControllers from '../controllers/evaluator.controllers';
+import mentorControllers from '../controllers/mentor.controllers';
+import studentControllers from '../controllers/auth.controllers';
 
-import requiredUser from './middleware/student/requiredlogin';
-import validate from './middleware/validateResource';
+import requiredUser from '../middleware/requiredlogin';
+import validate from '../middleware/validateResource';
 
-import { videoPayload, videoUpdate } from './schemas/video.schema';
-import { evaluatorPayload, evaluatorUpdate } from './schemas/evaluator.schema';
-import { mentorPayload, mentorUpdate } from './schemas/mentor.schema';
-import { userPasswordSchema, userLoginSchema, userRegisterSchema } from './schemas/student.schema';
-import { coursePayload, courseUpdate } from './schemas/course.schema';
-import courseControllers from './controllers/course.controllers';
-import moduleControllers from './controllers/module.controllers';
+import { videoPayload, videoUpdate } from '../schemas/video.schema';
+import { evaluatorPayload, evaluatorUpdate } from '../schemas/evaluator.schema';
+import { mentorPayload, mentorUpdate } from '../schemas/mentor.schema';
+import { userPasswordSchema, userLoginSchema, userRegisterSchema } from '../schemas/student.schema';
+import { coursePayload, courseUpdate } from '../schemas/course.schema';
+import courseControllers from '../controllers/course.controllers';
+import moduleControllers from '../controllers/module.controllers';
 
 /**
  * API's handler functions 
@@ -24,26 +24,8 @@ import moduleControllers from './controllers/module.controllers';
  */
 function routes(App: Express) {
 
-    //health checking api
-    App.get('/api/v1/healthCheck', (req: Request, res: Response) => {
-        const healthcheck = {
-            uptime: process.uptime(),
-            message: 'OK',
-            timestamp: Date.now()
-        };
-        try {
-            res.send(healthcheck);
-        } catch (error: any) {
-            healthcheck.message = error;
-            res.status(503).send(error);
-        }
-    });
-
-    //authentication
-    App.post('/api/v1/student/register', validate(userRegisterSchema), studentControllers.registerHandler);
-    App.post('/api/v1/student/login', studentControllers.loginHandler);
+    //student 
     App.post('/api/v1/student/changePassword', requiredUser, validate(userPasswordSchema), studentControllers.changePasswordHandler)
-    App.get('/api/v1/student/logout', requiredUser, studentControllers.logoutHandler);
 
     //videos
     App.post('/api/v1/video/create', validate(videoPayload), requiredUser, videoControllers.createHandler);
