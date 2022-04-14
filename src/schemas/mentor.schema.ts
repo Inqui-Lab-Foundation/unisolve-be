@@ -12,8 +12,6 @@ export const mentorPayload = object({
 });
 
 
-export type mentorPayloadInput = Omit<TypeOf<typeof mentorPayload>, "body.passwordConfirmation">;
-
 export const mentorUpdate = object({
     body: object({
         status: z.enum(["Active", "Inactive"])

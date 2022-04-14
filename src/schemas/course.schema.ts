@@ -9,9 +9,6 @@ export const coursePayload = object({
     })
 });
 
-
-export type coursePayloadInput = Omit<TypeOf<typeof coursePayload>, "body.passwordConfirmation">;
-
 export const courseUpdate = object({
     body: object({
         status: z.enum(["Completed", "Incomplete"])

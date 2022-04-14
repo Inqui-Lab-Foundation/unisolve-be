@@ -13,9 +13,6 @@ export const videoPayload = object({
     })
 });
 
-
-export type videoPayloadInput = Omit<TypeOf<typeof videoPayload>, "body.passwordConfirmation">;
-
 export const videoUpdate = object({
     body: object({
         status: z.enum(["Completed", "Incomplete"])
