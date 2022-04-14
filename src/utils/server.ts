@@ -2,8 +2,9 @@ import Express, { Request, Response } from 'express';
 import cors from 'cors';
 import config from 'config';
 
-import deserializerUser from '../middleware/student/deserializerUser';
-import routes from '../routes';
+import deserializerUser from '../middleware/deserializerUser';
+import authRoutes from '../routes/authRoutes';
+import routes from '../routes/routes';
 import swaggerDocs from './swagger';
 
 
@@ -14,15 +15,16 @@ import swaggerDocs from './swagger';
 function createServer() {
     const App = Express();
     const Port = config.get<number>("port");
+    App.use(cors())
     App.use(Express.json());
     App.use(Express.urlencoded({ extended: true }));
-    App.use(cors())
+    authRoutes(App);
     App.use(deserializerUser);
     routes(App);
     swaggerDocs(App, Port);
     App.use("*", (req: Request, res: Response) => {
         res.status(404).send({ message: "Page not found" })
-    })
+    });
     return App;
 }
 

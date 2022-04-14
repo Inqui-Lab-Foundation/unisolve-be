@@ -50,7 +50,11 @@ class courseController {
             logger.error(`Can not find the entry please try again`);
             return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const response = await operationalServices.updateOne(updateObject, request_id, course);
+        const response = await operationalServices.updateOne(course, updateObject, {
+            where: {
+                id: request_id
+            }
+        });
         logger.info(`Product updated ${JSON.stringify(response)}`)
         return res.send({ response });
     };
@@ -65,7 +69,11 @@ class courseController {
             logger.error(`Can not find the entry please try again`);
             return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const response = await operationalServices.destroyOne(request_id, course);
+        const response = await operationalServices.destroyOne(course, {
+            where: {
+                id: request_id
+            }
+        });
         logger.info(`Product delete}`);
         return res.send({ deletedCourse: response, text: 'successfully delete the entry' })
     }

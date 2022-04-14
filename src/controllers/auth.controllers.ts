@@ -11,7 +11,7 @@ import { signJwt } from "../utils/jwt";
 /**
  * Controller class for all student API's 
  */
-class studentController {
+class authController {
 
     async registerHandler(
         req: Request<{}, {}, CreateUserInput["body"]>,
@@ -114,4 +114,4 @@ class studentController {
     }
 }
 
-export default new studentController();
+export default new authController();

@@ -8,7 +8,7 @@ import logger from '../utils/logger'
  */
 class videoController {
     async createHandler(req: Request, res: Response) {
-        const product = await operationalServices.build(req.body, video);
+        const product = await operationalServices.build(video, req.body);
         if (!product) {
             logger.error(`something went wrong while creating the entry please check the payload`);
             return res.status(406).send({ message: 'something went wrong while creating the entry please check the payload' });
@@ -26,7 +26,11 @@ class videoController {
     }
     async getByIdHandler(req: Request, res: Response) {
         const request_id = req.params.videoId;
-        const product = await operationalServices.findOne(request_id, video)
+        const product = await operationalServices.findOne(video, {
+            where: {
+                id: request_id
+            }
+        })
         if (!product) {
             logger.error(`Can not find the entry please try again`);
             return res.status(406).send({ message: 'Can not find the entry please try again' });
@@ -42,18 +46,30 @@ class videoController {
             logger.error(`Can not find the entry please try again`);
             return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const response = await operationalServices.updateOne(updateObject, request_id, video);
+        const response = await operationalServices.updateOne(video, updateObject, {
+            where: {
+                id: request_id
+            }
+        });
         logger.info(`Product updated ${JSON.stringify(response)}`)
         return res.send({ response });
     };
     async deleteHandler(req: Request, res: Response) {
         const request_id = req.params.videoId;
-        const product = await operationalServices.findOne(request_id, video);
+        const product = await operationalServices.findOne(video, {
+            where: {
+                id: request_id
+            }
+        });
         if (!product) {
             logger.error(`Can not find the entry please try again`);
             return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const response = await operationalServices.destroyOne(request_id, video);
+        const response = await operationalServices.destroyOne(video, {
+            where: {
+                id: request_id
+            }
+        });
         logger.info(`Product delete}`);
         return res.send({ deletedVideo: response, text: 'successfully delete the entry' })
     }

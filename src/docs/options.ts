@@ -105,17 +105,17 @@ const options = {
         '/api/v1/healthCheck': {
             get: healthCheck,
         },
-        '/api/v1/student/register': {
+        '/api/v1/auth/register': {
             post: studentRegistration
         },
-        '/api/v1/student/login': {
+        '/api/v1/auth/login': {
             post: studentLogin
+        },
+        '/api/v1/auth/logout': {
+            get: studentLogout
         },
         '/api/v1/student/changePassword': {
             put: studentChangePassword
-        },
-        '/api/v1/student/logout': {
-            get: studentLogout
         },
         '/api/v1/course/create': {
             post: createCourse

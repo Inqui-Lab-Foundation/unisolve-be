@@ -8,7 +8,7 @@ import logger from '../utils/logger'
  */
 class evaluatorController {
     async createHandler(req: Request, res: Response) {
-        const product = await operationalServices.build(req.body, evaluator);
+        const product = await operationalServices.build(evaluator, req.body);
         if (!product) {
             logger.error(`something went wrong while creating the entry please check the payload`);
             return res.status(406).send({ message: 'something went wrong while creating the entry please check the payload' });
@@ -50,7 +50,11 @@ class evaluatorController {
             logger.error(`Can not find the entry please try again`);
             return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const response = await operationalServices.updateOne(updateObject, request_id, evaluator);
+        const response = await operationalServices.updateOne(evaluator, updateObject, {
+            where: {
+                id: request_id
+            }
+        });
         logger.info(`Product updated ${JSON.stringify(response)}`)
         return res.send({ response });
     };
@@ -65,7 +69,11 @@ class evaluatorController {
             logger.error(`Can not find the entry please try again`);
             return res.status(406).send({ message: 'Can not find the entry please try again' });
         }
-        const response = await operationalServices.destroyOne(request_id, evaluator);
+        const response = await operationalServices.destroyOne(evaluator, {
+            where: {
+                id: request_id
+            }
+        });
         logger.info(`Product delete}`);
         return res.send({ deletedEvaluator: response, text: 'successfully delete the entry' })
     }

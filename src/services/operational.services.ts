@@ -3,7 +3,7 @@
  * service for all the courser controllers logic isolated
  */
 class OperationalService {
-    async build(input: any, tableName: any) {
+    async build(tableName: any, input: any) {
         try {
             return await tableName.create({ ...input });
         } catch (error: any) {
@@ -34,16 +34,16 @@ class OperationalService {
             return error.message;
         }
     };
-    async updateOne(update: object, query: string, tableName: any) {
+    async updateOne(tableName: any, update: object, query: object) {
         try {
-            return await tableName.update(update, { where: { id: query } });
+            return await tableName.update(update, query);
         } catch (error: any) {
             return error.message;
         }
     };
-    async destroyOne(id: string, tableName: any) {
+    async destroyOne(tableName: any, query: object) {
         try {
-            return await tableName.destroy({ where: { id } });
+            return await tableName.destroy(query);
         } catch (error: any) {
             return error.message;
         }

@@ -3,7 +3,6 @@ import config from 'config'
 import db from '../config/database.config'
 import createServer from './utils/server';
 import logger from './utils/logger';
-import swaggerDocs from './utils/swagger';
 
 // initialing the express application with createServer;
 const PORT = config.get<number>('port');
