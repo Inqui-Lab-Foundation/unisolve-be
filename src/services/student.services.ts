@@ -1,74 +1,39 @@
 import { v4 as UUIDV4 } from 'uuid'
 import { omit } from "lodash";
 
-
 import { student } from "../models/student.model";
 import OperationalService from './operational.services'
 import logger from '../utils/logger'
 
-/**
- * service for all the student controllers logic isolated
- */
+// Student Service object
 class studentService {
-    /**
-     * 
-     * @param input as request body from the express application
-     * @returns object after create the entry in database
-     */
-    buildStudent(data: object) {
+    //create the new user parameters req.body object
+    async buildStudent(data: object) {
         const id = UUIDV4(); // generate new UUID
         try {
-            const newEntry = OperationalService.build(student, { id, ...data });
-            return omit(newEntry, "password");
+            const newEntry = await OperationalService.build(student, { id, ...data });
+            // remove the password before sending to the returning
+            return omit(newEntry.dataValues, "password");
         } catch (error: any) {
             logger.error(error.message);
             return error.message;
         }
     };
-    /**
-     * 
-     * @param input as request body from the express application
-     * @returns object with query result 
-     */
-    findStudentByEmail(email: string) {
-        if (email) {
-            const result = OperationalService.findOne(student, { where: { email } });
-            return result;
+    //finding the user parameter query object
+    findStudent(query: object) {
+        if (!query) {
+            logger.error('please provide the query');
+            return new Error('please provide the query');
         }
-        logger.error('please check your emailId');
-        throw new Error('please check your emailId ');
+        return OperationalService.findOne(student, query);;
     };
-    findStudentByMobile(mobile: number) {
-        if (mobile) {
-            const result = OperationalService.findOne(student, { where: { mobile } });
-            return result;
-        }
-        logger.error('please check your mobile');
-        throw new Error('please check your mobile');
-    };
-    findStudentByStudentName(student_name: string) {
-        if (student_name) {
-            const result = OperationalService.findOne(student, { where: { student_name } });
-            return result;
-        }
-        logger.error('please check your student_name');
-        throw new Error('please check your student_name ');
-    };
-    /**
-     * 
-     * @param param0 email and password as strings
-     * @returns student details post verifying the password with actual password 
-     */
+    //checking the password validation
     async authenticateStudent(password: string, oldPassword: string) {
         if (password === oldPassword) {
             return true;
         } return false;
     };
-    /**
-     * 
-     * @param input as request body from the express application
-     * @returns user details object post changing the password
-     */
+    // change the user password
     async changePassword(input: any) {
         const { userId, oldPassword, newPassword } = input;
         const findEntry = await OperationalService.findByPk(student, userId);
@@ -87,3 +52,10 @@ class studentService {
 };
 
 export default new studentService();
+
+
+/**
+ * TODO :
+ * code documenting 
+ * test cases fix
+ */

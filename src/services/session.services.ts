@@ -48,19 +48,19 @@ class sessionService {
      * @param param0 refresh token
      * @returns verify the token and return access token
      */
-    async reIssuesAccessToken({ refreshToken }: { refreshToken: any }) {
-        const { decoded } = verifyJwt(refreshToken);
-        if (!decoded || get(decoded, "session")) return false;
-        const record = await OperationalService.findByPk(session, get(decoded, "session"));
-        if (!record || record.getDataValue('valid')) return false;
-        const user = await OperationalService.findOne(student, record.getDataValue('userId'));
-        if (!user) return false;
-        const accessToken = signJwt(
-            { ...user, session: record.getDataValue('id') },
-            { expiresIn: config.get("accessTokenTtl") } // 15 minutes
-        );
-        return accessToken;
-    }
+    // async reIssuesAccessToken({ refreshToken }: { refreshToken: any }) {
+    //     const { decoded } = verifyJwt(refreshToken);
+    //     if (!decoded || get(decoded, "session")) return false;
+    //     const record = await OperationalService.findByPk(session, get(decoded, "session"));
+    //     if (!record || record.getDataValue('valid')) return false;
+    //     const user = await OperationalService.findOne(student, record.getDataValue('userId'));
+    //     if (!user) return false;
+    //     const accessToken = signJwt(
+    //         { ...user, session: record.getDataValue('id') },
+    //         { expiresIn: config.get("accessTokenTtl") } // 15 minutes
+    //     );
+    //     return accessToken;
+    // }
 
 }
 

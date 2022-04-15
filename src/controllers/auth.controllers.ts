@@ -1,4 +1,3 @@
-// importing dependence
 import { Request, Response } from "express";
 import config from "config";
 
@@ -8,67 +7,71 @@ import sessionServices from "../services/session.services";
 import { CreateUserInput, CreateUserPassword } from "../schemas/student.schema";
 import { signJwt } from "../utils/jwt";
 
-/**
- * Controller class for all student API's 
- */
+// controller handlers class
 class authController {
-
-    async registerHandler(
-        req: Request<{}, {}, CreateUserInput["body"]>,
-        res: Response) {
-        const { email } = req.body;
-        const findEntry = await studentServices.findStudentByEmail(email);
-        if (findEntry) {
-            logger.info(`Account already exist ${JSON.stringify(findEntry)}`)
-            return res.status(406).send({ message: "account already exist", Record: findEntry })
-        }
+    // response with the number of seconds the current Node.js process has been running and timestamp
+    healthCheck(req: Request, res: Response) {
+        const healthcheck = {
+            uptime: process.uptime(),
+            message: 'OK',
+            timestamp: Date.now()
+        };
         try {
+            res.send(healthcheck);
+        } catch (error: any) {
+            healthcheck.message = error;
+            res.status(503).send(error);
+        }
+    }
+    //new user handler response with the created user, conflict if the user exist, and error message if anything went wrong
+    async registerHandler(req: Request, res: Response) {
+        const { email } = req.body;
+        //checking for duplicate entry
+        const foundUser = await studentServices.findStudent({ where: { email } });
+        if (foundUser) {
+            logger.info(`Account already exist ${JSON.stringify(foundUser)}`)
+            return res.sendStatus(409); // conflict
+        } try {
+            //create user with the help studentService
             const newRecord = await studentServices.buildStudent(req.body);
             logger.info(`Student successfully registered ${JSON.stringify(newRecord)}`)
-            return res.status(200).json({ record: newRecord, message: "Student successfully Registered" })
+            return res.status(201).json({ record: newRecord, message: "Student successfully Registered" })
         } catch (error: any) {
             logger.error(error.message);
-            return res.status(500).send({ error: error.message })
+            return res.status(500).send({ message: error.message })
         }
     };
-
-    async loginHandler(
-        req: Request<{}, {}, CreateUserInput["body"]>,
-        res: Response) {
+    // user login handler find the users, create the session and issues token   
+    async loginHandler(req: Request, res: Response) {
         const { student_name, mobile, email, password } = req.body;
-        let findEntry;
-        if (email) {
-            findEntry = await studentServices.findStudentByEmail(email);
-        }
-        if (mobile) {
-            findEntry = await studentServices.findStudentByMobile(mobile);
-        }
-        if (student_name) {
-            findEntry = await studentServices.findStudentByStudentName(student_name);
-        }
-        if (findEntry) {
-            const userId = findEntry.id;
+        let foundUser;
+        // finding the user with the email, mobile, user_name
+        if (email) foundUser = await studentServices.findStudent({ where: { email } });
+        if (mobile) foundUser = await studentServices.findStudent({ where: { mobile } });
+        if (student_name) foundUser = await studentServices.findStudent({ where: { student_name } });
+        if (foundUser) {
+            const userId = foundUser.id;
+            // deleting existing if any with user_id
             await sessionServices.destroySession(userId);
             try {
-                const record = await studentServices.authenticateStudent(password, findEntry.password);
-                if (record === false) {
-                    logger.error(`Invalid email or password Can't validate the password please check and try again`);
-                    return res.status(403).json({ message: "Invalid email or password Can't validate the password please check and try again" });
-                } else {
-                    const input = { userId: findEntry.id, userAgent: req.get("user-agent") || "", valid: true };
+                // validating the user password
+                const record = await studentServices.authenticateStudent(password, foundUser.password);
+                if (record) {
+                    // creating new session 
+                    const input = { userId: foundUser.id, userAgent: req.get("user-agent") || "", valid: true };
                     const session = await sessionServices.createSession(input);
                     logger.info(`Session Created, ${JSON.stringify(session)}`);
+                    // creating access token
                     const accessToken = signJwt(
-                        { findEntry, session: session.id },
+                        { foundUser, session: session.id },
                         { expiresIn: config.get<string>('accessTokenTtl') }
                     );
-                    const refreshToken = signJwt(
-                        { findEntry, session: session.id },
-                        { expiresIn: config.get<string>('refreshTokenTtl') }
-                    );
-                    const { id, res_email, student_name } = findEntry
+                    const { id, res_email, student_name } = foundUser
                     logger.info(`Student logged in ${JSON.stringify(record)}`)
-                    return res.send({ id, student_name, res_email, accessToken, refreshToken });
+                    return res.send({ id, student_name, res_email, accessToken });
+                } else {
+                    logger.error(`Invalid email or password Can't validate the password please check and try again`);
+                    return res.status(403).json({ message: "Invalid email or password Can't validate the password please check and try again" });
                 }
             } catch (error: any) {
                 logger.error(error);
@@ -76,37 +79,26 @@ class authController {
             }
         } res.status(500).send({ message: "Can't find the student please check the payload" })
     };
-    /**
-     * 
-     * @param req express request
-     * @param res express response
-     * @returns JSON with success message or error message
-     */
+    // user change password handler
     async changePasswordHandler(
         req: Request<{}, {}, CreateUserPassword["body"]>,
         res: Response) {
-        try {
-            const record = await studentServices.changePassword(req.body);
-            if (record.error) {
-                return res.status(503).json({ message: "service unavailable" })
-
-            } else {
-                return res.status(202).json({ message: "Password updated successfully" })
-            }
-        } catch (error) {
-            return res.status(405).json({ message: "Method Not Allowed" })
-        }
+        const record = await studentServices.changePassword(req.body);
+        if (record.error) {
+            return res.status(503).json({ message: record.error })
+        } return res.status(202).json({ message: "Password updated successfully" })
     };
+    // user logout handler marking session validate false
     async logoutHandler(req: Request, res: Response) {
-        const userId = res.locals.user.findEntry.id;
+        //@ts-ignore
+        const userId = res.locals.id;
         try {
-            const findSession = await sessionServices.findSession({ userId });
+            const findSession = await sessionServices.findSession({ where: { userId } });
             if (!findSession) {
                 res.status(409).send({ message: 'session not found' })
             }
             findSession.setDataValue('valid', false);
             findSession.save();
-            res.clearCookie('jwt');
             res.status(200).json({ message: "cleared student session successfully" })
         } catch (error: any) {
             res.status(400).json({ message: "bad request" })
