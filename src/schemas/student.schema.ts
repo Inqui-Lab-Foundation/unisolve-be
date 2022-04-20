@@ -1,10 +1,9 @@
 /*Importing the dependencies*/
-import { object, string, TypeOf, number } from "zod";
-import { Omit } from 'lodash';
+import { object, string, number } from "zod";
 
-export const userPasswordSchema = object({
+export const studentPasswordSchema = object({
     body: object({
-        userId: string({ required_error: 'userId is required field' }),
+        userId: string({ required_error: 'studentId is required field' }),
         oldPassword: string({
             required_error: 'Password is required field'
         }).min(6, 'Password should be minimum of 6 characters'),
@@ -14,16 +13,14 @@ export const userPasswordSchema = object({
     })
 });
 
-export type CreateUserPassword = Omit<TypeOf<typeof userPasswordSchema>, "body.passwordConfirmation">;
-
-export const userLoginSchema = object({
+export const studentLoginSchema = object({
     body: object({
         email: string().email('not a valid email'),
-        password: string({required_error: 'Password is required field'}).min(6, 'Password should be minimum of 6 characters'),
+        password: string({ required_error: 'Password is required field' }).min(6, 'Password should be minimum of 6 characters'),
     })
 });
 
-export const userRegisterSchema = object({
+export const studentRegisterSchema = object({
     body: object({
         student_name: string({
             required_error: 'Name is required field'
@@ -37,5 +34,3 @@ export const userRegisterSchema = object({
         institute_name: string({ required_error: 'required field' })
     })
 });
-
-export type CreateUserInput = Omit<TypeOf<typeof userRegisterSchema>, "body.passwordConfirmation">;

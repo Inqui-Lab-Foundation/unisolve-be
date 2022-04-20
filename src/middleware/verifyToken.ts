@@ -16,7 +16,7 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
     }
     //@ts-ignore
     if (!req.userInfo) {
-        return res.sendStatus(409);
+        return res.sendStatus(401);
     }
     return next();
 };

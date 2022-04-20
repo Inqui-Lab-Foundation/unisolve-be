@@ -17,10 +17,12 @@ class sessionService {
      */
     async createSession(input: any) {
         try {
-            const newEntry = await OperationalService.build(session, input);
-            return newEntry.dataValues;
+            const sessionCreated = await OperationalService.build(session, input);
+            logger.info(`user new session created, ${JSON.stringify(sessionCreated)}`);
+            return sessionCreated.dataValues;
         } catch (error: any) {
-            return error.message
+            logger.info(`error while creating the session, ${JSON.stringify(error.message)}`);
+            return error;
         }
     };
     async findSession(input: any) {
@@ -34,7 +36,7 @@ class sessionService {
     };
     async destroySession(id: string) {
         try {
-            const result = OperationalService.destroyOne(session, {
+            const result = await OperationalService.destroyOne(session, {
                 where: { id }
             });
             logger.info(`Session deleted, ${JSON.stringify(result)}`)
@@ -53,7 +55,7 @@ class sessionService {
     //     if (!decoded || get(decoded, "session")) return false;
     //     const record = await OperationalService.findByPk(session, get(decoded, "session"));
     //     if (!record || record.getDataValue('valid')) return false;
-    //     const user = await OperationalService.findOne(student, record.getDataValue('userId'));
+    //     const user = await OperationalService.findOne(user, record.getDataValue('userId'));
     //     if (!user) return false;
     //     const accessToken = signJwt(
     //         { ...user, session: record.getDataValue('id') },

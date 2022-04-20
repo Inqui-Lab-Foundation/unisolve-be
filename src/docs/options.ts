@@ -10,6 +10,15 @@ import {
     studentChangePasswordBody
 } from "./api.student.docs";
 import {
+    adminRegistration,
+    adminLogin,
+    adminChangePassword,
+    adminLogout,
+    adminRegistrationBody,
+    adminLoginBody,
+    adminChangePasswordBody
+} from "./api.admin.docs";
+import {
     courseList,
     createCourse,
     courseById,
@@ -83,7 +92,7 @@ const options = {
             name: 'HealthCheck',
         },
         {
-            name: 'Authorization',
+            name: 'Student',
         },
         {
             name: 'Course',
@@ -105,13 +114,25 @@ const options = {
         '/api/v1/healthCheck': {
             get: healthCheck,
         },
-        '/api/v1/auth/register': {
+        '/api/v1/admin/register': {
+            post: adminRegistration
+        },
+        '/api/v1/admin/login': {
+            post: adminLogin
+        },
+        '/api/v1/admin/logout': {
+            get: adminLogout
+        },
+        '/api/v1/admin/changePassword': {
+            put: adminChangePassword
+        },
+        '/api/v1/student/register': {
             post: studentRegistration
         },
-        '/api/v1/auth/login': {
+        '/api/v1/student/login': {
             post: studentLogin
         },
-        '/api/v1/auth/logout': {
+        '/api/v1/student/logout': {
             get: studentLogout
         },
         '/api/v1/student/changePassword': {

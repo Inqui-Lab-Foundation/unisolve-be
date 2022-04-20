@@ -6,16 +6,6 @@
     "auditLog": "D:\\Projects\\unisolve-be\\src\\logs\\.6c669ffc1f17bd4e65d424c6a7b3d9191739e725-audit.json",
     "files": [
         {
-            "date": 1649407726694,
-            "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-08.log",
-            "hash": "d45b7f019ffe90d9190fb8c80839f753"
-        },
-        {
-            "date": 1649675774223,
-            "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-11.log",
-            "hash": "0bdf71aee90ef548aa2a07ded31be446"
-        },
-        {
             "date": 1649740948942,
             "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-12.log",
             "hash": "836aebdf61343b56a79b4351a9af6c8f"
@@ -29,6 +19,16 @@
             "date": 1649998847621,
             "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-15.log",
             "hash": "ccc0219cb4f4b5f3e1c2aad9779bba60"
+        },
+        {
+            "date": 1650365618815,
+            "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-19.log",
+            "hash": "27a7bbae19a3f359f6af0547d9b1cc5d"
+        },
+        {
+            "date": 1650438124128,
+            "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-20.log",
+            "hash": "48afdc3d3d01cb91484bcabc7da7ae9c"
         }
     ],
     "hashType": "md5"

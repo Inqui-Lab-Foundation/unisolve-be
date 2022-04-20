@@ -1,17 +1,16 @@
 /*Importing the dependencies*/
-import { Express, Request, Response } from 'express';
+import { Express } from 'express';
 
 import videoControllers from '../controllers/video.controllers';
 import evaluatorControllers from '../controllers/evaluator.controllers';
 import mentorControllers from '../controllers/mentor.controllers';
-import studentControllers from '../controllers/auth.controllers';
 
 import validate from '../middleware/validateResource';
 
 import { videoPayload, videoUpdate } from '../schemas/video.schema';
 import { evaluatorPayload, evaluatorUpdate } from '../schemas/evaluator.schema';
 import { mentorPayload, mentorUpdate } from '../schemas/mentor.schema';
-import { userPasswordSchema, userLoginSchema, userRegisterSchema } from '../schemas/student.schema';
+import { studentPasswordSchema } from '../schemas/student.schema';
 import { coursePayload, courseUpdate } from '../schemas/course.schema';
 import courseControllers from '../controllers/course.controllers';
 import moduleControllers from '../controllers/module.controllers';
@@ -22,9 +21,6 @@ import moduleControllers from '../controllers/module.controllers';
  * @called from single src server.ts
  */
 function routes(App: Express) {
-
-    //student 
-    App.post('/api/v1/student/changePassword', validate(userPasswordSchema), studentControllers.changePasswordHandler)
 
     //videos
     App.post('/api/v1/video/create', validate(videoPayload), videoControllers.createHandler);

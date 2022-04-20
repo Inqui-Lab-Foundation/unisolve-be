@@ -135,7 +135,7 @@ export const studentLoginBody = {
 export const studentChangePasswordBody = {
     type: 'object',
     properties: {
-        userId: {
+        studentId: {
             type: 'string',
             example: 'b0174e75-f9cb-41a0-b71e-916a270ebbc5',
         },
@@ -152,9 +152,9 @@ export const studentChangePasswordBody = {
 
 
 export const studentRegistration = {
-    tags: ['Authorization'],
+    tags: ['Student'],
     description: 'Register a student',
-    operationId: 'createUser',
+    operationId: 'createstudent',
     security: [
         {
             bearerAuth: [],
@@ -195,9 +195,9 @@ export const studentRegistration = {
     }
 }
 export const studentLogin = {
-    tags: ['Authorization'],
+    tags: ['Student'],
     description: 'Login a student',
-    operationId: 'findUser',
+    operationId: 'findstudent',
     security: [
         {
             bearerAuth: [],
@@ -215,7 +215,7 @@ export const studentLogin = {
     },
     responses: {
         '200': {
-            description: 'Student Logged in successfully',
+            description: 'student Logged in successfully',
             content: {
                 'application/json': {
                     schema: {
@@ -247,7 +247,7 @@ export const studentLogin = {
     }
 }
 export const studentChangePassword = {
-    tags: ['Authorization'],
+    tags: ['Student'],
     description: 'Change password a student',
     operationId: 'changePassword',
     security: [
@@ -288,7 +288,7 @@ export const studentChangePassword = {
     }
 }
 export const studentLogout = {
-    tags: ['Authorization'],
+    tags: ['Student'],
     description: 'Logout a student',
     operationId: 'logout',
     security: [

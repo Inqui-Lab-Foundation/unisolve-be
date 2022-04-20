@@ -1,4 +1,3 @@
-
 /**
  * service for all the courser controllers logic isolated
  */
@@ -15,8 +14,6 @@ class OperationalService {
         try {
             return await tableName.findOne(query);
         } catch (error: any) {
-
-
             return error.message;
         }
     };
