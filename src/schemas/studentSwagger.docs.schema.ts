@@ -6,7 +6,7 @@
  *    userRegisterInput:
  *      type: object
  *      required: 
- *        - student_name
+ *        - user_name
  *        - email
  *        - password
  *        - passwordConfirmation
@@ -14,7 +14,7 @@
  *        - mobile
  *        - institute_name
  *      properties:
- *        student_name: 
+ *        user_name: 
  *          type: string
  *          default: vamshi
  *        email: 

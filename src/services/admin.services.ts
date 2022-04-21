@@ -1,17 +1,15 @@
-import { v4 as UUIDV4 } from 'uuid'
 import { omit } from "lodash";
 
-import { student } from "../models/student.model";
+import { user } from "../models/user.model";
 import OperationalService from './operational.services'
 import logger from '../utils/logger'
 
 // student Service object
-class studentService {
+class adminService {
     //create the new student parameters req.body object
-    async buildStudent(data: object) {
-        const id = UUIDV4(); // generate new UUID
+    async build(data: object) {
         try {
-            const created = await OperationalService.build(student, { id, ...data });
+            const created = await OperationalService.build(user, { ...data });
             logger.info(`new account created ${JSON.stringify(created)}`);
             return omit(created.dataValues, "password"); // remove the password before sending to the returning
         } catch (error: any) {
@@ -20,9 +18,9 @@ class studentService {
         }
     };
     //finding the student parameter query object
-    async findStudent(query: object) {
+    async find(query: object) {
         try {
-            const result = await OperationalService.findOne(student, query);
+            const result = await OperationalService.findOne(user, query);
             logger.info(`Account found ${JSON.stringify(result.dataValues)}`)
             return result.dataValues;
         } catch (error: any) {
@@ -32,21 +30,21 @@ class studentService {
     };
     // change the student password
     async changePassword(input: any) {
-        const { studentId, oldPassword, newPassword } = input;
-        const foundStudent = await OperationalService.findByPk(student, studentId);
-        if (!foundStudent) {
+        const { id, oldPassword, newPassword } = input;
+        const found = await OperationalService.findByPk(user, id);
+        if (!found) {
             logger.error(`student not found`)
             throw new Error('student not found');
         }
-        if (oldPassword !== foundStudent.getDataValue('password')) {
+        if (oldPassword !== found.getDataValue('password')) {
             logger.error(`password not validate`)
             throw new Error("password not validate")
         }
-        foundStudent.setDataValue('password', newPassword);
-        foundStudent.save();
-        logger.info(`Password update successfully ${JSON.stringify(oldPassword, foundStudent)}`)
-        return foundStudent.dataValues;
+        found.setDataValue('password', newPassword);
+        found.save();
+        logger.info(`Password update successfully ${JSON.stringify(oldPassword, found)}`)
+        return found.dataValues;
     };
 };
 
-export default new studentService();
+export default new adminService();

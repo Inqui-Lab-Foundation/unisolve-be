@@ -16,7 +16,7 @@ export interface studentAttributes {
     district: string;
     state: string;
     country: string;
-    status: Enumerator;
+    status: Enumerator
 }
 
 export class student extends Model<studentAttributes> { }
@@ -82,7 +82,7 @@ student.init(
         hooks: {},
         sequelize: db,
         tableName: 'student',
-    }
+    }   
 );
 
 function generateMyId() {

@@ -64,10 +64,10 @@ export const methodNotAllowedError = {
 }
 
 
-export const studentRegistrationBody = {
+export const adminRegistrationBody = {
     type: 'object',
     properties: {
-        student_name: {
+        name: {
             type: 'string',
             example: 'Shakti',
             describe: 'mandatory field'
@@ -82,9 +82,9 @@ export const studentRegistrationBody = {
             example: '33a4da31c6569c14921f7b068a94b18e',
             describe: 'mandatory field'
         },
-        date_of_birth: {
+        role: {
             type: 'string',
-            example: '29/05/2003',
+            example: '0',
             describe: 'mandatory field'
         },
         mobile: {
@@ -92,34 +92,20 @@ export const studentRegistrationBody = {
             example: '1234567891',
             describe: 'mandatory field'
         },
-        institute_name: {
+        org: {
             type: 'string',
             example: 'something institute of tech',
-            describe: 'mandatory field'
+            describe: 'not mandatory field'
         },
-        city: {
+        status: {
             type: 'string',
-            example: 'Hyderabad',
-            describe: 'optional field'
+            example: 'active',
+            describe: 'not mandatory field'
         },
-        district: {
-            type: 'string',
-            example: 'rangareddy',
-            describe: 'optional field'
-        },
-        state: {
-            type: 'string',
-            example: 'telangana',
-            describe: 'optional field'
-        },
-        country: {
-            type: 'string',
-            example: 'india',
-            describe: 'optional field'
-        }
+        
     },
 };
-export const studentLoginBody = {
+export const adminLoginBody = {
     type: 'object',
     properties: {
         email: {
@@ -132,12 +118,12 @@ export const studentLoginBody = {
         }
     },
 };
-export const studentChangePasswordBody = {
+export const adminChangePasswordBody = {
     type: 'object',
     properties: {
-        studentId: {
+        Id: {
             type: 'string',
-            example: 'b0174e75-f9cb-41a0-b71e-916a270ebbc5',
+            example: '1',
         },
         oldPassword: {
             type: 'string',
@@ -151,10 +137,10 @@ export const studentChangePasswordBody = {
 };
 
 
-export const studentRegistration = {
-    tags: ['Student'],
-    description: 'Register a student',
-    operationId: 'createstudent',
+export const adminRegistration = {
+    tags: ['Admin'],
+    description: 'Register a admin',
+    operationId: 'createAdmin',
     security: [
         {
             bearerAuth: [],
@@ -165,7 +151,7 @@ export const studentRegistration = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/studentRegistrationBody'
+                    $ref: '#/components/schemas/adminRegistrationBody'
                 },
             },
         },
@@ -194,10 +180,10 @@ export const studentRegistration = {
 
     }
 }
-export const studentLogin = {
-    tags: ['Student'],
-    description: 'Login a student',
-    operationId: 'findstudent',
+export const adminLogin = {
+    tags: ['Admin'],
+    description: 'Login a admin',
+    operationId: 'findadmin',
     security: [
         {
             bearerAuth: [],
@@ -208,14 +194,14 @@ export const studentLogin = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/studentLoginBody'
+                    $ref: '#/components/schemas/adminLoginBody'
                 },
             },
         },
     },
     responses: {
         '200': {
-            description: 'student Logged in successfully',
+            description: 'admin Logged in successfully',
             content: {
                 'application/json': {
                     schema: {
@@ -224,7 +210,7 @@ export const studentLogin = {
                             id: {
                                 type: 'object'
                             },
-                            student_name: {
+                            admin_name: {
                                 type: 'string'
                             },
                             email: {
@@ -246,9 +232,9 @@ export const studentLogin = {
 
     }
 }
-export const studentChangePassword = {
-    tags: ['Student'],
-    description: 'Change password a student',
+export const adminChangePassword = {
+    tags: ['Admin'],
+    description: 'Change password a admin',
     operationId: 'changePassword',
     security: [
         {
@@ -260,7 +246,7 @@ export const studentChangePassword = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/studentChangePasswordBody'
+                    $ref: '#/components/schemas/adminChangePasswordBody'
                 },
             },
         },
@@ -287,9 +273,9 @@ export const studentChangePassword = {
 
     }
 }
-export const studentLogout = {
-    tags: ['Student'],
-    description: 'Logout a student',
+export const adminLogout = {
+    tags: ['Admin'],
+    description: 'Logout a admin',
     operationId: 'logout',
     security: [
         {
