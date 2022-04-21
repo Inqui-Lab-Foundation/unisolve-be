@@ -8,7 +8,7 @@ import logger from '../utils/logger'
  */
 class courseController {
     async createHandler(req: Request, res: Response) {
-        const product = await operationalServices.build(req.body, course);
+        const product = await operationalServices.build(course, req.body);
         if (!product) {
             logger.error(`something went wrong while creating the entry please check the payload`);
             return res.status(406).send({ message: 'something went wrong while creating the entry please check the payload' });

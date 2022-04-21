@@ -34,12 +34,12 @@ class authController {
         if (student_name) match = await studentServices.findStudent({ where: { student_name } });
 
         //if student not found
-        if (!match) res.sendStatus(401);
+        if (!match) return res.sendStatus(401);
         const foundStudent = match;
         const foundSession = await sessionServices.destroySession(foundStudent.id); // deleting existing if any with student_id
         // validating the student password
         if (password === foundStudent.password) {
-            const input = { userId: foundStudent.id, studentAgent: req.get("student-agent") || "", valid: true };
+            const input = { userId: foundStudent.id, userAgent: req.get("User-Agent") || "", valid: true };
             const session = await sessionServices.createSession(input); // creating new session 
             const Token = signJwt(
                 { foundStudent, session: session.id },
