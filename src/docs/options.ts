@@ -95,6 +95,9 @@ const options = {
             name: 'Student',
         },
         {
+            name: 'Admin',
+        },
+        {
             name: 'Course',
         },
         {
@@ -227,6 +230,9 @@ const options = {
             studentRegistrationBody,
             studentLoginBody,
             studentChangePasswordBody,
+            adminRegistrationBody,
+            adminLoginBody,
+            adminChangePasswordBody,
             createCourseBody,
             createModuleBody,
             createVideosBody,
