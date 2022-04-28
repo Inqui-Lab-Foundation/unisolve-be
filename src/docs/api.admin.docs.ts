@@ -183,7 +183,7 @@ export const adminRegistration = {
 export const adminLogin = {
     tags: ['Admin'],
     description: 'Login a admin',
-    operationId: 'findadmin',
+    operationId: 'findAdmin',
     security: [
         {
             bearerAuth: [],

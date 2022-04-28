@@ -135,7 +135,7 @@ export const studentLoginBody = {
 export const studentChangePasswordBody = {
     type: 'object',
     properties: {
-        studentId: {
+        userId: {
             type: 'string',
             example: 'b0174e75-f9cb-41a0-b71e-916a270ebbc5',
         },
@@ -154,7 +154,7 @@ export const studentChangePasswordBody = {
 export const studentRegistration = {
     tags: ['Student'],
     description: 'Register a student',
-    operationId: 'createstudent',
+    operationId: 'createStudent',
     security: [
         {
             bearerAuth: [],
@@ -197,7 +197,7 @@ export const studentRegistration = {
 export const studentLogin = {
     tags: ['Student'],
     description: 'Login a student',
-    operationId: 'findstudent',
+    operationId: 'findStudent',
     security: [
         {
             bearerAuth: [],

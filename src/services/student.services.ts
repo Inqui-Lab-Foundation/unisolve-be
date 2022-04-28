@@ -32,8 +32,8 @@ class studentService {
     };
     // change the student password
     async changePassword(input: any) {
-        const { studentId, oldPassword, newPassword } = input;
-        const foundStudent = await OperationalService.findByPk(student, studentId);
+        const { userId, oldPassword, newPassword } = input;
+        const foundStudent = await OperationalService.findByPk(student, userId);
         if (!foundStudent) {
             logger.error(`student not found`)
             throw new Error('student not found');
