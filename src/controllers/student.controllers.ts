@@ -55,6 +55,7 @@ class authController {
     // student change password handler
     async changePasswordHandler(req: Request, res: Response) {
         try {
+            console.log(req.body);
             const record = await studentServices.changePassword(req.body);
             return res.status(202).json({ message: "Password updated successfully" })
         } catch (error: any) {

@@ -6,6 +6,7 @@
     "auditLog": "D:\\Projects\\unisolve-be\\src\\logs\\.6c669ffc1f17bd4e65d424c6a7b3d9191739e725-audit.json",
     "files": [
         {
+<<<<<<< Updated upstream
             "date": 1649740948942,
             "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-12.log",
             "hash": "836aebdf61343b56a79b4351a9af6c8f"
@@ -21,6 +22,8 @@
             "hash": "ccc0219cb4f4b5f3e1c2aad9779bba60"
         },
         {
+=======
+>>>>>>> Stashed changes
             "date": 1650365618815,
             "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-19.log",
             "hash": "27a7bbae19a3f359f6af0547d9b1cc5d"
@@ -29,6 +32,24 @@
             "date": 1650438124128,
             "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-20.log",
             "hash": "48afdc3d3d01cb91484bcabc7da7ae9c"
+<<<<<<< Updated upstream
+=======
+        },
+        {
+            "date": 1650526739749,
+            "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-21.log",
+            "hash": "4b34a1de1b4086456817f771bbe15934"
+        },
+        {
+            "date": 1650611599997,
+            "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-22.log",
+            "hash": "4289b31f09e3e9ca7314b26dd9912fc8"
+        },
+        {
+            "date": 1651052757068,
+            "name": "D:\\Projects\\unisolve-be\\src\\logs\\all-logs-2022-04-27.log",
+            "hash": "834d481fd3972d9ba9d1a0ed704f8cc5"
+>>>>>>> Stashed changes
         }
     ],
     "hashType": "md5"
