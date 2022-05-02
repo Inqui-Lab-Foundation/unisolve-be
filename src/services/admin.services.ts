@@ -33,8 +33,7 @@ class adminService {
         const { id, oldPassword, newPassword } = input;
         const found = await OperationalService.findByPk(user, id);
         if (!found) {
-            logger.error(`student not found`)
-            throw new Error('student not found');
+            logger.error(`student not found ${found}`)
         }
         if (oldPassword !== found.getDataValue('password')) {
             logger.error(`password not validate`)

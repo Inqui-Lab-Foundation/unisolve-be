@@ -5,6 +5,8 @@ import logger from '../utils/logger'
 import adminServices from "../services/admin.services";
 import sessionServices from "../services/session.services";
 import { signJwt } from "../utils/jwt";
+import operationalServices from "@src/services/operational.services";
+import { log } from "@src/models/log";
 
 // controller handlers class
 class authController {
@@ -19,7 +21,13 @@ class authController {
         //create student with the help studentService
         const newE = await adminServices.build(req.body);
         if (!newE) return res.sendStatus(500);
-
+        operationalServices.build(log, {
+            api_name: req.originalUrl,
+            request_method: req.method,
+            request: `${JSON.stringify(req.body)}`,
+            response: `${JSON.stringify(newE)}`,
+            status: 'success'
+        });
         return res.status(201).json({ info: newE, message: "admin successfully Registered" });
     };
     // student login handler find the students, create the session and issues token   
@@ -41,7 +49,14 @@ class authController {
                 { expiresIn: config.get<string>('accessTokenTtl') }
             ); // issuing access token
             const { id, email, role } = foundAccount;
-            logger.info(`admin logged in ${JSON.stringify(foundAccount)}`)
+            logger.info(`admin logged in ${JSON.stringify(foundAccount)}`);
+            operationalServices.build(log, {
+                api_name: req.originalUrl,
+                request_method: req.method,
+                request: `${JSON.stringify(req.body)}`,
+                response: `${JSON.stringify({ id, role, email, Token })}`,
+                status: 'success'
+            });
             return res.status(200).json({ id, role, email, Token });
         }
         logger.error(`Invalid email or password, fail to validate the password please check and try again`);
@@ -51,8 +66,22 @@ class authController {
     async changePasswordHandler(req: Request, res: Response) {
         try {
             const record = await adminServices.changePassword(req.body);
+            operationalServices.build(log, {
+                api_name: req.originalUrl,
+                request_method: req.method,
+                request: `${JSON.stringify(req.body)}`,
+                response: `${JSON.stringify(record)}`,
+                status: 'success'
+            });
             return res.status(202).json({ message: "Password updated successfully" })
         } catch (error: any) {
+            operationalServices.build(log, {
+                api_name: req.originalUrl,
+                request_method: req.method,
+                request: `${JSON.stringify(req.body)}`,
+                response: `${JSON.stringify(error.message)}`,
+                status: 'failed'
+            });
             return res.status(503).json({ message: error.message })
         }
     };
@@ -65,7 +94,14 @@ class authController {
             if (!foundSession) res.status(409).json({ message: 'session not found' })
             foundSession.setDataValue('valid', false);
             foundSession.save();
-            res.status(200).json({ message: "cleared student session successfully" });
+            operationalServices.build(log, {
+                api_name: req.originalUrl,
+                request_method: req.method,
+                request: `${JSON.stringify(req.body)}`,
+                response: `${JSON.stringify({ message: "cleared student session successfully" })}`,
+                status: 'success'
+            });
+            return res.status(200).json({ message: "cleared student session successfully" });
         } catch (error: any) {
             res.sendStatus(400);
         }
