@@ -7,6 +7,7 @@ import studentAuthRoutes from '../routes/student/studentAuthRoutes';
 import adminRoutes from '../routes/admin/adminAuthRoutes'
 import routes from '../routes/routes';
 import swaggerDocs from './swagger';
+import db from '../../config/database.config';
 
 // isolated express application
 function createServer() {
@@ -19,14 +20,17 @@ function createServer() {
     app.use(Express.json());
     app.use(Express.urlencoded({ extended: true }));
     swaggerDocs(app, Port); // swagger UI
-    app.get('/api/v1/healthcheck', (req: Request, res: Response) => {
+    app.get('/api/v1/healthcheck', async (req: Request, res: Response) => {
+
         const healthcheck = {
             uptime: process.uptime(),
             message: 'OK',
+            DatabaseStatus: '',
             timestamp: Date.now()
         };
         try {
-            res.send(healthcheck);
+            await db.authenticate().then(() => healthcheck.DatabaseStatus = 'Active')
+            res.status(200).send(healthcheck);
         } catch (error: any) {
             healthcheck.message = error;
             res.status(503).send(error);
