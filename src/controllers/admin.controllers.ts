@@ -5,8 +5,8 @@ import logger from '../utils/logger'
 import adminServices from "../services/admin.services";
 import sessionServices from "../services/session.services";
 import { signJwt } from "../utils/jwt";
-import operationalServices from "@src/services/operational.services";
-import { log } from "@src/models/log";
+import operationalServices from "../services/operational.services";
+import { log } from "../models/log";
 
 // controller handlers class
 class authController {

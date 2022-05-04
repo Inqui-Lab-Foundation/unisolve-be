@@ -7,11 +7,11 @@ import mentorControllers from '../controllers/mentor.controllers';
 
 import validate from '../middleware/validateResource';
 
-import { videoPayload, videoUpdate } from '../schemas/video.schema';
-import { evaluatorPayload, evaluatorUpdate } from '../schemas/evaluator.schema';
-import { mentorPayload, mentorUpdate } from '../schemas/mentor.schema';
-import { studentPasswordSchema } from '../schemas/student.schema';
-import { coursePayload, courseUpdate } from '../schemas/course.schema';
+import { videoPayload, videoUpdate } from '../payloadSchema/video.schema';
+import { evaluatorPayload, evaluatorUpdate } from '../payloadSchema/evaluator.schema';
+import { mentorPayload, mentorUpdate } from '../payloadSchema/mentor.schema';
+import { studentPasswordSchema } from '../payloadSchema/payloadShcemas';
+import { coursePayload, courseUpdate } from '../payloadSchema/course.schema';
 import courseControllers from '../controllers/course.controllers';
 import moduleControllers from '../controllers/module.controllers';
 
