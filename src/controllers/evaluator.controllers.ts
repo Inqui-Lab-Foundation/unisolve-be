@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import operationalServices from "../services/operational.services";
 import { evaluator } from "../models/evaluator.model";
 import logger from '../utils/logger'
-import { log } from "@src/models/log";
+import { log } from "../models/log";
 /**
  * Controller class for all evaluator API's 
  */

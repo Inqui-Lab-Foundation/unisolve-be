@@ -5,13 +5,11 @@ import logger from '../utils/logger'
 import studentServices from "../services/student.services";
 import sessionServices from "../services/session.services";
 import { signJwt } from "../utils/jwt";
-import operationalServices from "@src/services/operational.services";
-import { log } from "@src/models/log";
+import operationalServices from "../services/operational.services";
+import { log } from "../models/log";
 
 // controller handlers class
 class authController {
-    // response with the number of seconds the current Node.js process has been running and timestamp
-    // healthCheck
     //new student handler response with the created student, conflict if the student exist, and error message if anything went wrong
     async registerHandler(req: Request, res: Response) {
         const { email } = req.body;

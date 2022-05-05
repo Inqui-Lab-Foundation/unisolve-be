@@ -4,10 +4,12 @@ const DailyRotateFile = require('winston-daily-rotate-file');
 
 let logger: any = null
 
-if (process.env.NODE_ENV === 'development') {
-    logger = buildDevLogger();
+// setting up differ logger for different env's
+if (process.env.NODE_ENV === 'development' || 'test') {
+    logger = buildDevLogger(); 
 } else logger = buildProdLogger();
 
+// logger are displayed in node console for development and testing env's 
 function buildDevLogger() {
     return createLogger({
         format: format.combine(
@@ -21,6 +23,7 @@ function buildDevLogger() {
     });
 }
 
+// logger are displayed in generated file for production env 
 function buildProdLogger() {
     return createLogger({
         format: format.combine(

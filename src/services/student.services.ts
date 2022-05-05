@@ -38,7 +38,7 @@ class studentService {
             logger.error(`student not found`)
             throw new Error('student not found');
         }
-        if (oldPassword !== foundStudent.getDataValue('password')) {
+        if (oldPassword !== foundStudent.getDataValue('password')) { // comparing password
             logger.error(`password not validate`)
             throw new Error("password not validate")
         }

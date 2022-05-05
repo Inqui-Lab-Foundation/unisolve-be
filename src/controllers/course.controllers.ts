@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import operationalServices from "../services/operational.services";
 import { course } from "../models/course.model";
 import logger from '../utils/logger'
-import { log } from "@src/models/log";
+import { log } from "../models/log";
 /**
  * Controller class for all  courser API's 
  */

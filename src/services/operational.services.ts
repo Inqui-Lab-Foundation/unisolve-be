@@ -1,6 +1,5 @@
-/**
- * service for all the courser controllers logic isolated
- */
+
+// service for all the courser controllers logic isolated
 class OperationalService {
     async build(tableName: any, input: any) {
         try {
