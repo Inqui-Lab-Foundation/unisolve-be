@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import config from "config";
-import { readFileSync, writeFileSync } from 'fs';
+import { writeFile } from 'fs';
 import path from 'path';
 
 import logger from '../utils/logger'
@@ -131,31 +131,36 @@ class authController {
     };
 
     async createStudentConfig(req: Request, res: Response) {
+        //create new object to store the values
+        const result: any = new Object();
         //get the keys from the req.body
         const [studentName, email, phNumber] = Object.keys(req.body);
         //match the keys with the mater object
         for (let i in studentMasterObject) {
             if (studentName === i || email === i || phNumber === i) {
-                console.log(i);
-            } else console.log('something')
+                result[i] = studentMasterObject[i];
+            }
         }
         //generate a json file;
-        return res.status(200)
+        const response = new Promise((resolve, reject) => {
+            writeFile('./data/singUp.json', JSON.stringify(result), function (err) {
+                if (err) {
+                    reject;
+                } else resolve;
+            });
+        })
+        return res.status(200).json({ message: "success" });
     };
 
     async getStudentConfig(req: Request, res: Response) {
         var options = {
-            root: path.join(__dirname, '../data'),
+            root: path.join(__dirname, '../../data'),
             headers: {
                 'x-timestamp': Date.now(),
                 'x-sent': true
             }
         }
-        res.sendFile('singUp.json', options, function (err) {
-            if (err) {
-                console.log(err);
-            } console.log('Sent');
-        });
+        res.sendFile('singUp.json', options);
     }
 }
 
