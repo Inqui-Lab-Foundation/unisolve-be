@@ -68,7 +68,6 @@ class authController {
     // student change password handler
     async changePasswordHandler(req: Request, res: Response) {
         try {
-            console.log(req.body);
             const record = await studentServices.changePassword(req.body);
             operationalServices.build(log, {
                 api_name: req.originalUrl,

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import config from "config";
+import { readFileSync, writeFileSync } from 'fs';
+import path from 'path';
 
 import logger from '../utils/logger'
 import adminServices from "../services/admin.services";
@@ -7,6 +9,27 @@ import sessionServices from "../services/session.services";
 import { signJwt } from "../utils/jwt";
 import operationalServices from "../services/operational.services";
 import { log } from "../models/log";
+
+const studentMasterObject: any = {
+    'studentName': {
+        type: 'text',
+        name: 'studentName',
+        required: true,
+        value: 'name'
+    },
+    'email': {
+        type: 'text',
+        name: 'email',
+        required: true,
+        value: 'name'
+    },
+    'phNumber': {
+        type: 'number',
+        name: 'phNumber',
+        required: false,
+        value: 'number'
+    }
+};
 
 // controller handlers class
 class authController {
@@ -106,6 +129,34 @@ class authController {
             res.sendStatus(400);
         }
     };
+
+    async createStudentConfig(req: Request, res: Response) {
+        //get the keys from the req.body
+        const [studentName, email, phNumber] = Object.keys(req.body);
+        //match the keys with the mater object
+        for (let i in studentMasterObject) {
+            if (studentName === i || email === i || phNumber === i) {
+                console.log(i);
+            } else console.log('something')
+        }
+        //generate a json file;
+        return res.status(200)
+    };
+
+    async getStudentConfig(req: Request, res: Response) {
+        var options = {
+            root: path.join(__dirname, '../data'),
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+            }
+        }
+        res.sendFile('singUp.json', options, function (err) {
+            if (err) {
+                console.log(err);
+            } console.log('Sent');
+        });
+    }
 }
 
 export default new authController();

@@ -66,13 +66,13 @@ export const methodNotAllowedError = {
 export const createCourseBody = {
     type: 'object',
     properties: {
-        module: {
+        course_name: {
             type: 'string',
-            example: '1',
+            example: 'python',
         },
-        courser_id: {
+        description: {
             type: 'string',
-            example: '126546654695',
+            example: 'Eum accusantium sunt vel. Animi dolorem vero quo. Voluptatem voluptates ex quo. Nemo exercitationem consequatur provident et labore ut. Itaque commodi aliquid enim.',
         },
         status: {
             type: 'string',
