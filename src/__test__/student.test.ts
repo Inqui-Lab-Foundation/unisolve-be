@@ -76,7 +76,6 @@ describe("API - StudentLogin", () => {
         const res = await request(app).post("/api/v1/student/login").send(loginSchema.email)
         expect(res.statusCode).toBe(401);
     });
-
 });
 
 describe("API - studentChangePassword", () => {
