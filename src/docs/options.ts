@@ -16,7 +16,9 @@ import {
     adminLogout,
     adminRegistrationBody,
     adminLoginBody,
-    adminChangePasswordBody
+    adminChangePasswordBody,
+    getStudentConfig,
+    createStudentConfig
 } from "./api.admin.docs";
 import {
     courseList,
@@ -128,6 +130,12 @@ const options = {
         },
         '/api/v1/admin/changePassword': {
             put: adminChangePassword
+        },
+        '/api/v1/admin/setupStudentConfig': {
+            post: createStudentConfig
+        },
+        '/api/v1/admin/getStudentConfig': {
+            get: getStudentConfig
         },
         '/api/v1/student/register': {
             post: studentRegistration

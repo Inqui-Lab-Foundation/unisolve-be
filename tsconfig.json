@@ -23,5 +23,5 @@
     "forceConsistentCasingInFileNames": true
   },
   "exclude": ["node_modules", "dist", "coverage"],
-  "include": ["src", "config"]
+  "include": ["src", "config", "singUp.json"]
 }

@@ -146,7 +146,7 @@ class authController {
         }
         //generate a json file;
         const response = new Promise((resolve, reject) => {
-            writeFile('./data/singUp.json', JSON.stringify(result), function (err) {
+            writeFile('./config/singUp.json', JSON.stringify(result), function (err) {
                 if (err) {
                     reject;
                 } else resolve;
@@ -157,7 +157,7 @@ class authController {
 
     async getStudentConfig(req: Request, res: Response) {
         var options = {
-            root: path.join(__dirname, '../../data'),
+            root: path.join(__dirname, '../../config'),
             headers: {
                 'x-timestamp': Date.now(),
                 'x-sent': true

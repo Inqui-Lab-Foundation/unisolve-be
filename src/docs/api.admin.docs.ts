@@ -135,6 +135,23 @@ export const adminChangePasswordBody = {
         }
     },
 };
+export const adminCreateStudentConfig = {
+    type: 'object',
+    properties: {
+        studentName : {
+            type: 'boolean',
+            example: 'true',
+        },
+        email: {
+            type: 'boolean',
+            example: 'true',
+        },
+        phNumber: {
+            type: 'boolean',
+            example: 'true',
+        }
+    },
+};
 
 
 export const adminRegistration = {
@@ -284,6 +301,66 @@ export const adminLogout = {
     ],
     responses: {
         '202': {
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'object'
+                            }
+                        }
+                    }
+                }
+            },
+            '401': unauthorizedError,
+            '405': methodNotAllowedError,
+            '404': badRequestError,
+        }
+    }
+}
+export const createStudentConfig = {
+    tags: ['Admin'],
+    description: 'create Student Config',
+    operationId: 'createStudentConfig',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            message: {
+                                type: 'object'
+                            }
+                        }
+                    }
+                }
+            },
+            '401': unauthorizedError,
+            '405': methodNotAllowedError,
+            '404': badRequestError,
+        }
+    }
+}
+export const getStudentConfig = {
+    tags: ['Admin'],
+    description: 'get Student Config',
+    operationId: 'getStudentConfig',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
             description: 'success',
             content: {
                 'application/json': {

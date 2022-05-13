@@ -104,3 +104,23 @@ describe("API - AdminLogout", () => {
         expect(res.statusCode).toBe(400);
     });
 });
+
+describe("API - createStudentConfig", () => {
+    const payload = {
+        "studentName": true,
+        "email": true,
+        "phNumber": true
+    }
+    test("return 200 logout", async () => {
+        const res = await request(app).post(`/api/v1/admin/setupStudentConfig`).send(payload);
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toHaveProperty('message')
+    });
+});
+
+describe("API - getStudentConfig", () => {
+    test("return 200 logout", async () => {
+        const res = await request(app).get(`/api/v1/admin/getStudentConfig`)
+        expect(res.statusCode).toBe(200);
+    });
+});
