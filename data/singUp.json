@@ -1,1 +1,0 @@
-{"studentName":{"type":"text","name":"studentName","required":true,"value":"name"},"email":{"type":"text","name":"email","required":true,"value":"name"},"phNumber":{"type":"number","name":"phNumber","required":false,"value":"number"}}

@@ -15,18 +15,21 @@ const studentMasterObject: any = {
         type: 'text',
         name: 'studentName',
         required: true,
+        selected: true,
         value: 'name'
     },
     'email': {
         type: 'text',
         name: 'email',
         required: true,
+        selected: true,
         value: 'name'
     },
     'phNumber': {
         type: 'number',
         name: 'phNumber',
         required: false,
+        selected: true,
         value: 'number'
     }
 };
@@ -143,7 +146,7 @@ class authController {
         }
         //generate a json file;
         const response = new Promise((resolve, reject) => {
-            writeFile('./data/singUp.json', JSON.stringify(result), function (err) {
+            writeFile('./config/singUp.json', JSON.stringify(result), function (err) {
                 if (err) {
                     reject;
                 } else resolve;
@@ -154,7 +157,7 @@ class authController {
 
     async getStudentConfig(req: Request, res: Response) {
         var options = {
-            root: path.join(__dirname, '../../data'),
+            root: path.join(__dirname, '../../config'),
             headers: {
                 'x-timestamp': Date.now(),
                 'x-sent': true
