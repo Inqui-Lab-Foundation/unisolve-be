@@ -10,7 +10,7 @@ const App = createServer();
 // mySQL DB connection
 db.sync()
     .then(() => logger.info("Connected to the Database"))
-    .catch((e) => logger.error(`Something went wrong, message: ${e.message}`));
+    .catch((e: any) => logger.error(`Something went wrong, message: ${e.message}`));
 
 // application listen
 App.listen(PORT, async () => {
