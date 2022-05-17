@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start:dev": "nodemon",
-    "start:prod": "set NODE_ENV=production&& pm2 start ./dist/src/index.js",
+    "start:prod": "pm2 start  processes.json --env production",
     "build": "tsc -p tsconfig.prod.json",
     "copy:assets": "cp 'config/singUp.json' 'dist/config/singUp.json'",
     "set-node-env": "set NODE_ENV=test",
