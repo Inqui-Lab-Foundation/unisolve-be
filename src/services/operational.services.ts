@@ -9,7 +9,6 @@ class OperationalService {
         }
     };
     async findOne(tableName: any, query: object) {
-
         try {
             return await tableName.findOne(query);
         } catch (error: any) {

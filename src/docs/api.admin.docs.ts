@@ -1,80 +1,16 @@
-export const conflictError = {
-    description: 'Conflict',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const badRequestError = {
-    description: 'Bad Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const unauthorizedError = {
-    description: 'unauthorized Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const methodNotAllowedError = {
-    description: 'Method Not Allowed Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
+import { conflictError, forbiddenError, serverError, unauthorizedError } from "./errors";
 
-
-export const adminRegistrationBody = {
+export const adminRegistrationRequestBody = {
     type: 'object',
     properties: {
         name: {
             type: 'string',
-            example: 'Shakti',
+            example: 'adminUser',
             describe: 'mandatory field'
         },
         email: {
             type: 'string',
-            example: 'Shakti@email.com',
+            example: 'admin@inqui-lab.org',
             describe: 'mandatory field'
         },
         password: {
@@ -89,28 +25,27 @@ export const adminRegistrationBody = {
         },
         mobile: {
             type: 'number',
-            example: '1234567891',
+            example: '8654793625',
             describe: 'mandatory field'
         },
         org: {
             type: 'string',
-            example: 'something institute of tech',
-            describe: 'not mandatory field'
+            example: 'inqui-labs foundation'
         },
         status: {
             type: 'string',
             example: 'active',
             describe: 'not mandatory field'
         },
-        
+
     },
 };
-export const adminLoginBody = {
+export const adminLoginRequestBody = {
     type: 'object',
     properties: {
         email: {
             type: 'string',
-            example: 'Shakti@email.com',
+            example: 'admin@inqui-lab.org',
         },
         password: {
             type: 'string',
@@ -118,12 +53,12 @@ export const adminLoginBody = {
         }
     },
 };
-export const adminChangePasswordBody = {
+export const adminChangePasswordRequestBody = {
     type: 'object',
     properties: {
         Id: {
             type: 'string',
-            example: '1',
+            example: '2',
         },
         oldPassword: {
             type: 'string',
@@ -135,10 +70,10 @@ export const adminChangePasswordBody = {
         }
     },
 };
-export const adminCreateStudentConfig = {
+export const adminCreateSignupConfigRequestBody = {
     type: 'object',
     properties: {
-        studentName : {
+        studentName: {
             type: 'boolean',
             example: 'true',
         },
@@ -153,10 +88,9 @@ export const adminCreateStudentConfig = {
     },
 };
 
-
 export const adminRegistration = {
     tags: ['Admin'],
-    description: 'Register a admin',
+    description: 'Endpoint for registering the new admin member',
     operationId: 'createAdmin',
     security: [
         {
@@ -168,24 +102,36 @@ export const adminRegistration = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/adminRegistrationBody'
+                    $ref: '#/components/schemas/adminRegistrationRequestBody'
                 },
             },
         },
     },
     responses: {
-        '200': {
+        '201': {
             description: 'Success',
             content: {
                 'application/ json': {
                     schema: {
                         type: 'object',
                         properties: {
-                            record: {
-                                type: 'object'
+                            info: {
+                                type: 'object',
+                                example: {
+                                    "id": 5,
+                                    "name": "adminUser",
+                                    "email": "admin@inqui-lab.org",
+                                    "role": "0",
+                                    "mobile": 8654793625,
+                                    "org": "inqui-labs foundation",
+                                    "status": "active",
+                                    "updatedAt": "2022-05-18T07:56:47.462Z",
+                                    "createdAt": "2022-05-18T07:56:47.462Z"
+                                }
                             },
                             message: {
-                                type: 'string'
+                                type: 'string',
+                                example: 'Admin registered successfully.'
                             }
                         }
                     }
@@ -193,13 +139,12 @@ export const adminRegistration = {
             }
         },
         '409': conflictError,
-        '404': badRequestError,
-
+        '500': serverError
     }
 }
 export const adminLogin = {
     tags: ['Admin'],
-    description: 'Login a admin',
+    description: 'Endpoint for admin member login and issues the token',
     operationId: 'findAdmin',
     security: [
         {
@@ -211,47 +156,47 @@ export const adminLogin = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/adminLoginBody'
+                    $ref: '#/components/schemas/adminLoginRequestBody'
                 },
             },
         },
     },
     responses: {
         '200': {
-            description: 'admin Logged in successfully',
+            description: 'success',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
                             id: {
-                                type: 'object'
+                                type: 'string',
+                                example: '5'
                             },
-                            admin_name: {
-                                type: 'string'
+                            role: {
+                                type: 'string',
+                                example: '0'
                             },
                             email: {
-                                type: 'string'
+                                type: 'string',
+                                example: 'admin@inqui-lab.org'
                             },
-                            accessToken: {
-                                type: 'string'
-                            },
-                            refreshToken: {
-                                type: 'string'
+                            Token: {
+                                type: 'string',
+                                example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb3VuZEFjY291bnQiOnsiaWQiOjUsIm5hbWUiOiJhZG1pblVzZXIiLCJlbWFpbCI6ImFkbWluQGlucXVpLWxhYi5vcmciLCJwYXNzd29yZCI6IjMzYTRkYTMxYzY1NjljMTQ5MjFmN2IwNjhhOTRiMThlIiwicm9sZSI6IjAiLCJtb2JpbGUiOjg2NTQ3OTM2MjUsIm9yZyI6ImlucXVpLWxhYnMgZm91bmRhdGlvbiIsInN0YXR1cyI6IkFjdGl2ZSIsImNyZWF0ZWRBdCI6IjIwMjItMDUtMThUMDc6NTY6NDcuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjItMDUtMThUMDc6NTY6NDcuMDAwWiJ9LCJzZXNzaW9uIjoxMjAsImlhdCI6MTY1Mjg4NDgxOCwiZXhwIjoxNjUzMTQ0MDE4fQ.eHawlMNyo4DmZTC8irB-8bI53okOp3YVJ1namBJ7brRV7PTCiu276BLDo8Zt7dB5HA-JfnJh4onig6Ny0XXOLhwrI7jOYWBddsyZN4fPBcn4VLECT6BESu47TzKLkrub2AZfX3SkNngR7wNbuBSGbhZXdnIfo13zuyMuQkVfbu4'
                             }
                         }
                     }
                 }
             }
         },
-        '409': conflictError,
-        '404': badRequestError,
-
+        '401': unauthorizedError,
+        '403': forbiddenError
     }
 }
 export const adminChangePassword = {
     tags: ['Admin'],
-    description: 'Change password a admin',
+    description: 'Endpoint for updating the admin member password field',
     operationId: 'changePassword',
     security: [
         {
@@ -263,21 +208,22 @@ export const adminChangePassword = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/adminChangePasswordBody'
+                    $ref: '#/components/schemas/adminChangePasswordRequestBody'
                 },
             },
         },
     },
     responses: {
         '202': {
-            description: 'Update the password successfully',
+            description: 'Accepted',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
                             message: {
-                                type: 'object'
+                                type: 'string',
+                                example: 'Password updated successfully'
                             }
                         }
                     }
@@ -285,14 +231,12 @@ export const adminChangePassword = {
             }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
-        '404': badRequestError,
-
+        '503': serverError
     }
 }
 export const adminLogout = {
     tags: ['Admin'],
-    description: 'Logout a admin',
+    description: 'Endpoint for clearing the admin member session',
     operationId: 'logout',
     security: [
         {
@@ -301,34 +245,44 @@ export const adminLogout = {
     ],
     responses: {
         '202': {
-            description: 'success',
+            description: 'Accepted',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
                             message: {
-                                type: 'object'
+                                type: 'string',
+                                example: 'cleared session successfully'
                             }
                         }
                     }
                 }
             },
             '401': unauthorizedError,
-            '405': methodNotAllowedError,
-            '404': badRequestError,
+            '409': conflictError
         }
     }
 }
 export const createStudentConfig = {
     tags: ['Admin'],
-    description: 'create Student Config',
+    description: 'Endpoint for creating a dynamic json file in the server',
     operationId: 'createStudentConfig',
     security: [
         {
             bearerAuth: [],
         },
     ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    $ref: '#/components/schemas/adminCreateSignupConfigRequestBody'
+                },
+            },
+        },
+    },
     responses: {
         '200': {
             description: 'success',
@@ -338,21 +292,21 @@ export const createStudentConfig = {
                         type: 'object',
                         properties: {
                             message: {
-                                type: 'object'
+                                type: 'string',
+                                example: 'successfully created json file'
                             }
                         }
                     }
                 }
             },
             '401': unauthorizedError,
-            '405': methodNotAllowedError,
-            '404': badRequestError,
+            '503': serverError
         }
     }
 }
 export const getStudentConfig = {
     tags: ['Admin'],
-    description: 'get Student Config',
+    description: 'Endpoint for getting json file dynamically created',
     operationId: 'getStudentConfig',
     security: [
         {
@@ -361,22 +315,43 @@ export const getStudentConfig = {
     ],
     responses: {
         '200': {
-            description: 'success',
+            description: 'Created',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
                             message: {
-                                type: 'object'
+                                type: 'object',
+                                example: {
+                                    'studentName': {
+                                        type: 'text',
+                                        name: 'studentName',
+                                        required: true,
+                                        selected: true,
+                                        value: 'name'
+                                    },
+                                    'email': {
+                                        type: 'text',
+                                        name: 'email',
+                                        required: true,
+                                        selected: true,
+                                        value: 'name'
+                                    },
+                                    'phNumber': {
+                                        type: 'number',
+                                        name: 'phNumber',
+                                        required: false,
+                                        selected: true,
+                                        value: 'number'
+                                    }
+                                }
                             }
                         }
                     }
                 }
             },
-            '401': unauthorizedError,
-            '405': methodNotAllowedError,
-            '404': badRequestError,
+            '401': unauthorizedError
         }
     }
 }

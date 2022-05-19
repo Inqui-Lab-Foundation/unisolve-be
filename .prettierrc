@@ -2,7 +2,7 @@
     "tabWidth": 4,
     "printWidth": 120,
     "singleQuote": true,
-    "trailingComma": "es5",
+    "trailingComma": "ES2021",
     "arrowParams": "avoid",
     "semi": true
 }

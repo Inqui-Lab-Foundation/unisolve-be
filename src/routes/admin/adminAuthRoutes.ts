@@ -1,14 +1,14 @@
 import { Express } from 'express';
-import authControllers from '../../controllers/admin.controllers';
+import AdminController from '../../controllers/admin.controllers';
 
 //admin authentication
 function routes(App: Express) {
-    App.post('/api/v1/admin/register', authControllers.registerHandler);
-    App.post('/api/v1/admin/login', authControllers.loginHandler);
-    App.post('/api/v1/admin/changePassword', authControllers.changePasswordHandler);
-    App.get('/api/v1/admin/logout', authControllers.logoutHandler);
-    App.post('/api/v1/admin/setupStudentConfig', authControllers.createStudentConfig);
-    App.get('/api/v1/admin/getStudentConfig', authControllers.getStudentConfig);
+    App.post('/api/v1/admin/register', AdminController.registerHandler);
+    App.post('/api/v1/admin/login', AdminController.loginHandler);
+    App.post('/api/v1/admin/changePassword', AdminController.changePasswordHandler);
+    App.get('/api/v1/admin/logout', AdminController.logoutHandler);
+    App.post('/api/v1/admin/setupStudentConfig', AdminController.createSignupConfig);
+    App.get('/api/v1/admin/getStudentConfig', AdminController.getSignUpConfig);
 }
 
 export default routes;

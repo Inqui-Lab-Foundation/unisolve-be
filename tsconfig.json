@@ -14,7 +14,7 @@
     "baseUrl": ".",
     "resolveJsonModule": true,
     "paths": {
-      "@src/*": ["src/*"] 
+      "../*": ["src/*"] 
     },
     "esModuleInterop": true,
     "experimentalDecorators": true,

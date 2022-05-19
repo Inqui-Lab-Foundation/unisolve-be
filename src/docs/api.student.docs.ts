@@ -1,70 +1,6 @@
-export const conflictError = {
-    description: 'Conflict',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const badRequestError = {
-    description: 'Bad Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const unauthorizedError = {
-    description: 'unauthorized Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const methodNotAllowedError = {
-    description: 'Method Not Allowed Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
+import { badRequestError, conflictError, forbiddenError, methodNotAllowedError, serverError, unauthorizedError } from "./errors";
 
-
-export const studentRegistrationBody = {
+export const studentRegistrationRequestBody = {
     type: 'object',
     properties: {
         student_name: {
@@ -119,7 +55,7 @@ export const studentRegistrationBody = {
         }
     },
 };
-export const studentLoginBody = {
+export const studentLoginRequestBody = {
     type: 'object',
     properties: {
         email: {
@@ -132,7 +68,7 @@ export const studentLoginBody = {
         }
     },
 };
-export const studentChangePasswordBody = {
+export const studentChangePasswordRequestBody = {
     type: 'object',
     properties: {
         userId: {
@@ -153,7 +89,7 @@ export const studentChangePasswordBody = {
 
 export const studentRegistration = {
     tags: ['Student'],
-    description: 'Register a student',
+    description: 'Endpoint for registering the new student',
     operationId: 'createStudent',
     security: [
         {
@@ -165,7 +101,7 @@ export const studentRegistration = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/studentRegistrationBody'
+                    $ref: '#/components/schemas/studentRegistrationRequestBody'
                 },
             },
         },
@@ -178,25 +114,40 @@ export const studentRegistration = {
                     schema: {
                         type: 'object',
                         properties: {
-                            record: {
-                                type: 'object'
+                            info: {
+                                type: 'object',
+                                example: {
+                                    "id": "50ce971c-a18b-4d93-b582-69365218bdeb",
+                                    "student_name": "Shakti",
+                                    "email": "Shakti@email.com",
+                                    "date_of_birth": "29/05/2003",
+                                    "mobile": 1234567891,
+                                    "institute_name": "something institute of tech",
+                                    "city": "Hyderabad",
+                                    "district": "rangareddy",
+                                    "state": "telangana",
+                                    "country": "india",
+                                    "updatedAt": "2022-05-19T09:42:02.651Z",
+                                    "createdAt": "2022-05-19T09:42:02.651Z"
+                                }
                             },
                             message: {
-                                type: 'string'
+                                type: 'string',
+                                example: 'Student registered successfully.'
                             }
                         }
                     }
                 }
             }
         },
-        '409': conflictError,
         '404': badRequestError,
+        '409': conflictError
 
     }
 }
 export const studentLogin = {
     tags: ['Student'],
-    description: 'Login a student',
+    description: 'Endpoint for student member login and issues the token',
     operationId: 'findStudent',
     security: [
         {
@@ -208,47 +159,48 @@ export const studentLogin = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/studentLoginBody'
+                    $ref: '#/components/schemas/studentLoginRequestBody'
                 },
             },
         },
     },
     responses: {
         '200': {
-            description: 'student Logged in successfully',
+            description: 'Success',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
                             id: {
-                                type: 'object'
+                                type: 'object',
+                                example: '5'
                             },
-                            student_name: {
-                                type: 'string'
+                            role: {
+                                type: 'string',
+                                example: '0'
                             },
                             email: {
-                                type: 'string'
+                                type: 'string',
+                                example: 'student@inqui-lab.org'
                             },
-                            accessToken: {
-                                type: 'string'
-                            },
-                            refreshToken: {
-                                type: 'string'
+                            Token: {
+                                type: 'string',
+                                example: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb3VuZEFjY291bnQiOnsiaWQiOjUsIm5hbWUiOiJhZG1pblVzZXIiLCJlbWFpbCI6ImFkbWluQGlucXVpLWxhYi5vcmciLCJwYXNzd29yZCI6IjMzYTRkYTMxYzY1NjljMTQ5MjFmN2IwNjhhOTRiMThlIiwicm9sZSI6IjAiLCJtb2JpbGUiOjg2NTQ3OTM2MjUsIm9yZyI6ImlucXVpLWxhYnMgZm91bmRhdGlvbiIsInN0YXR1cyI6IkFjdGl2ZSIsImNyZWF0ZWRBdCI6IjIwMjItMDUtMThUMDc6NTY6NDcuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjItMDUtMThUMDc6NTY6NDcuMDAwWiJ9LCJzZXNzaW9uIjoxMjAsImlhdCI6MTY1Mjg4NDgxOCwiZXhwIjoxNjUzMTQ0MDE4fQ.eHawlMNyo4DmZTC8irB-8bI53okOp3YVJ1namBJ7brRV7PTCiu276BLDo8Zt7dB5HA-JfnJh4onig6Ny0XXOLhwrI7jOYWBddsyZN4fPBcn4VLECT6BESu47TzKLkrub2AZfX3SkNngR7wNbuBSGbhZXdnIfo13zuyMuQkVfbu4'
                             }
                         }
                     }
                 }
             }
         },
-        '409': conflictError,
-        '404': badRequestError,
+        '401': unauthorizedError,
+        '403': forbiddenError,
 
     }
 }
 export const studentChangePassword = {
     tags: ['Student'],
-    description: 'Change password a student',
+    description: 'Endpoint for updating the student member password field',
     operationId: 'changePassword',
     security: [
         {
@@ -260,21 +212,22 @@ export const studentChangePassword = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/studentChangePasswordBody'
+                    $ref: '#/components/schemas/studentChangePasswordRequestBody'
                 },
             },
         },
     },
     responses: {
         '202': {
-            description: 'Update the password successfully',
+            description: 'Accepted',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
                             message: {
-                                type: 'object'
+                                type: 'object',
+                                example: 'Password updated successfully'
                             }
                         }
                     }
@@ -282,14 +235,13 @@ export const studentChangePassword = {
             }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
         '404': badRequestError,
-
+        '503': serverError
     }
 }
 export const studentLogout = {
     tags: ['Student'],
-    description: 'Logout a student',
+    description: 'Endpoint for clearing the student member session',
     operationId: 'logout',
     security: [
         {
@@ -298,22 +250,23 @@ export const studentLogout = {
     ],
     responses: {
         '202': {
-            description: 'success',
+            description: 'Accepted',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
                             message: {
-                                type: 'object'
+                                type: 'string',
+                                example: 'cleared session successfully'
                             }
                         }
                     }
                 }
             },
             '401': unauthorizedError,
-            '405': methodNotAllowedError,
             '404': badRequestError,
+            '409': conflictError
         }
     }
 }

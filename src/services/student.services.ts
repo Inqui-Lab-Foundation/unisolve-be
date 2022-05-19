@@ -8,7 +8,7 @@ import logger from '../utils/logger'
 // student Service object
 class studentService {
     //create the new student parameters req.body object
-    async buildStudent(data: object) {
+    async build(data: object) {
         const id = UUIDV4(); // generate new UUID
         try {
             const created = await OperationalService.build(student, { id, ...data });
@@ -20,7 +20,7 @@ class studentService {
         }
     };
     //finding the student parameter query object
-    async findStudent(query: object) {
+    async find(query: object) {
         try {
             const result = await OperationalService.findOne(student, query);
             logger.info(`Account found ${JSON.stringify(result.dataValues)}`)

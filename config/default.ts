@@ -23,6 +23,5 @@ xOcMmqS+/PVKguOkpDLQCGfl4lDjUcdYp+YTustRBxf00F7+lurh1TpZiGzD9GGO
 iYkvwkHx/Jl1vfX3YtmBfmvpRqzlqd5EwZycE6/SyOBZzXkpHB6QhV2DGgmlFoTo
 aY9dqsPExjm5WziiywIDAQAB
 -----END PUBLIC KEY-----`,
-    accessTokenTtl: "3d",
-    refreshTokenTtl: "1y"
+    accessTokenTtl: "3d"
 }

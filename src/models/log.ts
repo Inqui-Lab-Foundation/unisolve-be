@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../../config/database.config';
 
-export interface logAttributes {
+export interface loggerAttributes {
     id: number;
     api_name: string;
     request_method: string;
@@ -10,9 +10,9 @@ export interface logAttributes {
     status: Enumerator | String;
 }
 
-export class log extends Model<logAttributes> { }
+export class logToDatabase extends Model<loggerAttributes> { }
 
-log.init(
+logToDatabase.init(
     {
         id: {
             type: DataTypes.INTEGER,

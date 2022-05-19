@@ -2,11 +2,11 @@ import { Sequelize } from 'sequelize';
 import prodDb from './productions';
 import devDb from './development';
 
-let credentials: any ;
+let credentials: any;
 
 if (process.env.NODE_ENV === 'development') {
     credentials = devDb;
-    console.log('connected to local Database');
+    console.log('using the local Database');
 }
 if (process.env.NODE_ENV === 'production') {
     credentials = prodDb;
@@ -14,13 +14,13 @@ if (process.env.NODE_ENV === 'production') {
 }
 if (process.env.NODE_ENV === 'test') {
     credentials = devDb;
-    console.log('connected to local Database')
+    console.log('using the local Database')
 }
 
-const db = new Sequelize(credentials.databaseName, credentials.userName, credentials.password, {
+const database = new Sequelize(credentials.databaseName, credentials.userName, credentials.password, {
     host: credentials.hostName,
     dialect: "mysql",
     logging: false,
 });
 
-export default db;
+export default database;

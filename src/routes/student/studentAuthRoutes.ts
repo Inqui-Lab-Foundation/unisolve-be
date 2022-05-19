@@ -1,16 +1,15 @@
 import { Express } from 'express';
-import authControllers from '../../controllers/student.controllers';
 import { studentPasswordSchema, studentRegisterSchema } from '../../payloadSchema/payloadShcemas';
 import validate from '../../middleware/validateResource';
 import verifyToken from '../../middleware/verifyToken';
+import StudentController from '../../controllers/student.controllers';
 
-//authentication API's
 function routes(App: Express) {
-    //student authentication
-    App.post('/api/v1/student/register', validate(studentRegisterSchema), authControllers.registerHandler);
-    App.post('/api/v1/student/login', authControllers.loginHandler);
-    App.post('/api/v1/student/changePassword', validate(studentPasswordSchema), verifyToken, authControllers.changePasswordHandler);
-    App.get('/api/v1/student/logout', authControllers.logoutHandler);
+    // authentication
+    App.post('/api/v1/student/register', validate(studentRegisterSchema), StudentController.registerHandler);
+    App.post('/api/v1/student/login', StudentController.loginHandler);
+    App.post('/api/v1/student/changePassword', validate(studentPasswordSchema), verifyToken, StudentController.changePasswordHandler);
+    App.get('/api/v1/student/logout', StudentController.logoutHandler);
 }
 
 export default routes;

@@ -5,20 +5,21 @@ import {
     studentLogin,
     studentChangePassword,
     studentLogout,
-    studentRegistrationBody,
-    studentLoginBody,
-    studentChangePasswordBody
+    studentRegistrationRequestBody,
+    studentLoginRequestBody,
+    studentChangePasswordRequestBody
 } from "./api.student.docs";
 import {
     adminRegistration,
     adminLogin,
     adminChangePassword,
     adminLogout,
-    adminRegistrationBody,
-    adminLoginBody,
-    adminChangePasswordBody,
+    adminRegistrationRequestBody,
+    adminLoginRequestBody,
+    adminChangePasswordRequestBody,
     getStudentConfig,
-    createStudentConfig
+    createStudentConfig,
+    adminCreateSignupConfigRequestBody
 } from "./api.admin.docs";
 import {
     courseList,
@@ -26,8 +27,8 @@ import {
     courseById,
     courseByIdUpdate,
     courseByIdDelete,
-    createCourseBody,
-    courseUpdatesBody
+    createCourseRequestBody,
+    courseUpdatesRequestBody
 } from "./api.course.docs";
 import {
     moduleList,
@@ -94,10 +95,10 @@ const options = {
             name: 'HealthCheck',
         },
         {
-            name: 'Student',
+            name: 'Admin',
         },
         {
-            name: 'Admin',
+            name: 'Student',
         },
         {
             name: 'Course',
@@ -125,11 +126,11 @@ const options = {
         '/api/v1/admin/login': {
             post: adminLogin
         },
+        '/api/v1/admin/changePassword': {
+            post: adminChangePassword
+        },
         '/api/v1/admin/logout': {
             get: adminLogout
-        },
-        '/api/v1/admin/changePassword': {
-            put: adminChangePassword
         },
         '/api/v1/admin/setupStudentConfig': {
             post: createStudentConfig
@@ -235,16 +236,17 @@ const options = {
             },
         },
         schemas: {
-            studentRegistrationBody,
-            studentLoginBody,
-            studentChangePasswordBody,
-            adminRegistrationBody,
-            adminLoginBody,
-            adminChangePasswordBody,
-            createCourseBody,
+            studentRegistrationRequestBody,
+            studentLoginRequestBody,
+            studentChangePasswordRequestBody,
+            adminRegistrationRequestBody,
+            adminLoginRequestBody,
+            adminChangePasswordRequestBody,
+            adminCreateSignupConfigRequestBody,
+            createCourseRequestBody,
+            courseUpdatesRequestBody,
             createModuleBody,
             createVideosBody,
-            courseUpdatesBody,
             moduleUpdatesBody,
             videosUpdatesBody,
             createMentorBody,
