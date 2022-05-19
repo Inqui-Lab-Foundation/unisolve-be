@@ -6,7 +6,6 @@ import { student } from "../models/student.model";
 import OperationalService from "./operational.services";
 import logger from '../utils/logger';
 
-
 // service for all the user session controllers
 class sessionService {
     async createSession(input: any) {

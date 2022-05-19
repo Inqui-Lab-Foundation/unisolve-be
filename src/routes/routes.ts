@@ -1,27 +1,17 @@
 /*Importing the dependencies*/
 import { Express } from 'express';
-
-import videoControllers from '../controllers/video.controllers';
-import evaluatorControllers from '../controllers/evaluator.controllers';
-import mentorControllers from '../controllers/mentor.controllers';
-
-import validate from '../middleware/validateResource';
-
 import { videoPayload, videoUpdate } from '../payloadSchema/video.schema';
 import { evaluatorPayload, evaluatorUpdate } from '../payloadSchema/evaluator.schema';
 import { mentorPayload, mentorUpdate } from '../payloadSchema/mentor.schema';
-import { studentPasswordSchema } from '../payloadSchema/payloadShcemas';
 import { coursePayload, courseUpdate } from '../payloadSchema/course.schema';
+import videoControllers from '../controllers/video.controllers';
+import evaluatorControllers from '../controllers/evaluator.controllers';
+import mentorControllers from '../controllers/mentor.controllers';
+import validate from '../middleware/validateResource';
 import courseControllers from '../controllers/course.controllers';
 import moduleControllers from '../controllers/module.controllers';
 
-/**
- * API's handler functions 
- * @param App Express.
- * @called from single src server.ts
- */
 function routes(App: Express) {
-
     //videos
     App.post('/api/v1/video/create', validate(videoPayload), videoControllers.createHandler);
     App.get('/api/v1/video/list', videoControllers.getHandler);

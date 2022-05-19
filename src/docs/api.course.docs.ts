@@ -1,51 +1,5 @@
-export const conflictError = {
-    description: 'Conflict',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const badRequestError = {
-    description: 'Bad Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const unauthorizedError = {
-    description: 'unauthorized Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
+import { badRequestError, notAcceptable, unauthorizedError } from "./errors";
+
 export const methodNotAllowedError = {
     description: 'Method Not Allowed Request',
     content: {
@@ -63,7 +17,7 @@ export const methodNotAllowedError = {
     }
 }
 
-export const createCourseBody = {
+export const createCourseRequestBody = {
     type: 'object',
     properties: {
         course_name: {
@@ -76,11 +30,11 @@ export const createCourseBody = {
         },
         status: {
             type: 'string',
-            example: "Completed"
+            example: 'Completed'
         }
     }
 };
-export const courseUpdatesBody = {
+export const courseUpdatesRequestBody = {
     type: 'object',
     properties: {
         status: {
@@ -92,7 +46,7 @@ export const courseUpdatesBody = {
 
 export const createCourse = {
     tags: ['Course'],
-    description: 'Create a course entry',
+    description: 'Endpoint for creating new course category',
     operationId: 'createCourse',
     security: [
         {
@@ -104,49 +58,56 @@ export const createCourse = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createCourseBody'
+                    $ref: '#/components/schemas/createCourseRequestBody'
                 },
             },
         },
     },
     responses: {
-        '200': {
-            description: 'New Entry added successfully',
+        '201': {
+            description: 'Created',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
                             id: {
-                                type: 'string'
+                                type: 'number',
+                                example: '1'
                             },
-                            module: {
-                                type: 'string'
+                            course_name: {
+                                type: 'string',
+                                example: 'python'
                             },
-                            course_id: {
-                                type: 'string'
+                            description: {
+                                type: 'string',
+                                example: 'Eum accusantium sunt vel'
                             },
                             status: {
-                                type: 'string'
+                                type: 'string',
+                                example: 'Completed'
                             },
                             updatedAt: {
-                                type: 'string'
+                                type: 'string',
+                                example: '2022-05-19T07:15:49.345Z'
                             },
                             createdAt: {
-                                type: 'string'
+                                type: 'string',
+                                example: '2022-05-19T07:15:49.345Z'
                             }
                         }
                     }
                 }
             }
         },
-        '409': conflictError,
+        '401': unauthorizedError,
         '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const courseList = {
     tags: ['Course'],
-    description: 'Get the list of the course',
+    description: 'Endpoint for getting list of courses created',
     operationId: 'CourseList',
     security: [
         {
@@ -154,17 +115,46 @@ export const courseList = {
         },
     ],
     responses: {
-        '202': {
+        '200': {
             description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            products: {
+                                type: 'array',
+                                example: [
+                                    {
+                                        "id": 4,
+                                        "course_name": "javascript Course",
+                                        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inde sermone vario sex illa ersem captum adduceret, eodem flumine invectio? Itaque hic ipse iam pridem est reiectus; Duo Reges: constructio interrete. Primum in nostrane potestate est",
+                                        "status": "Incomplete",
+                                        "createdAt": "2022-04-21T13:25:24.000Z",
+                                        "updatedAt": "2022-04-29T04:08:18.000Z"
+                                    },
+                                    {
+                                        "id": 5,
+                                        "course_name": "python",
+                                        "description": "Eum accusantium sunt vel. Animi dolorem vero quo. Voluptatem voluptates ex quo. Nemo exercitationem consequatur provident et labore ut. Itaque commodi aliquid enim.",
+                                        "status": "Completed",
+                                        "createdAt": "2022-05-06T10:52:05.000Z",
+                                        "updatedAt": "2022-05-06T10:52:05.000Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
         '404': badRequestError,
+        '406': notAcceptable
     }
 }
 export const courseById = {
     tags: ['Course'],
-    description: 'Get the single course',
+    description: 'Endpoint for getting single course',
     operationId: 'courseById',
     security: [
         {
@@ -177,24 +167,43 @@ export const courseById = {
             name: 'courseId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 2
             },
             required: true,
-            description: "courseId to fetch",
+            description: "Add courseId to fetch specify course",
         }
     ],
     responses: {
-        '202': {
+        '200': {
             description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            product: {
+                                type: 'object',
+                                example: {
+                                    "id": 4,
+                                    "course_name": "javascript Course",
+                                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inde sermone vario sex illa ersem captum adduceret, eodem flumine invectio? Itaque hic ipse iam pridem est reiectus; Duo Reges: constructio interrete. Primum in nostrane potestate est",
+                                    "status": "Incomplete",
+                                    "createdAt": "2022-04-21T13:25:24.000Z",
+                                    "updatedAt": "2022-04-29T04:08:18.000Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
         '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const courseByIdUpdate = {
     tags: ['Course'],
-    description: 'update a course entry',
+    description: 'Endpoint for updating the specific course',
     operationId: 'courseByIdUpdate',
     security: [
         {
@@ -206,7 +215,7 @@ export const courseByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/courseUpdatesBody'
+                    $ref: '#/components/schemas/courseUpdatesRequestBody'
                 },
             },
         },
@@ -217,31 +226,38 @@ export const courseByIdUpdate = {
             name: 'courseId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 2
             },
             required: true,
-            description: "courseId to fetch",
+            description: "Add courseId to update specify course",
         }
     ],
     responses: {
         '200': {
-            description: 'updated',
+            description: 'success',
             content: {
                 'application/json': {
                     schema: {
-                        type: 'array'
+                        properties: {
+                            response: {
+                                type: 'array',
+                                example: [
+                                    1
+                                ]
+                            }
+                        }
                     }
                 }
             }
         },
         '401': unauthorizedError,
-        '409': conflictError,
         '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const courseByIdDelete = {
     tags: ['Course'],
-    description: 'delete the single entry with course id',
+    description: 'Endpoint for removing a single course category',
     operationId: 'courseByIdDelete',
     security: [
         {
@@ -254,18 +270,34 @@ export const courseByIdDelete = {
             name: 'courseId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 2
             },
             required: true,
-            description: "courseId to fetch",
+            description: "Add courseId to delete specify course",
         }
     ],
     responses: {
         '202': {
-            description: 'Server is up and running',
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        properties: {
+                            deletedCourse: {
+                                type: 'number',
+                                example: 1
+                            },
+                            text: {
+                                type: 'string',
+                                example: 'successfully delete the entry'
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
-        '404': badRequestError
+        '404': badRequestError,
+        '406': notAcceptable,
     }
 }

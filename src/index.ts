@@ -1,5 +1,5 @@
 import config from 'config'
-import db from '../config/database.config'
+import database from '../config/database.config'
 import createServer from './utils/server';
 import logger from './utils/logger';
 
@@ -8,7 +8,7 @@ const PORT = config.get<number>('port');
 const App = createServer();
 
 // mySQL DB connection
-db.sync()
+database.sync()
     .then(() => logger.info("Connected to the Database"))
     .catch((e: any) => logger.error(`Something went wrong, message: ${e.message}`));
 

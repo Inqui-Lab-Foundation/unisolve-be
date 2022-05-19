@@ -5,110 +5,63 @@ import logger from '../utils/logger'
 import studentServices from "../services/student.services";
 import sessionServices from "../services/session.services";
 import { signJwt } from "../utils/jwt";
-import operationalServices from "../services/operational.services";
-import { log } from "../models/log";
+import storeLogsToDatabase from "../services/databaseLogger.service";
 
-// controller handlers class
-class authController {
-    //new student handler response with the created student, conflict if the student exist, and error message if anything went wrong
-    async registerHandler(req: Request, res: Response) {
+class StudentController {
+    public async registerHandler(req: Request, res: Response) {
         const { email } = req.body;
-
-        //checking for duplicate
-        const match = await studentServices.findStudent({ where: { email } });
-        if (match) return res.sendStatus(409);
-
-        //create student with the help studentService
-        const newStudent = await studentServices.buildStudent(req.body);
-        if (!newStudent) return res.sendStatus(500);
-        operationalServices.build(log, {
-            api_name: req.originalUrl,
-            request_method: req.method,
-            request: `${JSON.stringify(req.body)}`,
-            response: `${JSON.stringify(newStudent)}`,
-            status: 'success'
-        });
-        return res.status(201).json({ studentInfo: newStudent, message: "student successfully Registered" });
+        const match = await studentServices.find({ where: { email } });
+        if (match) return res.status(409).json({ message: "User details are already existed." });
+        const storeDetailsToDatabase = await studentServices.build(req.body);
+        if (!storeDetailsToDatabase) return res.status(500).json({ message: "Oops. Something went wrong. Please try again" });
+        logger.info(`admin registered successfully ${JSON.stringify(storeDetailsToDatabase)}`);
+        storeLogsToDatabase(req, storeDetailsToDatabase, 'success');
+        return res.status(201).json({ info: storeDetailsToDatabase, message: "Student registered successfully." });
     };
-    // student login handler find the students, create the session and issues token   
-    async loginHandler(req: Request, res: Response) {
-        const { email, mobile, student_name, password } = req.body
+    public async loginHandler(req: Request, res: Response) {
+        const { email, mobile, student_name, password } = req.body;
         let match;
-        // finding the student with the email, mobile, student_name
-        if (email) match = await studentServices.findStudent({ where: { email } });
-        if (mobile) match = await studentServices.findStudent({ where: { mobile } });
-        if (student_name) match = await studentServices.findStudent({ where: { student_name } });
-
-        //if student not found
-        if (!match) return res.sendStatus(401);
-        const foundStudent = match;
-        const foundSession = await sessionServices.destroySession(foundStudent.id); // deleting existing if any with student_id
-        // validating the student password
-        if (password === foundStudent.password) {
-            const input = { userId: foundStudent.id, userAgent: req.get("User-Agent") || "", valid: true };
-            const session = await sessionServices.createSession(input); // creating new session 
-            const Token = signJwt(
-                { foundStudent, session: session.id },
+        if (email) match = await studentServices.find({ where: { email } });
+        if (mobile) match = await studentServices.find({ where: { mobile } });
+        if (student_name) match = await studentServices.find({ where: { student_name } });
+        if (!match) return res.status(401).json({ message: "User details are not found in the database" });
+        await sessionServices.destroySession(match.id);
+        if (password === match.password) {
+            const newSessionObject = { userId: match.id, studentAgent: req.get("student-agent") || "", valid: true };
+            const session = await sessionServices.createSession(newSessionObject);
+            const IssueToken = signJwt(
+                { match, session: session.id },
                 { expiresIn: config.get<string>('accessTokenTtl') }
-            ); // issuing access token
-            const { id, student_name, email } = foundStudent;
-            logger.info(`student logged in ${JSON.stringify(foundStudent)}`);
-            operationalServices.build(log, {
-                api_name: req.originalUrl,
-                request_method: req.method,
-                request: `${JSON.stringify(req.body)}`,
-                response: `${JSON.stringify({ id, student_name, email })}`,
-                status: 'success'
-            });
-            return res.status(200).json({ id, student_name, email, Token });
+            );
+            const { id, email, role } = match;
+            logger.info(`admin logged in ${JSON.stringify(match)}`);
+            storeLogsToDatabase(req, { id, role, email, IssueToken }, 'success');
+            return res.status(200).json({ id, role, email, Token: IssueToken });
         }
         logger.error(`Invalid email or password, fail to validate the password please check and try again`);
-        return res.sendStatus(403);
+        return res.status(403).json({ message: "invalid email or password, please check th payload" });
     };
-    // student change password handler
-    async changePasswordHandler(req: Request, res: Response) {
-        try {
-            const record = await studentServices.changePassword(req.body);
-            operationalServices.build(log, {
-                api_name: req.originalUrl,
-                request_method: req.method,
-                request: `${JSON.stringify(req.body)}`,
-                response: `${JSON.stringify(record)}`,
-                status: 'success'
-            });
-            return res.status(202).json({ message: "Password updated successfully" });
-        } catch (error: any) {
-            operationalServices.build(log, {
-                api_name: req.originalUrl,
-                request_method: req.method,
-                request: `${JSON.stringify(req.body)}`,
-                response: `${JSON.stringify(error.message)}`,
-                status: 'failed'
-            });
-            return res.status(503).json({ message: error.message })
+    public async changePasswordHandler(req: Request, res: Response) {
+        const updateThePassword = await studentServices.changePassword(req.body);
+        if (!updateThePassword) {
+            storeLogsToDatabase(req, {
+                message: 'Oops, Something went wrong. Please check the payload and try again'
+            }, 'failed');
+            return res.status(503).json({ message: 'Oops, Something went wrong. Please check the payload and try again' });
         }
+        storeLogsToDatabase(req, updateThePassword, 'success')
+        return res.status(202).json({ message: "Password updated successfully" })
     };
-    // student logout handler marking session validate false
-    async logoutHandler(req: Request, res: Response) {
+    public async logoutHandler(req: Request, res: Response) {
         //@ts-ignore
         const userId = res.locals.id;
-        try {
-            const foundSession = await sessionServices.findSession({ where: { userId } });
-            if (!foundSession) res.status(409).json({ message: 'session not found' })
-            foundSession.setDataValue('valid', false);
-            foundSession.save();
-            operationalServices.build(log, {
-                api_name: req.originalUrl,
-                request_method: req.method,
-                request: `${JSON.stringify(req.body)}`,
-                response: `${JSON.stringify({ message: "cleared student session successfully" })}`,
-                status: 'success'
-            });
-            return res.status(200).json({ message: "cleared student session successfully" });
-        } catch (error: any) {
-            res.sendStatus(400);
-        }
+        const findSession = await sessionServices.findSession({ where: { userId } });
+        if (!findSession) res.status(409).json({ message: "Session not found" })
+        findSession.setDataValue('valid', false);
+        findSession.save();
+        storeLogsToDatabase(req, { message: "cleared student session successfully" }, 'success')
+        return res.status(200).json({ message: "cleared student session successfully" });
     };
 }
 
-export default new authController();
+export default new StudentController();
