@@ -9,7 +9,7 @@ class ModulesController {
         if (!product) {
             logger.error(`Something went wrong while creating the modules  ${JSON.stringify(req.body)}`);
             storeLogsToDatabase(req, product, 'failed');
-            return res.status(406).send({ message: 'Something went wrong. Please check the payload' });
+            return res.status(406).json({ message: 'Something went wrong. Please check the payload' });
         }
         logger.error(`modules created ${JSON.stringify(product)}`);
         storeLogsToDatabase(req, product, 'success');
@@ -20,11 +20,11 @@ class ModulesController {
         if (!products) {
             logger.error(`Can not find the entry Please try again`);
             storeLogsToDatabase(req, products, 'failed');
-            return res.status(406).send({ message: 'Can not find the entry Please try again' });
+            return res.status(406).json({ message: 'Can not find the entry Please try again' });
         }
         logger.info(`Entry: ${JSON.stringify(products)}`);
         storeLogsToDatabase(req, products, 'success');
-        return res.send({ products });
+        return res.status(200).json({ products });
     }
     async getByIdHandler(req: Request, res: Response) {
         const request_id = req.params.modulesId;
@@ -32,11 +32,11 @@ class ModulesController {
         if (!product) {
             logger.error(`Can not find the entry Please try again`);
             storeLogsToDatabase(req, product, 'failed');
-            return res.status(406).send({ message: 'Can not find the entry Please try again' });
+            return res.status(406).json({ message: 'Can not find the entry Please try again' });
         }
         storeLogsToDatabase(req, product, 'success');
         logger.info(`Entry Found`)
-        return res.send({ product });
+        return res.status(200).json({ product });
     }
     async updateHandler(req: Request, res: Response) {
         const request_id = req.params.modulesId;
@@ -45,12 +45,12 @@ class ModulesController {
         if (!product) {
             logger.error(`Can not find the entry Please try again`);
             storeLogsToDatabase(req, product, 'failed');
-            return res.status(406).send({ message: 'Can not find the entry Please try again' });
+            return res.status(406).json({ message: 'Can not find the entry Please try again' });
         }
         const response = await operationalServices.updateOne(modules, updateObject, { where: { id: request_id } });
         storeLogsToDatabase(req, response, 'success');
         logger.info(`Product updated ${JSON.stringify(response)}`)
-        return res.send({ response });
+        return res.status(200).json({ response });
     };
     async deleteHandler(req: Request, res: Response) {
         const request_id = req.params.modulesId;
@@ -62,12 +62,12 @@ class ModulesController {
         if (!product) {
             logger.error(`Can not find the entry Please try again`);
             storeLogsToDatabase(req, product, 'failed');
-            return res.status(406).send({ message: 'Can not find the entry Please try again' });
+            return res.status(406).json({ message: 'Can not find the entry Please try again' });
         }
         const response = await operationalServices.destroyOne(modules, { where: { id: request_id } });
         logger.info(`Product delete}`);
         storeLogsToDatabase(req, response, 'success');
-        return res.send({ deletedModules: response, text: 'successfully delete the entry' })
+        return res.status(200).json({ deletedModules: response, text: 'successfully delete the entry' })
     }
 }
 

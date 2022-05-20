@@ -1,68 +1,6 @@
-export const conflictError = {
-    description: 'Conflict',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const badRequestError = {
-    description: 'Bad Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const unauthorizedError = {
-    description: 'unauthorized Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const methodNotAllowedError = {
-    description: 'Method Not Allowed Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const createVideosBody = {
+import { conflictError, badRequestError, unauthorizedError, methodNotAllowedError, notAcceptable } from "./errors";
+
+export const createVideosRequestBody = {
     type: 'object',
     properties: {
         module: {
@@ -79,7 +17,7 @@ export const createVideosBody = {
         }
     }
 };
-export const videosUpdatesBody = {
+export const videosUpdatesRequestBody = {
     type: 'object',
     properties: {
         status: {
@@ -90,7 +28,7 @@ export const videosUpdatesBody = {
 };
 export const createVideos = {
     tags: ['Videos'],
-    description: 'Create a videos entry',
+    description: 'Endpoint for creating new video category',
     operationId: 'createVideos',
     security: [
         {
@@ -102,7 +40,7 @@ export const createVideos = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createVideosBody'
+                    $ref: '#/components/schemas/createVideosRequestBody'
                 },
             },
         },
@@ -116,35 +54,42 @@ export const createVideos = {
                         type: 'object',
                         properties: {
                             id: {
-                                type: 'string'
+                                type: 'string',
+                                example: ''
                             },
                             module: {
-                                type: 'string'
+                                type: 'string',
+                                example: ''
                             },
                             videos_id: {
-                                type: 'string'
+                                type: 'string',
+                                example: ''
                             },
                             status: {
-                                type: 'string'
+                                type: 'string',
+                                example: ''
                             },
                             updatedAt: {
-                                type: 'string'
+                                type: 'string',
+                                example: ''
                             },
                             createdAt: {
-                                type: 'string'
+                                type: 'string',
+                                example: ''
                             }
                         }
                     }
                 }
             }
         },
-        '409': conflictError,
+        '401': unauthorizedError,
         '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const videosList = {
     tags: ['Videos'],
-    description: 'Get the list of the videos',
+    description: 'Endpoint for getting list of videos created',
     operationId: 'videosList',
     security: [
         {
@@ -152,17 +97,46 @@ export const videosList = {
         },
     ],
     responses: {
-        '202': {
+        '200': {
             description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            products: {
+                                type: 'array',
+                                example: [
+                                    {
+                                        "id": 4,
+                                        "videos_name": "javascript videos",
+                                        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inde sermone vario sex illa ersem captum adduceret, eodem flumine invectio? Itaque hic ipse iam pridem est reiectus; Duo Reges: constructio interrete. Primum in nostrane potestate est",
+                                        "status": "Incomplete",
+                                        "createdAt": "2022-04-21T13:25:24.000Z",
+                                        "updatedAt": "2022-04-29T04:08:18.000Z"
+                                    },
+                                    {
+                                        "id": 5,
+                                        "videos_name": "python",
+                                        "description": "Eum accusantium sunt vel. Animi dolorem vero quo. Voluptatem voluptates ex quo. Nemo exercitationem consequatur provident et labore ut. Itaque commodi aliquid enim.",
+                                        "status": "Completed",
+                                        "createdAt": "2022-05-06T10:52:05.000Z",
+                                        "updatedAt": "2022-05-06T10:52:05.000Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
         '404': badRequestError,
+        '406': notAcceptable
     }
 }
 export const videosById = {
     tags: ['Videos'],
-    description: 'Get the single videos',
+    description: 'Endpoint for getting single videos',
     operationId: 'videosById',
     security: [
         {
@@ -175,24 +149,43 @@ export const videosById = {
             name: 'videosId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
-            description: "videosId to fetch",
+            description: "Add videosId to fetch specify videos ",
         }
     ],
     responses: {
-        '202': {
+        '200': {
             description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            product: {
+                                type: 'object',
+                                example: {
+                                    "id": 4,
+                                    "videos_name": "javascript videos",
+                                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inde sermone vario sex illa ersem captum adduceret, eodem flumine invectio? Itaque hic ipse iam pridem est reiectus; Duo Reges: constructio interrete. Primum in nostrane potestate est",
+                                    "status": "Incomplete",
+                                    "createdAt": "2022-04-21T13:25:24.000Z",
+                                    "updatedAt": "2022-04-29T04:08:18.000Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
         '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const videosByIdUpdate = {
     tags: ['Videos'],
-    description: 'update a videos entry',
+    description: 'Endpoint for updating the specific video',
     operationId: 'videosByIdUpdate',
     security: [
         {
@@ -204,7 +197,7 @@ export const videosByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/videosUpdatesBody'
+                    $ref: '#/components/schemas/videosUpdatesRequestBody'
                 },
             },
         },
@@ -215,31 +208,38 @@ export const videosByIdUpdate = {
             name: 'videosId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
-            description: "videosId to fetch",
+            description: "Add videosId to update specify videos",
         }
     ],
     responses: {
         '200': {
-            description: 'updated',
+            description: 'success',
             content: {
                 'application/json': {
                     schema: {
-                        type: 'array'
+                        properties: {
+                            response: {
+                                type: 'array',
+                                example: [
+                                    1
+                                ]
+                            }
+                        }
                     }
                 }
             }
         },
         '401': unauthorizedError,
-        '409': conflictError,
         '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const videosByIdDelete = {
     tags: ['Videos'],
-    description: 'delete the single entry with videos id',
+    description: 'Endpoint for removing a single video category',
     operationId: 'videosByIdDelete',
     security: [
         {
@@ -252,18 +252,34 @@ export const videosByIdDelete = {
             name: 'videosId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
-            description: "videosId to fetch",
+            description: "Add evaluatorId to delete single video details"
         }
     ],
     responses: {
         '202': {
-            description: 'Server is up and running',
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        properties: {
+                            deletedVideo: {
+                                type: 'number',
+                                example: 1
+                            },
+                            text: {
+                                type: 'string',
+                                example: 'successfully delete the entry'
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
-        '404': badRequestError
+        '404': badRequestError,
+        '406': notAcceptable,
     }
 }

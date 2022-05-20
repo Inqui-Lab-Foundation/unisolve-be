@@ -69,8 +69,8 @@ class AdminController {
         const result: any = new Object();
         for (let i in dynamicSignupFormMasterObject) {
             for (let j in Object.keys(req.body)) {
-                if (i === j) {
-                    result[i] += dynamicSignupFormMasterObject[i];
+                if (i === Object.keys(req.body)[j]) {
+                    result[i] = dynamicSignupFormMasterObject[i];
                 }
             }
         }

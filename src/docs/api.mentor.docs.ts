@@ -1,68 +1,7 @@
-export const conflictError = {
-    description: 'Conflict',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const badRequestError = {
-    description: 'Bad Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const unauthorizedError = {
-    description: 'unauthorized Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const methodNotAllowedError = {
-    description: 'Method Not Allowed Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const createMentorBody = {
+import { notAcceptable, badRequestError, unauthorizedError, methodNotAllowedError } from "./errors";
+
+
+export const createMentorRequestBody = {
     type: 'object',
     properties: {
         mentor_name: {
@@ -79,18 +18,18 @@ export const createMentorBody = {
         }
     }
 };
-export const mentorUpdateBody = {
+export const mentorUpdateRequestBody = {
     type: 'object',
     properties: {
         status: {
             type: 'string',
-            example: 'Completed',
+            example: 'Active',
         }
     },
 };
 export const createMentor = {
     tags: ['Mentor'],
-    description: 'Create a mentor entry',
+    description: 'Endpoint for registering new mentor',
     operationId: 'createMentor',
     security: [
         {
@@ -102,46 +41,60 @@ export const createMentor = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createMentorBody'
+                    $ref: '#/components/schemas/createMentorRequestBody'
                 },
             },
         },
     },
-    response: {
-        '200': {
-            description: 'New Entry added successfully',
+    responses: {
+        '201': {
+            description: 'Created',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
-                            id: {
-                                type: 'string'
-                            },
-                            module: {
-                                type: 'string'
-                            },
-                            mentor_id: {
-                                type: 'string'
-                            },
                             status: {
-                                type: 'string'
+                                type: 'string',
+                                example: 'Active'
                             },
-                            updateAt: {
-                                type: 'string'
+                            id: {
+                                type: 'number',
+                                example: '1'
+                            },
+                            mentor_name: {
+                                type: 'string',
+                                example: 'SundarPichai'
+                            },
+                            mobile: {
+                                type: 'number',
+                                example: '126546654695'
+                            },
+                            email: {
+                                type: 'string',
+                                example: 'SundarPichai@gmail.com'
+                            },
+                            createdAt: {
+                                type: 'string',
+                                example: '2022-05-20T08:19:57.824Z'
+                            },
+                            updatedAt: {
+                                type: 'string',
+                                example: '2022-05-20T08:19:57.824Z'
                             }
                         }
                     }
                 }
             }
         },
-        '409': conflictError,
+        '401': unauthorizedError,
         '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const mentorList = {
     tags: ['Mentor'],
-    description: 'Get the list of the mentor',
+    description: 'Endpoint for getting list of registered mentor',
     operationId: 'mentorList',
     security: [
         {
@@ -149,17 +102,37 @@ export const mentorList = {
         },
     ],
     responses: {
-        '202': {
+        '200': {
             description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            products: {
+                                type: 'array',
+                                example: [{
+                                    "id": 1,
+                                    "mentor_name": "SundarPichai",
+                                    "mobile": 126546654695,
+                                    "email": "SundarPichai@gmail.com",
+                                    "status": "Active",
+                                    "createdAt": "2022-05-20T08:19:57.000Z",
+                                    "updatedAt": "2022-05-20T08:19:57.000Z"
+                                }]
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
-        '404': badRequestError
+        '404': badRequestError,
+        '406': notAcceptable
     }
 }
 export const mentorById = {
     tags: ['Mentor'],
-    description: 'Get the single mentor',
+    description: 'Endpoint for getting single mentor details',
     operationId: 'mentorById',
     security: [
         {
@@ -169,27 +142,47 @@ export const mentorById = {
     parameters: [
         {
             in: 'path',
-            name: 'courseId',
+            name: 'mentorId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
-            description: "courseId to fetch",
+            description: "Add evaluatorId to fetch single mentor details",
         }
     ],
     responses: {
-        '202': {
+        '200': {
             description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            product: {
+                                type: 'object',
+                                example: {
+                                    "id": 1,
+                                    "evaluator_name": "SundarPichai",
+                                    "mobile": 126546654695,
+                                    "email": "SundarPichai@gmail.com",
+                                    "status": "Active",
+                                    "createdAt": "2022-05-20T08:19:57.000Z",
+                                    "updatedAt": "2022-05-20T08:19:57.000Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
-        '404': badRequestError
+        '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const mentorByIdUpdate = {
     tags: ['Mentor'],
-    description: 'update a mentor entry',
+    description: 'Endpoint for updating single mentor details',
     operationId: 'mentorByIdUpdate',
     security: [
         {
@@ -201,7 +194,7 @@ export const mentorByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/mentorUpdateBody'
+                    $ref: '#/components/schemas/mentorUpdateRequestBody'
                 },
             },
         },
@@ -209,65 +202,62 @@ export const mentorByIdUpdate = {
     parameters: [
         {
             in: 'path',
-            name: 'courseId',
+            name: 'mentorId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
-            description: "courseId to fetch",
+            description: "Add mentorId to update single evaluator details"
         }
     ],
     responses: {
         '200': {
-            description: 'updated',
+            description: 'Success',
             content: {
-                'application/json': {
+                'applications/json': {
                     schema: {
-                        type: 'array'
+                        properties: {
+                            response: {
+                                type: 'array',
+                                example: [
+                                    1
+                                ]
+                            }
+                        }
                     }
                 }
             }
         },
         '401': unauthorizedError,
-        '409': conflictError,
-        '404': badRequestError
+        '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const mentorByIdDelete = {
     tags: ['Mentor'],
-    description: 'delete the single entry with mentor id',
+    description: 'Endpoint for removing a single mentor details',
     operationId: 'mentorByIdDelete',
     security: [
         {
             bearerAuth: [],
         },
     ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/createUserBody'
-                },
-            },
-        },
-    },
     parameters: [
         {
             in: 'path',
-            name: 'courseId',
+            name: 'mentorId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
-            description: "courseId to fetch",
+            description: "Add evaluatorId to delete single mentor detail",
         }
     ],
     responses: {
-        '202': {
-            description: 'Server is up and running',
+        '200': {
+            description: 'Success',
         },
         '401': unauthorizedError,
         '405': methodNotAllowedError,

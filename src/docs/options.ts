@@ -36,8 +36,8 @@ import {
     moduleById,
     moduleByIdUpdate,
     moduleByIdDelete,
-    createModuleBody,
-    moduleUpdatesBody
+    createModuleRequestBody,
+    moduleUpdatesRequestBody
 } from "./api.module.docs";
 import {
     videosList,
@@ -45,14 +45,14 @@ import {
     videosById,
     videosByIdUpdate,
     videosByIdDelete,
-    createVideosBody,
-    videosUpdatesBody
+    createVideosRequestBody,
+    videosUpdatesRequestBody,
 } from "./api.video.docs";
 import {
     createMentor,
     mentorById,
-    createMentorBody,
-    mentorUpdateBody,
+    createMentorRequestBody,
+    mentorUpdateRequestBody,
     mentorByIdDelete,
     mentorByIdUpdate,
     mentorList
@@ -63,8 +63,8 @@ import {
     evaluatorByIdDelete,
     evaluatorByIdUpdate,
     evaluatorList,
-    createEvaluatorBody,
-    evaluatorUpdateBody
+    createEvaluatorRequestBody,
+    evaluatorUpdateRequestBody
 } from "./api.evaluator.docs";
 
 // define Swagger options with specific properties
@@ -79,11 +79,7 @@ const options = {
             url: 'https://www.apache.org/licenses/LICENSE-2.0.html',
         },
     },
-    servers: [
-        {
-            url: 'http://15.207.254.154:3002',
-            description: 'Production Server',
-        },
+    server: [
         {
             url: 'http://localhost:3002',
             description: 'development Server',
@@ -201,13 +197,13 @@ const options = {
         '/api/v1/mentor/list': {
             get: mentorList
         },
-        '/api/v1/mentor/get/{courseId}': {
+        '/api/v1/mentor/get/{mentorId}': {
             get: mentorById
         },
-        '/api/v1/mentor/update/{courseId}': {
+        '/api/v1/mentor/update/{mentorId}': {
             put: mentorByIdUpdate
         },
-        '/api/v1/mentor/delete/{courseId}': {
+        '/api/v1/mentor/delete/{mentorId}': {
             delete: mentorByIdDelete
         },
         '/api/v1/evaluator/create': {
@@ -216,13 +212,13 @@ const options = {
         '/api/v1/evaluator/list': {
             get: evaluatorList
         },
-        '/api/v1/evaluator/get/{courseId}': {
+        '/api/v1/evaluator/get/{evaluatorId}': {
             get: evaluatorById
         },
-        '/api/v1/evaluator/update/{courseId}': {
+        '/api/v1/evaluator/update/{evaluatorId}': {
             put: evaluatorByIdUpdate
         },
-        '/api/v1/evaluator/delete/{courseId}': {
+        '/api/v1/evaluator/delete/{evaluatorId}': {
             delete: evaluatorByIdDelete
         },
 
@@ -245,14 +241,14 @@ const options = {
             adminCreateSignupConfigRequestBody,
             createCourseRequestBody,
             courseUpdatesRequestBody,
-            createModuleBody,
-            createVideosBody,
-            moduleUpdatesBody,
-            videosUpdatesBody,
-            createMentorBody,
-            mentorUpdateBody,
-            createEvaluatorBody,
-            evaluatorUpdateBody
+            createModuleRequestBody,
+            moduleUpdatesRequestBody,
+            createVideosRequestBody,
+            videosUpdatesRequestBody,
+            createMentorRequestBody,
+            mentorUpdateRequestBody,
+            createEvaluatorRequestBody,
+            evaluatorUpdateRequestBody
         },
     },
 };

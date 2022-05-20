@@ -1,68 +1,6 @@
-export const conflictError = {
-    description: 'Conflict',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const badRequestError = {
-    description: 'Bad Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const unauthorizedError = {
-    description: 'unauthorized Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const methodNotAllowedError = {
-    description: 'Method Not Allowed Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const createEvaluatorBody = {
+import { badRequestError, conflictError, notAcceptable, unauthorizedError } from "./errors";
+
+export const createEvaluatorRequestBody = {
     type: 'object',
     properties: {
         evaluator_name: {
@@ -79,18 +17,19 @@ export const createEvaluatorBody = {
         }
     }
 };
-export const evaluatorUpdateBody = {
+export const evaluatorUpdateRequestBody = {
     type: 'object',
     properties: {
         status: {
             type: 'string',
-            example: 'Completed',
+            example: 'Active',
         }
     },
 };
+
 export const createEvaluator = {
     tags: ['Evaluator'],
-    description: 'Create a evaluator entry',
+    description: 'Endpoint for registering new evaluator',
     operationId: 'createEvaluator',
     security: [
         {
@@ -102,46 +41,60 @@ export const createEvaluator = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createUserBody'
+                    $ref: '#/components/schemas/createEvaluatorRequestBody'
                 },
             },
         },
     },
-    response: {
-        '200': {
-            description: 'New Entry added successfully',
+    responses: {
+        '201': {
+            description: 'created',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
-                            id: {
-                                type: 'string'
-                            },
-                            module: {
-                                type: 'string'
-                            },
-                            evaluator_id: {
-                                type: 'string'
-                            },
                             status: {
-                                type: 'string'
+                                type: 'string',
+                                example: 'Active'
                             },
-                            updateAt: {
-                                type: 'string'
+                            id: {
+                                type: 'number',
+                                example: '1'
+                            },
+                            evaluator_name: {
+                                type: 'string',
+                                example: 'SundarPichai'
+                            },
+                            mobile: {
+                                type: 'number',
+                                example: '126546654695'
+                            },
+                            email: {
+                                type: 'string',
+                                example: 'SundarPichai@gmail.com'
+                            },
+                            createdAt: {
+                                type: 'string',
+                                example: '2022-05-20T08:19:57.824Z'
+                            },
+                            updatedAt: {
+                                type: 'string',
+                                example: '2022-05-20T08:19:57.824Z'
                             }
                         }
                     }
                 }
             }
         },
-        '409': conflictError,
+        '401': unauthorizedError,
         '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const evaluatorList = {
     tags: ['Evaluator'],
-    description: 'Get the list of the evaluator',
+    description: 'Endpoint for getting list of registered evaluator',
     operationId: 'evaluatorList',
     security: [
         {
@@ -149,17 +102,37 @@ export const evaluatorList = {
         },
     ],
     responses: {
-        '202': {
+        '200': {
             description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            products: {
+                                type: 'array',
+                                example: [{
+                                    "id": 1,
+                                    "evaluator_name": "SundarPichai",
+                                    "mobile": 126546654695,
+                                    "email": "SundarPichai@gmail.com",
+                                    "status": "Active",
+                                    "createdAt": "2022-05-20T08:19:57.000Z",
+                                    "updatedAt": "2022-05-20T08:19:57.000Z"
+                                }]
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
-        '404': badRequestError
+        '404': badRequestError,
+        '406': notAcceptable
     },
 }
 export const evaluatorById = {
     tags: ['Evaluator'],
-    description: 'Get the single evaluator',
+    description: 'Endpoint for getting single evaluator details',
     operationId: 'evaluatorById',
     security: [
         {
@@ -169,27 +142,47 @@ export const evaluatorById = {
     parameters: [
         {
             in: 'path',
-            name: 'courseId',
+            name: 'evaluatorId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
-            description: "courseId to fetch",
+            description: "Add evaluatorId to fetch single evaluator details",
         }
     ],
     responses: {
-        '202': {
+        '200': {
             description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            product: {
+                                type: 'object',
+                                example: {
+                                    "id": 1,
+                                    "evaluator_name": "SundarPichai",
+                                    "mobile": 126546654695,
+                                    "email": "SundarPichai@gmail.com",
+                                    "status": "Active",
+                                    "createdAt": "2022-05-20T08:19:57.000Z",
+                                    "updatedAt": "2022-05-20T08:19:57.000Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
-        '404': badRequestError
+        '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const evaluatorByIdUpdate = {
     tags: ['Evaluator'],
-    description: 'update a evaluator entry',
+    description: 'Endpoint for updating single evaluator details',
     operationId: 'evaluatorByIdUpdate',
     security: [
         {
@@ -201,7 +194,7 @@ export const evaluatorByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createUserBody'
+                    $ref: '#/components/schemas/evaluatorUpdateRequestBody'
                 },
             },
         },
@@ -209,68 +202,81 @@ export const evaluatorByIdUpdate = {
     parameters: [
         {
             in: 'path',
-            name: 'courseId',
+            name: 'evaluatorId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
-            description: "courseId to fetch",
+            description: "Add evaluatorId to update single evaluator details",
         }
     ],
     responses: {
         '200': {
-            description: 'updated',
+            description: 'Success',
             content: {
-                'application/json': {
+                'applications/json': {
                     schema: {
-                        type: 'array'
+                        properties: {
+                            response: {
+                                type: 'array',
+                                example: [
+                                    1
+                                ]
+                            }
+                        }
                     }
                 }
             }
         },
         '401': unauthorizedError,
-        '409': conflictError,
-        '404': badRequestError
+        '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const evaluatorByIdDelete = {
     tags: ['Evaluator'],
-    description: 'delete the single entry with evaluator id',
+    description: 'Endpoint for removing a single evaluator details',
     operationId: 'evaluatorByIdDelete',
     security: [
         {
             bearerAuth: [],
         },
     ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/createUserBody'
-                },
-            },
-        },
-    },
     parameters: [
         {
             in: 'path',
-            name: 'courseId',
+            name: 'evaluatorId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
-            description: "courseId to fetch",
+            description: "Add evaluatorId to delete single evaluator details",
         }
     ],
     responses: {
-        '202': {
-            description: 'Server is up and running',
+        '200': {
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        properties: {
+                            deletedEvaluator: {
+                                type: 'number',
+                                example: 1
+                            },
+                            text: {
+                                type: 'string',
+                                example: 'successfully delete the entry'
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
-        '404': badRequestError
+        '404': badRequestError,
+        '406': notAcceptable,
     }
 }
