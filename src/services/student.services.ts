@@ -34,19 +34,19 @@ class studentService {
     async changePassword(input: any) {
         const { userId, oldPassword, newPassword } = input;
         const foundStudent = await OperationalService.findByPk(student, userId);
-        if (!foundStudent) {
-            logger.error(`student not found`)
-            throw new Error('student not found');
-        }
-        if (oldPassword !== foundStudent.getDataValue('password')) { // comparing password
+        if (foundStudent === null) {
+            logger.error(`student not found`);
+        } else if (oldPassword !== foundStudent.getDataValue('password')) {
             logger.error(`password not validate`)
-            throw new Error("password not validate")
-        }
-        foundStudent.setDataValue('password', newPassword);
-        foundStudent.save();
-        logger.info(`Password update successfully ${JSON.stringify(oldPassword, foundStudent)}`)
-        return foundStudent.dataValues;
-    };
+            return ("password not validate");
+        } else {
+            foundStudent.setDataValue('password', newPassword);
+            foundStudent.save();
+            logger.info(`Password update successfully ${JSON.stringify(oldPassword, foundStudent)}`)
+            return foundStudent.dataValues;
+        };
+    }
+
 };
 
 export default new studentService();
