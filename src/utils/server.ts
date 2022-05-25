@@ -1,6 +1,7 @@
 import Express, { Request, Response } from 'express';
 import cors from 'cors';
 import config from 'config';
+import helmet from 'helmet';
 
 import verifyToken from '../middleware/verifyToken';
 import studentApiEndpoints from '../routes/student/studentAuthRoutes';
@@ -14,6 +15,7 @@ function createServer() {
     const Port = config.get<number>("port");
     // middleware's
     app.use(cors())
+    app.use(helmet())//helmet for secure headers
     app.use(Express.json());
     app.use(Express.urlencoded({ extended: true }));
     // utils services
