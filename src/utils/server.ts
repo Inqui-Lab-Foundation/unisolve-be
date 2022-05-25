@@ -2,6 +2,7 @@ import Express, { Request, Response } from 'express';
 import cors from 'cors';
 import config from 'config';
 import helmet from 'helmet';
+import compression from 'compression';
 
 import verifyToken from '../middleware/verifyToken';
 import studentApiEndpoints from '../routes/student/studentAuthRoutes';
@@ -9,6 +10,7 @@ import adminApiEndpoints from '../routes/admin/adminAuthRoutes'
 import protectedApiEndpoints from '../routes/routes';
 import swaggerDocumentation from './swagger';
 import healthCheckHandler from '../controllers/healthChecker.controller';
+import shouldCompress from './compression';
 
 function createServer() {
     const app = Express();
@@ -16,6 +18,7 @@ function createServer() {
     // middleware's
     app.use(cors())
     app.use(helmet())//helmet for secure headers
+    app.use(compression({filter:shouldCompress}))//compression for gzip
     app.use(Express.json());
     app.use(Express.urlencoded({ extended: true }));
     // utils services
