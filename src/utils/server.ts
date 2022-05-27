@@ -12,7 +12,7 @@ import swaggerDocumentation from './swagger';
 import healthCheckHandler from '../controllers/healthChecker.controller';
 import shouldCompress from './compression';
 import logger from './logger';
-
+import * as errorHandler from '../middleware/errorHandler';
 function createServer() {
     const app = Express();
     logger.info(`${process.env.APP_NAME} is starting...`);
@@ -28,12 +28,12 @@ function createServer() {
     app.get('/api/v1/healthcheck', healthCheckHandler);
     adminApiEndpoints(app);
     studentApiEndpoints(app);
-    app.use(verifyToken);
+    // app.use(verifyToken);
     protectedApiEndpoints(app);
-    // wrong request
-    app.use("*", (req: Request, res: Response) => {
-        res.status(404).send({ message: "Page not found" })
-    });
+    // Error Middleware
+    app.use(errorHandler.genericErrorHandler);
+    app.use(errorHandler.notFound);
+    
     return app;
 }
 

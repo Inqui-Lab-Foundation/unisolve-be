@@ -16,3 +16,29 @@ database.sync()
 App.listen(PORT, async () => {
     logger.info(`App is running at http://localhost:${PORT}`);
 })
+
+// Catch unhandled rejections
+process.on('unhandledRejection', err => {
+    logger.error('Unhandled rejection', err);
+  
+    try {
+    //   Sentry.captureException(err);
+    } catch (err) {
+      logger.error('Sentry error', err);
+    } finally {
+      process.exit(1);
+    }
+  });
+  
+  // Catch uncaught exceptions
+  process.on('uncaughtException', err => {
+    logger.error('Uncaught exception', err);
+  
+    try {
+    //   Sentry.captureException(err);
+    } catch (err) {
+      logger.error('Sentry error', err);
+    } finally {
+      process.exit(1);
+    }
+  });
