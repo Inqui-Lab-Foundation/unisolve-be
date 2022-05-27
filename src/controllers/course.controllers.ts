@@ -3,9 +3,13 @@ import operationalServices from "../services/operational.services";
 import { course } from "../models/course.model";
 import logger from '../utils/logger'
 import storeLogsToDatabase from "../services/databaseLogger.service";
+import { readFileSync, writeFileSync } from "fs";
 class CourseController {
     async createHandler(req: Request, res: Response) {
-        const product = await operationalServices.build(course, req.body);
+        if (req.file === undefined) return 'you must select a file'
+        const product = await operationalServices.build(course, {
+            ...req.body, Thumbnail: `courses/${req.file.originalname}`
+        })
         if (!product) {
             logger.error(`Something went wrong while creating the course  ${JSON.stringify(req.body)}`);
             storeLogsToDatabase(req, product, 'failed');
@@ -22,7 +26,7 @@ class CourseController {
             storeLogsToDatabase(req, products, 'failed');
             return res.status(406).json({ message: 'Can not find the entry Please try again' });
         }
-        logger.info(`Entry: ${JSON.stringify(products)}`);
+        logger.info(`Entry: ${JSON.stringify(products)} `);
         storeLogsToDatabase(req, products, 'success');
         return res.status(200).json({ products });
     }
@@ -49,7 +53,7 @@ class CourseController {
         }
         const response = await operationalServices.updateOne(course, updateObject, { where: { id: request_id } });
         storeLogsToDatabase(req, response, 'success');
-        logger.info(`Product updated ${JSON.stringify(response)}`)
+        logger.info(`Product updated ${JSON.stringify(response)} `)
         return res.status(200).json({ response });
     };
     async deleteHandler(req: Request, res: Response) {

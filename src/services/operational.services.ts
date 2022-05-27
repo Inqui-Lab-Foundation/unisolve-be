@@ -1,3 +1,4 @@
+import { readFileSync } from "fs";
 
 // service for all the courser controllers logic isolated
 class OperationalService {
@@ -43,6 +44,9 @@ class OperationalService {
             return error.message;
         }
     };
+    // async createCourse(tableName: any, body: object) {
+
+    // }
 }
 
 export default new OperationalService();

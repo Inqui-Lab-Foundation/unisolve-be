@@ -6,6 +6,7 @@ export interface courseAttributes {
     course_name: string;
     description: string;
     status: Enumerator;
+    Thumbnail: string;
 }
 
 export class course extends Model<courseAttributes> { }
@@ -24,6 +25,9 @@ course.init(
         description: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        Thumbnail: {
+            type: DataTypes.STRING
         },
         status: {
             type: DataTypes.ENUM('Completed', 'Incomplete')
