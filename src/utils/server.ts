@@ -30,7 +30,7 @@ function createServer() {
     protectedApiEndpoints(app);
     // wrong request
     app.use("*", (req: Request, res: Response) => {
-        res.status(404).send({ message: "Page not found" })
+        res.status(404).json({ message: "Page not found" })
     });
     return app;
 }

@@ -1,22 +1,5 @@
 import { badRequestError, notAcceptable, unauthorizedError } from "./errors";
 
-export const methodNotAllowedError = {
-    description: 'Method Not Allowed Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-
 export const createCourseRequestBody = {
     type: 'object',
     properties: {
@@ -174,7 +157,7 @@ export const courseById = {
             name: 'courseId',
             schema: {
                 type: 'integer',
-                default: 2
+                default: 1
             },
             required: true,
             description: "Add courseId to fetch specify course",
