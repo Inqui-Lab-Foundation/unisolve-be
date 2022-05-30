@@ -18,7 +18,7 @@ function createServer() {
     // middleware's
     app.use(cors())
     app.use(helmet())//helmet for secure headers
-    app.use(compression({filter:shouldCompress}))//compression for gzip
+    app.use(compression({ filter: shouldCompress }))//compression for gzip
     app.use(Express.json());
     app.use(Express.urlencoded({ extended: true }));
     // utils services
