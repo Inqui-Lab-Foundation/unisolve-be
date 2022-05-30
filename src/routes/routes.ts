@@ -10,17 +10,18 @@ import mentorControllers from '../controllers/mentor.controllers';
 import validate from '../middleware/validateResource';
 import courseControllers from '../controllers/course.controllers';
 import moduleControllers from '../controllers/module.controllers';
+import uploadFile from '../utils/multer';
 
 function routes(App: Express) {
     //videos
-    App.post('/api/v1/video/create', validate(videoPayload), videoControllers.createHandler);
+    App.post('video/create', validate(videoPayload), videoControllers.createHandler);
     App.get('/api/v1/video/list', videoControllers.getHandler);
     App.get('/api/v1/video/get/:videoId', videoControllers.getByIdHandler);
     App.put('/api/v1/video/update/:videoId', validate(videoUpdate), videoControllers.updateHandler);
     App.delete('/api/v1/video/delete/:videoId', videoControllers.deleteHandler);
 
     //course
-    App.post('/api/v1/course/create', validate(coursePayload), courseControllers.createHandler);
+    App.post('/api/v1/course/create', uploadFile.single('Thumbnail'), courseControllers.createHandler);
     App.get('/api/v1/course/list', courseControllers.getHandler);
     App.get('/api/v1/course/get/:courseId', courseControllers.getByIdHandler);
     App.put('/api/v1/course/update/:courseId', validate(courseUpdate), courseControllers.updateHandler);

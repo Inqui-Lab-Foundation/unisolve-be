@@ -32,17 +32,18 @@ class adminService {
     async changePassword(input: any) {
         const { id, oldPassword, newPassword } = input;
         const found = await OperationalService.findByPk(user, id);
-        if (!found) {
+        console.log(found, input);
+        if (found === null) {
             logger.error(`student not found ${found}`)
-        }
-        if (oldPassword !== found.getDataValue('password')) {
+        } else if (oldPassword !== found.getDataValue('password')) {
             logger.error(`password not validate`)
-            throw new Error("password not validate")
+            return ("password not validate")
+        } else {
+            found.setDataValue('password', newPassword);
+            found.save();
+            logger.info(`Password update successfully ${JSON.stringify(oldPassword, found)}`)
+            return found.dataValues;
         }
-        found.setDataValue('password', newPassword);
-        found.save();
-        logger.info(`Password update successfully ${JSON.stringify(oldPassword, found)}`)
-        return found.dataValues;
     };
 };
 

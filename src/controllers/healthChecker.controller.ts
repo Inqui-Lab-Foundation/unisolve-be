@@ -15,7 +15,7 @@ const healthCheckHandler = async (req: Request, res: Response) => {
         res.status(200).send(healthcheck);
     } catch (error: any) {
         healthcheck.message = error;
-        storeLogsToDatabase(req, error.message, 'fai;ed')
+        storeLogsToDatabase(req, error.message, 'failed')
         res.status(503).send(error);
     }
 }

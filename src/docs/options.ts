@@ -123,7 +123,7 @@ const options = {
             post: adminLogin
         },
         '/api/v1/admin/changePassword': {
-            post: adminChangePassword
+            put: adminChangePassword
         },
         '/api/v1/admin/logout': {
             get: adminLogout
@@ -144,7 +144,7 @@ const options = {
             get: studentLogout
         },
         '/api/v1/student/changePassword': {
-            put: studentChangePassword
+            put: studentChangePassword  
         },
         '/api/v1/course/create': {
             post: createCourse
