@@ -75,13 +75,14 @@ class AdminController {
             }
         }
         new Promise((resolve, reject) => {
-            writeFile('./config/singUp.json', JSON.stringify(result), function (err) {
+            writeFile('./dist/config/singUp.json', JSON.stringify(result), function (err) {
                 if (err) {
                     reject;
                     storeLogsToDatabase(req, { message: 'Oops, Something went wrong. Please check the payload and try again', err }, 'failed')
                     return res.status(503).json({ message: 'Oops, Something went wrong. Please check the payload and try again', err });
                 } else {
                     resolve;
+                    // console.log(first)
                     storeLogsToDatabase(req, { message: "successfully created json file" }, 'success')
                     return res.status(200).json({ message: "successfully created json file" });
                 }
@@ -91,12 +92,13 @@ class AdminController {
 
     public async getSignUpConfig(req: Request, res: Response) {
         var options = {
-            root: path.join(__dirname, '../../config'),
+            root: path.join(__dirname, '../../dist/config'),
             headers: {
                 'x-timestamp': Date.now(),
                 'x-sent': true
             }
         };
+        console.log(options);
         storeLogsToDatabase(req, { message: "getting the json file" }, 'success');
         return res.status(200).sendFile('singUp.json', options);
     }

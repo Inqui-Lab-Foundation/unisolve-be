@@ -6,8 +6,10 @@ import storeLogsToDatabase from "../services/databaseLogger.service";
 import { readFileSync, writeFileSync } from "fs";
 class CourseController {
     async createHandler(req: Request, res: Response) {
+        //@ts-ignore
         if (req.file === undefined) return 'you must select a file'
         const product = await operationalServices.build(course, {
+            //@ts-ignore
             ...req.body, Thumbnail: `courses/${req.file.originalname}`
         })
         if (!product) {
