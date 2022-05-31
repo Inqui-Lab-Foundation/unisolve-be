@@ -11,6 +11,8 @@ import protectedApiEndpoints from '../routes/routes';
 import swaggerDocumentation from './swagger';
 import healthCheckHandler from '../controllers/healthChecker.controller';
 import shouldCompress from './compression';
+import logger from './logger';
+import * as errorHandler from '../middleware/errorHandler';
 function createServer() {
     const app = Express();
     logger.info(`${process.env.APP_NAME} is starting...`);
