@@ -11,8 +11,6 @@ import protectedApiEndpoints from '../routes/routes';
 import swaggerDocumentation from './swagger';
 import healthCheckHandler from '../controllers/healthChecker.controller';
 import shouldCompress from './compression';
-import logger from './logger';
-import * as errorHandler from '../middleware/errorHandler';
 function createServer() {
     const app = Express();
     logger.info(`${process.env.APP_NAME} is starting...`);
@@ -20,7 +18,7 @@ function createServer() {
     // middleware's
     app.use(cors())
     app.use(helmet())//helmet for secure headers
-    app.use(compression({filter:shouldCompress}))//compression for gzip
+    app.use(compression({ filter: shouldCompress }))//compression for gzip
     app.use(Express.json());
     app.use(Express.urlencoded({ extended: true }));
     // utils services
@@ -28,7 +26,7 @@ function createServer() {
     app.get('/api/v1/healthcheck', healthCheckHandler);
     adminApiEndpoints(app);
     studentApiEndpoints(app);
-    // app.use(verifyToken);
+    app.use(verifyToken);
     protectedApiEndpoints(app);
     // Error Middleware
     app.use(errorHandler.genericErrorHandler);

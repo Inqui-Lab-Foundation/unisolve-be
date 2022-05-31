@@ -1,22 +1,5 @@
 import { badRequestError, notAcceptable, unauthorizedError } from "./errors";
 
-export const methodNotAllowedError = {
-    description: 'Method Not Allowed Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-
 export const createCourseRequestBody = {
     type: 'object',
     properties: {
@@ -26,7 +9,10 @@ export const createCourseRequestBody = {
         },
         description: {
             type: 'string',
-            example: 'Eum accusantium sunt vel. Animi dolorem vero quo. Voluptatem voluptates ex quo. Nemo exercitationem consequatur provident et labore ut. Itaque commodi aliquid enim.',
+            example: 'Eum accusantium sunt vel. Animi dolorem vero quo. Voluptatem voluptates ex quo.',
+        },
+        Thumbnail: {
+            type: 'file'
         },
         status: {
             type: 'string',
@@ -82,6 +68,10 @@ export const createCourse = {
                             description: {
                                 type: 'string',
                                 example: 'Eum accusantium sunt vel'
+                            },
+                            Thumbnail: {
+                                type: 'string',
+                                example: "courses/Screenshot 2022-04-21 101916.png"
                             },
                             status: {
                                 type: 'string',
@@ -167,7 +157,7 @@ export const courseById = {
             name: 'courseId',
             schema: {
                 type: 'integer',
-                default: 2
+                default: 1
             },
             required: true,
             description: "Add courseId to fetch specify course",
@@ -186,6 +176,7 @@ export const courseById = {
                                     "id": 4,
                                     "course_name": "javascript Course",
                                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inde sermone vario sex illa ersem captum adduceret, eodem flumine invectio? Itaque hic ipse iam pridem est reiectus; Duo Reges: constructio interrete. Primum in nostrane potestate est",
+                                    "Thumbnail": "courses/Screenshot 2022-04-21 101916.png",
                                     "status": "Incomplete",
                                     "createdAt": "2022-04-21T13:25:24.000Z",
                                     "updatedAt": "2022-04-29T04:08:18.000Z"

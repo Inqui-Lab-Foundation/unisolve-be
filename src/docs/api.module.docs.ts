@@ -1,69 +1,6 @@
-export const conflictError = {
-    description: 'Conflict',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const badRequestError = {
-    description: 'Bad Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const unauthorizedError = {
-    description: 'unauthorized Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
-export const methodNotAllowedError = {
-    description: 'Method Not Allowed Request',
-    content: {
-        'application/json': {
-            schema: {
-                type: "object",
-                properties: {
-                    message: {
-                        type: 'String',
-                        example: 'error'
-                    }
-                }
-            }
-        }
-    }
-}
+import { conflictError, badRequestError, unauthorizedError, methodNotAllowedError, notAcceptable } from "./errors";
 
-export const createModuleBody = {
+export const createModuleRequestBody = {
     type: 'object',
     properties: {
         course_id: {
@@ -72,11 +9,11 @@ export const createModuleBody = {
         },
         description: {
             type: 'string',
-            example: 'Voluptas recusandae quo ut et est. Enim quibusdam et veniam nostrum est dolor reiciendis et. Delectus officiis impedit facilis assumenda dolor quia facere. Eos temporibus autem beatae eos repellat et voluptas. Commodi dignissimos dignissimos temporibus quia voluptate inventore. Et incidunt vero quia autem autem.'
+            example: "Voluptas recusandae quo ut et est. Enim quibusdam et veniam nostrum est dolor reiciendis et. Delectus officiis impedit facilis assumenda dolor quia facere. Eos temporibus autem beatae eos repellat et voluptas."
         }
     }
 };
-export const moduleUpdatesBody = {
+export const moduleUpdatesRequestBody = {
     type: 'object',
     properties: {
         status: {
@@ -88,7 +25,7 @@ export const moduleUpdatesBody = {
 
 export const createModule = {
     tags: ['Modules'],
-    description: 'Create a module entry',
+    description: 'Endpoint for creating new module category',
     operationId: 'createModule',
     security: [
         {
@@ -100,44 +37,47 @@ export const createModule = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createModuleBody'
+                    $ref: '#/components/schemas/createModuleRequestBody'
                 },
             },
         },
     },
     responses: {
-        '200': {
-            description: 'New Entry added successfully',
+        '201': {
+            description: 'Created',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
                             id: {
-                                type: 'string'
+                                type: 'number',
+                                example: "1"
                             },
                             course_id: {
-                                type: 'string'
+                                type: 'string',
+                                example: "126546654695"
                             },
                             description: {
-                                type: 'string'
-                            },
-                            status: {
-                                type: 'string'
+                                type: 'string',
+                                example: "Voluptas recusandae quo ut et est. Enim quibusdam et veniam nostrum est dolor reiciendis et. Delectus officiis impedit facilis assumenda dolor quia facere. Eos temporibus autem beatae eos repellat et voluptas"
                             },
                             updatedAt: {
-                                type: 'string'
+                                type: 'string',
+                                example: "2022-05-20T11:13:02.094Z"
                             },
                             createdAt: {
-                                type: 'string'
+                                type: 'string',
+                                example: "2022-05-20T11:13:02.094Z"
                             }
                         }
                     }
                 }
             }
         },
-        '409': conflictError,
+        '401': unauthorizedError,
         '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const moduleList = {
@@ -150,17 +90,38 @@ export const moduleList = {
         },
     ],
     responses: {
-        '202': {
+        '200': {
             description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            products: {
+                                type: 'array',
+                                example: [
+                                    {
+                                        "id": 1,
+                                        "course_id": "126546654695",
+                                        "description": "Voluptas recusandae quo ut et est. Enim quibusdam et veniam nostrum est dolor reiciendis et. Delectus officiis impedit facilis assumenda dolor quia facere. Eos temporibus autem beatae eos repellat et voluptas.",
+                                        "status": null,
+                                        "createdAt": "2022-05-20T11:13:02.000Z",
+                                        "updatedAt": "2022-05-20T11:13:02.000Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
         '404': badRequestError,
+        '406': notAcceptable
     }
 }
 export const moduleById = {
     tags: ['Modules'],
-    description: 'Get the single module',
+    description: 'Endpoint for getting single module',
     operationId: 'moduleById',
     security: [
         {
@@ -173,24 +134,42 @@ export const moduleById = {
             name: 'moduleId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
-            description: "moduleId to fetch",
+            description: "Add moduleId to fetch specify module",
         }
     ],
     responses: {
-        '202': {
+        '200': {
             description: 'Success',
+            content: {
+                'applications/json': {
+                    schema: {
+                        properties: {
+                            product: {
+                                type: 'object',
+                                example: {
+                                    "id": 1,
+                                    "course_id": "126546654695",
+                                    "description": "Voluptas recusandae quo ut et est. Enim quibusdam et veniam nostrum est dolor reiciendis et. Delectus officiis impedit facilis assumenda dolor quia facere. Eos temporibus autem beatae eos repellat et voluptas.",
+                                    "updatedAt": "2022-05-20T11:13:02.094Z",
+                                    "createdAt": "2022-05-20T11:13:02.094Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
         '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const moduleByIdUpdate = {
     tags: ['Modules'],
-    description: 'update a module entry',
+    description: 'Endpoint for updating the specific module',
     operationId: 'moduleByIdUpdate',
     security: [
         {
@@ -202,7 +181,7 @@ export const moduleByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/moduleUpdatesBody'
+                    $ref: '#/components/schemas/moduleUpdatesRequestBody'
                 },
             },
         },
@@ -213,31 +192,38 @@ export const moduleByIdUpdate = {
             name: 'moduleId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
-            description: "moduleId to fetch",
+            description: "Add moduleId to update specify module",
         }
     ],
     responses: {
         '200': {
-            description: 'updated',
+            description: 'success',
             content: {
                 'application/json': {
                     schema: {
-                        type: 'array'
+                        properties: {
+                            response: {
+                                type: 'array',
+                                example: [
+                                    1
+                                ]
+                            }
+                        }
                     }
                 }
             }
         },
         '401': unauthorizedError,
-        '409': conflictError,
         '404': badRequestError,
+        '406': notAcceptable,
     }
 }
 export const moduleByIdDelete = {
     tags: ['Modules'],
-    description: 'delete the single entry with module id',
+    description: 'Endpoint for removing a single module category',
     operationId: 'moduleByIdDelete',
     security: [
         {
@@ -250,7 +236,7 @@ export const moduleByIdDelete = {
             name: 'moduleId',
             schema: {
                 type: 'integer',
-                default: 963258
+                default: 1
             },
             required: true,
             description: "moduleId to fetch",
@@ -258,10 +244,26 @@ export const moduleByIdDelete = {
     ],
     responses: {
         '202': {
-            description: 'Server is up and running',
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        properties: {
+                            deletedModule: {
+                                type: 'number',
+                                example: 1
+                            },
+                            text: {
+                                type: 'string',
+                                example: 'successfully delete the entry'
+                            }
+                        }
+                    }
+                }
+            }
         },
         '401': unauthorizedError,
-        '405': methodNotAllowedError,
-        '404': badRequestError
+        '404': badRequestError,
+        '406': notAcceptable,
     }
 }
