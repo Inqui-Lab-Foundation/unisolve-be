@@ -7,7 +7,7 @@ import compression from 'compression';
 import verifyToken from '../middleware/verifyToken';
 import studentApiEndpoints from '../routes/student/studentAuthRoutes';
 import adminApiEndpoints from '../routes/admin/adminAuthRoutes'
-import protectedApiEndpoints from '../routes/routes';
+import routes from '../routes/routes';
 import swaggerDocumentation from './swagger';
 import healthCheckHandler from '../controllers/healthChecker.controller';
 import shouldCompress from './compression';
@@ -29,7 +29,7 @@ function createServer() {
     adminApiEndpoints(app);
     studentApiEndpoints(app);
     app.use(verifyToken);
-    protectedApiEndpoints(app);
+    app.use('/api/v1', routes);
     // Error Middleware
     app.use(errorHandler.genericErrorHandler);
     app.use(errorHandler.notFound);
