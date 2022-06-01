@@ -5,7 +5,6 @@ import devDb from './development';
 let credentials: any;
 
 if (process.env.NODE_ENV === 'development') {
-    console.log(process)
     credentials = devDb;
     console.log('using the local Database');
 }
