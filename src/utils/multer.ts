@@ -11,7 +11,7 @@ const imageFilter = (req: Request, file: any, cb: any) => {
 
 var storage = multer.diskStorage({
     destination: (req: Request, file: any, cb: any) => {
-        cb(null, __dirname + "../../../resources/static/assets/uploads/courses");
+        cb(null, __dirname + "../../../resources/static/uploads");
     },
     filename: (req: Request, file: any, cb: any) => {
         cb(null, `${Date.now()}-unisolve-${file.originalname}`);

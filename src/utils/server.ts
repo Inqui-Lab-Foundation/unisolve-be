@@ -11,18 +11,28 @@ import protectedApiEndpoints from '../routes/routes';
 import swaggerDocumentation from './swagger';
 import healthCheckHandler from '../controllers/healthChecker.controller';
 import shouldCompress from './compression';
+import path from 'path';
 
 function createServer() {
     const app = Express();
     const Port = config.get<number>("port");
+    
+    app.use('/assets', Express.static(path.join(process.cwd(), 'resources')));
     // middleware's
     app.use(cors())
+    app.use(function (req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, OPTIONS")
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept,Authorization")
+        next();
+    });
     app.use(helmet())//helmet for secure headers
     app.use(compression({ filter: shouldCompress }))//compression for gzip
     app.use(Express.json());
-    app.use(Express.urlencoded({ extended: true }));
     // utils services
     swaggerDocumentation(app, Port);
+    app.use(Express.urlencoded({ extended: true }));
+    //routing
     app.get('/api/v1/healthcheck', healthCheckHandler);
     adminApiEndpoints(app);
     studentApiEndpoints(app);
@@ -36,7 +46,3 @@ function createServer() {
 }
 
 export default createServer;
-
-
-// todo:
-// need to figure out the solution for wrong request.
