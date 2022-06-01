@@ -1,7 +1,7 @@
 const devDb = {
-    databaseName: 'ASE',
+    databaseName: 'unisolve_db_v1',
     userName: 'root',
-    password: 'PASSWORD',
+    password: '', //'PASSWORD',
     hostName: 'localhost'
 }
 
