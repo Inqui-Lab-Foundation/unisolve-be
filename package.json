@@ -6,6 +6,7 @@
   "scripts": {
     "start:dev": "nodemon",
     "start:prod": "pm2 start  processes.json --env production",
+    "start:mockProd": "node ./dist/src/index.js",
     "build": "tsc -p tsconfig.prod.json",
     "copy:assets": "cp 'config/singUp.json' 'dist/config/singUp.json'",
     "set-node-env": "set NODE_ENV=test",

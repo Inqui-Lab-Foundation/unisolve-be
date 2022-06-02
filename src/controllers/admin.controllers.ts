@@ -91,14 +91,14 @@ class AdminController {
     };
 
     public async getSignUpConfig(req: Request, res: Response) {
+        // console.log("process", process);
         var options = {
-            root: path.join(__dirname, '../../dist/config'),
+            root: path.join(process.cwd(), '/dist/config'),
             headers: {
                 'x-timestamp': Date.now(),
                 'x-sent': true
             }
         };
-        console.log(options);
         storeLogsToDatabase(req, { message: "getting the json file" }, 'success');
         return res.status(200).sendFile('singUp.json', options);
     }
