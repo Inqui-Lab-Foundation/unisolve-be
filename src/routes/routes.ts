@@ -14,7 +14,7 @@ import uploadFile from '../utils/multer';
 
 function routes(App: Express) {
     //videos
-    App.post('video/create', validate(videoPayload), videoControllers.createHandler);
+    App.post('/api/v1/video/create', validate(videoPayload), videoControllers.createHandler);
     App.get('/api/v1/video/list', videoControllers.getHandler);
     App.get('/api/v1/video/get/:videoId', videoControllers.getByIdHandler);
     App.put('/api/v1/video/update/:videoId', validate(videoUpdate), videoControllers.updateHandler);
