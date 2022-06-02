@@ -4,6 +4,10 @@ import devDb from './development';
 
 let credentials: any;
 
+if (process.env.NODE_ENV === undefined) {
+    process.env.NODE_ENV = 'development'
+}
+
 if (process.env.NODE_ENV === 'development') {
     credentials = devDb;
     console.log('using the local Database');
