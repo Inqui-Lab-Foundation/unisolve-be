@@ -17,6 +17,7 @@ function createServer() {
     const app = Express();
     const Port = config.get<number>("port");
     
+    app.use('/assets', Express.static(path.join(process.cwd(), 'resources')));
     // middleware's
     app.use(cors())
     app.use(function (req, res, next) {
@@ -28,11 +29,10 @@ function createServer() {
     app.use(helmet())//helmet for secure headers
     app.use(compression({ filter: shouldCompress }))//compression for gzip
     app.use(Express.json());
-    app.use(Express.urlencoded({ extended: true }));
     // utils services
     swaggerDocumentation(app, Port);
+    app.use(Express.urlencoded({ extended: true }));
     //routing
-    app.use('/assets', Express.static(path.join(process.cwd(), 'resources')));
     app.get('/api/v1/healthcheck', healthCheckHandler);
     adminApiEndpoints(app);
     studentApiEndpoints(app);
