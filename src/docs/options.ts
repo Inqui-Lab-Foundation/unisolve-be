@@ -140,11 +140,11 @@ const options = {
         '/api/v1/student/login': {
             post: studentLogin
         },
-        '/api/v1/student/logout': {
-            get: studentLogout
-        },
         '/api/v1/student/changePassword': {
             put: studentChangePassword  
+        },
+        '/api/v1/student/logout': {
+            get: studentLogout
         },
         '/api/v1/course/create': {
             post: createCourse

@@ -10,7 +10,7 @@ class CourseController {
         if (req.file === undefined) return 'you must select a file'
         const product = await operationalServices.build(course, {
             //@ts-ignore
-            ...req.body, Thumbnail: `courses/${req.file.originalname}`
+            ...req.body, thumbnail: `courses/${req.file.originalname}`
         })
         if (!product) {
             logger.error(`Something went wrong while creating the course  ${JSON.stringify(req.body)}`);

@@ -6,7 +6,7 @@ export interface courseAttributes {
     course_name: string;
     description: string;
     status: Enumerator;
-    Thumbnail: string;
+    thumbnail: string;
 }
 
 export class course extends Model<courseAttributes> { }
@@ -26,7 +26,7 @@ course.init(
             type: DataTypes.STRING,
             allowNull: false
         },
-        Thumbnail: {
+        thumbnail: {
             type: DataTypes.STRING
         },
         status: {

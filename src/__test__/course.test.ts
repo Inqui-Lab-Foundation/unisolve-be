@@ -8,10 +8,13 @@ const app = createServer();
 // test cases for Course API's
 describe("Course test cases", () => {
     describe("API - CreateCourse", () => {
-        const courseShcema = {
-            "course_name": "javascript Course",
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inde sermone vario sex illa ersem captum adduceret, eodem flumine invectio? Itaque hic ipse iam pridem est reiectus; Duo Reges: constructio interrete. Primum in nostrane potestate est"
-        };
+        const courseShcema = [
+            'username=john&password=12345',
+            'course_name=python',
+            'description=Eum accusantium sunt vel. Animi dolorem vero quo. Voluptatem voluptates ex quo',
+            'thumbnail=binary',
+            'status=Completed'
+        ];
         test("return 200 & create course", async () => {
             const mockCreateIntense = jest.fn((): any => courseShcema)
             jest.spyOn(operationalServices, "build").mockImplementation(() => mockCreateIntense());
@@ -86,7 +89,7 @@ describe("Course test cases", () => {
             const res = await supertest(app).put("/api/v1/course/update/1").send();
             expect(res.statusCode).toBe(401);
         });
-        
+
     });
     describe("API - DeleteSingleCourse", () => {
         const videoPayload = {
