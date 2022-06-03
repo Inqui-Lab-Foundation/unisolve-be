@@ -5,6 +5,8 @@ export interface evaluatorAttributes {
     id: number;
     evaluator_name: string;
     mobile: number;
+    organization: string,
+    city: string,
     email: string;
     status: Enumerator;
 }
@@ -26,6 +28,12 @@ evaluator.init(
             type: DataTypes.BIGINT,
             allowNull: true,
             unique: true
+        },
+        organization: {
+            type: DataTypes.STRING
+        },
+        city: {
+            type: DataTypes.STRING
         },
         email: {
             type: DataTypes.STRING,

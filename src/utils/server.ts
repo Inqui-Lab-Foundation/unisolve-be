@@ -32,7 +32,7 @@ function createServer() {
     // utils services   
     swaggerDocumentation(app, Port);
     //routing
-    app.use('/assets', Express.static(path.join(process.cwd(), 'resources')));
+    app.use('/assets', Express.static(path.join(process.cwd(), 'resources/static/uploads')));
     app.get('/api/v1/healthcheck', healthCheckHandler);
     adminApiEndpoints(app);
     studentApiEndpoints(app);
