@@ -21,7 +21,7 @@ function routes(App: Express) {
     App.delete('/api/v1/video/delete/:videoId', videoControllers.deleteHandler);
 
     //course
-    App.post('/api/v1/course/create', uploadFile.single('Thumbnail'), courseControllers.createHandler);
+    App.post('/api/v1/course/create', uploadFile.single('thumbnail'), courseControllers.createHandler);
     App.get('/api/v1/course/list', courseControllers.getHandler);
     App.get('/api/v1/course/get/:courseId', courseControllers.getByIdHandler);
     App.put('/api/v1/course/update/:courseId', validate(courseUpdate), courseControllers.updateHandler);

@@ -54,28 +54,28 @@ export const createVideos = {
                         type: 'object',
                         properties: {
                             id: {
-                                type: 'string',
-                                example: ''
+                                type: 'number',
+                                example: '4'
                             },
                             module: {
                                 type: 'string',
-                                example: ''
+                                example: '2'
                             },
                             videos_id: {
                                 type: 'string',
-                                example: ''
+                                example: '12654246654695'
                             },
                             status: {
                                 type: 'string',
-                                example: ''
+                                example: 'Completed'
                             },
                             updatedAt: {
                                 type: 'string',
-                                example: ''
+                                example: '2022-06-02T17:12:32.882Z'
                             },
                             createdAt: {
                                 type: 'string',
-                                example: ''
+                                example: '2022-06-02T17:12:32.882Z'
                             }
                         }
                     }
