@@ -19,6 +19,16 @@ const dynamicSignupFormMasterObject: any = {
         required: false,
         selected: true,
         value: 'number'
+    },
+
+    getFormObject: (fieldset:any) => {
+        const formObject: any = {};
+        for (const key in fieldset) {
+            if (fieldset[key]) {
+                formObject[key] = dynamicSignupFormMasterObject[key];
+            }
+        }
+        return formObject;
     }
 };
 

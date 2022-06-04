@@ -11,19 +11,14 @@ export function signJwt(object: object, options?: jwt.SignOptions | undefined) {
 };
 
 //wrapper function for verify
-export function verifyJwt(token: string) {
-    try {
-        const decoded = jwt.verify(token, publicKey);
-        return {
-            valid: true,
-            expired: false,
-            decoded
-        }
-    } catch (error: any) {
-        return {
-            valid: false,
-            expired: error.message === 'JWT expired',
-            decoded: null
-        }
-    }
+export function verifyJwt(token: string): Promise<any> {
+    return new Promise((resolve, reject)=>{ 
+        jwt.verify(token, `${publicKey}`,(err, result)=>{
+            if(err){
+                reject(err);
+            }else{
+                resolve(result);
+            }
+        })
+    });
 };
