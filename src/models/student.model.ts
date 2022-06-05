@@ -1,6 +1,6 @@
 import { DataTypes, Model, UUIDV4 } from 'sequelize';
 import bcrypt from 'bcrypt'
-import db from '../../config/database.config';
+import db from '../utils/dbconnection.util';
 
 export interface studentAttributes {
     id: string;

@@ -1,26 +1,18 @@
-require('dotenv-safe').config({
-    allowEmptyValues: true
-});
-import config from 'config'
-import database from '../config/database.config'
-import createServer from './utils/server';
-import logger from './utils/logger';
+import "dotenv/config";
+import validateEnv from "./utils/validate_env";
+import App from "./app";
 
-// mySQL DB connection
-database.sync()
-    .then(() => logger.info("Connected to the Database successfully"))
-    .catch((e: any) => {
-        logger.error(`DB CONNECTIVITY ERROR: Message: ${e.message}.`);
-        logger.error(`Error: ${e}`);
-        logger.error(`Terminating the process with code:1, due to DB CONNECTIVITY ERROR.`);
-        process.exit(1);
-    });
+import AuthController from "./controllers/auth.controller";
+import CRUDController from "./controllers/crud.controller";
 
-// initialing the express application with createServer;
-const PORT = config.get<number>('port');
-const App = createServer();
+// validating env variables
+validateEnv();
 
-// application listen
-App.listen(PORT, async () => {
-    logger.info(`App is running at http://${process.env.APP_HOST}:${PORT} or http://${process.env.APP_HOST_name}:${PORT}`);
-})
+// initializing app
+const app = new App([
+    new AuthController,
+    new CRUDController
+], Number(process.env.APP_PORT));
+
+// starting app
+app.listen();

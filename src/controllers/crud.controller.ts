@@ -1,0 +1,90 @@
+import { Router, Request, Response, NextFunction} from 'express';
+import IController from '../interfaces/controller.interface';
+import HttpException from '../utils/exceptions/http.exception';
+import CRUDService from '../services/crud.service';
+
+export default class CRUDController implements IController {
+    public path: string;
+    public router: Router;
+    crudService:CRUDService = new CRUDService;
+
+    constructor() {
+        this.path = '';
+        this.router = Router();
+        this.initializeRoutes();
+    }
+    private initializeRoutes(): void {
+        this.router.get(`/:model`, this.getData);
+        this.router.get(`/:model/:id`, this.getData);
+        this.router.post(`/:model`, this.createData);
+        this.router.put(`/:model/:id`, this.updateData);
+        this.router.delete(`/:model/:id`, this.deleteData);
+    }
+
+    private loadModel = async (model:string): Promise<Response | void | any> => {
+        const modelClass = await import(`../models/${model}.model`);
+        return modelClass[model];
+    }
+
+    private getData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            let data: any;
+            const { model, id } = req.params;
+
+            this.loadModel(model).then(async (modelClass: any) => {
+                if(id){
+                    data = await this.crudService.findOne(modelClass, { where: { id } });
+                }else{
+                    data = await this.crudService.findAll(modelClass);
+                }
+
+                if (!data) {
+                    throw new HttpException(404, 'Data not found');
+                }
+                return res.status(200).send(data);
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private createData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const { model } = req.params;
+            const data = await this.crudService.create(this.loadModel(model), req.body);
+            if (!data) {
+                throw new HttpException(404, 'Data not found');
+            }
+            return res.status(200).send(data);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private updateData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const { model, id } = req.params;
+            const data = await this.crudService.update(this.loadModel(model), req.body, { where: { id } });
+            if (!data) {
+                throw new HttpException(404, 'Data not found');
+            }
+            return res.status(200).send(data);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private deleteData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const { model, id } = req.params;
+            const data = await this.crudService.delete(this.loadModel(model), { where: { id } });
+            if (!data) {
+                throw new HttpException(404, 'Data not found');
+            }
+            return res.status(200).send(data);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+}
