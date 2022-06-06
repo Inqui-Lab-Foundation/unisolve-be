@@ -18,7 +18,7 @@ import logger from "./utils/logger";
 import database from "./utils/dbconnection.util";
 import { options } from "./docs/options";
 import { speeches } from "./configs/speeches.config";
-
+import * as errorHandler  from "./middlewares/error_handler.middleware";
 
 export default class App {
     public app: Application;
@@ -37,7 +37,7 @@ export default class App {
         this.initializeHealthCheck();
         // this.initializeRouteProtectionMiddleware();
         this.initializeControllers(controllers, "/api", "v1");
-        this.initializeErrorHandling();
+        this.initializeErrorHandling();//make sure this is the last thing in here 
     }
     
     private initializeDatabase(): void {
@@ -103,7 +103,35 @@ export default class App {
     }
 
     private initializeErrorHandling(): void {
-        this.app.use(errorMiddleware);
+        // Error Middleware
+        this.app.use(errorHandler.genericErrorHandler);
+        this.app.use(errorHandler.notFound);
+
+        // Catch unhandled rejections
+        process.on('unhandledRejection', err => {
+            logger.error('Unhandled rejection', err);
+        
+            try {
+            //   Sentry.captureException(err);
+            } catch (err) {
+            logger.error('Sentry error', err);
+            } finally {
+            // process.exit(1);
+            }
+        });
+        
+        // Catch uncaught exceptions
+        process.on('uncaughtException', err => {
+            logger.error('Uncaught exception', err);
+        
+            try {
+            //   Sentry.captureException(err);
+            } catch (err) {
+            logger.error('Sentry error', err);
+            } finally {
+            // process.exit(1);
+            }
+        });
     }
 
     private showRoutes(): void {
