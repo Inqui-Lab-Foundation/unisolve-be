@@ -67,6 +67,9 @@ export default function validateEnv(): void {
         SALT: str({
             default: "H1K9C218A3H7R4m6O5I5a6W4S7r3K2H8",
         }),
+        TOKEN_DEFAULT_TIMEOUT: str({
+            default: "1h",
+        }),
 
         SERVE_STATIC_FILES: str({
             choices: ["true", "false"],

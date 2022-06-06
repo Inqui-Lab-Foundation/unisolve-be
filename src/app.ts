@@ -12,9 +12,12 @@ import { Sequelize } from "sequelize";
 import path from "path";
 import IController from "./interfaces/controller.interface";
 import errorMiddleware from "./middlewares/error.middleware";
+import routeProtectionMiddleware from "./middlewares/routeProtection.middleware";
+import healthCheckMiddleware from "./middlewares/healthCheck.middleware";
 import logger from "./utils/logger";
 import database from "./utils/dbconnection.util";
 import { options } from "./docs/options";
+import { speeches } from "./configs/speeches.config";
 
 
 export default class App {
@@ -28,8 +31,11 @@ export default class App {
         
         this.initializeDatabase();
         this.initializeMiddlewares();
+        this.initializeHomeRoute();
         this.serveStaticFiles();
         this.initializeDocs();
+        this.initializeHealthCheck();
+        // this.initializeRouteProtectionMiddleware();
         this.initializeControllers(controllers, "/api", "v1");
         this.initializeErrorHandling();
     }
@@ -53,6 +59,22 @@ export default class App {
         this.app.use(compression()); // compression for gzip
     }
 
+    private initializeHomeRoute(): void {
+        this.app.get("/", (req: Request, res: Response, next:NextFunction) => {
+            const resData = {
+                status: 200,
+                status_type: "success",
+                apis:{
+                    docks: `http://${process.env.APP_HOST_name}:${process.env.APP_PORT}/docs`,
+                    apis: `http://${process.env.APP_HOST_name}:${process.env.APP_PORT}/api/v1`,
+                    healthcheck: `http://${process.env.APP_HOST_name}:${process.env.APP_PORT}/healthcheck`,
+                },
+            }
+            res.status(resData.status).send(resData);
+            next();
+        });
+    }
+
     private serveStaticFiles(): void {
         this.app.use("/assets",express.static(path.join(__dirname, "..", "assets")));
     }
@@ -64,6 +86,14 @@ export default class App {
             res.send(options);
             next();
         });
+    }
+
+    private initializeHealthCheck(): void {
+        this.app.get("/healthcheck", healthCheckMiddleware);
+    }
+
+    private initializeRouteProtectionMiddleware(): void {
+        this.app.use(routeProtectionMiddleware);
     }
 
     private initializeControllers(controllers: IController[], prefix: string = "/api", version:string = "v1"): void {

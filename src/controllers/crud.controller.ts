@@ -9,16 +9,16 @@ export default class CRUDController implements IController {
     crudService:CRUDService = new CRUDService;
 
     constructor() {
-        this.path = '';
+        this.path = '/crud';
         this.router = Router();
         this.initializeRoutes();
     }
     private initializeRoutes(): void {
-        this.router.get(`/:model`, this.getData);
-        this.router.get(`/:model/:id`, this.getData);
-        this.router.post(`/:model`, this.createData);
-        this.router.put(`/:model/:id`, this.updateData);
-        this.router.delete(`/:model/:id`, this.deleteData);
+        this.router.get(`${this.path}/:model`, this.getData);
+        this.router.get(`${this.path}/:model/:id`, this.getData);
+        this.router.post(`${this.path}/:model`, this.createData);
+        this.router.put(`${this.path}/:model/:id`, this.updateData);
+        this.router.delete(`${this.path}/:model/:id`, this.deleteData);
     }
 
     private loadModel = async (model:string): Promise<Response | void | any> => {
