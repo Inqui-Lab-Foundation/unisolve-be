@@ -1,16 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
-
-export interface userAttributes {
-    id: string;
-    name: string;
-    mobile: number;
-    email: string;
-    password: string;
-    org: string;
-    role: Enumerator;
-    status: Enumerator;
-}
+import { userAttributes } from './model.interface';
 
 export class user extends Model<userAttributes> { }
 

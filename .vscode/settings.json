@@ -1,9 +1,11 @@
 {
     "cSpell.words": [
         "chqqmkdqkqez",
+        "dbconnection",
         "dbunisolve",
         "Healthcheck",
         "inqui",
+        "Middlewares",
         "openapi",
         "pino",
         "rangareddy",
