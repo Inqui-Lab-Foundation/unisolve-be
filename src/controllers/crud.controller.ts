@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import IController from '../interfaces/controller.interface';
 import HttpException from '../utils/exceptions/http.exception';
 import CRUDService from '../services/crud.service';
+import dispatcher from '../utils/dispatch.util';
 
 export default class CRUDController implements IController {
     public path: string;
@@ -41,7 +42,7 @@ export default class CRUDController implements IController {
                 if (!data) {
                     throw new HttpException(404, 'Data not found');
                 }
-                return res.status(200).send(data);
+                return res.status(200).send(dispatcher(data, 'success'));
             });
         } catch (error) {
             next(error);
@@ -55,7 +56,7 @@ export default class CRUDController implements IController {
             if (!data) {
                 throw new HttpException(404, 'Data not found');
             }
-            return res.status(200).send(data);
+            return res.status(201).send(dispatcher(data, 'created'));
         } catch (error) {
             next(error);
         }
@@ -68,7 +69,7 @@ export default class CRUDController implements IController {
             if (!data) {
                 throw new HttpException(404, 'Data not found');
             }
-            return res.status(200).send(data);
+            return res.status(200).send(dispatcher(data, 'updated'));
         } catch (error) {
             next(error);
         }
@@ -81,7 +82,7 @@ export default class CRUDController implements IController {
             if (!data) {
                 throw new HttpException(404, 'Data not found');
             }
-            return res.status(200).send(data);
+            return res.status(200).send(dispatcher(data, 'deleted'));
         } catch (error) {
             next(error);
         }
