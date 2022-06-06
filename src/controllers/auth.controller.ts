@@ -34,8 +34,7 @@ export default class AuthController implements IController {
                 if (!user) {
                     throw new HttpException(404, 'User not found');
                 }
-                const token = await jwtUtil.createToken(user.dataValues);
-                console.log(token)
+                const token = await jwtUtil.createToken(user.dataValues, `${process.env.PRIVATE_KEY}`);
                 return res.status(200).send({token,
                     type: 'Bearer',
                     expaire: process.env.TOKEN_DEFAULT_TIMEOUT

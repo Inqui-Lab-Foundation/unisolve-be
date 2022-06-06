@@ -35,7 +35,7 @@ export default class App {
         this.serveStaticFiles();
         this.initializeDocs();
         this.initializeHealthCheck();
-        // this.initializeRouteProtectionMiddleware();
+        this.initializeRouteProtectionMiddleware();
         this.initializeControllers(controllers, "/api", "v1");
         this.initializeErrorHandling();
     }

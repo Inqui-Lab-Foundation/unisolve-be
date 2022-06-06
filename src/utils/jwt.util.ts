@@ -1,14 +1,18 @@
-import HttpException from "./exceptions/http.exception";
 import jwt from "jsonwebtoken";
+import { readFileSync } from "fs";
+import HttpException from "./exceptions/http.exception";
 import { speeches } from "../configs/speeches.config";
+import path from "path";
 
 class JwtUtil{
 
     async createToken(data = {}, key:any= process.env.PRIVATE_KEY){
         if(Object.keys(data).length){
             try{
-                return jwt.sign(data, key, {
-                    expiresIn: process.env.TOKEN_DEFAULT_TIMEOUT 
+                var privateKEY  = readFileSync(path.join(process.cwd(), process.env.PRIVATE_KEY || "keys/jwtRS256.pem"), 'utf8');
+                return jwt.sign(data, privateKEY, {
+                    expiresIn: process.env.TOKEN_DEFAULT_TIMEOUT,
+                    algorithm: "HS256" 
                 });
             }catch(err){
                 // throw new HttpException(404, speeches.UNABLE_TO_CREATE_TOKEN, err);
@@ -24,8 +28,11 @@ class JwtUtil{
 
     async validateToken(token: string){
         try{
-            // @ts-ignore
-            return jwt.verify(token, process.env.PUBLIC_KEY,(err:any, result:any)=>{
+            
+            const publicKEY  = readFileSync(path.join(process.cwd(), process.env.PRIVATE_KEY || "keys/jwtRS256.pem"), 'utf8');
+            return jwt.verify(
+                token, 
+                publicKEY,(err:any, result:any)=>{
                 return new Promise((resolve, reject)=>{
                     if(err){
                         reject(err);
