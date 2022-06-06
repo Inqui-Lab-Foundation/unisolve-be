@@ -11,7 +11,6 @@ import swaggerUi from 'swagger-ui-express';
 import { Sequelize } from "sequelize";
 import path from "path";
 import IController from "./interfaces/controller.interface";
-import errorMiddleware from "./middlewares/error.middleware";
 import routeProtectionMiddleware from "./middlewares/routeProtection.middleware";
 import healthCheckMiddleware from "./middlewares/healthCheck.middleware";
 import logger from "./utils/logger";
