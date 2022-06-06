@@ -5,10 +5,9 @@ export default function dispatcher(data: any, status:string="success"): any{
             status: 200,
             status_type: 'success',
             message: 'OK',
-            length: (data.length) ? data.length : 1,
+            count: (data.length === undefined) ? 1: data.length,
             data: (data.length)? data : [data]
         }
-        console.log(data.length)
 
         switch(status){
             case "created":
