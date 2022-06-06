@@ -4,6 +4,7 @@ import {wildcardRoutes} from '../configs/wildcardRoutes.config';
 import logger from '../utils/logger';
 import { speeches } from '../configs/speeches.config';
 import JwtUtil from '../utils/jwt.util';
+import { unauthorized } from 'boom';
 
 export default function routeProtectionMiddleware(
     req: Request, 
@@ -23,7 +24,8 @@ export default function routeProtectionMiddleware(
                     message: speeches.UNAUTHORIZED_ACCESS,
                 };
                 logger.error(`${req.path} :: ${data.message} Error-Object:${req.headers}`);
-                throw new HttpException(data.status, data.message, data);
+                // throw new HttpException(data.status, data.message, data);
+                throw unauthorized(data.message);
             } else {
                 const token = req.headers.authorization.replace("Bearer ", "");
                 JwtUtil.validateToken(token).then((data: any) => {
@@ -44,7 +46,8 @@ export default function routeProtectionMiddleware(
                         };
                         logger.error(`${req.path} :: ${data.message} Error-Object:${JSON.stringify(data)}`);
                         // res.status(401).json(data).end();
-                        throw new HttpException(errData.status, errData.message, errData);
+                        // throw new HttpException(errData.status, errData.message, errData);
+                        throw unauthorized(errData.message);
                     }else{
                         res.locals = data;
                         next();
@@ -56,7 +59,8 @@ export default function routeProtectionMiddleware(
                         message: speeches.INVALID_TOKEN,
                     };
                     logger.error(`${req.path} :: ${data.message} Error-Object:${err}`);
-                    throw new HttpException(data.status, data.message, data);
+                    // throw new HttpException(data.status, data.message, data);
+                    throw unauthorized(data.message);
                 });            
             }
         }
