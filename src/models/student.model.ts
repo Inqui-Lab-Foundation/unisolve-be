@@ -1,23 +1,7 @@
 import { DataTypes, Model, UUIDV4 } from 'sequelize';
 import bcrypt from 'bcrypt'
 import db from '../utils/dbconnection.util';
-
-export interface studentAttributes {
-    id: string;
-    team_id: string;
-    student_name: string;
-    mobile: number;
-    email: string;
-    password: string;
-    date_of_birth: string;
-    institute_name: string;
-    stream: string;
-    city: string;
-    district: string;
-    state: string;
-    country: string;
-    status: Enumerator
-}
+import { studentAttributes } from './model.interface';
 
 export class student extends Model<studentAttributes> { }
 
