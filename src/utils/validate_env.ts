@@ -57,12 +57,10 @@ export default function validateEnv(): void {
         }),
 
         PRIVATE_KEY: str({
-            default: `-----BEGIN PRIVATE KEY-----
-            -----END PRIVATE KEY-----`,
+            default: 'keys/jwtRS256.pem',
         }),
         PUBLIC_KEY: str({
-            default: `-----BEGIN PUBLIC KEY-----
-            -----END PUBLIC KEY-----`,
+            default: 'keys/jwtRS256.pem',
         }),
         SALT: str({
             default: "H1K9C218A3H7R4m6O5I5a6W4S7r3K2H8",

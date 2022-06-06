@@ -9,7 +9,7 @@ class JwtUtil{
     async createToken(data = {}, key:any= process.env.PRIVATE_KEY){
         if(Object.keys(data).length){
             try{
-                var privateKEY  = readFileSync(path.join(process.cwd(), process.env.PRIVATE_KEY || "keys/jwtRS256.pem"), 'utf8');
+                var privateKEY  = readFileSync(path.join(process.cwd(), process.env.PUBLIC_KEY || "keys/jwtRS256.pem"), 'utf8');
                 return jwt.sign(data, privateKEY, {
                     expiresIn: process.env.TOKEN_DEFAULT_TIMEOUT,
                     algorithm: "HS256" 
