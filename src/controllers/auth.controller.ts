@@ -52,13 +52,13 @@ export default class AuthController implements IController {
             const { email } = req.body;
             this.loadModel('user').then(async (modelClass: any) => {
                 const user: any = await this.crudService.findOne(modelClass, { where: { email } });
-                if (user) throw new HttpException(404, 'User already registered');
+                if (user) throw new HttpException(404, 'User already registered',user);
                 const result = await this.crudService.create(modelClass, req.body);
                 return res.status(201).send({
                     info: result,
                     message: 'user registered successfully.'
                 });
-            });
+            }).catch(next);
         } catch (error) {
             next(error);
         }
