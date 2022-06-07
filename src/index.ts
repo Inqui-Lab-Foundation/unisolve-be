@@ -5,6 +5,9 @@ import App from "./app";
 import AuthController from "./controllers/auth.controller";
 import CRUDController from "./controllers/crud.controller";
 import CourseController from "./controllers/course.controller";
+import ModulesController from "./controllers/modules.controller";
+import VideoController from "./controllers/video.controller";
+import TeamController from "./controllers/team.controller";
 
 // validating env variables
 validateEnv();
@@ -14,6 +17,9 @@ const app = new App([
     new AuthController,
     new CRUDController,
     new CourseController, 
+    new ModulesController,
+    new VideoController,
+    new TeamController
 ], Number(process.env.APP_PORT));
 
 // starting app
