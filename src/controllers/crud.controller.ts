@@ -86,7 +86,7 @@ export default class CRUDController implements IController {
             const { model, id } = req.params;
             const data = await this.crudService.delete(await this.loadModel(model), { where: { id } });
             if (!data) {
-                throw new HttpException(404, 'Data not found');
+                throw notFound('Data not found');
             }
             return res.status(200).send(dispatcher(data, 'deleted'));
         } catch (error) {
