@@ -7,19 +7,6 @@ export default class CourseController extends BaseController {
     protected initializePath(): void {
         this.path = '/course';
     }
-
-    protected initializeRoutes(): void {
-        this.router.get(`${this.path}`, this.getData);
-        this.router.get(`${this.path}/:id`, this.getData);
-        this.router.post(`${this.path}`, this.createData);
-        this.router.put(`${this.path}/:id`, this.updateData);
-        this.router.delete(`${this.path}/:id`, this.deleteData);
-    }
-
-    protected loadModel = async (model: string): Promise<Response | void | any> => {
-        const modelClass = await import(`../models/${this.model}.model`);
-        return modelClass[this.model];
-    }
     
 
     //TODO: add logic to below overriden method to save thumbnail image as well 
