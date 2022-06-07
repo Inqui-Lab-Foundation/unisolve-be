@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
-import { module } from './module.model';
+import { courseModule } from './courseModule.model';
 
 export interface courseAttributes {
     course_id: number;
@@ -10,7 +10,19 @@ export interface courseAttributes {
     thumbnail: string;
 }
 
-export class course extends Model<courseAttributes> { }
+export class course extends Model<courseAttributes> {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models: any) {
+        console.log("came here");
+        // define association here
+        course.hasMany(courseModule,{foreignKey: 'course_id', as: 'courseModules'});
+    }
+}
+ 
 
 course.init(
     {
@@ -40,4 +52,4 @@ course.init(
     }
 );
 
-course.hasMany(module);
+// course.hasMany(courseModule);

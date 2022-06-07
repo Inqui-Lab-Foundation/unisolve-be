@@ -1,13 +1,23 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
 import { course } from './course.model';
-import { moduleAttributes } from './model.interface';
+import { courseModuleAttributes } from './model.interface';
 
 
 
-export class module extends Model<moduleAttributes> { }
+export class courseModule extends Model<courseModuleAttributes> { 
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+     static associate(models:any) {
+        // define association here
+        courseModule.belongsTo(course,{foreignKey: 'course_id', as: 'course'});
+      }
+}
 
-module.init(
+const courseModuleSequelize = courseModule.init(
     {
         module_id: {
             type: DataTypes.INTEGER,
@@ -32,4 +42,3 @@ module.init(
     }
 );
 
-module.belongsTo(course, { foreignKey: 'course_id', targetKey: 'course_id' });
