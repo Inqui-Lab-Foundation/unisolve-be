@@ -48,6 +48,8 @@ export default class CRUDController implements IController {
                 if (!data) {
                     throw notFound('Data not found');
                 }
+                console.log(res.getHeaders());
+                console.log(data.dataValues);
                 return res.status(200).send(dispatcher(data, 'success'));
             });
         } catch (error) {

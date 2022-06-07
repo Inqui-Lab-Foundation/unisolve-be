@@ -106,29 +106,19 @@ export default class App {
         this.app.use(errorHandler.notFound);
 
         // Catch unhandled rejections
-        process.on('unhandledRejection', err => {
-            logger.error('Unhandled rejection', err);
-        
-            try {
-            //   Sentry.captureException(err);
-            } catch (err) {
-            logger.error('Sentry error', err);
-            } finally {
-            // process.exit(1);
-            }
+        this.app.use((req: Request, res:Response, next: NextFunction) => {
+            process.on('UnhandledRejection', err => {
+                logger.error(`Unhandled rejection. Error-object: ${err}`);
+                res.send(err).end()
+            });
         });
         
         // Catch uncaught exceptions
-        process.on('uncaughtException', err => {
-            logger.error('Uncaught exception', err);
-        
-            try {
-            //   Sentry.captureException(err);
-            } catch (err) {
-            logger.error('Sentry error', err);
-            } finally {
-            // process.exit(1);
-            }
+        this.app.use((req: Request, res:Response, next: NextFunction) => {
+            process.on('Uncaught exception', err => {
+                logger.error(`Uncaught exception. Error-object: ${err}`);
+                res.send(err).end()
+            });
         });
     }
 
