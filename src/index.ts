@@ -18,20 +18,14 @@ try {
     const app = new App([
         new AuthController,
         new CRUDController,
-        new NotificationsController
+        new NotificationsController,
+        new CourseController,
+        new ModulesController,
+        new VideoController,
+        new TeamController
     ], Number(process.env.APP_PORT));
-    
     // starting app
     app.listen();
 } catch (error) {
     console.log(error);
 }
-const app = new App([
-    new AuthController,
-    new CRUDController,
-    new CourseController, 
-    new ModulesController,
-    new VideoController,
-    new TeamController
-], Number(process.env.APP_PORT));
-

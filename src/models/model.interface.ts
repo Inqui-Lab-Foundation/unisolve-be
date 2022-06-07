@@ -46,18 +46,6 @@ export interface teamAttributes {
     mentor_id: string;
     status: Enumerator;
 }
-
-export interface userAttributes {
-    id: string;
-    name: string;
-    mobile: number;
-    email: string;
-    password: string;
-    org: string;
-    role: Enumerator;
-    status: Enumerator;
-}
-
 export interface videosAttributes {
     id: number;
     module: string;

@@ -5,6 +5,7 @@
         "dbunisolve",
         "Healthcheck",
         "inqui",
+        "loggedin",
         "Middlewares",
         "openapi",
         "pino",

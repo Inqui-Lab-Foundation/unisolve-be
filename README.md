@@ -60,6 +60,7 @@ src
 └───routes.ts            # Application routes / endpoints
 
 ```
+
 ## Features
 
 - CRUD operations for student
@@ -67,6 +68,27 @@ src
 - REST API Request object validations - Basic
 - Error Logs
 - Setup docs
+
+## Database migrates
+
+one of the mandatory steps to update database tables
+
+- go to .env add ```DB_MIGRATE_FORCE=true```
+- go to .env add ```DB_MIGRATE_ALTER=false```
+- npm run build
+- node migrate.js
+
+Note: ```DB_MIGRATE_FORCE=false```,```DB_MIGRATE_ALTER=true``` make sure you have add two .env file
+
+## Database rules
+
+- Use underscore_names instead of CamelCase
+- Table names should be plural
+- Spell out id fields (item_id instead of id)
+- Don't use ambiguous column names
+- When possible, name foreign key columns the same as the columns they refer to 
+
+read more: https://db-migrate.readthedocs.io/en/latest/
 
 ## Running the tests
 

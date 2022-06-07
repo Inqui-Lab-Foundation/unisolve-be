@@ -27,7 +27,6 @@ export default class App {
         this.app = express();
         this.port = port;
 
-        this.initializeDatabase();
         this.initializeMiddlewares();
         this.initializeHomeRoute();
         this.serveStaticFiles();
@@ -36,6 +35,7 @@ export default class App {
         this.initializeRouteProtectionMiddleware();
         this.initializeControllers(controllers, "/api", "v1");
         this.initializeErrorHandling();//make sure this is the last thing in here 
+        this.initializeDatabase();
     }
 
     private initializeDatabase(): void {
