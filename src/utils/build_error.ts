@@ -22,21 +22,22 @@ export default function buildError(err:any) {
       error:error_details
     };
   }
-  // if (err.isJoi) {
-  //   return {
-  //     code: HttpStatus.BAD_REQUEST,
-  //     message: HttpStatus.getStatusText(HttpStatus.BAD_REQUEST),
-  //     data:{},
-  //     error:
-  //       err.details &&
-  //       err.details.map(err => {
-  //         return {
-  //           message: err.message,
-  //           param: err.path.join('.')
-  //         };
-  //       })
-  //   };
-  // }
+  if (err.isJoi) {
+    return {
+      code: HttpStatus.BAD_REQUEST,
+      message: HttpStatus.getStatusText(HttpStatus.BAD_REQUEST),
+      data:{},
+      error:
+        err.details 
+        // &&
+        // err.details.map(err => {
+        //   return {
+        //     message: err.message,
+        //     param: err.path.join('.')
+        //   };
+        // })
+    };
+  }
   
   // HTTP errors
   if (err.isBoom) {
