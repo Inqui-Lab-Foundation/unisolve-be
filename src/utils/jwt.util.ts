@@ -22,7 +22,7 @@ class JwtUtil{
             }
             
         }else{
-            throw new HttpException(404, speeches.INVALID_DATA_SEND_TO_CREATE_TOKEN);
+            throw new HttpException(500, speeches.INVALID_DATA_SEND_TO_CREATE_TOKEN);
         }
     }
 

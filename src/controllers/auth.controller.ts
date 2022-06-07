@@ -35,12 +35,13 @@ export default class AuthController implements IController {
                     throw new HttpException(404, 'User not found');
                 }
                 const token = await jwtUtil.createToken(user.dataValues, `${process.env.PRIVATE_KEY}`);
+                
                 return res.status(200).send({
                     token,
                     type: 'Bearer',
                     expire: process.env.TOKEN_DEFAULT_TIMEOUT
                 });
-            });
+            }).catch(next);
         } catch (error) {
             next(error);
         }
