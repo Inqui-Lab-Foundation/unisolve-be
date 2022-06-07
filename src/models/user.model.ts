@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
 export interface userAttributes {
-    id: string;
+    user_id: string;
     email: string;
     password: string;
     full_name: string;
@@ -28,7 +28,7 @@ export class user extends Model<userAttributes> { }
 
 user.init(
     {
-        id: {
+        user_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
@@ -110,7 +110,7 @@ user.init(
     },
     {
         sequelize: db,
-        tableName: 'user',
+        tableName: 'users',
         timestamps: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',

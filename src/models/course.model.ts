@@ -1,8 +1,9 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
+import { module } from './module.model';
 
 export interface courseAttributes {
-    id: number;
+    course_id: number;
     course_name: string;
     description: string;
     status: Enumerator;
@@ -13,7 +14,7 @@ export class course extends Model<courseAttributes> { }
 
 course.init(
     {
-        id: {
+        course_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -35,6 +36,8 @@ course.init(
     },
     {
         sequelize: db,
-        tableName: 'course'
+        tableName: 'courses'
     }
 );
+
+course.hasMany(module);

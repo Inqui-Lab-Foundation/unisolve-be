@@ -1,14 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
-import { courseAttributes } from './model.interface';
+import { course } from './course.model';
+import { moduleAttributes } from './model.interface';
 
 
 
-export class modules extends Model<courseAttributes> { }
+export class module extends Model<moduleAttributes> { }
 
-modules.init(
+module.init(
     {
-        id: {
+        module_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -27,6 +28,8 @@ modules.init(
     },
     {
         sequelize: db,
-        tableName: 'module',
+        tableName: 'modules',
     }
 );
+
+module.belongsTo(course, { foreignKey: 'course_id', targetKey: 'course_id' });

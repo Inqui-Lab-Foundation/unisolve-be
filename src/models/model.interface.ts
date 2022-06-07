@@ -16,6 +16,13 @@ export interface mentorAttributes {
     status: Enumerator;
 }
 
+export interface moduleAttributes {
+    module_id: number;
+    course_id: string;
+    description: string;
+    status: Enumerator;
+}
+
 export interface courseAttributes {
     id: number;
     course_id: string;
@@ -41,14 +48,14 @@ export interface studentAttributes {
 }
 
 export interface teamAttributes {
-    id: number;
+    team_id: number;
     team_name: string;
     mentor_id: string;
     status: Enumerator;
 }
 export interface videosAttributes {
-    id: number;
+    video_id: number;
     module: string;
-    video_id: string;
+    video_stream_id: string;
     status: Enumerator;
 }

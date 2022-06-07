@@ -6,7 +6,7 @@ export class teams extends Model<teamAttributes> { }
 
 teams.init(
     {
-        id: {
+        team_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -26,6 +26,7 @@ teams.init(
     },
     {
         sequelize: db,
-        tableName: 'team',
+        tableName: 'teams',
     }
 );
+
