@@ -22,7 +22,7 @@ Requirements for the software and other tools to build, test and push
 
 ### Installing
 
-1. You need to install PostgreSQL
+1. You need to install MySql
    - For Windows
      - Install mySql and set following environment variable C:\Program Files\mysql\10\bin
    - For Ubuntu
@@ -75,8 +75,7 @@ one of the mandatory steps to update database tables
 
 - go to .env add ```DB_MIGRATE_FORCE=true```
 - go to .env add ```DB_MIGRATE_ALTER=false```
-- npm run build
-- node migrate.js
+- npm run migrate
 
 Note: ```DB_MIGRATE_FORCE=false```,```DB_MIGRATE_ALTER=true``` make sure you have add two .env file
 
