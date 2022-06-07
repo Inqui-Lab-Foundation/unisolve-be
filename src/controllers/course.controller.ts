@@ -8,6 +8,12 @@ export default class CourseController extends BaseController {
         this.path = '/course';
     }
     
+    protected initializeRoutes(): void {
+        super.initializeRoutes();
+        
+        //example route to add 
+        //this.router.get(`${this.path}/`, this.getData);
+    }
 
     //TODO: add logic to below overriden method to save thumbnail image as well 
     protected createData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
