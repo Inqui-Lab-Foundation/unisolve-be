@@ -24,8 +24,8 @@ export default function routeProtectionMiddleware(
                     message: speeches.UNAUTHORIZED_ACCESS,
                 };
                 logger.error(`${req.path} :: ${data.message} Error-Object:${req.headers}`);
-                res.status(401).json(data).end();
-                // throw unauthorized(data.message);
+                // res.status(401).json(data).end();
+                throw unauthorized(data.message);
             } else {
                 const token = req.headers.authorization.replace("Bearer ", "");
                 JwtUtil.validateToken(token).then((data: any) => {
@@ -36,8 +36,9 @@ export default function routeProtectionMiddleware(
                             message: speeches.INVALID_TOKEN,
                         };
                         logger.error(`${req.path} :: ${data.message} Error-Object:${JSON.stringify(data)}`);
-                        res.status(401).json(data).end();
+                        // res.status(401).json(data).end();
                         // throw new HttpException(errData.status, errData.message, errData);
+                        throw unauthorized(errData.message);
                     }else if(data.message != undefined && data.message == "jwt expired"){
                         let errData = { 
                             status: 401,
@@ -45,24 +46,23 @@ export default function routeProtectionMiddleware(
                             message: speeches.TOKEN_EXPIRED,
                         };
                         logger.error(`${req.path} :: ${data.message} Error-Object:${JSON.stringify(data)}`);
-                        res.status(401).json(data).end();
+                        // res.status(401).json(data).end();
                         // throw new HttpException(errData.status, errData.message, errData);
-                        // throw unauthorized(errData.message);
+                        throw unauthorized(errData.message);
                     }else{
                         res.locals = data;
                         next();
                     }
-                }).catch((err:any) => {
+                }).catch((err: any) => {
                     let data = { 
                         status: 401,
                         status_type: "error",
-                        message: speeches.INVALID_TOKEN,
+                        message: speeches.UNAUTHORIZED_ACCESS,
                     };
-                    logger.error(`${req.path} :: ${data.message} Error-Object:${err}`);
-                    res.status(401).json(data).end();
-                    // next();
-                    // throw new HttpException(data.status, data.message, data);
-                    // throw unauthorized(data.message);
+                    logger.error(`${req.path} :: ${data.message} Error-Object:${JSON.stringify(data)}`);
+                    // res.status(401).json(data).end();
+                    // throw new HttpException(errData.status, errData.message, errData);
+                    next(unauthorized(data.message));
                 });            
             }
         }
