@@ -8,7 +8,6 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import swaggerUi from 'swagger-ui-express';
-import { Sequelize } from "sequelize";
 import path from "path";
 import IController from "./interfaces/controller.interface";
 import routeProtectionMiddleware from "./middlewares/routeProtection.middleware";
