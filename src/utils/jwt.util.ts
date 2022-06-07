@@ -28,21 +28,21 @@ class JwtUtil{
 
     async validateToken(token: string){
         try{
-            
             const publicKEY  = readFileSync(path.join(process.cwd(), process.env.PRIVATE_KEY || "keys/jwtRS256.pem"), 'utf8');
-            return jwt.verify(
-                token, 
-                publicKEY,(err:any, result:any)=>{
-                return new Promise((resolve, reject)=>{
-                    if(err){
-                        reject(err);
-                    }else{
-                        resolve(result);
-                    }
-                })
-            });
+            return new Promise((resolve, reject)=>{
+                jwt.verify(
+                    token, 
+                    publicKEY,(err:any, result:any)=>{
+                        if(err){
+                            reject(err);
+                        }else{
+                            resolve(result);
+                        }
+                });
+            })
         }catch(err){
             return new Promise((resolve, reject)=>{
+                console.log("-------------------------------------");
                 reject(err);
             });
         }
