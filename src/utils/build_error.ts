@@ -1,5 +1,6 @@
 import HttpStatus from 'http-status-codes';
 import { unknown, ZodError } from 'zod';
+import HttpException from './exceptions/http.exception';
 
 /**
  * Build error response for validation errors.
@@ -44,6 +45,15 @@ export default function buildError(err:any) {
       message: err.output.payload.message || err.output.payload.error,
       data:{},
       error:err.output.payload.message || err.output.payload.error,
+    };
+  }
+
+  if( err instanceof HttpException){
+    return {
+      code: err.status,
+      message: err.message,
+      data:{},
+      error:err.data
     };
   }
 

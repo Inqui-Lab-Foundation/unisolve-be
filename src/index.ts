@@ -5,6 +5,7 @@ import App from "./app";
 import AuthController from "./controllers/auth.controller";
 import CRUDController from "./controllers/crud.controller";
 import NotificationsController from "./controllers/notifications.controller";
+import CourseController from "./controllers/course.controller";
 
 // validating env variables
 validateEnv();
@@ -22,4 +23,9 @@ try {
 } catch (error) {
     console.log(error);
 }
+const app = new App([
+    new AuthController,
+    new CRUDController,
+    new CourseController, 
+], Number(process.env.APP_PORT));
 
