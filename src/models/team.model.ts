@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
-import { teamAttributes } from './model.interface';
+import { teamAttributes } from '../interfaces/model.interface';
 
 export class teams extends Model<teamAttributes> { }
 

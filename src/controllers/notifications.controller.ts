@@ -6,6 +6,8 @@ import authValidations from '../validations/auth.validations';
 import CRUDService from '../services/crud.service';
 import jwtUtil from '../utils/jwt.util';
 import logger from '../utils/logger';
+import { constents } from '../configs/constents.config';
+import logIt from '../utils/logit.util';
 
 export default class NotificationsController implements IController {
     public path: string;
@@ -56,7 +58,7 @@ export default class NotificationsController implements IController {
             });
 
         } catch (error) {
-            logger.error(error);
+            await logIt(constents.log_levels.list.ERROR, `Error to start the stream: ${error}`, req, res);
             next(error);
         }
     }

@@ -13,10 +13,12 @@ import IController from "./interfaces/controller.interface";
 import routeProtectionMiddleware from "./middlewares/routeProtection.middleware";
 import healthCheckMiddleware from "./middlewares/healthCheck.middleware";
 import logger from "./utils/logger";
+import logIt from "./utils/logit.util";
 import database from "./utils/dbconnection.util";
 import { options } from "./docs/options";
 import { speeches } from "./configs/speeches.config";
 import * as errorHandler  from "./middlewares/error_handler.middleware";
+import { constents } from "./configs/constents.config";
 
 export default class App {
     public app: Application;
@@ -32,19 +34,29 @@ export default class App {
         this.serveStaticFiles();
         this.initializeDocs();
         this.initializeHealthCheck();
+        this.doLogIt(constents.log_levels.list.INBOUND);
         this.initializeRouteProtectionMiddleware();
         this.initializeControllers(controllers, "/api", "v1");
         this.initializeErrorHandling();//make sure this is the last thing in here 
         this.initializeDatabase();
+        this.doLogIt(constents.log_levels.list.OUTBOUND);
+    }
+    private doLogIt(flag: string) {
+        this.app.use(async (req: Request, res: Response, next: NextFunction) => {
+            await logIt(flag, ((flag==constents.log_levels.list.INBOUND)? "Inbound request" : "Outbound responce"), req, res);
+            next();
+        });
     }
 
     private initializeDatabase(): void {
         database.sync()
-            .then(() => logger.info("Connected to the Database successfully"))
-            .catch((e: any) => {
-                logger.error(`DB CONNECTIVITY ERROR: Message: ${e.message}.`);
-                logger.error(`Error: ${e}`);
-                logger.error(`Terminating the process with code:1, due to DB CONNECTIVITY ERROR.`);
+            // .then(() => logger.info("Connected to the Database successfully"))
+            .then(async () => {
+                await logIt(constents.log_levels.list.INFO, "Connected to the Database successfully");
+            })
+            .catch(async (e: any) => {
+                await logIt(constents.log_levels.list.ERROR, `DB CONNECTIVITY ERROR: Message: ${e}.`);
+                await logIt(constents.log_levels.list.ERROR, `Terminating the process with code:1, due to DB CONNECTIVITY ERROR.`);
                 process.exit(1);
             });
     }
@@ -107,16 +119,16 @@ export default class App {
 
         // Catch unhandled rejections
         this.app.use((req: Request, res:Response, next: NextFunction) => {
-            process.on('UnhandledRejection', err => {
-                logger.error(`Unhandled rejection. Error-object: ${err}`);
+            process.on('UnhandledRejection', async err => {
+                await logIt(constents.log_levels.list.ERROR, `Unhandled rejection. Error-object: ${err}`);
                 res.send(err).end()
             });
         });
         
         // Catch uncaught exceptions
         this.app.use((req: Request, res:Response, next: NextFunction) => {
-            process.on('Uncaught exception', err => {
-                logger.error(`Uncaught exception. Error-object: ${err}`);
+            process.on('Uncaught exception', async err => {;
+                await logIt(constents.log_levels.list.ERROR, `Uncaught exception. Error-object: ${err}`);
                 res.send(err).end()
             });
         });
@@ -135,16 +147,16 @@ export default class App {
             }
         });
         console.log(
-            `=================================================================
+`=================================================================
 Available Routes:
 =================================================================`);
         console.log(`Base Path: http://localhost:${this.port}/api/v1`);
         console.table(routes);
     }
 
-    public listen(): void {
-        this.app.listen(this.port, () => {
-            logger.info(`App is running at http://localhost:${this.port}`);
+    public  listen(): void {
+        this.app.listen(this.port, async () => {
+            await logIt(constents.log_levels.list.INFO, `App is running at http://${process.env.APP_HOST_NAME}:${this.port}`);
 
             if (process.env.SHOW_ROUTES === "true") {
                 this.showRoutes();

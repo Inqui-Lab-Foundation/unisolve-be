@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
-import { videosAttributes } from './model.interface';
+import { videosAttributes } from '../interfaces/model.interface';
 
 
 export class video extends Model<videosAttributes> { }

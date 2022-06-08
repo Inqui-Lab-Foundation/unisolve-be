@@ -5,12 +5,14 @@ import logger from '../utils/logger';
 import { speeches } from '../configs/speeches.config';
 import JwtUtil from '../utils/jwt.util';
 import { unauthorized } from 'boom';
+import logIt from '../utils/logit.util';
+import { constents } from '../configs/constents.config';
 
-export default function routeProtectionMiddleware(
+export default async function routeProtectionMiddleware(
     req: Request, 
     res: Response, 
     next: NextFunction
-    ): void{
+    ): Promise<void>{
         if (wildcardRoutes.indexOf(req.path) > -1) {
             res.locals ={
                 id: process.env.DEFAULT_AUDIT_USER || '',
@@ -23,19 +25,19 @@ export default function routeProtectionMiddleware(
                     status_type: "error",
                     message: speeches.UNAUTHORIZED_ACCESS,
                 };
-                logger.error(`${req.path} :: ${data.message} Error-Object:${req.headers}`);
+                await logIt(constents.log_levels.list.ERROR, `${data.message}`, req, res);
                 // res.status(401).json(data).end();
                 throw unauthorized(data.message);
             } else {
                 const token = req.headers.authorization.replace("Bearer ", "");
-                JwtUtil.validateToken(token).then((data: any) => {
+                JwtUtil.validateToken(token).then(async (data: any) => {
                     if(data.message != undefined && data.message == "Invalid token."){
                         let errData = { 
                             status: 401,
                             status_type: "error",
                             message: speeches.INVALID_TOKEN,
                         };
-                        logger.error(`${req.path} :: ${data.message} Error-Object:${JSON.stringify(data)}`);
+                        await logIt(constents.log_levels.list.ERROR, `${errData.message}`, req, res);
                         // res.status(401).json(data).end();
                         // throw new HttpException(errData.status, errData.message, errData);
                         throw unauthorized(errData.message);
@@ -45,7 +47,7 @@ export default function routeProtectionMiddleware(
                             status_type: "error",
                             message: speeches.TOKEN_EXPIRED,
                         };
-                        logger.error(`${req.path} :: ${data.message} Error-Object:${JSON.stringify(data)}`);
+                        await logIt(constents.log_levels.list.ERROR, `${errData.message}`, req, res);
                         // res.status(401).json(data).end();
                         // throw new HttpException(errData.status, errData.message, errData);
                         throw unauthorized(errData.message);
@@ -53,13 +55,13 @@ export default function routeProtectionMiddleware(
                         res.locals = data;
                         next();
                     }
-                }).catch((err: any) => {
+                }).catch(async (err: any) => {
                     let data = { 
                         status: 401,
                         status_type: "error",
                         message: speeches.UNAUTHORIZED_ACCESS,
                     };
-                    logger.error(`${req.path} :: ${data.message} Error-Object:${JSON.stringify(data)}`);
+                    await logIt(constents.log_levels.list.ERROR, `${data.message}`, req, res);
                     // res.status(401).json(data).end();
                     // throw new HttpException(errData.status, errData.message, errData);
                     next(unauthorized(data.message));

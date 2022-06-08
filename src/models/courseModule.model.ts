@@ -1,20 +1,20 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
 import { course } from './course.model';
-import { courseModuleAttributes } from './model.interface';
+import { courseModuleAttributes } from '../interfaces/model.interface';
 
 
 
-export class courseModule extends Model<courseModuleAttributes> { 
+export class courseModule extends Model<courseModuleAttributes> {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-     static associate(models:any) {
+    static associate(models: any) {
         // define association here
-        courseModule.belongsTo(course,{foreignKey: 'course_id', as: 'course'});
-      }
+        courseModule.belongsTo(course, { foreignKey: 'course_id', as: 'course' });
+    }
 }
 
 const courseModuleSequelize = courseModule.init(
