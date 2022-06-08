@@ -6,13 +6,16 @@ import { notFound } from 'boom';
 import dispatcher from '../utils/dispatch.util';
 
 export default class CRUDController implements IController {
-    public path: string="";
-    public router: Router;
-    crudService: CRUDService = new CRUDService;
+    public path = "";
+    public router = Router();
+    crudService: CRUDService = new CRUDService();
 
     constructor() {
+        this.init();
+    }
+
+    protected init(): void {
         this.initializePath();
-        this.router = Router();
         this.initializeRoutes();
     }
 
