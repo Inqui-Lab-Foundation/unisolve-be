@@ -17,7 +17,7 @@ import logIt from "./utils/logit.util";
 import database from "./utils/dbconnection.util";
 import { options } from "./docs/options";
 import { speeches } from "./configs/speeches.config";
-import * as errorHandler  from "./middlewares/error_handler.middleware";
+import * as errorHandler  from "./middlewares/errorHandler.middleware";
 import { constents } from "./configs/constents.config";
 
 export default class App {
