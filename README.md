@@ -75,6 +75,7 @@ one of the mandatory steps to update database tables
 
 - go to .env add ```DB_MIGRATE_FORCE=true```
 - go to .env add ```DB_MIGRATE_ALTER=false```
+- npm run build
 - npm run migrate
 
 Note: ```DB_MIGRATE_FORCE=false```,```DB_MIGRATE_ALTER=true``` make sure you have add two .env file
