@@ -7,12 +7,14 @@ export default class CRUDService  {
         }
     };
     async findOne(model: any, query: object) {
-        
         try {
             const data = await model.findOne(query);
-            delete data.dataValues.password;
+            if(data){
+                delete data.dataValues.password;
+            }
             return data;
         } catch (error: any) {
+            console.log(error)
             return error.message;
         }
     };

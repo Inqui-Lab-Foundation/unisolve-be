@@ -1,5 +1,7 @@
 import { Request, Response,NextFunction, RequestHandler } from 'express';
 import Joi from 'joi';
+import { speeches } from '../configs/speeches.config';
+import dispatcher from '../utils/dispatch.util';
 
 export default function validationMiddleware(schema: Joi.Schema): RequestHandler {
     return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
@@ -18,7 +20,7 @@ export default function validationMiddleware(schema: Joi.Schema): RequestHandler
             error.details.forEach((e: Joi.ValidationErrorItem) => {
                 errors.push(e.message);
             });
-            response.status(400).send({errors: errors});
+            response.status(400).send(dispatcher(errors, 'validation', speeches.BAD_REQUEST));
         }
     }
 }
