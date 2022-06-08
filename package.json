@@ -12,7 +12,8 @@
     "test": "npm run set-node-env && jest --verbose --silent",
     "test:watch": "npm run set-node-env && jest --watchAll --verbose --silent",
     "test:coverage": "npm run set-node-env && jest --coverage --verbose --silent",
-    "migrate": "rm -rf dist && npm run build && node migrate.js"
+    "migrate": "node migrate.js",
+    "migrate:force": "rm -rf dist && npm run build && node migrate.js"
   },
   "dependencies": {
     "@supercharge/request-ip": "^1.2.0",

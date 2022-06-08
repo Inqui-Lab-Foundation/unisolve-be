@@ -9,4 +9,4 @@ export const speeches = {
     USER_EMAIL_REQUIRED: "Email is required, it should not be empty.",
     USER_EMAIL_INVALID: "Email is invalid, it should be a valid email.",
     USER_PWD_REQUIRED: "Password is required, it should not be empty.",
-};
+}

@@ -16,8 +16,14 @@ const login = Joi.object().keys({
 });
 
 const register = Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().required()
+    email: Joi.string().email().required().messages({
+        'string.empty': speeches.USER_EMAIL_REQUIRED
+      }),
+    password: Joi.string().required(),
+    full_name: Joi.string().required(),
+    mobile: Joi.string().required(),
+    role:Joi.string().required(),
+    qualification: Joi.string().required(),
 });
 
 export default { login, register };

@@ -3,16 +3,18 @@ import Joi from 'joi';
 import { speeches } from '../configs/speeches.config';
 import dispatcher from '../utils/dispatch.util';
 
-export default function validationMiddleware(schema: Joi.Schema): RequestHandler {
+export default function validationMiddleware(schema?: Joi.Schema | null): RequestHandler {
     return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
+        if(!schema) {
+            next();
+        }
         const validationOptions = {
             abortEarly: false,
             allowUnknown: true,
             stripUnknown: true
         };
-
         try {
-            const value = await schema.validateAsync(request.body, validationOptions);
+            const value = await schema?.validateAsync(request.body, validationOptions);
             request.body = value;
             next();
         } catch (error: any) {
