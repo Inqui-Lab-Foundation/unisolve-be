@@ -3,7 +3,8 @@ import CRUDController from "./crud.controller";
 import { courseSchema } from "../validations/course.validations";
 import authValidations from "../validations/auth.validations";
 import Joi, { any } from 'joi';
-import ValidationsHolder from "../validations/ValidationsHolder";
+import ValidationsHolder from "../validations/validationHolder";
+
 
 export default class BaseController extends CRUDController {
     model:string="";
