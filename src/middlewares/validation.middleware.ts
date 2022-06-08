@@ -1,5 +1,6 @@
 import { Request, Response,NextFunction, RequestHandler } from 'express';
 import Joi from 'joi';
+import HttpException from '../utils/exceptions/http.exception';
 
 export default function validationMiddleware(schema: Joi.Schema): RequestHandler {
     return async (request: Request, response: Response, next: NextFunction): Promise<void> => {
@@ -8,7 +9,6 @@ export default function validationMiddleware(schema: Joi.Schema): RequestHandler
             allowUnknown: true,
             stripUnknown: true
         };
-
         try {
             const value = await schema.validateAsync(request.body, validationOptions);
             request.body = value;
@@ -18,7 +18,8 @@ export default function validationMiddleware(schema: Joi.Schema): RequestHandler
             error.details.forEach((e: Joi.ValidationErrorItem) => {
                 errors.push(e.message);
             });
-            response.status(400).send({errors: errors});
+            // response.status(400).send({errors: errors});
+            next(new HttpException(400, 'Validation failed', errors)) ;
         }
     }
 }
