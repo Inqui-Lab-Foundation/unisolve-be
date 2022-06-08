@@ -3,6 +3,8 @@ import HttpStatus from 'http-status-codes';
 import logger from '../utils/logger';
 import buildError from '../utils/build_error';
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import logIt from '../utils/logit.util';
+import { constents } from '../configs/constents.config';
 
 /**
  * Error response middleware for 404 not found.
@@ -44,8 +46,8 @@ export function methodNotAllowed(req:Request, res:Response) {
  * @param  {Object}   res
  * @param  {Function} next
  */
-export const bodyParser: ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-  logger.error(err.message);
+export const bodyParser: ErrorRequestHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
+  await logIt(constents.log_levels.list.ERROR, `${err.message}: ${err}`, req, res);
 
   res.status(err.status).json({
       code: err.status,
@@ -63,8 +65,8 @@ export const bodyParser: ErrorRequestHandler = (err: any, req: Request, res: Res
  * @param  {Object}   res
  * @param  {Function} next
  */
-export const genericErrorHandler: ErrorRequestHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-  logger.error(err.stack);
+export const genericErrorHandler: ErrorRequestHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
+  await logIt(constents.log_levels.list.ERROR, `${err.message}: ${err}`, req, res);
   const error = buildError(err);
 
   res.status(error.code).json(error);
