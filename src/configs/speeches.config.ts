@@ -5,4 +5,5 @@ export const speeches = {
     INVALID_TOKEN: "Invalid token! Kindly provide a valid token",
     UNAUTHORIZED_ACCESS: "Unauthorized Access! Kindly provide a valid token",
     TOKEN_EXPIRED: "Token Expired! Kindly provide a valid token",
+    EMAIL_IS_EMPTY: "Email is empty",
 };

@@ -1,5 +1,7 @@
 import { notFound } from "boom";
 import { NextFunction, Request, Response } from "express";
+import Joi from "joi";
+import { courseSchema } from "../validations/course.validations";
 import BaseController from "./base.controller";
 export default class CourseController extends BaseController {
     model = "course";
@@ -7,7 +9,10 @@ export default class CourseController extends BaseController {
     protected initializePath(): void {
         this.path = '/course';
     }
-    
+    protected getValidationSchema ():Joi.Schema {
+        return courseSchema;
+    }
+
     protected initializeRoutes(): void {
         super.initializeRoutes();
         
@@ -28,6 +33,7 @@ export default class CourseController extends BaseController {
             next(error);
         }
     }
+
 
 
     //TODO: add logic to below overriden method to save thumbnail image as well 
