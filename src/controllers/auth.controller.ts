@@ -36,7 +36,7 @@ export default class AuthController implements IController {
                     throw new HttpException(404, 'User not found');
                 }
                 const token = await jwtUtil.createToken(user.dataValues, `${process.env.PRIVATE_KEY}`);
-                
+
                 return res.status(200).send({
                     token,
                     type: 'Bearer',
@@ -51,15 +51,15 @@ export default class AuthController implements IController {
     private register = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { email } = req.body;
-            this.loadModel('user').then(async (modelClass: any) => {
-                const user: any = await this.crudService.findOne(modelClass, { where: { email } });
-                if (user) throw new HttpException(404, 'User already registered');
-                const result = await this.crudService.create(modelClass, req.body);
-                return res.status(201).send(buildResponse({
-                    // info: result,
-                    message: 'user registered successfully.'
-                }));
-            }).catch(next);
+            const modelClass = await this.loadModel('user');
+            const findUser = await this.crudService.findOne(modelClass, { where: { email } });
+            console.log("modelClass: ", modelClass, "findUser: ", findUser)
+            if (findUser) return res.status(404).send(new HttpException(404, 'User already registered'));
+            const userResponse = await this.crudService.create(modelClass, req.body);
+            return res.status(201).send(buildResponse({
+                info: userResponse,
+                message: 'user registered successfully.'
+            }))
         } catch (error) {
             next(error);
         }

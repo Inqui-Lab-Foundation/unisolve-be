@@ -19,10 +19,10 @@ export class course extends Model<courseAttributes> {
     static associate(models: any) {
         console.log("came here");
         // define association here
-        course.hasMany(courseModule,{foreignKey: 'course_id', as: 'courseModules'});
+        course.hasMany(courseModule, { foreignKey: 'course_id', as: 'courseModules' });
     }
 }
- 
+
 
 course.init(
     {
