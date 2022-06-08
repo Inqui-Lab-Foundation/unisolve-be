@@ -5,6 +5,7 @@ import validationMiddleware from '../middlewares/validation.middleware';
 import authValidations from '../validations/auth.validations';
 import CRUDService from '../services/crud.service';
 import jwtUtil from '../utils/jwt.util';
+import buildResponse from '../utils/build_response';
 
 export default class AuthController implements IController {
     public path: string;
@@ -52,12 +53,12 @@ export default class AuthController implements IController {
             const { email } = req.body;
             this.loadModel('user').then(async (modelClass: any) => {
                 const user: any = await this.crudService.findOne(modelClass, { where: { email } });
-                if (user) throw new HttpException(404, 'User already registered',user);
+                if (user) throw new HttpException(404, 'User already registered');
                 const result = await this.crudService.create(modelClass, req.body);
-                return res.status(201).send({
-                    info: result,
+                return res.status(201).send(buildResponse({
+                    // info: result,
                     message: 'user registered successfully.'
-                });
+                }));
             }).catch(next);
         } catch (error) {
             next(error);
