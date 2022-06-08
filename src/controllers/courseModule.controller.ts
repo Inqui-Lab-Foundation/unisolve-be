@@ -1,16 +1,16 @@
-import { teamSchema, teamUpdateSchema } from "../validations/team.validationa";
+import { courseModuleSchema, courseModuleUpdateSchema } from "../validations/courseModule.validationa";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
 
-export default class TeamController extends BaseController {
+export default class CourseModulesController extends BaseController {
 
-    model = "team";
+    model = "modules";
 
     protected initializePath(): void {
-        this.path = '/teams';
+        this.path = '/modules';
     }
     protected initializeValidations(): void {
-        this.validations =  new ValidationsHolder(teamSchema,teamUpdateSchema);
+        this.validations =  new ValidationsHolder(courseModuleSchema,courseModuleUpdateSchema);
     }
     protected initializeRoutes(): void {
         super.initializeRoutes();

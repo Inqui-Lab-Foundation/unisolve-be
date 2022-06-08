@@ -4,15 +4,19 @@ import HttpException from '../utils/exceptions/http.exception';
 import CRUDService from '../services/crud.service';
 import { notFound } from 'boom';
 import dispatcher from '../utils/dispatch.util';
+import { nextTick } from 'process';
 
 export default class CRUDController implements IController {
-    public path: string="";
-    public router: Router;
-    crudService: CRUDService = new CRUDService;
+    public path = "";
+    public router = Router();
+    crudService: CRUDService = new CRUDService();
 
     constructor() {
+        this.init();
+    }
+
+    protected init(): void {
         this.initializePath();
-        this.router = Router();
         this.initializeRoutes();
     }
 
@@ -39,14 +43,17 @@ export default class CRUDController implements IController {
             const { model, id } = req.params;
 
             this.loadModel(model).then(async (modelClass: any) => {
+                const where:any = {};
                 if (id) {
-                    data = await this.crudService.findOne(modelClass, { where: { id } });
+                    where[`${model}_id`] = req.params.id;
+                    data = await this.crudService.findOne(modelClass, {where:where});
                 } else {
+                    where[`${model}_id`] = req.params.id;
                     data = await this.crudService.findAll(modelClass);
                 }
 
                 if (!data) {
-                    throw notFound('Data not found');
+                    return res.status(404).send(dispatcher(data, 'error'));
                 }
                 return res.status(200).send(dispatcher(data, 'success'));
             });
@@ -60,7 +67,7 @@ export default class CRUDController implements IController {
             const { model } = req.params;
             const data = await this.crudService.create(await this.loadModel(model), req.body);
             if (!data) {
-                throw notFound('Data not found');
+                return res.status(404).send(dispatcher(data, 'error'));
             }
             return res.status(201).send(dispatcher(data, 'created'));
         } catch (error) {
@@ -71,9 +78,11 @@ export default class CRUDController implements IController {
     protected updateData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { model, id } = req.params;
-            const data = await this.crudService.update(await this.loadModel(model), req.body, { where: { id } });
+            const where:any = {};
+            where[`${model}_id`] = req.params.id;
+            const data = await this.crudService.update(await this.loadModel(model), req.body, {where:where});
             if (!data) {
-                throw notFound('Data not found');
+                return res.status(404).send(dispatcher(data, 'error'));
             }
             return res.status(200).send(dispatcher(data, 'updated'));
         } catch (error) {
@@ -84,9 +93,11 @@ export default class CRUDController implements IController {
     protected deleteData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { model, id } = req.params;
-            const data = await this.crudService.delete(await this.loadModel(model), { where: { id } });
+            const where:any = {};
+            where[`${model}_id`] = req.params.id;
+            const data = await this.crudService.delete(await this.loadModel(model), { where: where });
             if (!data) {
-                throw notFound('Data not found');
+                return res.status(404).send(dispatcher(data, 'error'));
             }
             return res.status(200).send(dispatcher(data, 'deleted'));
         } catch (error) {

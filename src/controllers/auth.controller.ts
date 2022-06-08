@@ -5,12 +5,15 @@ import validationMiddleware from '../middlewares/validation.middleware';
 import authValidations from '../validations/auth.validations';
 import CRUDService from '../services/crud.service';
 import jwtUtil from '../utils/jwt.util';
+import { isNull } from 'lodash';
+import { user } from '../models/user.model';
 import buildResponse from '../utils/build_response';
 
 export default class AuthController implements IController {
     public path: string;
     public router: Router;
     crudService: CRUDService = new CRUDService;
+    public userModel:any = new user();
 
     constructor() {
         this.path = '/auth';
@@ -29,20 +32,17 @@ export default class AuthController implements IController {
 
     private login = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const { email, password } = req.body;
-            this.loadModel('user').then(async (modelClass: any) => {
-                const user: any = await this.crudService.findOne(modelClass, { where: { email, password } });
-                if (!user) {
-                    throw new HttpException(404, 'User not found');
-                }
-                const token = await jwtUtil.createToken(user.dataValues, `${process.env.PRIVATE_KEY}`);
-
+            const user_res: any = await this.crudService.findOne(user, { where: { email:req.body.email, password:req.body.password } });
+            if (!user_res) {
+                throw new HttpException(404, 'User not found');
+            }else{
+                const token = await jwtUtil.createToken(user_res.dataValues, `${process.env.PRIVATE_KEY}`);
                 return res.status(200).send({
                     token,
                     type: 'Bearer',
                     expire: process.env.TOKEN_DEFAULT_TIMEOUT
                 });
-            }).catch(next);
+            }
         } catch (error) {
             next(error);
         }

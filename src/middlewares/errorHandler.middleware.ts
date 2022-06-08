@@ -13,6 +13,7 @@ import { constents } from '../configs/constents.config';
  * @param {Object} res
  */
 export function notFound(req:Request, res:Response) {
+  console.log(res)
   res.status(HttpStatus.NOT_FOUND).json({
       code: HttpStatus.NOT_FOUND,
       message: HttpStatus.getStatusText(HttpStatus.NOT_FOUND),

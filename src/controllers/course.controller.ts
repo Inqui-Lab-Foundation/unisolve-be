@@ -1,16 +1,19 @@
 import { notFound } from "boom";
 import { NextFunction, Request, Response } from "express";
+import dispatcher from "../utils/dispatch.util";
 import Joi from "joi";
-import { courseSchema } from "../validations/course.validations";
+
 import BaseController from "./base.controller";
+import ValidationsHolder from "../validations/validationHolder";
+import { courseSchema, courseUpdateSchema } from "../validations/course.validations";
 export default class CourseController extends BaseController {
     model = "course";
 
     protected initializePath(): void {
         this.path = '/course';
     }
-    protected getValidationSchema ():Joi.Schema {
-        return courseSchema;
+    protected initializeValidations(): void {
+        this.validations =  new ValidationsHolder(courseSchema,courseUpdateSchema);
     }
 
     protected initializeRoutes(): void {
@@ -26,7 +29,7 @@ export default class CourseController extends BaseController {
             const { model } = req.params;
             const data = await this.crudService.create(await this.loadModel(model), req.body);
             if (!data) {
-                throw notFound('Data not found');
+                return res.status(404).send(dispatcher(data, 'error'));
             }
             return res.status(200).send(data);
         } catch (error) {
@@ -42,7 +45,7 @@ export default class CourseController extends BaseController {
             const { model, id } = req.params;
             const data = await this.crudService.update(await this.loadModel(model), req.body, { where: { id } });
             if (!data) {
-                throw notFound('Data not found');
+                return res.status(404).send(dispatcher(data, 'error'));
             }
             return res.status(200).send(data);
         } catch (error) {
