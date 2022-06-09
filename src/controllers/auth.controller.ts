@@ -75,7 +75,6 @@ export default class AuthController implements IController {
 
     private logout = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-<<<<<<< HEAD
             const update_res = await this.crudService.update(user, {
                 is_loggedin: "NO"
             }, { where: { user_id: res.locals.user_id } });
@@ -105,18 +104,6 @@ export default class AuthController implements IController {
 
             const result = await this.crudService.create(user, req.body);
             return res.status(201).send(dispatcher(result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY));
-=======
-            const { email } = req.body;
-            const modelClass = await this.loadModel('user');
-            const findUser = await this.crudService.findOne(modelClass, { where: { email } });
-            console.log("modelClass: ", modelClass, "findUser: ", findUser)
-            if (findUser) return res.status(404).send(new HttpException(404, 'User already registered'));
-            const userResponse = await this.crudService.create(modelClass, req.body);
-            return res.status(201).send(buildResponse({
-                info: userResponse,
-                message: 'user registered successfully.'
-            }))
->>>>>>> f31025bac99ca728116b67c855b6680d7f0dff8b
         } catch (error) {
             next(error);
         }
