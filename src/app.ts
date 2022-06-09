@@ -38,8 +38,8 @@ export default class App {
         this.initializeRouteProtectionMiddleware();
         this.initializeControllers(controllers, "/api", "v1");
         this.initializeErrorHandling();//make sure this is the last thing in here 
-        this.initializeDatabase();
         this.doLogIt(constents.log_levels.list.OUTBOUND);
+        this.initializeDatabase();
     }
     private doLogIt(flag: string) {
         this.app.use(async (req: Request, res: Response, next: NextFunction) => {

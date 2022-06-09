@@ -85,7 +85,7 @@ user.init(
             type: DataTypes.STRING
         },
         status: {
-            type: DataTypes.ENUM('ACTIVE', 'INACTIVE'),
+            type: DataTypes.ENUM('ACTIVE', 'INACTIVE', 'LOCKED', 'DELETED' ),
             defaultValue: 'ACTIVE'
         },
         role: {
