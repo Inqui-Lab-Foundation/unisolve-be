@@ -7,7 +7,10 @@ import JwtUtil from '../utils/jwt.util';
 import { unauthorized } from 'boom';
 import logIt from '../utils/logit.util';
 import { constents } from '../configs/constents.config';
+import dispatcher from '../utils/dispatch.util';
 
+
+// TODO: We need to improve EH mechanism to handle errors. Till then we are using this. kindly don't change anything in this file.
 export default async function routeProtectionMiddleware(
     req: Request, 
     res: Response, 
@@ -26,8 +29,8 @@ export default async function routeProtectionMiddleware(
                     message: speeches.UNAUTHORIZED_ACCESS,
                 };
                 await logIt(constents.log_levels.list.ERROR, `${data.message}`, req, res);
-                // res.status(401).json(data).end();
-                throw unauthorized(data.message);
+                res.status(401).json(dispatcher(data, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
+                // throw unauthorized(data.message);
             } else {
                 const token = req.headers.authorization.replace("Bearer ", "");
                 JwtUtil.validateToken(token).then(async (data: any) => {
@@ -38,9 +41,9 @@ export default async function routeProtectionMiddleware(
                             message: speeches.INVALID_TOKEN,
                         };
                         await logIt(constents.log_levels.list.ERROR, `${errData.message}`, req, res);
-                        // res.status(401).json(data).end();
+                        res.status(401).json(dispatcher(errData, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
                         // throw new HttpException(errData.status, errData.message, errData);
-                        throw unauthorized(errData.message);
+                        // throw unauthorized(errData.message);
                     }else if(data.message != undefined && data.message == "jwt expired"){
                         let errData = { 
                             status: 401,
@@ -48,9 +51,9 @@ export default async function routeProtectionMiddleware(
                             message: speeches.TOKEN_EXPIRED,
                         };
                         await logIt(constents.log_levels.list.ERROR, `${errData.message}`, req, res);
-                        // res.status(401).json(data).end();
+                        res.status(401).json(dispatcher(errData, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
                         // throw new HttpException(errData.status, errData.message, errData);
-                        throw unauthorized(errData.message);
+                        // throw unauthorized(errData.message);
                     }else{
                         res.locals = data;
                         next();
@@ -62,9 +65,9 @@ export default async function routeProtectionMiddleware(
                         message: speeches.UNAUTHORIZED_ACCESS,
                     };
                     await logIt(constents.log_levels.list.ERROR, `${data.message}`, req, res);
-                    // res.status(401).json(data).end();
+                    res.status(401).json(dispatcher(data, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
                     // throw new HttpException(errData.status, errData.message, errData);
-                    next(unauthorized(data.message));
+                    // next(unauthorized(data.message));
                 });            
             }
         }
