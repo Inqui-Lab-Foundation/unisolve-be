@@ -2,12 +2,12 @@ import { notFound } from "boom";
 import { NextFunction, Request, Response } from "express";
 import dispatcher from "../utils/dispatch.util";
 import Joi from "joi";
-import { courseSchema, courseUpdateSchema } from "../validations/course.validations";
-import ValidationsHolder from "../validations/ValidationsHolder";
+
 import BaseController from "./base.controller";
+import ValidationsHolder from "../validations/validationHolder";
+import { courseSchema, courseUpdateSchema } from "../validations/course.validations";
 export default class CourseController extends BaseController {
     model = "course";
-    validations: ValidationsHolder | undefined;
 
     protected initializePath(): void {
         this.path = '/course';
