@@ -20,4 +20,7 @@ export const speeches = {
     USER_EMAIL_REQUIRED: "Email is required, it should not be empty.",
     USER_EMAIL_INVALID: "Email is invalid, it should be a valid email.",
     USER_PWD_REQUIRED: "Password is required, it should not be empty.",
+    CREATED_FILE: "successfully Created",
+    FILE_EMPTY: "Unable to create a file, Please check the payload",
+    FETCH_FILE: "file found"
 }
