@@ -13,7 +13,7 @@ export class courseModule extends Model<courseModuleAttributes> {
      */
     static associate(models: any) {
         // define association here
-        courseModule.belongsTo(course, { foreignKey: 'course_id', as: 'course' });
+        courseModule.belongsTo(models, { foreignKey: 'course_id', as: 'course' });
     }
 }
 
@@ -23,10 +23,6 @@ const courseModuleSequelize = courseModule.init(
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
-        },
-        course_id: {
-            type: DataTypes.STRING,
-            allowNull: false
         },
         description: {
             type: DataTypes.STRING,
@@ -38,7 +34,8 @@ const courseModuleSequelize = courseModule.init(
     },
     {
         sequelize: db,
-        tableName: 'modules',
+        tableName: 'course_modules',
     }
 );
 
+// courseModule.associate(course);
