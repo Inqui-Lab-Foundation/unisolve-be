@@ -9,6 +9,9 @@ import helmet from "helmet";
 import compression from "compression";
 import swaggerUi from 'swagger-ui-express';
 import path from "path";
+import bodyParser from "body-parser";
+import formData  from "express-form-data";
+import os from "os";
 import IController from "./interfaces/controller.interface";
 import routeProtectionMiddleware from "./middlewares/routeProtection.middleware";
 import healthCheckMiddleware from "./middlewares/healthCheck.middleware";
@@ -34,11 +37,12 @@ export default class App {
         this.serveStaticFiles();
         this.initializeDocs();
         this.initializeHealthCheck();
+        // this.initializeRabitMqBroker();
         this.doLogIt(constents.log_levels.list.INBOUND);
         this.initializeRouteProtectionMiddleware();
         this.initializeControllers(controllers, "/api", "v1");
-        this.initializeErrorHandling();//make sure this is the last thing in here 
         this.doLogIt(constents.log_levels.list.OUTBOUND);
+        this.initializeErrorHandling();//make sure this is the last thing in here 
         this.initializeDatabase();
     }
     private doLogIt(flag: string) {
@@ -66,6 +70,12 @@ export default class App {
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
+        // this.app.use(bodyParser.json()); 
+        // this.app.use(bodyParser.urlencoded({ extended: true })); 
+        this.app.use(formData.parse({
+            uploadDir: os.tmpdir(),
+            autoClean: true
+        }));
         this.app.use(compression()); // compression for gzip
     }
 
@@ -80,13 +90,12 @@ export default class App {
                     healthcheck: `http://${process.env.APP_HOST_name}:${process.env.APP_PORT}/healthcheck`,
                 },
             }
-            res.status(resData.status).send(resData);
-            next();
+            res.status(resData.status).send(resData).end();
         });
     }
 
     private serveStaticFiles(): void {
-        this.app.use("/assets", express.static(path.join(process.cwd(), 'resources/static/uploads')));
+        this.app.use("/assets", express.static(path.join(process.cwd(), 'resources', 'static','uploads')));
     }
 
     private initializeDocs(): void {
@@ -101,6 +110,29 @@ export default class App {
     private initializeHealthCheck(): void {
         this.app.get("/healthcheck", healthCheckMiddleware);
     }
+
+    // private initializeRabitMqBroker(): void {
+    //     amqp.connect(process.env.RABBITMQ_URL || '', (err: any, conn: any) => {
+    //         if (err) {
+    //             logIt(constents.log_levels.list.ERROR, `RabbitMQ CONNECTIVITY ERROR: Message: ${err}.`);
+    //             logIt(constents.log_levels.list.ERROR, `Termianting the process with the code:1 due to RabbitMQ CONNECTIVITY ERROR.`);
+    //             process.exit(1);
+    //         }
+    //         conn.createChannel((chErr: any, ch: any) => {
+    //             if (err) {
+    //                 logIt(constents.log_levels.list.ERROR, `RabbitMQ CONNECTIVITY ERROR: Message: ${err}.`);
+    //                 logIt(constents.log_levels.list.ERROR, `Termianting the process with the code:1 due to RabbitMQ CONNECTIVITY ERROR.`);
+    //                 process.exit(1);
+    //             }
+    //             ch.assertQueue(process.env.RABBITMQ_QUEUE, { durable: process.env.RABBITMQ_QUEUE_DURABLE === 'true' });
+    //             let i =0;
+    //             // setInterval(() => {
+    //                 ch.sendToQueue(process.env.RABBITMQ_QUEUE, Buffer.from(`This is the message ${++i}`));
+    //             // }, 1000);
+    //             console.log(" [x] Sent 'Hello World!'");
+    //         });
+    //     });
+    // }
 
     private initializeRouteProtectionMiddleware(): void {
         this.app.use(routeProtectionMiddleware);

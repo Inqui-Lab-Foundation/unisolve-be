@@ -1,5 +1,7 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Attributes } from 'sequelize';
+import { HookReturn } from 'sequelize/types/hooks';
 import db from '../utils/dbconnection.util';
+import { notification } from './notification.model';
 export interface userAttributes {
     user_id: string;
     email: string;
@@ -24,7 +26,44 @@ export interface userAttributes {
     updated_by: number;
 }
 
-export class user extends Model<userAttributes> { }
+export class user extends Model<userAttributes> {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models: any) {
+        // define association here
+        user.hasMany(notification, { sourceKey:'notification_id', as: 'notifications' });
+        
+    }
+
+    // static toJSON(user: userAttributes) {
+    //     return {
+    //         user_id: user.user_id,
+    //         email: user.email,
+    //         password: user.password,
+    //         full_name: user.full_name,
+    //         image: user.image,
+    //         date_of_birth: user.date_of_birth,
+    //         mobile: user.mobile,
+    //         team_id: user.team_id,
+    //         org_name: user.org_name,
+    //         qualification: user.qualification,
+    //         stream: user.stream,
+    //         city: user.city,
+    //         district: user.district,
+    //         state: user.state,
+    //         country: user.country,
+    //         role: user.role,
+    //         is_loggedin: user.is_loggedin,
+    //         last_login: user.last_login,
+    //         status: user.status,
+    //         created_by: user.created_by,
+    //         updated_by: user.updated_by,
+
+    // }
+}
 
 user.init(
     {
@@ -41,6 +80,7 @@ user.init(
         password: {
             type: DataTypes.STRING,
             allowNull: false,
+            // select: false
         },
         full_name: {
             type: DataTypes.STRING,
@@ -114,5 +154,7 @@ user.init(
         timestamps: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',
+        hooks:{
+        }
     }
 );

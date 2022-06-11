@@ -37,6 +37,15 @@ export default class CRUDService  {
             return error.message;
         }
     };
+
+    async findWhere(model: any, query: object) {
+        try {
+            return await model.findAll({ where: query });
+        } catch (error: any) {
+            return error.message;
+        }
+    };
+
     async update(model: any, update: object, query: object) {
         try {
             return await model.update(update, query);

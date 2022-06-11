@@ -29,4 +29,33 @@ export const constents = {
       },
       default: 'GET'
     },
+
+    common_status_flags:{
+      list:{
+        'ACTIVE': 'ACTIVE',
+        'INACTIVE': 'INACTIVE',
+        'DELETED': 'DELETED',
+      },
+      default: 'ACTIVE'
+    },
+
+    notification_status_flags: {
+      list:{
+        'DRAFT': 'DRAFT',
+        'PUBLISHED': 'PUBLISHED',
+        'DELETED': 'DELETED'
+      },
+      default: 'DRAFT'
+    },
+
+    notification_types: {
+      list:{
+        'EMAIL': 'EMAIL',
+        'SMS': 'SMS',
+        'PUSH': 'PUSH'
+      },
+      default: 'PUSH',
+      default_title: 'Notification',
+      default_message: 'Notification'
+    }
 };

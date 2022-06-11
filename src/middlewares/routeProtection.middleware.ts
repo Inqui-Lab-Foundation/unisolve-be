@@ -27,6 +27,7 @@ export default async function routeProtectionMiddleware(
                     status: 401,
                     status_type: "error",
                     message: speeches.UNAUTHORIZED_ACCESS,
+                    path: req.path
                 };
                 await logIt(constents.log_levels.list.ERROR, `${data.message}`, req, res);
                 res.status(401).json(dispatcher(data, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();

@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express'
+import express, { Request, Response, NextFunction, Router } from 'express'
+import { http } from 'winston';
 import { speeches } from '../configs/speeches.config';
 
 export default function dispatcher(data: any, status:string="success", message:string = "OK", status_code:number=200): any{
@@ -6,8 +7,24 @@ export default function dispatcher(data: any, status:string="success", message:s
             status: status_code,
             status_type: 'success',
             message: message,
-            count: (!data || typeof data === 'string') ? null : (data.length === undefined? 1:data.length),
-            data: (data)?((data.length)? data : [data] ): data
+            count: null,
+            data: null
+        }
+        if(data){
+            if(data.length === undefined){
+                resObj.data = [data];
+                resObj.count = resObj.data.length;
+            }
+            else if(typeof data === 'string'){
+                resObj.data = data;
+            }else if(data.length > 0){
+                resObj.data = data;
+                resObj.count = resObj.data.length;
+            }
+            else{
+                resObj.data = data;
+                resObj.count = resObj.data.length;
+            }
         }
 
         switch(status){

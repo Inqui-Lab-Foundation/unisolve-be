@@ -84,6 +84,9 @@ log.init(
     },
     {
         sequelize: db,
-        tableName: 'logs'
+        tableName: 'logs',
+        timestamps: true,
+        createdAt: 'logged_at',
+        updatedAt: false
     }
 );
