@@ -1,4 +1,4 @@
-import { DataTypes, Model } from 'sequelize';
+import { Association, DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
 import { courseModule } from './courseModule.model';
 
@@ -17,10 +17,12 @@ export class course extends Model<courseAttributes> {
      * The `models/index` file will call this method automatically.
      */
     static associate(models: any) {
-        console.log("came here");
+        // console.log("came here");
         // define association here
-        course.hasMany(courseModule, { foreignKey: 'course_id', as: 'courseModules' });
+        course.hasMany(models, { foreignKey: 'course_id', as: 'courseModules' });
     }
+
+    
 }
 
 
@@ -43,7 +45,7 @@ course.init(
             type: DataTypes.STRING
         },
         status: {
-            type: DataTypes.ENUM('Completed', 'Incomplete')
+            type: DataTypes.ENUM('ACTIVE', 'INACTIVE')
         }
     },
     {
@@ -51,5 +53,4 @@ course.init(
         tableName: 'courses'
     }
 );
-
-// course.hasMany(courseModule);
+course.associate(courseModule);

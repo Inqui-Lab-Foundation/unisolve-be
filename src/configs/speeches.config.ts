@@ -36,4 +36,7 @@ export const speeches = {
     NOTIFICATION_UPDATED_SUCCESSFULLY: "Notification updated successfully",
     NOTIFICATION_DELETED_SUCCESSFULLY: "Notification deleted successfully",
 
+    CREATED_FILE: "successfully Created",
+    FILE_EMPTY: "Unable to create a file, Please check the payload",
+    FETCH_FILE: "file found"
 }

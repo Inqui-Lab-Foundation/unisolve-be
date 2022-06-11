@@ -3,12 +3,15 @@ import IController from '../interfaces/controller.interface';
 import HttpException from '../utils/exceptions/http.exception';
 import validationMiddleware from '../middlewares/validation.middleware';
 import authValidations from '../validations/auth.validations';
+import dynamicForm from '../configs/dynamicForm';
 import CRUDService from '../services/crud.service';
 import jwtUtil from '../utils/jwt.util';
 import { user } from '../models/user.model';
 import dispatcher from '../utils/dispatch.util';
 import { speeches } from '../configs/speeches.config';
 import { Op } from 'sequelize';
+import { readFileSync, writeFileSync } from 'fs';
+import path from 'path';
 
 export default class AuthController implements IController {
     public path: string;
@@ -25,6 +28,8 @@ export default class AuthController implements IController {
         this.router.post(`${this.path}/login`, validationMiddleware(authValidations.login), this.login);
         this.router.get(`${this.path}/logout`, this.logout);
         this.router.post(`${this.path}/register`, validationMiddleware(authValidations.register), this.register);
+        this.router.post(`${this.path}/dynamicSignupForm`, this.dynamicSignupForm);
+        this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
     }
 
     private loadModel = async (model: string): Promise<Response | void | any> => {
@@ -93,7 +98,7 @@ export default class AuthController implements IController {
                     [Op.or]: [
                         {
                             email: { [Op.eq]: req.body.email }
-                        }, 
+                        },
                         {
                             mobile: { [Op.like]: `%${req.body.mobile}%` }
                         }
@@ -109,36 +114,40 @@ export default class AuthController implements IController {
         }
     }
 
-    // public async createSignupConfig(req: Request, res: Response) {
-    //     const result: any = new Object();
-    //     for (let i in /*dynamicSignupFormMasterObject*/) {
-    //         for (let j in Object.keys(req.body)) {
-    //             if (i === Object.keys(req.body)[j]) {
-    //                 result[i] = /*dynamicSignupFormMasterObject[i]*/
-    //             }
-    //         }
-    //     }
-    //     new Promise((resolve, reject) => {
-    //         writeFile('./dist/config/singUp.json', JSON.stringify(result), function (err) {
-    //             if (err) {
-    //                 reject;
-    //                 return res.status(503).json({ message: 'Oops, Something went wrong. Please check the payload and try again', err });
-    //             } else {
-    //                 resolve;
-    //                 return res.status(200).json({ message: "successfully created json file" });
-    //             }
-    //         });
-    //     });
-    // };
+    private dynamicSignupForm = async (req: Request, res: Response, next: NextFunction):
+        Promise<Response | void> => {
+        try {
+            const result: any = dynamicForm.getFormObject(req.body);
+            if (result.length <= 0) {
+                return res.status(406).send(dispatcher(speeches.FILE_EMPTY, 'error', speeches.NOT_ACCEPTABLE, 406));
+            }
+            writeFileSync(path.join(process.cwd(), 'src', 'configs', 'singUp.json'), JSON.stringify(result), {
+                encoding: "utf8",
+                flag: "w",
+                mode: 0o666
+            });
+            return res.status(200).send(dispatcher(result, 'success', speeches.CREATED_FILE));
+        } catch (error) {
+            next(error);
+        }
+    }
 
-    // public async getSignUpConfig(req: Request, res: Response) {
-    //     var options = {
-    //         root: path.join(process.cwd(), '/dist/config'),
-    //         headers: {
-    //             'x-timestamp': Date.now(),
-    //             'x-sent': true
-    //         }
-    //     };
-    //     return res.status(200).sendFile('singUp.json', options);
-    // }
-}
+    private getSignUpConfig = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        const options = {
+            root: path.join(process.cwd(), 'src', 'configs'),
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+            }
+        };
+        const filePath = path.join(process.cwd(), 'src', 'configs', 'singUp.json');
+        if (filePath === 'Error') {
+            return res.status(404).send(dispatcher(speeches.FILE_EMPTY, 'error', speeches.DATA_NOT_FOUND));
+        }
+        const file: any = readFileSync(path.join(process.cwd(), 'src', 'configs', 'singUp.json'), {
+            encoding: 'utf8',
+            flag: 'r'
+        })
+        return res.status(200).send(dispatcher(JSON.parse(file), 'success', speeches.FETCH_FILE))
+    }
+}   
