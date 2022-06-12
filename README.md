@@ -69,14 +69,34 @@ src
 - Error Logs
 - Setup docs
 
-## Database migrates
+## Database migrate
+setup
+
+-npm run migrate:init
+
+once you have called the above commond the migrations are setup; from here on seuqlize-cli command to generate a model or migration file will work 
+
+-sequlize-cli model:generate --name users --attributes first_name:string,last_name:string,email:string
+
+this command will generate two files 
+- 1) model file in src/migrations/cli 
+- 2) migration file in src/migrations
+
+once you have generated migration file you can call the custom package.json script migrate
+
+-npm run migrate 
+
+this command will not only execute all pending migrations but also delete the unwanted model file generated in the src/migration/cli folder...
+
+
+## Database dbsync (based off of sequlize .sync() function, hard reset a db ...!)
 
 one of the mandatory steps to update database tables
 
 - go to .env add ```DB_MIGRATE_FORCE=true```
 - go to .env add ```DB_MIGRATE_ALTER=false```
 - npm run build
-- npm run migrate
+- npm run dbsync
 
 Note: ```DB_MIGRATE_FORCE=false```,```DB_MIGRATE_ALTER=true``` make sure you have add two .env file
 
