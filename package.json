@@ -15,7 +15,8 @@
     "migrate:init": "mkdir -p src/migrations/cli",
     "migrate": "sequelize-cli db:migrate && rm -r src/migrations/cli/* ",
     "dbsync": "node migrate.js",
-    "dbsync:force": "rm -rf dist && npm run build && node migrate.js"
+    "dbsync:force": "rm -rf dist && npm run build && node migrate.js",
+    "scaffold:entity": "node -e 'require(\"./src/scaffolders/generate.js\").g()'"
   },
   "dependencies": {
     "@supercharge/request-ip": "^1.2.0",
@@ -86,7 +87,9 @@
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.4.7",
+    "node-cmd": "^5.0.0",
     "nodemon": "^2.0.15",
+    "pluralize": "^8.0.0",
     "prettier": "^2.5.1",
     "sequelize-cli": "^6.4.1",
     "supertest": "^6.2.2",
