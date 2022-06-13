@@ -38,6 +38,7 @@ export const constents = {
       },
       default: 'ACTIVE'
     },
+    
 
     notification_status_flags: {
       list:{
