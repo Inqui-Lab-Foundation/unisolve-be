@@ -24,7 +24,7 @@ export default class CourseController extends BaseController {
         
     }
     protected testRoute(req: Request, res: Response, next: NextFunction) {
-        console.log("came here");
+        // console.log("came here");
         return res.status(200).json(dispatcher("this was a success ....!!!"));
     }
 

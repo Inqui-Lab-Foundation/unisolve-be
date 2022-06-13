@@ -4,7 +4,7 @@ import { courseModule } from './courseModule.model';
 
 export interface courseAttributes {
     course_id: number;
-    course_name: string;
+    title: string;
     description: string;
     status: Enumerator;
     thumbnail: string;
@@ -33,7 +33,7 @@ course.init(
             autoIncrement: true,
             primaryKey: true
         },
-        course_name: {
+        title: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -45,7 +45,7 @@ course.init(
             type: DataTypes.STRING
         },
         status: {
-            type: DataTypes.ENUM('ACTIVE', 'INACTIVE')
+            type: DataTypes.ENUM('ACTIVE', 'INACTIVE','DELETED')
         }
     },
     {
