@@ -1,5 +1,6 @@
 import { DataTypes, Model, Attributes } from 'sequelize';
 import { HookReturn } from 'sequelize/types/hooks';
+import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
 import { notification } from './notification.model';
 export interface userAttributes {
@@ -34,8 +35,8 @@ export class user extends Model<userAttributes> {
      */
     static associate(models: any) {
         // define association here
-        user.hasMany(notification, { sourceKey:'notification_id', as: 'notifications' });
-        
+        user.hasMany(notification, { sourceKey: 'notification_id', as: 'notifications' });
+
     }
 
     // static toJSON(user: userAttributes) {
@@ -125,16 +126,16 @@ user.init(
             type: DataTypes.STRING
         },
         status: {
-            type: DataTypes.ENUM('ACTIVE', 'INACTIVE', 'LOCKED', 'DELETED' ),
-            defaultValue: 'ACTIVE'
+            type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            defaultValue: constents.common_status_flags.default
         },
         role: {
-            type: DataTypes.ENUM('ADMIN', 'EVALUATER', 'MENTOR', 'STUDENT'),
-            defaultValue: 'ADMIN'
+            type: DataTypes.ENUM(...Object.values(constents.user_role_flags.list)),
+            defaultValue: constents.user_role_flags.default
         },
         is_loggedin: {
-            type: DataTypes.ENUM('YES', 'NO'),
-            defaultValue: 'NO'
+            type: DataTypes.ENUM(...Object.values(constents.common_yes_no_flags.list)),
+            defaultValue: constents.common_yes_no_flags.default
         },
         last_login: {
             type: DataTypes.DATE
@@ -154,7 +155,7 @@ user.init(
         timestamps: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',
-        hooks:{
+        hooks: {
         }
     }
 );

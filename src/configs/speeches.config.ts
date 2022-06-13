@@ -24,6 +24,13 @@ export const speeches = {
     USER_EMAIL_REQUIRED: "Email is required, it should not be empty.",
     USER_EMAIL_INVALID: "Email is invalid, it should be a valid email.",
     USER_PWD_REQUIRED: "Password is required, it should not be empty.",
+    MOBILE_NUMBER_REQUIRED: "Mobile number is required, it should not be empty.",
+    USER_QUALIFICATION_REQUIRED: "Qualification is required, it should not be empty.",
+    CREATED_BY_REQUIRED: "Created_by is required, it should not be empty.",
+    NAME_REQUIRED: "Name is required, it should not be empty.",
+    DESCRIPTION_REQUIRED: "Description is required, it should not be empty.",
+    ID_REQUIRED: "ID is required, it should not be empty.",
+    TEAM_NAME_REQUIRED: "Team name is required, it should not be empty.",
 
     NOTIFICATION_TYPE_INVALID: `Notification type is invalid, it should be one from ${Object.values(constents.notification_types.list).join(", ")}.`,
     NOTIFICATION_TYPE_REQUIRED: `Notification type is required, it should be one from ${Object.values(constents.notification_types.list).join(", ")}.`,

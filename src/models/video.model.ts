@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
 import { videosAttributes } from '../interfaces/model.interface';
+import { constents } from '../configs/constents.config';
 
 
 export class video extends Model<videosAttributes> { }
@@ -22,7 +23,8 @@ video.init(
             unique: true
         },
         status: {
-            type: DataTypes.ENUM('Completed', 'Incomplete')
+            type: DataTypes.ENUM(...Object.values(constents.task_status_flags.list)),
+            defaultValue: constents.task_status_flags.default
         }
     },
     {

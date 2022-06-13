@@ -19,10 +19,18 @@ const register = Joi.object().keys({
     email: Joi.string().email().required().messages({
         'string.empty': speeches.USER_EMAIL_REQUIRED
     }),
-    password: Joi.string().required(),
-    mobile: Joi.string().required(),
-    qualification: Joi.string().required(),
-    created_by: Joi.number().required(),
+    password: Joi.string().required().messages({
+        'string.empty': speeches.USER_PWD_REQUIRED
+    }),
+    mobile: Joi.string().required().messages({
+        'string.empty': speeches.MOBILE_NUMBER_REQUIRED
+    }),
+    qualification: Joi.string().required().messages({
+        'string.empty': speeches.USER_QUALIFICATION_REQUIRED
+    }),
+    created_by: Joi.number().required().messages({
+        'string.empty': speeches.CREATED_BY_REQUIRED
+    })
 });
 
 export default { login, register };
