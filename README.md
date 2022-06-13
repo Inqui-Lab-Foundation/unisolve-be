@@ -57,7 +57,6 @@ src
 └───services             # All the database interaction logic is here
 └───utils                # third party service required application to up and running
 └───index.ts             # Application entry point
-└───routes.ts            # Application routes / endpoints
 
 ```
 ## Features
