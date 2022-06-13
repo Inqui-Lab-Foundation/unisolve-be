@@ -16,7 +16,7 @@ import CRUDService from '../services/crud.service';
 export default class NotificationsController {
     public path: string;
     public router: Router;
-    crudService:CRUDService = new CRUDService;
+    crudService: CRUDService = new CRUDService;
     private webPush: any = webPush;
 
     constructor() {
@@ -28,38 +28,38 @@ export default class NotificationsController {
     private initializeRoutes() {
         // this.router.post(`${this.path}/stream`, this.stream);
         this.router.get(`${this.path}/tome`, this.getMyNotifications);
-        this.router.post(`${this.path}/send`, validationMiddleware(notificationValidations.send),this.sendNotification);
+        this.router.post(`${this.path}/send`, validationMiddleware(notificationValidations.send), this.sendNotification);
         this.router.post(`${this.path}/sendwithposter`, validationMiddleware(notificationValidations.send), this.sendNotificationWithPoster);
         this.router.get(`${this.path}/read/:id`, this.readNotification);
     }
-   
-   
+
+
     private stream = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         // It is recommended to use other queue services like rabbitmq, kafka, etc.
         // TODO: Replace this SSE with a queue service
         const subscription = req.body
         res.status(201).json({});
-        
-        
+
+
         setInterval(() => {
             const payload = JSON.stringify({
                 date: new Date().toLocaleString(),
                 user: res.locals,
-                Notification:{},
+                Notification: {},
                 badges: {}
             });
             webPush.sendNotification(subscription, payload)
                 .catch(error => console.error(error));
-            }, 5000);
+        }, 5000);
     }
 
     public getMyNotifications = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-        let notifications:any = await this.crudService.findWhere(notification, {
-            [Op.and]:[
+        let notifications: any = await this.crudService.findWhere(notification, {
+            [Op.and]: [
                 {
-                    target_audience:{
+                    target_audience: {
                         [Op.or]: [
-                            { 
+                            {
                                 [Op.eq]: `%${res.locals.user_id}%`,
                                 [Op.eq]: 'ALL'
                             },
@@ -93,10 +93,10 @@ export default class NotificationsController {
 
     private sendNotificationWithPoster = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         const data = req.body;
-        const files:any = req.files;
+        const files: any = req.files;
         data['created_by'] = res.locals.user_id;
 
-        if(files.image){
+        if (files.image) {
             const filename = files.image.path.split(path.sep).pop();
             const targetPath = path.join(process.cwd(), 'resources', 'static', 'uploads', 'posters', filename);
             fs.rename(files.image.path, targetPath, async (err) => {
@@ -111,7 +111,7 @@ export default class NotificationsController {
                     return res.status(200).send(dispatcher(result, 'success'));
                 }
             });
-        }else{
+        } else {
             const result = await this.crudService.create(notification, data);
             if (!result) {
                 return res.status(406).send(dispatcher(null, 'error', speeches.NOT_ACCEPTABLE, 406));
@@ -132,7 +132,7 @@ export default class NotificationsController {
         await this.crudService.update(notification, {
             notification_id: req.params.id,
         }, {
-            read_by:read_by_list.join(","),
+            read_by: read_by_list.join(","),
             updated_by: res.locals.user_id,
         });
 
