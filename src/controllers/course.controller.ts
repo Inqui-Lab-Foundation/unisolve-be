@@ -17,10 +17,15 @@ export default class CourseController extends BaseController {
     }
 
     protected initializeRoutes(): void {
-        super.initializeRoutes();
-        
         //example route to add 
         //this.router.get(`${this.path}/`, this.getData);
+        this.router.get(`${this.path}/test`, this.testRoute);
+        super.initializeRoutes();
+        
+    }
+    protected testRoute(req: Request, res: Response, next: NextFunction) {
+        console.log("came here");
+        return res.status(200).json(dispatcher("this was a success ....!!!"));
     }
 
     //TODO: add logic to below overriden method to save thumbnail image as well 

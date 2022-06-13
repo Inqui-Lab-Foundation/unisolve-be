@@ -14,9 +14,8 @@ export default class VideoController extends BaseController {
     }
     
     protected initializeRoutes(): void {
-        super.initializeRoutes();
-        
         //example route to add 
         //this.router.get(`${this.path}/`, this.getData);
+        super.initializeRoutes();
     }
 }

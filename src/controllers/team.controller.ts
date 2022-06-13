@@ -13,9 +13,10 @@ export default class TeamController extends BaseController {
         this.validations =  new ValidationsHolder(teamSchema,teamUpdateSchema);
     }
     protected initializeRoutes(): void {
-        super.initializeRoutes();
-        
         //example route to add 
         //this.router.get(`${this.path}/`, this.getData);
+        super.initializeRoutes();
+        
+        
     }
 }
