@@ -38,5 +38,8 @@ export const speeches = {
 
     CREATED_FILE: "successfully Created",
     FILE_EMPTY: "Unable to create a file, Please check the payload",
-    FETCH_FILE: "file found"
+    FETCH_FILE: "file found",
+
+    EMAIL_SEND_ERROR: "Faild to send email",
+    EMAIL_SEND_SUCCESS: "Email sent successfully.",
 }
