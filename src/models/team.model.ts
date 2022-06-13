@@ -1,18 +1,12 @@
 import { DataTypes, Model } from 'sequelize';
-import db from '../../config/database.config';
-
-export interface teamAttributes {
-    id: number;
-    team_name: string;
-    mentor_id: string;
-    status: Enumerator;
-}
+import db from '../utils/dbconnection.util';
+import { teamAttributes } from '../interfaces/model.interface';
 
 export class teams extends Model<teamAttributes> { }
 
 teams.init(
     {
-        id: {
+        team_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -32,6 +26,7 @@ teams.init(
     },
     {
         sequelize: db,
-        tableName: 'team',
+        tableName: 'teams',
     }
 );
+

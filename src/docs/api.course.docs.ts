@@ -11,9 +11,8 @@ export const createCourseRequestBody = {
             type: 'string',
             example: 'Eum accusantium sunt vel. Animi dolorem vero quo. Voluptatem voluptates ex quo.',
         },
-        thumbnail: {
-            type: 'string',
-            format: 'binary'
+        Thumbnail: {
+            type: 'file'
         },
         status: {
             type: 'string',
@@ -43,7 +42,7 @@ export const createCourse = {
     requestBody: {
         required: true,
         content: {
-            'application/x-www-form-urlencoded': {
+            'application/json': {
                 schema: {
                     $ref: '#/components/schemas/createCourseRequestBody'
                 },
@@ -70,7 +69,7 @@ export const createCourse = {
                                 type: 'string',
                                 example: 'Eum accusantium sunt vel'
                             },
-                            thumbnail: {
+                            Thumbnail: {
                                 type: 'string',
                                 example: "courses/Screenshot 2022-04-21 101916.png"
                             },
@@ -116,22 +115,20 @@ export const courseList = {
                                 type: 'array',
                                 example: [
                                     {
-                                        "id": 1,
-                                        "course_name": "python",
-                                        "description": "Eum accusantium sunt vel. Animi dolorem vero quo. Voluptatem voluptates ex quo. Nemo exercitationem consequatur providentenim",
-                                        "thumbnail": "courses/Screenshot 2022-04-21 101916.png",
-                                        "status": "Completed",
-                                        "createdAt": "2022-05-27T07:11:19.000Z",
-                                        "updatedAt": "2022-05-27T07:11:19.000Z"
+                                        "id": 4,
+                                        "course_name": "javascript Course",
+                                        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inde sermone vario sex illa ersem captum adduceret, eodem flumine invectio? Itaque hic ipse iam pridem est reiectus; Duo Reges: constructio interrete. Primum in nostrane potestate est",
+                                        "status": "Incomplete",
+                                        "createdAt": "2022-04-21T13:25:24.000Z",
+                                        "updatedAt": "2022-04-29T04:08:18.000Z"
                                     },
                                     {
-                                        "id": 2,
+                                        "id": 5,
                                         "course_name": "python",
-                                        "description": "Eum accusantium sunt vel. Animi dolorem vero quo. Voluptatem voluptates ex quo. Nemo exercitationem consequatur providentenim",
-                                        "thumbnail": "courses/Screenshot 2022-04-21 101916.png",
+                                        "description": "Eum accusantium sunt vel. Animi dolorem vero quo. Voluptatem voluptates ex quo. Nemo exercitationem consequatur provident et labore ut. Itaque commodi aliquid enim.",
                                         "status": "Completed",
-                                        "createdAt": "2022-05-27T07:28:45.000Z",
-                                        "updatedAt": "2022-05-27T07:28:45.000Z"
+                                        "createdAt": "2022-05-06T10:52:05.000Z",
+                                        "updatedAt": "2022-05-06T10:52:05.000Z"
                                     }
                                 ]
                             }
@@ -179,7 +176,7 @@ export const courseById = {
                                     "id": 4,
                                     "course_name": "javascript Course",
                                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Inde sermone vario sex illa ersem captum adduceret, eodem flumine invectio? Itaque hic ipse iam pridem est reiectus; Duo Reges: constructio interrete. Primum in nostrane potestate est",
-                                    "thumbnail": "courses/Screenshot 2022-04-21 101916.png",
+                                    "Thumbnail": "courses/Screenshot 2022-04-21 101916.png",
                                     "status": "Incomplete",
                                     "createdAt": "2022-04-21T13:25:24.000Z",
                                     "updatedAt": "2022-04-29T04:08:18.000Z"

@@ -1,24 +1,39 @@
-import { DataTypes, Model } from 'sequelize';
-import db from '../../config/database.config';
+import { Association, DataTypes, Model } from 'sequelize';
+import db from '../utils/dbconnection.util';
+import { courseModule } from './courseModule.model';
 
 export interface courseAttributes {
-    id: number;
-    course_name: string;
+    course_id: number;
+    title: string;
     description: string;
     status: Enumerator;
     thumbnail: string;
 }
 
-export class course extends Model<courseAttributes> { }
+export class course extends Model<courseAttributes> {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models: any) {
+        // console.log("came here");
+        // define association here
+        course.hasMany(models, { foreignKey: 'course_id', as: 'courseModules' });
+    }
+
+    
+}
+
 
 course.init(
     {
-        id: {
+        course_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        course_name: {
+        title: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -30,11 +45,12 @@ course.init(
             type: DataTypes.STRING
         },
         status: {
-            type: DataTypes.ENUM('Completed', 'Incomplete')
+            type: DataTypes.ENUM('ACTIVE', 'INACTIVE','DELETED')
         }
     },
     {
         sequelize: db,
-        tableName: 'course',
+        tableName: 'courses'
     }
 );
+course.associate(courseModule);

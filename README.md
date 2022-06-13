@@ -22,7 +22,7 @@ Requirements for the software and other tools to build, test and push
 
 ### Installing
 
-1. You need to install PostgreSQL
+1. You need to install MySql
    - For Windows
      - Install mySql and set following environment variable C:\Program Files\mysql\10\bin
    - For Ubuntu
@@ -57,8 +57,10 @@ src
 └───services             # All the database interaction logic is here
 └───utils                # third party service required application to up and running
 └───index.ts             # Application entry point
+└───routes.ts            # Application routes / endpoints
 
 ```
+
 ## Features
 
 - CRUD operations for student
@@ -66,6 +68,47 @@ src
 - REST API Request object validations - Basic
 - Error Logs
 - Setup docs
+
+## Database migrate
+setup
+
+-npm run migrate:init
+
+once you have called the above commond the migrations are setup; from here on seuqlize-cli command to generate a model or migration file will work 
+
+-sequlize-cli model:generate --name users --attributes first_name:string,last_name:string,email:string
+
+this command will generate two files 
+- 1) model file in src/migrations/cli 
+- 2) migration file in src/migrations
+
+once you have generated migration file you can call the custom package.json script migrate
+
+-npm run migrate 
+
+this command will not only execute all pending migrations but also delete the unwanted model file generated in the src/migration/cli folder...
+
+
+## Database dbsync (based off of sequlize .sync() function, hard reset a db ...!)
+
+one of the mandatory steps to update database tables
+
+- go to .env add ```DB_MIGRATE_FORCE=true```
+- go to .env add ```DB_MIGRATE_ALTER=false```
+- npm run build
+- npm run dbsync
+
+Note: ```DB_MIGRATE_FORCE=false```,```DB_MIGRATE_ALTER=true``` make sure you have add two .env file
+
+## Database rules
+
+- Use underscore_names instead of CamelCase
+- Table names should be plural
+- Spell out id fields (item_id instead of id)
+- Don't use ambiguous column names
+- When possible, name foreign key columns the same as the columns they refer to 
+
+read more: https://db-migrate.readthedocs.io/en/latest/
 
 ## Running the tests
 

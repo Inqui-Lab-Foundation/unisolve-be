@@ -1,18 +1,13 @@
 import { DataTypes, Model } from 'sequelize';
-import db from '../../config/database.config';
+import db from '../utils/dbconnection.util';
+import { videosAttributes } from '../interfaces/model.interface';
 
-export interface videosAttributes {
-    id: number;
-    module: string;
-    video_id: string;
-    status: Enumerator;
-}
 
 export class video extends Model<videosAttributes> { }
 
 video.init(
     {
-        id: {
+        video_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -21,7 +16,7 @@ video.init(
             type: DataTypes.STRING,
             allowNull: false
         },
-        video_id: {
+        video_stream_id: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
@@ -32,6 +27,6 @@ video.init(
     },
     {
         sequelize: db,
-        tableName: 'video',
+        tableName: 'videos',
     }
 );

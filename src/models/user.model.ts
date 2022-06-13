@@ -1,56 +1,160 @@
-import { DataTypes, Model } from 'sequelize';
-import db from '../../config/database.config';
-
+import { DataTypes, Model, Attributes } from 'sequelize';
+import { HookReturn } from 'sequelize/types/hooks';
+import db from '../utils/dbconnection.util';
+import { notification } from './notification.model';
 export interface userAttributes {
-    id: string;
-    name: string;
-    mobile: number;
+    user_id: string;
     email: string;
     password: string;
-    org: string;
-    role: Enumerator;
+    full_name: string;
+    image: string,
+    date_of_birth: Date;
+    mobile: number;
+    team_id: string;
+    org_name: string;
+    qualification: string;
+    stream: string;
+    city: string;
+    district: string;
+    state: string;
+    country: string;
+    role: string;
+    is_loggedin: Enumerator;
+    last_login: number;
     status: Enumerator;
+    created_by: number;
+    updated_by: number;
 }
 
-export class user extends Model<userAttributes> { }
+export class user extends Model<userAttributes> {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models: any) {
+        // define association here
+        user.hasMany(notification, { sourceKey:'notification_id', as: 'notifications' });
+        
+    }
+
+    // static toJSON(user: userAttributes) {
+    //     return {
+    //         user_id: user.user_id,
+    //         email: user.email,
+    //         password: user.password,
+    //         full_name: user.full_name,
+    //         image: user.image,
+    //         date_of_birth: user.date_of_birth,
+    //         mobile: user.mobile,
+    //         team_id: user.team_id,
+    //         org_name: user.org_name,
+    //         qualification: user.qualification,
+    //         stream: user.stream,
+    //         city: user.city,
+    //         district: user.district,
+    //         state: user.state,
+    //         country: user.country,
+    //         role: user.role,
+    //         is_loggedin: user.is_loggedin,
+    //         last_login: user.last_login,
+    //         status: user.status,
+    //         created_by: user.created_by,
+    //         updated_by: user.updated_by,
+
+    // }
+}
 
 user.init(
     {
-        id: {
+        user_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        name: {
-            type: DataTypes.STRING
-        },
         email: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(55),
             allowNull: false,
             unique: true
         },
         password: {
             type: DataTypes.STRING,
             allowNull: false,
+            // select: false
         },
-        role: {
-            type: DataTypes.ENUM('0', '1'),
-            allowNull: false
+        full_name: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
-        mobile: {
-            type: DataTypes.BIGINT,
-            unique: true,
+        image: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        date_of_birth: {
+            type: DataTypes.DATE,
             allowNull: true
         },
-        org: {
+        mobile: {
+            type: DataTypes.STRING(50),
+            unique: true,
+            allowNull: false
+        },
+        team_id: {
             type: DataTypes.STRING,
         },
+        org_name: {
+            type: DataTypes.STRING,
+        },
+        qualification: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        stream: {
+            type: DataTypes.STRING
+        },
+        city: {
+            type: DataTypes.STRING
+        },
+        district: {
+            type: DataTypes.STRING
+        },
+        state: {
+            type: DataTypes.STRING
+        },
+        country: {
+            type: DataTypes.STRING
+        },
         status: {
-            type: DataTypes.ENUM('Active', 'Inactive')
+            type: DataTypes.ENUM('ACTIVE', 'INACTIVE', 'LOCKED', 'DELETED' ),
+            defaultValue: 'ACTIVE'
+        },
+        role: {
+            type: DataTypes.ENUM('ADMIN', 'EVALUATER', 'MENTOR', 'STUDENT'),
+            defaultValue: 'ADMIN'
+        },
+        is_loggedin: {
+            type: DataTypes.ENUM('YES', 'NO'),
+            defaultValue: 'NO'
+        },
+        last_login: {
+            type: DataTypes.DATE
+        },
+        created_by: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 1
+        },
+        updated_by: {
+            type: DataTypes.INTEGER
         }
     },
     {
         sequelize: db,
-        tableName: 'user',
+        tableName: 'users',
+        timestamps: true,
+        updatedAt: 'updated_at',
+        createdAt: 'created_at',
+        hooks:{
+        }
     }
 );
