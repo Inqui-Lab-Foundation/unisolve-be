@@ -6,4 +6,6 @@ package-lock.json
 yarn.lock
 yarn-error.log
 logs
-resources
+.env.old
+experiments
+src/migrations/cli/*
