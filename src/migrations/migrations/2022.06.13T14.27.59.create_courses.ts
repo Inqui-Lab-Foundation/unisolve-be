@@ -1,37 +1,30 @@
 import { Migration } from '../umzug';
 import { DataTypes } from 'sequelize';
-
+import { constents } from '../../configs/constents.config';
 // you can put some team-specific imports/code here to be included in every migration
 
 export const up: Migration = async ({ context: sequelize }) => {
 	await sequelize.getQueryInterface().createTable('courses', {
 		course_id: {
-		  allowNull: false,
-		  autoIncrement: true,
-		  primaryKey: true,
-		  type: DataTypes.INTEGER
-		},
-		title: {
-		  allowNull: false,
-		  type: DataTypes.STRING
-		},
-		description: {
-		  type: DataTypes.STRING
-		},
-		status: {
-		  type: DataTypes.ENUM('ACTIVE', 'INACTIVE', 'DELETD')
-		},
-		thumbnail: {
-		  type: DataTypes.STRING
-		},
-		created_at: {
-		  allowNull: false,
-		  type: DataTypes.DATE
-		},
-		updated_at: {
-		  allowNull: false,
-		  type: DataTypes.DATE
-		}
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        description: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        thumbnail: {
+            type: DataTypes.STRING
+        },
+        status: {
+            type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            defaultValue: constents.common_status_flags.default
+        }
 	  });
 };
 
