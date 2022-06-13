@@ -61,7 +61,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		  type: DataTypes.STRING
 		},
 		role: {
-		  type: DataTypes.ENUM('ADMIN', 'STUDENT', 'MENTOR','EVALUATOR'),
+		  type: DataTypes.ENUM('ADMIN', 'STUDENT', 'MENTOR','EVALUATER'),
 		  defaultValue: 'ADMIN'
 		},
 		is_loggedin: {
@@ -72,7 +72,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		  type: DataTypes.DATE
 		},
 		status: {
-		  type: DataTypes.ENUM('ACTIVE', 'INACTIVE', 'DELETED'),
+		  type: DataTypes.ENUM('ACTIVE', 'INACTIVE', 'LOCKED','DELETED'),
 		  defaultValue: 'ACTIVE'
 		},
 		created_by: {
