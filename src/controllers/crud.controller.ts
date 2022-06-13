@@ -10,6 +10,7 @@ import { nextTick } from 'process';
 import { speeches } from '../configs/speeches.config';
 
 export default class CRUDController implements IController {
+    model: string = "";
     public path = "";
     public router = Router();
     crudService: CRUDService = new CRUDService();
@@ -46,14 +47,16 @@ export default class CRUDController implements IController {
         try {
             let data: any;
             const { model, id } = req.params;
-
+            if (model) {
+                this.model = model;
+            };
             this.loadModel(model).then(async (modelClass: any) => {
-                const where:any = {};
+                const where: any = {};
                 if (id) {
-                    where[`${model}_id`] = req.params.id;
-                    data = await this.crudService.findOne(modelClass, {where:where});
+                    where[`${this.model}_id`] = req.params.id;
+                    data = await this.crudService.findOne(modelClass, { where: where });
                 } else {
-                    where[`${model}_id`] = req.params.id;
+                    where[`${this.model}_id`] = req.params.id;
                     data = await this.crudService.findAll(modelClass);
                 }
 
@@ -70,6 +73,9 @@ export default class CRUDController implements IController {
     protected createData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { model } = req.params;
+            if (model) {
+                this.model = model;
+            };
             const data = await this.crudService.create(await this.loadModel(model), req.body);
             if (!data) {
                 return res.status(404).send(dispatcher(data, 'error'));
@@ -83,12 +89,15 @@ export default class CRUDController implements IController {
     protected createDataWithFile = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { model } = req.params;
-            const rawfiles:any = req.files;
-            const files:any = Object.values(rawfiles);
-            const file_key:any = Object.keys(rawfiles);
+            if (model) {
+                this.model = model;
+            };
+            const rawfiles: any = req.files;
+            const files: any = Object.values(rawfiles);
+            const file_key: any = Object.keys(rawfiles);
             console.log(file_key);
-            const reqData:any = req.body;
-            const errs:any = [];
+            const reqData: any = req.body;
+            const errs: any = [];
             for (const file_name of Object.keys(files)) {
                 const file = files[file_name];
                 console.log(file);
@@ -102,7 +111,7 @@ export default class CRUDController implements IController {
                     }
                 });
             }
-            if(errs.length){
+            if (errs.length) {
                 return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
             const data = await this.crudService.create(await this.loadModel(model), reqData);
@@ -118,9 +127,12 @@ export default class CRUDController implements IController {
     protected updateData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { model, id } = req.params;
-            const where:any = {};
-            where[`${model}_id`] = req.params.id;
-            const data = await this.crudService.update(await this.loadModel(model), req.body, {where:where});
+            if (model) {
+                this.model = model;
+            };
+            const where: any = {};
+            where[`${this.model}_id`] = req.params.id;
+            const data = await this.crudService.update(await this.loadModel(model), req.body, { where: where });
             if (!data) {
                 return res.status(404).send(dispatcher(data, 'error'));
             }
@@ -133,16 +145,19 @@ export default class CRUDController implements IController {
     protected updateDataWithFile = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { model, id } = req.params;
-            const where:any = {};
-            where[`${model}_id`] = req.params.id;
-            const rawfiles:any = req.files;
-            const files:any = Object.values(rawfiles);
-            const file_key:any = Object.keys(rawfiles);
+            if (model) {
+                this.model = model;
+            };
+            const where: any = {};
+            where[`${this.model}_id`] = req.params.id;
+            const rawfiles: any = req.files;
+            const files: any = Object.values(rawfiles);
+            const file_key: any = Object.keys(rawfiles);
             console.log(rawfiles);
             console.log(files);
             console.log(file_key);
-            const reqData:any = req.body;
-            const errs:any = [];
+            const reqData: any = req.body;
+            const errs: any = [];
             for (const file_name of Object.keys(files)) {
                 const file = files[file_name];
                 const filename = file.path.split(path.sep).pop();
@@ -155,10 +170,10 @@ export default class CRUDController implements IController {
                     }
                 });
             }
-            if(errs.length){
+            if (errs.length) {
                 return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
-            const data = await this.crudService.update(await this.loadModel(model), reqData, {where:where});
+            const data = await this.crudService.update(await this.loadModel(model), reqData, { where: where });
             if (!data) {
                 return res.status(404).send(dispatcher(data, 'error'));
             }
@@ -171,8 +186,11 @@ export default class CRUDController implements IController {
     protected deleteData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { model, id } = req.params;
-            const where:any = {};
-            where[`${model}_id`] = req.params.id;
+            if (model) {
+                this.model = model;
+            };
+            const where: any = {};
+            where[`${this.model}_id`] = req.params.id;
             const data = await this.crudService.delete(await this.loadModel(model), { where: where });
             if (!data) {
                 return res.status(404).send(dispatcher(data, 'error'));
