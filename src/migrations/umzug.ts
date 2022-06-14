@@ -15,13 +15,13 @@ export const migrator = new Umzug({
 		sequelize,
 	}),
 	logger: console,
-    create:{
-        folder: 'src/migrations/migrations',
-        template: filepath => [
+	create: {
+		folder: 'src/migrations/migrations',
+		template: (filepath: any) => [
 			// read template from filesystem
 			[filepath, fs.readFileSync(path.join(__dirname, 'template/sample_migration.ts')).toString()],
 		],
-    }
+	}
 });
 
 export type Migration = typeof migrator._types.migration;

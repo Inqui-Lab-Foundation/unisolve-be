@@ -69,7 +69,7 @@ export const constents = {
       'COMPLETED': 'COMPLETED',
       'INCOMPLETE': 'INCOMPLETE'
     },
-    default: 'DRAFT'
+    default: 'INCOMPLETE'
   },
 
   notification_types: {
