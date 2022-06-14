@@ -30,34 +30,66 @@ Requirements for the software and other tools to build, test and push
         sudo apt update 
         sudo apt-get install mysql
   
-2. rename .env-sample to .env in the file the DB connection string need to be updated according to your credentials. ex : mysql://<YourUserName>:<YourPassword>@localhost:5432/<YourDatabase>
+2. create ```.env``` from ```.env-example```. then, update database credentials to make connection successfully. if the `.env` file gets failed to load, it can load the default values from `base.config.ts` which is under `/src/configs/`.
 
-3. you can find the DB and other details under unislove-be/config there is a file called database.config.js you are changed the database username password
+3. install all dependencies need for application to run locally 
 
-4. install all dependencies need for application to run locally 
-   - git clone https://github.com/Inqui-Lab-Foundation/unisolve-be.git
-   - yarn install || npm install
-   - yarn start:dev || npm start:dev This will start the application in development mode
-   - yarn start:prod || npm start:prod  This will start the application and run on port 3002
+   **Pre-Note:** After cloning the codebase, make sure ```DB_MIGRATE_FORCE``` and ```DB_MIGRATE_ALTER``` are seated as ```false``` in prod to prevent the data loses.
+  ```DB_MIGRATE_FORCE=true``` can drop existed tables and recreate them. ```DB_MIGRATE_ALTER=true``` can alter existed tables instead of dropping them. it can help to prevent loosing data somewhat. but not relay on this always. 
 
-5. you can change port and others details in `config.json` file check path: `./config/default.ts`
+   - ```git clone https://github.com/Inqui-Lab-Foundation/unisolve-be.git```
+   - ```yarn install``` || ```npm install```
+   - ```yarn start:dev``` || ```npm start:dev``` This will start the application in development mode
+   - ```yarn start:prod``` || ```npm start:prod```  This will start the application and run on port 3002
+
+   - **Note:** For the first time, if you want to create all tables in the selected database, it is recommended to run ```node migrate.js``` from route directory.
+
+5. if required, you can change port and others details in `.env` file. if the `.env` file gets failed to load, it can load the default values from `base.config.ts` which is under `/src/configs/`.
 
 ## Folder Structure
 
 ```
-config
-└───database.config.ts
-└───default.ts
-src
-└───__test__             # API Testing files
-└───controllers          # Express route controllers for all the endpoints of the app
-└───middleware           # express middleware
-└───models               # DB Models (mysql)
-└───schemas              # validation schemas for API Request object validations
-└───services             # All the database interaction logic is here
-└───utils                # third party service required application to up and running
-└───index.ts             # Application entry point
-└───routes.ts            # Application routes / endpoints
+unisolve-be                            # Project route directory
+├──keys                                # Secret keys directory
+│  ├──jwt.key                          # JWT secret key
+│  └──jwt.pub                          # JWT public encryption key
+├──src                                 # Source directory
+│  ├──configs                          # Application one place configurations directory
+│  │  ├──base.config.ts                # Base configuration file to carry defaults for `.env` file
+│  │  ├──constenants.ts                # Application constants file to carry application wide constants
+│  │  ├──speeches.config.ts            # Speech file to carry out all hardcoded messages
+│  │  ├──whildcardRoutes.config.ts     # Wildcard routes to list authentication free routes
+│  │  ├──dynamicForm.ts                # Dynamic form fields list to be used in forms
+│  │  └──signUp.json                   # Dynamically generated Sign up form fields
+│  ├──controllers                      # Controllers directory
+│  │  ├──base.controller.ts            # Base controller can be extended by other feature controllers to carry standers CRUD operations
+│  │  ├──crud.controller.ts            # CRUD controller is responsible for standers CRUD endpoints for all models
+│  │  └── **feature_controllers
+│  ├──models                           # Models directory can hold all ORM models
+│  │  └── **feature_models
+│  ├──services                         # Services directory can hold all services
+│  │  ├──crud.service.ts               # CRUD service is responsible for standers CRUD operations in CRUD controller
+│  │  └── **feature_services
+│  ├──utils                            # Utility directory
+│  │  ├──exceptions                    # Exceptions directory can hold all custom exceptions
+│  │  │  ├──http.exception.ts          # Http exception class
+│  │  │  └──**feature_exceptions
+│  │  ├──jwt.util.ts                   # JWT utility to generate and verify JWT tokens
+│  │  ├──logit.util.ts                 # Logit utility to log messages into console or a file and DB
+│  │  ├──validate_env.util.ts          # Validate environment can validate env variables and fill with default values if failed
+│  │  └──**feature_utils
+│  ├──validations                      # Validations directory can hold all validations for all endpoint data inputs
+│  ├──interfaces                       # Interfaces directory can hold all interfaces for any strictured classes
+│  ├──docs                             # Documentation directory to keep swagger documentation
+│  ├──migrations                       # Migrations directory to hold all DB migrations
+│  ├──logs                             # Logs directory to keep day wise logs
+│  ├──app.ts                           # Main application file
+│  └──index.ts                         # Main application entry point
+├──package.json                        # application metadata
+├──.env                                # Application environment variables
+├──.env-example                        # Application environment variables template
+├──.sequelizerc                        # Sequelize configuration file
+└──Readme.md                           # Application readme file
 
 ```
 
@@ -69,14 +101,15 @@ src
 - Error Logs
 - Setup docs
 
-## Database migrate
-setup
+## Database Migration
 
--npm run migrate:init
+#### **Generate Migrations(DEV):**
+
+```npm run migrate:init```
 
 once you have called the above commond the migrations are setup; from here on seuqlize-cli command to generate a model or migration file will work 
 
--sequlize-cli model:generate --name users --attributes first_name:string,last_name:string,email:string
+ex: ```sequlize-cli model:generate --name users --attributes first_name:string,last_name:string,email:string```
 
 this command will generate two files 
 - 1) model file in src/migrations/cli 
@@ -84,21 +117,10 @@ this command will generate two files
 
 once you have generated migration file you can call the custom package.json script migrate
 
--npm run migrate 
+#### **UP/DOWN Migrations(other than DEV):**
 
-this command will not only execute all pending migrations but also delete the unwanted model file generated in the src/migration/cli folder...
+Run ```npm run migrate ``` this command will not only execute all pending migrations but also delete the unwanted model file generated in the src/migration/cli folder...
 
-
-## Database dbsync (based off of sequlize .sync() function, hard reset a db ...!)
-
-one of the mandatory steps to update database tables
-
-- go to .env add ```DB_MIGRATE_FORCE=true```
-- go to .env add ```DB_MIGRATE_ALTER=false```
-- npm run build
-- npm run dbsync
-
-Note: ```DB_MIGRATE_FORCE=false```,```DB_MIGRATE_ALTER=true``` make sure you have add two .env file
 
 ## Database rules
 
@@ -108,15 +130,15 @@ Note: ```DB_MIGRATE_FORCE=false```,```DB_MIGRATE_ALTER=true``` make sure you hav
 - Don't use ambiguous column names
 - When possible, name foreign key columns the same as the columns they refer to 
 
-read more: https://db-migrate.readthedocs.io/en/latest/
+[Read More](https://db-migrate.readthedocs.io/en/latest/)
 
 ## Running the tests
 
-yarn run test || npm run test
+```yarn run test``` || ```npm run test```
 
 testing with converge of the files
 
-yarn run test:coverage || npm run test:coverage
+```yarn run test:coverage``` || ```npm run test:coverage```
 
 ## Planned
 
@@ -168,6 +190,7 @@ repository](https://github.com/PurpleBooth/a-good-readme-template/tags).
 ## Authors
 
   - **Pradeep Gandla**
+  - **[Harishkumar](https://github.com/harishkumarreddy)**
 
 See also the list of
 [contributors](https://github.com/PurpleBooth/a-good-readme-template/contributors)
