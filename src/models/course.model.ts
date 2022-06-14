@@ -1,4 +1,5 @@
 import { Association, DataTypes, Model } from 'sequelize';
+import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
 import { courseModule } from './courseModule.model';
 
@@ -22,7 +23,7 @@ export class course extends Model<courseAttributes> {
         course.hasMany(models, { foreignKey: 'course_id', as: 'courseModules' });
     }
 
-    
+
 }
 
 
@@ -45,7 +46,8 @@ course.init(
             type: DataTypes.STRING
         },
         status: {
-            type: DataTypes.ENUM('ACTIVE', 'INACTIVE','DELETED')
+            type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            defaultValue: constents.common_status_flags.default
         }
     },
     {

@@ -1,62 +1,85 @@
 export const constents = {
-    log_levels: {
-      list:{
-        'INFO': 'INFO', 
-        'ERROR': 'ERROR', 
-        'WARNING': 'WARNING', 
-        'DEBUG': 'DEBUG', 
-        'CRITICAL': 'CRITICAL', 
-        'SUCCESS': 'SUCCESS', 
-        'FAILURE': 'FAILURE', 
-        'LOGIN': 'LOGIN', 
-        'LOGOUT': 'LOGOUT', 
-        'INBOUND': 'INBOUND', 
-        'OUTBOUND': 'OUTBOUND'
+  log_levels: {
+    list: {
+      'INFO': 'INFO',
+      'ERROR': 'ERROR',
+      'WARNING': 'WARNING',
+      'DEBUG': 'DEBUG',
+      'CRITICAL': 'CRITICAL',
+      'SUCCESS': 'SUCCESS',
+      'FAILURE': 'FAILURE',
+      'LOGIN': 'LOGIN',
+      'LOGOUT': 'LOGOUT',
+      'INBOUND': 'INBOUND',
+      'OUTBOUND': 'OUTBOUND'
     },
-      default: 'INFO'
+    default: 'INFO'
+  },
+  status_codes: {
+    list: ['200', '400', '401', '403', '404', '500'],
+    default: '200'
+  },
+  http_methods: {
+    list: {
+      'GET': 'GET',
+      'POST': 'POST',
+      'PUT': 'PUT',
+      'DELETE': 'DELETE',
+      'OPTIONS': 'OPTIONS'
     },
-    status_codes: {
-      list:['200', '400', '401', '403', '404', '500'],
-      default: '200'
+    default: 'GET'
+  },
+  common_status_flags: {
+    list: {
+      'ACTIVE': 'ACTIVE',
+      'INACTIVE': 'INACTIVE',
+      'DELETED': 'DELETED',
+      'LOCKED': 'LOCKED'
     },
-    http_methods: {
-      list:{
-        'GET': 'GET',
-        'POST': 'POST',
-        'PUT': 'PUT',
-        'DELETE': 'DELETE',
-        'OPTIONS': 'OPTIONS'
-      },
-      default: 'GET'
+    default: 'ACTIVE'
+  },
+  user_role_flags: {
+    list: {
+      'ADMIN': 'ADMIN',
+      'EVALUATER': 'EVALUATER',
+      'MENTOR': 'MENTOR',
+      'STUDENT': 'STUDENT'
     },
+    default: 'ADMIN'
+  },
+  common_yes_no_flags: {
+    list: {
+      'YES': 'YES',
+      'NO': 'NO'
+    },
+    default: 'NO'
+  },
 
-    common_status_flags:{
-      list:{
-        'ACTIVE': 'ACTIVE',
-        'INACTIVE': 'INACTIVE',
-        'DELETED': 'DELETED',
-      },
-      default: 'ACTIVE'
+  notification_status_flags: {
+    list: {
+      'DRAFT': 'DRAFT',
+      'PUBLISHED': 'PUBLISHED',
+      'DELETED': 'DELETED'
     },
-    
+    default: 'DRAFT'
+  },
 
-    notification_status_flags: {
-      list:{
-        'DRAFT': 'DRAFT',
-        'PUBLISHED': 'PUBLISHED',
-        'DELETED': 'DELETED'
-      },
-      default: 'DRAFT'
+  task_status_flags: {
+    list: {
+      'COMPLETED': 'COMPLETED',
+      'INCOMPLETE': 'INCOMPLETE'
     },
+    default: 'DRAFT'
+  },
 
-    notification_types: {
-      list:{
-        'EMAIL': 'EMAIL',
-        'SMS': 'SMS',
-        'PUSH': 'PUSH'
-      },
-      default: 'PUSH',
-      default_title: 'Notification',
-      default_message: 'Notification'
-    }
+  notification_types: {
+    list: {
+      'EMAIL': 'EMAIL',
+      'SMS': 'SMS',
+      'PUSH': 'PUSH'
+    },
+    default: 'PUSH',
+    default_title: 'Notification',
+    default_message: 'Notification'
+  }
 };

@@ -32,7 +32,7 @@ notification.init(
         target_audience: {
             type: DataTypes.TEXT('long'),
             allowNull: false,
-            defaultValue: 'ALL'
+            // defaultValue: 'ALL'
         },
         title: {
             type: DataTypes.STRING,
@@ -47,7 +47,7 @@ notification.init(
         message: {
             type: DataTypes.TEXT('long'),
             allowNull: false,
-            defaultValue: constents.notification_types.default_message
+            // defaultValue: constents.notification_types.default_message
         },
         read_by: {
             type: DataTypes.TEXT('long'),

@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
 import { teamAttributes } from '../interfaces/model.interface';
+import { constents } from '../configs/constents.config';
 
 export class teams extends Model<teamAttributes> { }
 
@@ -21,7 +22,8 @@ teams.init(
             unique: true
         },
         status: {
-            type: DataTypes.ENUM('Active', 'Inactive')
+            type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            defaultValue: constents.common_status_flags.default
         }
     },
     {

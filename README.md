@@ -105,22 +105,18 @@ unisolve-be                            # Project route directory
 
 #### **Generate Migrations(DEV):**
 
+to create a new empty migation file you can run 
+
+- node src/migrations/migrate.js create --name name_you_want_for_migration_file.ts
+
 ```npm run migrate:init```
 
-once you have called the above commond the migrations are setup; from here on seuqlize-cli command to generate a model or migration file will work 
-
-ex: ```sequlize-cli model:generate --name users --attributes first_name:string,last_name:string,email:string```
-
-this command will generate two files 
-- 1) model file in src/migrations/cli 
-- 2) migration file in src/migrations
-
-once you have generated migration file you can call the custom package.json script migrate
+upon calling the above command a new file will be generated at src/migrations/migrations/ folder with name xxxxtimestampxxx.name_you_want_for_migration_file.ts
+once you have generated migration file you can call 
 
 #### **UP/DOWN Migrations(other than DEV):**
 
-Run ```npm run migrate ``` this command will not only execute all pending migrations but also delete the unwanted model file generated in the src/migration/cli folder...
-
+```node src/migrations/migrate.js up``` command will execute all pending migrations.
 
 ## Database rules
 

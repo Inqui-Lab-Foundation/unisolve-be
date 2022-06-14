@@ -13,7 +13,7 @@ export default class CourseController extends BaseController {
         this.path = '/course';
     }
     protected initializeValidations(): void {
-        this.validations =  new ValidationsHolder(courseSchema,courseUpdateSchema);
+        this.validations = new ValidationsHolder(courseSchema, courseUpdateSchema);
     }
 
     protected initializeRoutes(): void {
@@ -21,7 +21,7 @@ export default class CourseController extends BaseController {
         //this.router.get(`${this.path}/`, this.getData);
         this.router.get(`${this.path}/test`, this.testRoute);
         super.initializeRoutes();
-        
+
     }
     protected testRoute(req: Request, res: Response, next: NextFunction) {
         // console.log("came here");
