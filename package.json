@@ -13,7 +13,8 @@
     "test:watch": "npm run set-node-env && jest --watchAll --verbose --silent",
     "test:coverage": "npm run set-node-env && jest --coverage --verbose --silent",
     "dbsync": "node migrate.js",
-    "dbsync:force": "rm -rf dist && npm run build && node migrate.js"
+    "dbsync:force": "rm -rf dist && npm run build && node migrate.js",
+    "migrate":"node src/migrations/migrate.js"
   },
   "dependencies": {
     "@supercharge/request-ip": "^1.2.0",
@@ -43,6 +44,7 @@
     "sequelize": "^6.15.1",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0",
+    "umzug": "^3.1.1",
     "uuid": "^8.3.2",
     "web-push": "^3.5.0",
     "winston": "^3.7.2",
@@ -91,7 +93,7 @@
     "sequelize-cli": "^6.4.1",
     "supertest": "^6.2.2",
     "ts-jest": "^27.1.2",
-    "ts-node": "^10.4.0",
+    "ts-node": "^10.8.1",
     "tsconfig-paths": "^3.12.0",
     "typescript": "^4.5.4"
   }

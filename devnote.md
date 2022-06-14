@@ -6,4 +6,6 @@
     "boom": "^7.3.0 added by aman on 27th MAY 2022 while applying best practices ..ERORR HANDLER",
     "http-status-codes": "^2.2.0 added by aman on 27th MAY 2022 while applying best practices ..ERORR HANDLER",
     "multer": "^2.2.0 added by vamshi on 7th June 2022 while applying Image upload for courses thumbnail.."
+    "ts-node": "^10.8.1 added by aman on 13th June 2022 while adding ability for db migration scripts",
+    "umzug": "^3.1.1 added by aman on 13th June 2022 while adding ability for db migration scripts",
   },

@@ -1,4 +1,5 @@
 import { cleanEnv, str, port} from "envalid"; 
+import { baseConfig } from "../configs/base.config";
 
 export default function validateEnv(): void {
     cleanEnv(process.env, {
@@ -6,77 +7,100 @@ export default function validateEnv(): void {
             choices: ["development", "production", "test"],
         }),
         APP_NAME: str({
-            default: "Unisolve-APIs",
+            default: baseConfig.APP_NAME,
         }),
         APP_VERSION: str({
-            default: "1.0.0",
+            default: baseConfig.APP_VERSION,
         }),
         API_VERSION: str({
-            default: "1",
+            default: baseConfig.API_VERSION,
         }),
         APP_PORT:port({
-            default: 3002,
+            default: baseConfig.APP_PORT,
         }),
         APP_HOST: str({
-            default: "127.0.0.1"
+            default: baseConfig.APP_HOST,
         }),
         APP_HOST_NAME: str({
-            default: "localhost"
+            default: baseConfig.APP_HOST_NAME,
         }),
 
         LOG_LEVEL: str({
             choices: ["debug", "info", "warn", "error"],
-            default: "debug",
+            default: baseConfig.LOG_LEVEL,
         }),
 
         DB_TARGET: str({
             choices: ["local", "remote", "AWSDynamoDB", "AzureCosmoseDB"],
+            default: baseConfig.DB_TARGET,
         }),
         DB_CLIENT: str({
             choices: ["mysql", "postgres", "mariadb", "mssql"],
-            default: "mysql",
+            default: baseConfig.DB_CLIENT,
         }),
         DB_PORT: port({
-            default: 3306,
+            default: baseConfig.DB_PORT,
         }),
         DB_HOST: str({
-            default: "localhost",
+            default: baseConfig.DB_HOST,
         }),
         DB_USER: str({
-            default: "root",
+            default: baseConfig.DB_USER,
         }),
         DB_PASSWORD: str({
-            default: "",
+            default: baseConfig.DB_PASSWORD,
         }),
         DB_NAME: str({
-            default: "unisolve_db_v1",
+            default: baseConfig.DB_NAME,
         }),
 
         SENTRY_DSN: str({
-            default: "",
+            default: baseConfig.SENTRY_DSN,
         }),
 
         PRIVATE_KEY: str({
-            default: 'keys/jwtRS256.pem',
+            default: baseConfig.PRIVATE_KEY,
         }),
         PUBLIC_KEY: str({
-            default: 'keys/jwtRS256.pem',
+            default: baseConfig.PUBLIC_KEY,
         }),
         SALT: str({
-            default: "H1K9C218A3H7R4m6O5I5a6W4S7r3K2H8",
+            default: baseConfig.SALT,
         }),
         TOKEN_DEFAULT_TIMEOUT: str({
-            default: "1h",
+            default: baseConfig.TOKEN_DEFAULT_TIMEOUT,
         }),
 
         SERVE_STATIC_FILES: str({
             choices: ["true", "false"],
-            default: "true",
+            default: baseConfig.SERVE_STATIC_FILES,
         }),
 
         SHOW_ROUTES: str({
             choices: ["true", "false"],
-            default: "false",
+            default: baseConfig.SHOW_ROUTES,
+        }),
+
+        PUSH_NOTIFICATIONS_PUBLIC_KEY: str({
+            default: baseConfig.PUSH_NOTIFICATIONS_PUBLIC_KEY,
+        }),
+        PUSH_NOTIFICATIONS_PRIVATE_KEY: str({
+            default: baseConfig.PUSH_NOTIFICATIONS_PRIVATE_KEY,
+        }),
+        PUSH_NOTIFICATIONS_EMAIL: str({
+            default: baseConfig.PUSH_NOTIFICATIONS_EMAIL,
+        }),
+
+        // RabitMQ",
+        RABBITMQ_URL: str({
+            default: baseConfig.RABBITMQ_URL,
+        }),
+        RABBITMQ_QUEUE: str({
+            default: baseConfig.RABBITMQ_QUEUE,
+        }),
+        RaBBITMQ_QUEUE_DURABLE: str({
+            choices: ["true", "false"],
+            default: baseConfig.RaBBITMQ_QUEUE_DURABLE,
         }),
     });
 }

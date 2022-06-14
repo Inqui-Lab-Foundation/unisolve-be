@@ -2,6 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
 import { course } from './course.model';
 import { courseModuleAttributes } from '../interfaces/model.interface';
+import { constents } from '../configs/constents.config';
 
 
 
@@ -29,12 +30,16 @@ const courseModuleSequelize = courseModule.init(
             allowNull: false
         },
         status: {
-            type: DataTypes.ENUM('Completed', 'Incomplete')
+            type: DataTypes.ENUM(...Object.values(constents.task_status_flags.list)),
+            defaultValue: constents.task_status_flags.default
         }
     },
     {
         sequelize: db,
         tableName: 'course_modules',
+        timestamps: true,
+        createdAt: 'created_At',
+        updatedAt: 'updated_At'
     }
 );
 
