@@ -4,10 +4,10 @@ import BaseController from "./base.controller";
 
 export default class CourseModulesController extends BaseController {
 
-    model = "modules";
+    model = "course_modules";
 
     protected initializePath(): void {
-        this.path = '/modules';
+        this.path = '/courseModules';
     }
     protected initializeValidations(): void {
         this.validations =  new ValidationsHolder(courseModuleSchema,courseModuleUpdateSchema);
