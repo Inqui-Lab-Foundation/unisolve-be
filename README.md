@@ -70,6 +70,12 @@ unisolve-be                            # Project route directory
 │  ├──services                         # Services directory can hold all services
 │  │  ├──crud.service.ts               # CRUD service is responsible for standers CRUD operations in CRUD controller
 │  │  └── **feature_services
+│  ├──middlewares                      # Middlewares directory can hold all application middlewares
+│  │  ├──errorHandler.middleware.ts    # Error handler middleware to handle errors
+│  │  ├──healthCheck.middleware.ts     # Health check middleware to check if the application running health
+│  │  ├──routeProtection.middleware.ts # Route protector middleware to protect from unauthorized access
+│  │  ├──validation.middleware.ts      # Validation middleware to validate request body
+│  │  └── **feature_middlewares
 │  ├──utils                            # Utility directory
 │  │  ├──exceptions                    # Exceptions directory can hold all custom exceptions
 │  │  │  ├──http.exception.ts          # Http exception class
