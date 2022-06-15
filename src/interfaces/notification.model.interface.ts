@@ -1,4 +1,3 @@
-
 export default interface INotificationAttributes {
     notification_id: number;
     notification_type: Enumerator;

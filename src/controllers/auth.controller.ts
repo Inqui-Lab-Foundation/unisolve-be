@@ -1,6 +1,9 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import { Op } from 'sequelize';
+import { readFileSync, writeFileSync } from 'fs';
+import path from 'path';
+import bcrypt from 'bcrypt';
 import IController from '../interfaces/controller.interface';
-import HttpException from '../utils/exceptions/http.exception';
 import validationMiddleware from '../middlewares/validation.middleware';
 import authValidations from '../validations/auth.validations';
 import dynamicForm from '../configs/dynamicForm';
@@ -9,9 +12,7 @@ import jwtUtil from '../utils/jwt.util';
 import { user } from '../models/user.model';
 import dispatcher from '../utils/dispatch.util';
 import { speeches } from '../configs/speeches.config';
-import { Op } from 'sequelize';
-import { readFileSync, writeFileSync } from 'fs';
-import path from 'path';
+import { baseConfig } from '../configs/base.config';
 
 export default class AuthController implements IController {
     public path: string;
@@ -39,9 +40,12 @@ export default class AuthController implements IController {
 
     private login = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const user_res: any = await this.crudService.findOne(user, { where: { email: req.body.email, password: req.body.password } });
+            const user_res: any = await this.crudService.findOne(user, { where: { 
+                email: req.body.email, 
+                password: await bcrypt.hashSync(req.body.password, process.env.SALT || baseConfig.SALT)
+            } });
             if (!user_res) {
-                return res.status(200).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
+                return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
             } else {
                 // user status checking
                 let stop_procedure: boolean = false;

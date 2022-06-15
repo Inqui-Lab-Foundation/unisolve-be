@@ -1,8 +1,9 @@
 import { DataTypes, Model, Attributes } from 'sequelize';
-import { HookReturn } from 'sequelize/types/hooks';
+import bcrypt from 'bcrypt';
 import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
 import { notification } from './notification.model';
+import { baseConfig } from '../configs/base.config';
 export interface userAttributes {
     user_id: string;
     email: string;
@@ -156,6 +157,16 @@ user.init(
         updatedAt: 'updated_at',
         createdAt: 'created_at',
         hooks: {
+            beforeCreate: async (user:any) => {
+                if (user.password) {
+                    user.password = await bcrypt.hashSync(user.password, process.env.SALT || baseConfig.SALT);
+                }
+            },
+            beforeUpdate: async (user) => {
+                if (user.password) {
+                    user.password = await bcrypt.hashSync(user.password, process.env.SALT || baseConfig.SALT);
+                }
+            }
         }
     }
 );

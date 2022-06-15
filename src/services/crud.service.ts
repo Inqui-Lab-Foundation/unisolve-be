@@ -1,7 +1,11 @@
 export default class CRUDService  {
     async create(model: any, input: any) {
         try {
-            return await model.create({ ...input });
+            const data = await model.create({ ...input });
+            if(data){
+                delete data.dataValues.password;
+            }
+            return data;
         } catch (error: any) {
             return error.message;
         }
@@ -48,7 +52,11 @@ export default class CRUDService  {
 
     async update(model: any, update: object, query: object) {
         try {
-            return await model.update(update, query);
+            const data =  await model.update(update, query);
+            if(data){
+                delete data.dataValues.password;
+            }
+            return data;
         } catch (error: any) {
             return error.message;
         }

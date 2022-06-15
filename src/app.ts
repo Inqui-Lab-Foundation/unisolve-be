@@ -96,6 +96,9 @@ export default class App {
 
     private serveStaticFiles(): void {
         this.app.use("/assets", express.static(path.join(process.cwd(), 'resources', 'static','uploads')));
+        this.app.use("/courses", express.static(path.join(process.cwd(), 'resources', 'static','uploads','courses')));
+        this.app.use("/posters", express.static(path.join(process.cwd(), 'resources', 'static','uploads','posters')));
+        this.app.use("/images", express.static(path.join(process.cwd(), 'resources', 'static','uploads','images')));
     }
 
     private initializeDocs(): void {
@@ -183,6 +186,9 @@ export default class App {
 Available Routes:
 =================================================================`);
         console.log(`Base Path: http://localhost:${this.port}/api/v1`);
+        console.log(`Course Images: http://localhost:${this.port}/courses`);
+        console.log(`Poster Images: http://localhost:${this.port}/posters`);
+        console.log(`Standard Images: http://localhost:${this.port}/images`);
         console.table(routes);
     }
 
