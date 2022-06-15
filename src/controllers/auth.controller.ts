@@ -41,7 +41,7 @@ export default class AuthController implements IController {
         try {
             const user_res: any = await this.crudService.findOne(user, { where: { email: req.body.email, password: req.body.password } });
             if (!user_res) {
-                return res.status(200).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
+                return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
             } else {
                 // user status checking
                 let stop_procedure: boolean = false;
