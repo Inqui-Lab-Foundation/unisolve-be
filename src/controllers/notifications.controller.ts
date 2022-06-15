@@ -13,35 +13,28 @@ import notificationValidations from '../validations/notification.validations';
 import ValidationsHolder from '../validations/validationHolder';
 import CRUDService from '../services/crud.service';
 
-export default class NotificationsController extends BaseController {
-    
-    crudService: CRUDService = new CRUDService;
+export default class NotificationsController {
+    public path: string;
+    public router: Router;
+    crudService:CRUDService = new CRUDService;
     private webPush: any = webPush;
 
-    model = "notification";
-
-    protected initializePath(): void {
+    constructor() {
         this.path = '/notifications';
-    }
-    protected initializeValidations(): void {
-        // this.validations = new ValidationsHolder(courseSchema, courseUpdateSchema);
+        this.router = Router();
+        this.initializeRoutes();
     }
 
-    protected  initializeRoutes() {
+    private initializeRoutes() {
         // this.router.post(`${this.path}/stream`, this.stream);
-        // this.router.get(`${this.path}/test`, this.testRoute);
         this.router.get(`${this.path}/tome`, this.getMyNotifications);
         this.router.post(`${this.path}/send`, validationMiddleware(notificationValidations.send), this.sendNotification);
         this.router.post(`${this.path}/sendwithposter`, validationMiddleware(notificationValidations.send), this.sendNotificationWithPoster);
         this.router.get(`${this.path}/read/:id`, this.readNotification);
     }
-    
-    protected async testRoute (req: Request, res: Response, next: NextFunction){
-        // console.log("came here");
-        return res.status(200).json(dispatcher("this was a success ....!!!"));
-    }
 
-    private async stream  (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+
+    private stream = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         // It is recommended to use other queue services like rabbitmq, kafka, etc.
         // TODO: Replace this SSE with a queue service
         const subscription = req.body
@@ -60,7 +53,7 @@ export default class NotificationsController extends BaseController {
         }, 5000);
     }
 
-    public async getMyNotifications  (req: Request, res: Response, next: NextFunction): Promise<Response | void>  {
+    public getMyNotifications = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         let notifications: any = await this.crudService.findWhere(notification, {
             [Op.and]: [
                 {
@@ -88,7 +81,7 @@ export default class NotificationsController extends BaseController {
         return res.status(200).send(dispatcher(notifications, 'success'));
     }
 
-    private async sendNotification  (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    private sendNotification = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         const data = req.body;
         data['created_by'] = res.locals.user_id;
         const result = await this.crudService.create(notification, data);
@@ -98,7 +91,7 @@ export default class NotificationsController extends BaseController {
         return res.status(200).send(dispatcher(result, 'success'));
     }
 
-    private async sendNotificationWithPoster (req: Request, res: Response, next: NextFunction): Promise<Response | void>  {
+    private sendNotificationWithPoster = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         const data = req.body;
         const files: any = req.files;
         data['created_by'] = res.locals.user_id;
@@ -127,7 +120,7 @@ export default class NotificationsController extends BaseController {
         }
     }
 
-    private async readNotification  (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    private readNotification = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         const result = await this.crudService.findByPk(notification, req.params.id);
         if (!result) {
             return res.status(404).send(dispatcher(null, 'error', speeches.DATA_NOT_FOUND, 404));

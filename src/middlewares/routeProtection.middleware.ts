@@ -16,9 +16,39 @@ export default async function routeProtectionMiddleware(
     res: Response, 
     next: NextFunction
     ): Promise<void>{
-        if (wildcardRoutes.indexOf(req.path) > -1) {
+        let hasAccess = true; 
+        const path = req.path;
+        if(req.path.includes('/assets')){
+            if(req.path.length > '/assets'.length){
+                if(wildcardRoutes.indexOf('/assets/*') > -1){
+                    hasAccess = true;
+                }
+            }
+        }else if(req.path.includes('/posters')){
+            if(req.path.length > '/posters'.length){
+                if(wildcardRoutes.indexOf('/posters/*') > -1){
+                    hasAccess = true;
+                }
+            }
+        }else if(req.path.includes('/courses')){
+            if(req.path.length > '/courses'.length){
+                if(wildcardRoutes.indexOf('/courses/*') > -1){
+                    hasAccess = true;
+                }
+            }
+        }else if(req.path.includes('/images')){
+            if(req.path.length > '/images'.length){
+                if(wildcardRoutes.indexOf('/images/*') > -1){
+                    hasAccess = true;
+                }
+            }
+        }else if(wildcardRoutes.indexOf(req.path) > -1){
+            hasAccess = true;
+        }
+
+        if (hasAccess) {
             res.locals ={
-                id: process.env.DEFAULT_AUDIT_USER || '',
+                user_id: process.env.DEFAULT_AUDIT_USER || '',
             };
             next();
         } else {
