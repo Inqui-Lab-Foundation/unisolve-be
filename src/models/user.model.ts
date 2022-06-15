@@ -159,12 +159,12 @@ user.init(
         hooks: {
             beforeCreate: async (user:any) => {
                 if (user.password) {
-                    user.password = bcrypt.hashSync(user.password, process.env.SALT || baseConfig.SALT);
+                    user.password = await bcrypt.hashSync(user.password, process.env.SALT || baseConfig.SALT);
                 }
             },
             beforeUpdate: async (user) => {
                 if (user.password) {
-                    user.password = bcrypt.hashSync(user.password, process.env.SALT || baseConfig.SALT);
+                    user.password = await bcrypt.hashSync(user.password, process.env.SALT || baseConfig.SALT);
                 }
             }
         }
