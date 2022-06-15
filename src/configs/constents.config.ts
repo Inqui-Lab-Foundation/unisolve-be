@@ -69,7 +69,7 @@ export const constents = {
       'COMPLETED': 'COMPLETED',
       'INCOMPLETE': 'INCOMPLETE'
     },
-    default: 'DRAFT'
+    default: 'INCOMPLETE'
   },
 
   notification_types: {
@@ -81,5 +81,13 @@ export const constents = {
     default: 'PUSH',
     default_title: 'Notification',
     default_message: 'Notification'
+  },
+  topic_type_flags: {
+    list: {
+      'VIDEO': 'VIDEO',
+      'WORKSHEET': 'WORKSHEET',
+      'QUIZ': 'QUIZ'
+    },
+    default: 'VIDEO',
   }
 };
