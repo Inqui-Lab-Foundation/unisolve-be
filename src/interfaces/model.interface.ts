@@ -1,7 +1,7 @@
 
 export interface courseModuleAttributes {
     module_id: number;
-    // course_id: string;
+    course_id: string;
     description: string;
     status: Enumerator;
 }

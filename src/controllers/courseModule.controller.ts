@@ -4,7 +4,7 @@ import BaseController from "./base.controller";
 
 export default class CourseModulesController extends BaseController {
 
-    model = "course_modules";
+    model = "course_module";
 
     protected initializePath(): void {
         this.path = '/courseModules';

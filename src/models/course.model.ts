@@ -1,7 +1,7 @@
 import { Association, DataTypes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
-import { courseModule } from './courseModule.model';
+import { course_module } from './course_module.model';
 
 export interface courseAttributes {
     course_id: number;
@@ -55,4 +55,4 @@ course.init(
         tableName: 'courses'
     }
 );
-course.associate(courseModule);
+course.associate(course_module);
