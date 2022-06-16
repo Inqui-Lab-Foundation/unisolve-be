@@ -1,5 +1,5 @@
-export default interface worksheetAttribute {
-    worksheet_id: number;
+export default interface courseWorksheetsAttribute {
+    course_worksheet_id: number;
     worksheet_title: string;
     description: string;
     attachments: string;

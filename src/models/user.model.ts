@@ -25,7 +25,9 @@ export interface userAttributes {
     last_login: number;
     status: Enumerator;
     created_by: number;
+    created_at: Date;
     updated_by: number;
+    updated_at: Date;
 }
 
 export class user extends Model<userAttributes> {
@@ -143,11 +145,24 @@ user.init(
         },
         created_by: {
             type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue:null
+        },
+        created_at: {
+            type: DataTypes.DATE,
             allowNull: false,
-            defaultValue: 1
+            defaultValue: DataTypes.NOW,
         },
         updated_by: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue: null
+        },
+        updated_at: {
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: DataTypes.NOW,
+            onUpdate: new Date().toLocaleString()
         }
     },
     {

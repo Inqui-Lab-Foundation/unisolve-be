@@ -1,56 +1,43 @@
-import { Association, DataTypes, Model } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
+import courseWorksheetsAttribute from '../interfaces/courseWorksheets.model.interface.';
+import worksheetAttribute from '../interfaces/courseWorksheets.model.interface.';
 import db from '../utils/dbconnection.util';
-import { course_module } from './course_module.model';
 
-export interface courseAttributes {
-    course_id: number;
-    title: string;
-    description: string;
-    status: Enumerator;
-    thumbnail: string;
-    created_by: number;
-    created_at: Date;
-    updated_by: number;
-    updated_at: Date;
-}
-
-export class course extends Model<courseAttributes> {
+export class course_worksheet extends Model<courseWorksheetsAttribute> {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models: any) {
-        // console.log("came here");
-        // define association here
-        course.hasMany(models, { foreignKey: 'course_id', as: 'courseModules' });
-    }
-
-
+    // static associate(models: any) {
+    //     // define association here
+    //     notification.belongsTo(user, { foreignKey: 'created_by', as: 'user' });
+    // }
 }
 
-
-course.init(
+course_worksheet.init(
     {
-        course_id: {
+        course_worksheet_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        title: {
-            type: DataTypes.STRING,
+        worksheet_title: {
+            type: DataTypes.TEXT,
             allowNull: false
         },
         description: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT('long'),
             allowNull: false
         },
-        thumbnail: {
-            type: DataTypes.STRING
+        attachments: {
+            type: DataTypes.TEXT('long'),
+            allowNull: false
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            allowNull: false,
             defaultValue: constents.common_status_flags.default
         },
         created_by: {
@@ -77,10 +64,9 @@ course.init(
     },
     {
         sequelize: db,
-        tableName: 'courses',
+        tableName: 'worksheets',
         timestamps: true,
-        updatedAt: 'updated_at',
         createdAt: 'created_at',
+        updatedAt: 'updated_at'
     }
 );
-//course.associate(course_module);

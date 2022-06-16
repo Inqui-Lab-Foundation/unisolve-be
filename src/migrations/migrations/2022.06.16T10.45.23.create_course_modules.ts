@@ -1,32 +1,21 @@
-import { DataTypes, Model } from 'sequelize';
-import db from '../utils/dbconnection.util';
-import { course } from './course.model';
-import { courseModuleAttributes } from '../interfaces/model.interface';
-import { constents } from '../configs/constents.config';
+import { Migration } from '../umzug';
+import { DataTypes } from 'sequelize';
+import { constents } from '../../configs/constents.config';
 
-
-
-export class course_module extends Model<courseModuleAttributes> {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models: any) {
-        // define association here
-        course_module.belongsTo(models.courses, { foreignKey: 'course_id',targetKey: 'course_id' });
-    }
-}
-
-const courseModuleSequelize = course_module.init(
-    {
-        course_module_id: {
+const tableName = "course_modules";
+export const up: Migration = async ({ context: sequelize }) => {
+	await sequelize.getQueryInterface().createTable(tableName, {
+		course_module_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
         course_id: {
             type: DataTypes.INTEGER,
+            references:{
+                model:"courses",
+                key:"course_id"
+            }
         },
         description: {
             type: DataTypes.STRING,
@@ -57,14 +46,9 @@ const courseModuleSequelize = course_module.init(
             defaultValue: DataTypes.NOW,
             onUpdate: new Date().toLocaleString()
         }
-    },
-    {
-        sequelize: db,
-        tableName: 'course_modules',
-        timestamps: true,
-        updatedAt: 'updated_at',
-        createdAt: 'created_at',
-    }
-);
+	  });
+};
 
-// courseModule.associate(db.models);
+export const down: Migration = async ({ context: sequelize }) => {
+	await sequelize.getQueryInterface().dropTable(tableName);
+};
