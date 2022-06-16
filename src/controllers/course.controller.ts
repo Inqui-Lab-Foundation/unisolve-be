@@ -60,8 +60,8 @@ export default class CourseController extends BaseController {
    async  getDetailsData(req: Request, res: Response,modelClass: any) {
        let whereClause: any = {};
        let modelClassCourseModule = await this.loadModel("course_module");
-       let modelClassTopic = await this.loadModel("topic");
-       let modelClassVideo = await this.loadModel("video");
+       let modelClassTopic = await this.loadModel("course_topic");
+       let modelClassVideo = await this.loadModel("course_video");
        let dataToReturn: any = {};
 
        whereClause[`${this.model}_id`] = req.params.id;
