@@ -1,4 +1,4 @@
-import { conflictError, badRequestError, unauthorizedError, methodNotAllowedError, notAcceptable } from "./errors";
+import { badRequestError, unauthorizedError } from "./errors";
 
 export const createModuleRequestBody = {
     type: 'object',
@@ -9,7 +9,7 @@ export const createModuleRequestBody = {
         },
         description: {
             type: 'string',
-            example: "Voluptas recusandae quo ut et est. Enim quibusdam et veniam nostrum est dolor reiciendis et. Delectus officiis impedit facilis assumenda dolor quia facere. Eos temporibus autem beatae eos repellat et voluptas."
+            example: "a state of complete physical, mental and social well-being and not merely the absence of disease and infirmity"
         }
     }
 };
@@ -18,7 +18,7 @@ export const moduleUpdatesRequestBody = {
     properties: {
         status: {
             type: 'string',
-            example: 'Completed',
+            example: 'COMPLETED',
         }
     },
 };
@@ -26,7 +26,6 @@ export const moduleUpdatesRequestBody = {
 export const createModule = {
     tags: ['Modules'],
     description: 'Endpoint for creating new module category',
-    operationId: 'createModule',
     security: [
         {
             bearerAuth: [],
@@ -50,25 +49,25 @@ export const createModule = {
                     schema: {
                         type: 'object',
                         properties: {
-                            id: {
+                            status: {
                                 type: 'number',
-                                example: "1"
+                                example: '200'
                             },
-                            course_id: {
+                            status_typeL: {
                                 type: 'string',
-                                example: "126546654695"
+                                example: 'success'
                             },
-                            description: {
+                            message: {
                                 type: 'string',
-                                example: "Voluptas recusandae quo ut et est. Enim quibusdam et veniam nostrum est dolor reiciendis et. Delectus officiis impedit facilis assumenda dolor quia facere. Eos temporibus autem beatae eos repellat et voluptas"
+                                example: 'OK'
                             },
-                            updatedAt: {
-                                type: 'string',
-                                example: "2022-05-20T11:13:02.094Z"
+                            count: {
+                                type: 'number',
+                                example: 1
                             },
-                            createdAt: {
-                                type: 'string',
-                                example: "2022-05-20T11:13:02.094Z"
+                            data: {
+                                type: 'array',
+                                example: ['object']
                             }
                         }
                     }
@@ -77,13 +76,11 @@ export const createModule = {
         },
         '401': unauthorizedError,
         '404': badRequestError,
-        '406': notAcceptable,
     }
 }
 export const moduleList = {
     tags: ['Modules'],
     description: 'Get the list of the module',
-    operationId: 'modulesList',
     security: [
         {
             bearerAuth: [],
@@ -96,18 +93,25 @@ export const moduleList = {
                 'applications/json': {
                     schema: {
                         properties: {
-                            products: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
                                 type: 'array',
-                                example: [
-                                    {
-                                        "id": 1,
-                                        "course_id": "126546654695",
-                                        "description": "Voluptas recusandae quo ut et est. Enim quibusdam et veniam nostrum est dolor reiciendis et. Delectus officiis impedit facilis assumenda dolor quia facere. Eos temporibus autem beatae eos repellat et voluptas.",
-                                        "status": null,
-                                        "createdAt": "2022-05-20T11:13:02.000Z",
-                                        "updatedAt": "2022-05-20T11:13:02.000Z"
-                                    }
-                                ]
+                                example: ['object']
                             }
                         }
                     }
@@ -115,14 +119,12 @@ export const moduleList = {
             }
         },
         '401': unauthorizedError,
-        '404': badRequestError,
-        '406': notAcceptable
+        '404': badRequestError
     }
 }
 export const moduleById = {
     tags: ['Modules'],
     description: 'Endpoint for getting single module',
-    operationId: 'moduleById',
     security: [
         {
             bearerAuth: [],
@@ -131,7 +133,7 @@ export const moduleById = {
     parameters: [
         {
             in: 'path',
-            name: 'moduleId',
+            name: 'module_id',
             schema: {
                 type: 'integer',
                 default: 1
@@ -147,15 +149,25 @@ export const moduleById = {
                 'applications/json': {
                     schema: {
                         properties: {
-                            product: {
-                                type: 'object',
-                                example: {
-                                    "id": 1,
-                                    "course_id": "126546654695",
-                                    "description": "Voluptas recusandae quo ut et est. Enim quibusdam et veniam nostrum est dolor reiciendis et. Delectus officiis impedit facilis assumenda dolor quia facere. Eos temporibus autem beatae eos repellat et voluptas.",
-                                    "updatedAt": "2022-05-20T11:13:02.094Z",
-                                    "createdAt": "2022-05-20T11:13:02.094Z"
-                                }
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
                             }
                         }
                     }
@@ -163,14 +175,12 @@ export const moduleById = {
             }
         },
         '401': unauthorizedError,
-        '404': badRequestError,
-        '406': notAcceptable,
+        '404': badRequestError
     }
 }
 export const moduleByIdUpdate = {
     tags: ['Modules'],
     description: 'Endpoint for updating the specific module',
-    operationId: 'moduleByIdUpdate',
     security: [
         {
             bearerAuth: [],
@@ -189,7 +199,7 @@ export const moduleByIdUpdate = {
     parameters: [
         {
             in: 'path',
-            name: 'moduleId',
+            name: 'module_id',
             schema: {
                 type: 'integer',
                 default: 1
@@ -205,11 +215,25 @@ export const moduleByIdUpdate = {
                 'application/json': {
                     schema: {
                         properties: {
-                            response: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
                                 type: 'array',
-                                example: [
-                                    1
-                                ]
+                                example: ['object']
                             }
                         }
                     }
@@ -218,13 +242,11 @@ export const moduleByIdUpdate = {
         },
         '401': unauthorizedError,
         '404': badRequestError,
-        '406': notAcceptable,
     }
 }
 export const moduleByIdDelete = {
     tags: ['Modules'],
     description: 'Endpoint for removing a single module category',
-    operationId: 'moduleByIdDelete',
     security: [
         {
             bearerAuth: [],
@@ -233,29 +255,41 @@ export const moduleByIdDelete = {
     parameters: [
         {
             in: 'path',
-            name: 'moduleId',
+            name: 'module_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "moduleId to fetch",
+            description: "module_id to fetch",
         }
     ],
     responses: {
-        '202': {
+        '200': {
             description: 'success',
             content: {
                 'application/json': {
                     schema: {
                         properties: {
-                            deletedModule: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
                                 type: 'number',
                                 example: 1
                             },
-                            text: {
-                                type: 'string',
-                                example: 'successfully delete the entry'
+                            data: {
+                                type: 'array',
+                                example: ['object']
                             }
                         }
                     }
@@ -263,7 +297,6 @@ export const moduleByIdDelete = {
             }
         },
         '401': unauthorizedError,
-        '404': badRequestError,
-        '406': notAcceptable,
+        '404': badRequestError
     }
 }

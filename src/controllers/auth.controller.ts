@@ -64,12 +64,10 @@ export default class AuthController implements IController {
                 if (stop_procedure) {
                     return res.status(401).send(dispatcher(error_message, 'error', speeches.USER_RISTRICTED, 401));
                 }
-
                 await this.crudService.update(user, {
                     is_loggedin: "YES",
                     last_login: new Date().toLocaleString()
                 }, { where: { user_id: user_res.user_id } });
-
                 const token = await jwtUtil.createToken(user_res.dataValues, `${process.env.PRIVATE_KEY}`);
                 return res.status(200).send(dispatcher({
                     token,
@@ -112,7 +110,7 @@ export default class AuthController implements IController {
             if (user_res) return res.status(406).send(dispatcher(speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
 
             const result = await this.crudService.create(user, req.body);
-            return res.status(201).send(dispatcher(result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY,201));
+            return res.status(201).send(dispatcher(result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
         } catch (error) {
             next(error);
         }
