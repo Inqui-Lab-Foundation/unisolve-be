@@ -1,7 +1,6 @@
-export default interface topicAttribute {
-    topic_id: number;
-    course_id: number;
-    module_id: number;
+export default interface courseTopicsAttribute {
+    course_topic_id: number;
+    course_module_id: number;
     topic_type_id: number;
     topic_type: Enumerator;
     status: Enumerator;

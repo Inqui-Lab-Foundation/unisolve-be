@@ -1,13 +1,11 @@
-import { DataTypes, Model } from 'sequelize';
-import db from '../utils/dbconnection.util';
-import { teamAttributes } from '../interfaces/model.interface';
-import { constents } from '../configs/constents.config';
+import { Migration } from '../umzug';
+import { DataTypes } from 'sequelize';
+import { constents } from '../../configs/constents.config';
 
-export class teams extends Model<teamAttributes> { }
-
-teams.init(
-    {
-        team_id: {
+const tableName = "teams";
+export const up: Migration = async ({ context: sequelize }) => {
+	await sequelize.getQueryInterface().createTable(tableName, {
+		team_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -45,13 +43,9 @@ teams.init(
             defaultValue: DataTypes.NOW,
             onUpdate: new Date().toLocaleString()
         }
-    },
-    {
-        sequelize: db,
-        tableName: 'teams',
-        timestamps: true,
-        updatedAt: 'updated_at',
-        createdAt: 'created_at',
-    }
-);
+	  });
+};
 
+export const down: Migration = async ({ context: sequelize }) => {
+	await sequelize.getQueryInterface().dropTable(tableName);
+};

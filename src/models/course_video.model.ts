@@ -1,47 +1,31 @@
 import { DataTypes, Model } from 'sequelize';
-import { constents } from '../configs/constents.config';
-import worksheetAttribute from '../interfaces/worksheet.model.interface.';
 import db from '../utils/dbconnection.util';
+import { courseVideosAttributes } from '../interfaces/model.interface';
+import { constents } from '../configs/constents.config';
 
-export class worksheet extends Model<worksheetAttribute> {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    // static associate(models: any) {
-    //     // define association here
-    //     notification.belongsTo(user, { foreignKey: 'created_by', as: 'user' });
-    // }
-}
 
-worksheet.init(
+export class course_video extends Model<courseVideosAttributes> { }
+
+course_video.init(
     {
-        worksheet_id: {
+        course_video_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        worksheet_title: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        description: {
-            type: DataTypes.TEXT('long'),
-            allowNull: false
-        },
-        attachments: {
-            type: DataTypes.TEXT('long'),
-            allowNull: false
+        video_stream_id: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
-            allowNull: false,
             defaultValue: constents.common_status_flags.default
         },
         created_by: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true,
+            defaultValue:null
         },
         created_at: {
             type: DataTypes.DATE,
@@ -62,9 +46,9 @@ worksheet.init(
     },
     {
         sequelize: db,
-        tableName: 'worksheets',
+        tableName: 'videos',
         timestamps: true,
+        updatedAt: 'updated_at',
         createdAt: 'created_at',
-        updatedAt: 'updated_at'
     }
 );

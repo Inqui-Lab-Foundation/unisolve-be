@@ -1,41 +1,26 @@
-import { DataTypes, Model } from 'sequelize';
-import { constents } from '../configs/constents.config';
-import topicAttributes from '../interfaces/topic.model.interface';
-import db from '../utils/dbconnection.util';
-import { user } from './user.model';
+import { Migration } from '../umzug';
+import { DataTypes } from 'sequelize';
+import { constents } from '../../configs/constents.config';
 
-export class topic extends Model<topicAttributes> {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    // static associate(models: any) {
-    //     // define association here
-    //     notification.belongsTo(user, { foreignKey: 'created_by', as: 'user' });
-    // }
-}
-
-
-topic.init(
-    {
-        topic_id: {
+const tableName = "course_topics";
+export const up: Migration = async ({ context: sequelize }) => {
+	await sequelize.getQueryInterface().createTable(tableName, {
+        course_topic_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        module_id: {
+        course_module_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
-        },
-        course_id: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            defaultValue: null
+            references:{
+                model:"course_modules",
+                key:"course_module_id"
+            }
         },
         topic_type_id: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             defaultValue: null
         },
         topic_type: {
@@ -68,12 +53,9 @@ topic.init(
             defaultValue: DataTypes.NOW,
             onUpdate: new Date().toLocaleString()
         }
-    },
-    {
-        sequelize: db,
-        tableName: 'topics',
-        timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at'
-    }
-);
+	  });
+};
+
+export const down: Migration = async ({ context: sequelize }) => {
+	await sequelize.getQueryInterface().dropTable(tableName);
+};
