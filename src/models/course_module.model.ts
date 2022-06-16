@@ -6,7 +6,7 @@ import { constents } from '../configs/constents.config';
 
 
 
-export class courseModule extends Model<courseModuleAttributes> {
+export class course_module extends Model<courseModuleAttributes> {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -14,16 +14,19 @@ export class courseModule extends Model<courseModuleAttributes> {
      */
     static associate(models: any) {
         // define association here
-        courseModule.belongsTo(models, { foreignKey: 'course_id', as: 'course' });
+        course_module.belongsTo(models.courses, { foreignKey: 'course_id',targetKey: 'course_id' });
     }
 }
 
-const courseModuleSequelize = courseModule.init(
+const courseModuleSequelize = course_module.init(
     {
         module_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
+        },
+        course_id: {
+            type: DataTypes.INTEGER,
         },
         description: {
             type: DataTypes.STRING,
@@ -43,4 +46,4 @@ const courseModuleSequelize = courseModule.init(
     }
 );
 
-// courseModule.associate(course);
+// courseModule.associate(db.models);

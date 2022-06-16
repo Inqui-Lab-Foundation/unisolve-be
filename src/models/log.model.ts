@@ -2,7 +2,7 @@ import { DataTypes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
 import ILogAttributes from '../interfaces/log.model.interface';
 import db from '../utils/dbconnection.util';
-import { courseModule } from './courseModule.model';
+import {  course_module } from './course_module.model';
 
 export class log extends Model<ILogAttributes> {
     /**
@@ -12,7 +12,7 @@ export class log extends Model<ILogAttributes> {
      */
     static associate(models: any) {
         // define association here
-        log.hasMany(courseModule,{foreignKey: 'course_id', as: 'courseModules'});
+        log.hasMany(course_module,{foreignKey: 'course_id', as: 'courseModules'});
     }
 }
 

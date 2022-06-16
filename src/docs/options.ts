@@ -1,4 +1,4 @@
-import { healthCheck, home } from "./healthCheck.api.docs";
+import { healthCheck, home } from "./healthcheck.api.docs";
 import { version } from '../../package.json';
 import {
     courseList,
