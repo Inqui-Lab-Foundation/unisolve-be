@@ -2,22 +2,33 @@ import { Migration } from '../umzug';
 import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
 
-// you can put some table-specific imports/code here
-export const tableName = "name_of_your_table";
+const tableName = "teams_courses_mappings";
 export const up: Migration = async ({ context: sequelize }) => {
-	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
-	//or below implementation 
 	await sequelize.getQueryInterface().createTable(tableName, {
 		teams_courses_mappings_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
+        course_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references:{
+                model:'courses',
+                key:'course_id'
+            }
+        },
+        team_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references:{
+                model:'teams',
+                key:'team_id'
+            }
+        }
 	  });
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
-	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
-	//or below implementation 
 	await sequelize.getQueryInterface().dropTable(tableName);
 };
