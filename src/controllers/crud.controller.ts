@@ -38,12 +38,12 @@ export default class CRUDController implements IController {
         this.router.delete(`${this.path}/:model/:id`, this.deleteData);
     }
 
-    protected loadModel = async (model: string): Promise<Response | void | any> => {
+    protected async loadModel (model: string): Promise<Response | void | any> {
         const modelClass = await import(`../models/${model}.model`);
         return modelClass[model];
     }
 
-    protected getData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    protected async getData (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             let data: any;
             const { model, id } = req.params;
@@ -70,7 +70,7 @@ export default class CRUDController implements IController {
         }
     }
 
-    protected createData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    protected async createData (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { model } = req.params;
             if (model) {
@@ -86,7 +86,7 @@ export default class CRUDController implements IController {
         }
     }
 
-    protected createDataWithFile = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    protected async createDataWithFile (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { model } = req.params;
             if (model) {
@@ -124,7 +124,7 @@ export default class CRUDController implements IController {
         }
     }
 
-    protected updateData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    protected async updateData (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { model, id } = req.params;
             if (model) {
@@ -142,7 +142,7 @@ export default class CRUDController implements IController {
         }
     }
 
-    protected updateDataWithFile = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    protected async updateDataWithFile (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { model, id } = req.params;
             if (model) {
@@ -183,7 +183,7 @@ export default class CRUDController implements IController {
         }
     }
 
-    protected deleteData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    protected async deleteData (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { model, id } = req.params;
             if (model) {

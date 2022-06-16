@@ -17,7 +17,7 @@ export default class BaseController extends CRUDController {
         this.validations = new ValidationsHolder(null, null);
     }
 
-    protected loadModel = async (model: string): Promise<Response | void | any> => {
+    protected async loadModel (model: string): Promise<Response | void | any> {
         let modelToFetch = model;
         if(!modelToFetch){
             modelToFetch = this.model;
@@ -37,7 +37,4 @@ export default class BaseController extends CRUDController {
         }
     }
 
-    protected getData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-        return super.getData(req, res, next);
-    }
 }
