@@ -13,6 +13,8 @@ import { user } from '../models/user.model';
 import dispatcher from '../utils/dispatch.util';
 import { speeches } from '../configs/speeches.config';
 import { baseConfig } from '../configs/base.config';
+import sendNotification from '../utils/notification.util';
+import { constents } from '../configs/constents.config';
 
 export default class AuthController implements IController {
     public path: string;
@@ -70,7 +72,19 @@ export default class AuthController implements IController {
                     last_login: new Date().toLocaleString()
                 }, { where: { user_id: user_res.user_id } });
 
+                user_res.is_loggedin= "YES";
                 const token = await jwtUtil.createToken(user_res.dataValues, `${process.env.PRIVATE_KEY}`);
+
+                // await sendNotification({
+                //     notification_type: constents.notification_types.list.PUSH,
+                //     target_audience: user_res.user_id, // Keep 'ALL' for all users
+                //     title: 'Login Successful',
+                //     image: '',
+                //     message: 'You have successfully logged in.',
+                //     status: constents.notification_status_flags.list.PUBLISHED,
+                //     created_by: user_res.user_id
+                // });
+
                 return res.status(200).send(dispatcher({
                     token,
                     type: 'Bearer',

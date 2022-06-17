@@ -16,7 +16,7 @@ export default async function routeProtectionMiddleware(
     res: Response, 
     next: NextFunction
     ): Promise<void>{
-        let hasAccess = true; 
+        let hasAccess = false; 
         const path = req.path;
         if(req.path.includes('/assets')){
             if(req.path.length > '/assets'.length){
@@ -45,7 +45,7 @@ export default async function routeProtectionMiddleware(
         }else if(wildcardRoutes.indexOf(req.path) > -1){
             hasAccess = true;
         }
-
+        
         if (hasAccess) {
             res.locals ={
                 user_id: process.env.DEFAULT_AUDIT_USER || '',
