@@ -57,7 +57,8 @@ question.init(
         },
         created_by: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true,
+            defaultValue:null
         },
         created_at: {
             type: DataTypes.DATE,

@@ -1,9 +1,13 @@
 
 export interface courseModuleAttributes {
-    module_id: number;
-    // course_id: string;
+    course_module_id: number;
+    course_id: string;
     description: string;
     status: Enumerator;
+    created_by: number;
+    created_at: Date;
+    updated_by: number;
+    updated_at: Date;
 }
 
 export interface teamAttributes {
@@ -11,10 +15,17 @@ export interface teamAttributes {
     team_name: string;
     mentor_id: string;
     status: Enumerator;
+    created_by: number;
+    created_at: Date;
+    updated_by: number;
+    updated_at: Date;
 }
-export interface videosAttributes {
-    video_id: number;
-    module: string;
+export interface courseVideosAttributes {
+    course_video_id: number;
     video_stream_id: string;
     status: Enumerator;
+    created_by: number;
+    created_at: Date;
+    updated_by: number;
+    updated_at: Date;
 }

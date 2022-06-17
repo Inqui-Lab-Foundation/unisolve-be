@@ -1,56 +1,47 @@
-import { Association, DataTypes, Model } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
+import courseTopicsAttribute from '../interfaces/courseTopics.model.interface';
+import topicAttributes from '../interfaces/courseTopics.model.interface';
 import db from '../utils/dbconnection.util';
-import { course_module } from './course_module.model';
+import { user } from './user.model';
 
-export interface courseAttributes {
-    course_id: number;
-    title: string;
-    description: string;
-    status: Enumerator;
-    thumbnail: string;
-    created_by: number;
-    created_at: Date;
-    updated_by: number;
-    updated_at: Date;
-}
-
-export class course extends Model<courseAttributes> {
+export class course_topic extends Model<courseTopicsAttribute> {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models: any) {
-        // console.log("came here");
-        // define association here
-        course.hasMany(models, { foreignKey: 'course_id', as: 'courseModules' });
-    }
-
-
+    // static associate(models: any) {
+    //     // define association here
+    //     notification.belongsTo(user, { foreignKey: 'created_by', as: 'user' });
+    // }
 }
 
 
-course.init(
+course_topic.init(
     {
-        course_id: {
+        course_topic_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        title: {
-            type: DataTypes.STRING,
-            allowNull: false
+        course_module_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
         },
-        description: {
-            type: DataTypes.STRING,
-            allowNull: false
+        topic_type_id: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue: null
         },
-        thumbnail: {
-            type: DataTypes.STRING
+        topic_type: {
+            type: DataTypes.ENUM(...Object.values(constents.topic_type_flags.list)),
+            allowNull: false,
+            defaultValue: constents.topic_type_flags.default
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            allowNull: false,
             defaultValue: constents.common_status_flags.default
         },
         created_by: {
@@ -77,10 +68,9 @@ course.init(
     },
     {
         sequelize: db,
-        tableName: 'courses',
+        tableName: 'topics',
         timestamps: true,
-        updatedAt: 'updated_at',
         createdAt: 'created_at',
+        updatedAt: 'updated_at'
     }
 );
-//course.associate(course_module);

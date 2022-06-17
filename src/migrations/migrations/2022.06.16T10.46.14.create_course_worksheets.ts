@@ -1,27 +1,31 @@
-import { DataTypes, Model } from 'sequelize';
-import db from '../utils/dbconnection.util';
-import { teamAttributes } from '../interfaces/model.interface';
-import { constents } from '../configs/constents.config';
+import { Migration } from '../umzug';
+import { DataTypes } from 'sequelize';
+import { constents } from '../../configs/constents.config';
+import { table } from 'console';
 
-export class teams extends Model<teamAttributes> { }
-
-teams.init(
-    {
-        team_id: {
+const tableName = "course_worksheets";
+export const up: Migration = async ({ context: sequelize }) => {
+	await sequelize.getQueryInterface().createTable(tableName, {
+		course_worksheet_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        team_name: {
-            type: DataTypes.STRING,
+        worksheet_title: {
+            type: DataTypes.TEXT,
             allowNull: false
         },
-        mentor_id: {
-            type: DataTypes.INTEGER,
-            allowNull: true
+        description: {
+            type: DataTypes.TEXT('long'),
+            allowNull: false
+        },
+        attachments: {
+            type: DataTypes.TEXT('long'),
+            allowNull: false
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            allowNull: false,
             defaultValue: constents.common_status_flags.default
         },
         created_by: {
@@ -45,13 +49,9 @@ teams.init(
             defaultValue: DataTypes.NOW,
             onUpdate: new Date().toLocaleString()
         }
-    },
-    {
-        sequelize: db,
-        tableName: 'teams',
-        timestamps: true,
-        updatedAt: 'updated_at',
-        createdAt: 'created_at',
-    }
-);
+	  });
+};
 
+export const down: Migration = async ({ context: sequelize }) => {
+	await sequelize.getQueryInterface().dropTable(tableName);
+};

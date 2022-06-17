@@ -6,7 +6,7 @@ import { constents } from '../configs/constents.config';
 
 
 
-export class courseModule extends Model<courseModuleAttributes> {
+export class course_module extends Model<courseModuleAttributes> {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -14,16 +14,19 @@ export class courseModule extends Model<courseModuleAttributes> {
      */
     static associate(models: any) {
         // define association here
-        courseModule.belongsTo(models, { foreignKey: 'course_id', as: 'course' });
+        course_module.belongsTo(models.courses, { foreignKey: 'course_id',targetKey: 'course_id' });
     }
 }
 
-const courseModuleSequelize = courseModule.init(
+const courseModuleSequelize = course_module.init(
     {
-        module_id: {
+        course_module_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
+        },
+        course_id: {
+            type: DataTypes.INTEGER,
         },
         description: {
             type: DataTypes.STRING,
@@ -32,15 +35,36 @@ const courseModuleSequelize = courseModule.init(
         status: {
             type: DataTypes.ENUM(...Object.values(constents.task_status_flags.list)),
             defaultValue: constents.task_status_flags.default
+        },
+        created_by: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue:null
+        },
+        created_at: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+        },
+        updated_by: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue: null
+        },
+        updated_at: {
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: DataTypes.NOW,
+            onUpdate: new Date().toLocaleString()
         }
     },
     {
         sequelize: db,
         tableName: 'course_modules',
         timestamps: true,
-        createdAt: 'created_At',
-        updatedAt: 'updated_At'
+        updatedAt: 'updated_at',
+        createdAt: 'created_at',
     }
 );
 
-// courseModule.associate(course);
+// courseModule.associate(db.models);

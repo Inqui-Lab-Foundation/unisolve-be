@@ -1,26 +1,5 @@
-import healthCheck from "./apiCheck.api.docs";
+import { healthCheck, home } from "./healthcheck.api.docs";
 import { version } from '../../package.json';
-import {
-    studentRegistration,
-    studentLogin,
-    studentChangePassword,
-    studentLogout,
-    studentRegistrationRequestBody,
-    studentLoginRequestBody,
-    studentChangePasswordRequestBody
-} from "./api.student.docs";
-import {
-    adminRegistration,
-    adminLogin,
-    adminChangePassword,
-    adminLogout,
-    adminRegistrationRequestBody,
-    adminLoginRequestBody,
-    adminChangePasswordRequestBody,
-    getStudentConfig,
-    createStudentConfig,
-    adminCreateSignupConfigRequestBody
-} from "./api.admin.docs";
 import {
     courseList,
     createCourse,
@@ -29,7 +8,7 @@ import {
     courseByIdDelete,
     createCourseRequestBody,
     courseUpdatesRequestBody
-} from "./api.course.docs";
+} from "./course.api.docs";
 import {
     moduleList,
     createModule,
@@ -38,7 +17,7 @@ import {
     moduleByIdDelete,
     createModuleRequestBody,
     moduleUpdatesRequestBody
-} from "./api.module.docs";
+} from "./module.api.docs";
 import {
     videosList,
     createVideos,
@@ -47,25 +26,24 @@ import {
     videosByIdDelete,
     createVideosRequestBody,
     videosUpdatesRequestBody,
-} from "./api.video.docs";
+} from "./video.api.docs";
 import {
-    createMentor,
-    mentorById,
-    createMentorRequestBody,
-    mentorUpdateRequestBody,
-    mentorByIdDelete,
-    mentorByIdUpdate,
-    mentorList
-} from "./api.mentor.docs";
+    create_dynamicSignupForm,
+    get_dynamicSignupForm,
+    login,
+    logout,
+    registration,
+    registrationRequestBody,
+    loginRequestBody,
+    dynamicSignupFormRequestBody
+} from "./auth.api.docs";
 import {
-    createEvaluator,
-    evaluatorById,
-    evaluatorByIdDelete,
-    evaluatorByIdUpdate,
-    evaluatorList,
-    createEvaluatorRequestBody,
-    evaluatorUpdateRequestBody
-} from "./api.evaluator.docs";
+    createCrud, createCrudWithFile, crudDelete, crudList, crudUpdate, crudUpdateWithFile, crudRequestBodyWithFile, crudRequestBody,
+    crudUpdatesRequestBodyWithFile,
+    crudSingle,
+} from "./crud.api.docs";
+import { createTeam, teamByIdDelete, teamsById, teamsByIdUpdate, teamsList, createTeamRequestBody, teamUpdatesRequestBody } from "./team.api.docs";
+import { notificationsTome, notificationWithPoster, notification, notificationsWithPosterRequestBody, notificationsRequestBody } from "./notification.api.docs";
 
 // define Swagger options with specific properties
 const options = {
@@ -88,16 +66,16 @@ const options = {
     schemes: ['https', 'http'],
     tags: [
         {
-            name: 'HealthCheck',
+            name: 'Home',
         },
         {
-            name: 'Admin',
+            name: 'Authentication',
         },
         {
-            name: 'Student',
+            name: 'Crud',
         },
         {
-            name: 'Course',
+            name: 'Courses',
         },
         {
             name: 'Modules',
@@ -106,122 +84,97 @@ const options = {
             name: 'Videos',
         },
         {
-            name: 'Mentor',
+            name: 'Teams',
         },
         {
-            name: 'Evaluator',
+            name: 'Notifications',
         },
     ],
     paths: {
-        '/api/v1/healthCheck': {
+        '/': {
+            get: home
+        },
+        '/healthCheck': {
             get: healthCheck,
         },
-        '/api/v1/admin/register': {
-            post: adminRegistration
+        //auth
+        '/api/v1/auth/register': {
+            post: registration
         },
-        '/api/v1/admin/login': {
-            post: adminLogin
+        '/api/v1/auth/login': {
+            post: login
         },
-        '/api/v1/admin/changePassword': {
-            put: adminChangePassword
+        '/api/v1/auth/logout': {
+            get: logout
         },
-        '/api/v1/admin/logout': {
-            get: adminLogout
+        //crud
+        '/api/v1/auth/dynamicSignupForm': {
+            post: create_dynamicSignupForm,
+            get: get_dynamicSignupForm
         },
-        '/api/v1/admin/setupStudentConfig': {
-            post: createStudentConfig
+        '/api/v1/crud/{model_name}': {
+            post: createCrud,
+            get: crudList
         },
-        '/api/v1/admin/getStudentConfig': {
-            get: getStudentConfig
+        '/api/v1/crud/{model_name}/{id}': {
+            get: crudSingle,
+            put: crudUpdate,
+            delete: crudDelete
         },
-        '/api/v1/student/register': {
-            post: studentRegistration
+        '/api/v1/crud/{model_name}/withfile': {
+            post: createCrudWithFile,
+            put: crudUpdateWithFile
         },
-        '/api/v1/student/login': {
-            post: studentLogin
-        },
-        '/api/v1/student/logout': {
-            get: studentLogout
-        },
-        '/api/v1/student/changePassword': {
-            put: studentChangePassword  
-        },
-        '/api/v1/course/create': {
-            post: createCourse
-        },
-        '/api/v1/course/list': {
+        //course
+        '/api/v1/course': {
+            post: createCourse,
             get: courseList
         },
-        '/api/v1/course/get/{courseId}': {
-            get: courseById
-        },
-        '/api/v1/course/update/{courseId}': {
-            put: courseByIdUpdate
-        },
-        '/api/v1/course/delete/{courseId}': {
+        '/api/v1/course/{course_id}': {
+            get: courseById,
+            put: courseByIdUpdate,
             delete: courseByIdDelete
         },
-        '/api/v1/modules/create': {
-            post: createModule
-        },
-        '/api/v1/modules/list': {
+        //modules
+        '/api/v1/modules': {
+            post: createModule,
             get: moduleList
         },
-        '/api/v1/modules/get/{moduleId}': {
-            get: moduleById
-        },
-        '/api/v1/modules/update/{moduleId}': {
-            put: moduleByIdUpdate
-        },
-        '/api/v1/modules/delete/{moduleId}': {
+        '/api/v1/modules/{module_id}': {
+            get: moduleById,
+            put: moduleByIdUpdate,
             delete: moduleByIdDelete
         },
-        '/api/v1/video/create': {
-            post: createVideos
-        },
-        '/api/v1/video/list': {
+        //videos
+        '/api/v1/videos/': {
+            post: createVideos,
             get: videosList
         },
-        '/api/v1/video/get/{videoId}': {
-            get: videosById
-        },
-        '/api/v1/video/update/{videoId}': {
-            put: videosByIdUpdate
-        },
-        '/api/v1/video/delete/{videoId}': {
+        '/api/v1/videos/{video_id}': {
+            get: videosById,
+            put: videosByIdUpdate,
             delete: videosByIdDelete
         },
-        '/api/v1/mentor/create': {
-            post: createMentor
+        //teams
+        '/api/v1/teams/': {
+            post: createTeam,
+            get: teamsList
         },
-        '/api/v1/mentor/list': {
-            get: mentorList
+        '/api/v1/teams/{team_id}': {
+            get: teamsById,
+            put: teamsByIdUpdate,
+            delete: teamByIdDelete
         },
-        '/api/v1/mentor/get/{mentorId}': {
-            get: mentorById
+        //Notifications
+        '/api/v1/notifications/tome': {
+            get: notificationsTome
         },
-        '/api/v1/mentor/update/{mentorId}': {
-            put: mentorByIdUpdate
+        '/api/v1/notifications/send': {
+            post: notification
         },
-        '/api/v1/mentor/delete/{mentorId}': {
-            delete: mentorByIdDelete
+        '/api/v1/notifications/sendwithposter': {
+            post: notificationWithPoster
         },
-        '/api/v1/evaluator/create': {
-            post: createEvaluator
-        },
-        '/api/v1/evaluator/list': {
-            get: evaluatorList
-        },
-        '/api/v1/evaluator/get/{evaluatorId}': {
-            get: evaluatorById
-        },
-        '/api/v1/evaluator/update/{evaluatorId}': {
-            put: evaluatorByIdUpdate
-        },
-        '/api/v1/evaluator/delete/{evaluatorId}': {
-            delete: evaluatorByIdDelete
-        },
-
     },
     components: {
         securitySchemes: {
@@ -232,23 +185,22 @@ const options = {
             },
         },
         schemas: {
-            studentRegistrationRequestBody,
-            studentLoginRequestBody,
-            studentChangePasswordRequestBody,
-            adminRegistrationRequestBody,
-            adminLoginRequestBody,
-            adminChangePasswordRequestBody,
-            adminCreateSignupConfigRequestBody,
+            registrationRequestBody,
+            loginRequestBody,
+            dynamicSignupFormRequestBody,
+            crudRequestBody,
+            crudRequestBodyWithFile,
+            crudUpdatesRequestBodyWithFile,
             createCourseRequestBody,
             courseUpdatesRequestBody,
             createModuleRequestBody,
             moduleUpdatesRequestBody,
             createVideosRequestBody,
             videosUpdatesRequestBody,
-            createMentorRequestBody,
-            mentorUpdateRequestBody,
-            createEvaluatorRequestBody,
-            evaluatorUpdateRequestBody
+            createTeamRequestBody,
+            teamUpdatesRequestBody,
+            notificationsWithPosterRequestBody,
+            notificationsRequestBody
         },
     },
 };

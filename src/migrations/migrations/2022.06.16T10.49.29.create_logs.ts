@@ -1,25 +1,11 @@
-import { DataTypes, Model } from 'sequelize';
-import { constents } from '../configs/constents.config';
-import ILogAttributes from '../interfaces/log.model.interface';
-import db from '../utils/dbconnection.util';
-import {  course_module } from './course_module.model';
+import { Migration } from '../umzug';
+import { DataTypes } from 'sequelize';
+import { constents } from '../../configs/constents.config';
 
-export class log extends Model<ILogAttributes> {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models: any) {
-        // define association here
-        log.hasMany(course_module,{foreignKey: 'course_id', as: 'courseModules'});
-    }
-}
-
-
-log.init(
-    {
-        log_id: {
+const tableName = "logs";
+export const up: Migration = async ({ context: sequelize }) => {
+	await sequelize.getQueryInterface().createTable(tableName, {
+		log_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -81,12 +67,9 @@ log.init(
             allowNull: false,
             defaultValue: DataTypes.NOW
         }
-    },
-    {
-        sequelize: db,
-        tableName: 'logs',
-        timestamps: true,
-        createdAt: 'logged_at',
-        updatedAt: false
-    }
-);
+	  });
+};
+
+export const down: Migration = async ({ context: sequelize }) => {
+	await sequelize.getQueryInterface().dropTable(tableName);
+};

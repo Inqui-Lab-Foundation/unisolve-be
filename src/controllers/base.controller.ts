@@ -17,19 +17,24 @@ export default class BaseController extends CRUDController {
         this.validations = new ValidationsHolder(null, null);
     }
 
-    protected loadModel = async (model: string): Promise<Response | void | any> => {
-        const modelClass = await import(`../models/${this.model}.model`);
-        return modelClass[this.model];
+    protected async loadModel (model: string): Promise<Response | void | any> {
+        let modelToFetch = model;
+        if(!modelToFetch){
+            modelToFetch = this.model;
+        }
+        const modelClass = await import(`../models/${modelToFetch}.model`);
+        return modelClass[modelToFetch];
     }
 
     protected initializeRoutes(aditionalrouts: any = null): void {
-        this.router.get(`${this.path}`, this.getData);
-        this.router.get(`${this.path}/:id`, this.getData);
-        this.router.post(`${this.path}`, validationMiddleware(this.validations?.create), this.createData);
-        this.router.put(`${this.path}/:id`, validationMiddleware(this.validations?.update), this.updateData);
-        this.router.delete(`${this.path}/:id`, this.deleteData);
+        this.router.get(`${this.path}`, this.getData.bind(this));
+        this.router.get(`${this.path}/:id`, this.getData.bind(this));
+        this.router.post(`${this.path}`, validationMiddleware(this.validations?.create), this.createData.bind(this));
+        this.router.put(`${this.path}/:id`, validationMiddleware(this.validations?.update), this.updateData.bind(this));
+        this.router.delete(`${this.path}/:id`, this.deleteData.bind(this));
         if (aditionalrouts) {
             this.router.use(aditionalrouts);
         }
     }
+
 }
