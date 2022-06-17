@@ -83,6 +83,16 @@ export default class AuthController implements IController {
                 //     status: constents.notification_status_flags.list.PUBLISHED,
                 //     created_by: user_res.user_id
                 // });
+                
+                // await sendNotification({
+                //     notification_type: constents.notification_types.list.EMAIL,
+                //     target_audience: user_res.email, // Keep 'ALL' for all users
+                //     title: 'Login Successful',
+                //     image: '',
+                //     message: 'You have successfully logged in.',
+                //     status: constents.notification_status_flags.list.PUBLISHED,
+                //     created_by: user_res.user_id
+                // });
 
                 return res.status(200).send(dispatcher({
                     token,
