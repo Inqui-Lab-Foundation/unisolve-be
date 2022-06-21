@@ -5,6 +5,7 @@ export default interface INotificationUtil {
     title: string;
     image: string;
     message: string;
-    read_by: string;
+    // read_by: string;
     status: string;
+    created_by: string|number;
 }
