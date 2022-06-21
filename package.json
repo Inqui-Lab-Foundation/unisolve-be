@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "start": "npm run start:dev",
     "start:dev": "nodemon",
     "start:prod": "pm2 start  processes.json --env production",
     "build": "tsc -p tsconfig.prod.json",
