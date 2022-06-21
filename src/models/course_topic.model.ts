@@ -3,6 +3,7 @@ import { constents } from '../configs/constents.config';
 import courseTopicsAttribute from '../interfaces/courseTopics.model.interface';
 import topicAttributes from '../interfaces/courseTopics.model.interface';
 import db from '../utils/dbconnection.util';
+import { course_module } from './course_module.model';
 import { user } from './user.model';
 
 export class course_topic extends Model<courseTopicsAttribute> {
@@ -11,10 +12,10 @@ export class course_topic extends Model<courseTopicsAttribute> {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    // static associate(models: any) {
-    //     // define association here
-    //     notification.belongsTo(user, { foreignKey: 'created_by', as: 'user' });
-    // }
+    static associate(models: any) {
+        // define association here
+        course_topic.belongsTo(course_module, { foreignKey: 'course_module_id', as: 'course_topics' });
+    }
 }
 
 
@@ -74,3 +75,6 @@ course_topic.init(
         updatedAt: 'updated_at'
     }
 );
+
+course_topic.belongsTo(course_module, { foreignKey: 'course_module_id', as: 'course_topics' });
+course_module.hasMany(course_topic, { foreignKey: 'course_module_id' });

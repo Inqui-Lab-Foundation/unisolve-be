@@ -7,6 +7,8 @@ import BaseController from "./base.controller";
 import ValidationsHolder from "../validations/validationHolder";
 import { courseSchema, courseUpdateSchema } from "../validations/course.validations";
 import { where } from "sequelize/types";
+import { course_module } from "../models/course_module.model";
+import { course_topic } from "../models/course_topic.model";
 export default class CourseController extends BaseController {
     model = "course";
 
@@ -66,19 +68,19 @@ export default class CourseController extends BaseController {
 
        whereClause[`${this.model}_id`] = req.params.id;
        
-       let data = await this.crudService.findOne(modelClass, { where: whereClause });
-         if (data) {
-            dataToReturn = data.dataValues;
-            whereClause = {}
-            whereClause[`course_id`] = data.course_id;
-            console.log("whereClause====================",whereClause);
-            const courseModules = await this.crudService.findWhere(modelClassCourseModule, whereClause );
-            dataToReturn.courseModules = courseModules;       
-            console.log("data====================",dataToReturn);
+       let data = await this.crudService.findOne(modelClass, { where: whereClause ,include: [{model:course_module,include:[{model:course_topic}]}]});
+        //  if (data) {
+        //     dataToReturn = data.dataValues;
+        //     whereClause = {}
+        //     whereClause[`course_id`] = data.course_id;
+        //     console.log("whereClause====================",whereClause);
+        //     const courseModules = await this.crudService.findWhere(modelClassCourseModule, whereClause );
+        //     dataToReturn.courseModules = courseModules;       
+        //     console.log("data====================",dataToReturn);
                    
 
-         }
-         return dataToReturn;
+        //  }
+         return data;
     }
 
     //TODO: add logic to below overriden method to save thumbnail image as well 
