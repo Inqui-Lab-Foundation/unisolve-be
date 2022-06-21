@@ -34,7 +34,6 @@ export default class CourseController extends BaseController {
 
     protected async getData  (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            console.log("came here ")
             let data: any;
             const { model, id } = req.params;
             if (model) {
