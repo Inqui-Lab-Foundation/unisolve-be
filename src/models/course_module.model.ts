@@ -33,8 +33,8 @@ const courseModuleSequelize = course_module.init(
             allowNull: false
         },
         status: {
-            type: DataTypes.ENUM(...Object.values(constents.task_status_flags.list)),
-            defaultValue: constents.task_status_flags.default
+            type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            defaultValue: constents.common_status_flags.default
         },
         created_by: {
             type: DataTypes.INTEGER,
