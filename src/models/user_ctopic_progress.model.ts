@@ -53,7 +53,7 @@ user_ctopic_progress.init(
     },
     {
         sequelize: db,
-        tableName: 'user_ctopic_progresses'
+        tableName: 'user_ctopic_progress'
     }
 );
 
@@ -61,4 +61,4 @@ user_ctopic_progress.init(
   user_ctopic_progress.belongsTo(course_topic,{foreignKey:'course_topic_id'})
   user_ctopic_progress.belongsTo(user,{foreignKey:'user_id'})
   user.hasMany(user_ctopic_progress,{foreignKey:'user_id'})
-  course_topic.hasMany(user_ctopic_progress,{foreignKey:'user_id'})
+  course_topic.hasMany(user_ctopic_progress,{foreignKey:'user_id', as:'progress'})
