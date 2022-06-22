@@ -2,6 +2,9 @@
 import {  DataTypes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
 import { userCtopicProgressAttributes } from '../interfaces/model.interface';
+import { course_topic } from './course_topic.model';
+import { user } from './user.model';
+import { constents } from '../configs/constents.config';
 
 export class user_ctopic_progress extends Model<userCtopicProgressAttributes> {
     /**
@@ -33,7 +36,8 @@ user_ctopic_progress.init(
             allowNull: false
         },
         status: {
-            type: DataTypes.ENUM('ACTIVE', 'INACTIVE')
+            type: DataTypes.ENUM(...Object.values(constents.task_status_flags.list)),
+            defaultValue: constents.task_status_flags.default
         },
         created_at: {
             type: DataTypes.DATE,
@@ -54,4 +58,7 @@ user_ctopic_progress.init(
 );
 
 //TODO:call associate method is any association is defined
-  
+  user_ctopic_progress.belongsTo(course_topic,{foreignKey:'course_topic_id'})
+  user_ctopic_progress.belongsTo(user,{foreignKey:'user_id'})
+  user.hasMany(user_ctopic_progress,{foreignKey:'user_id'})
+  course_topic.hasMany(user_ctopic_progress,{foreignKey:'user_id'})

@@ -24,13 +24,14 @@ export const up: Migration = async ({ context: sequelize }) => {
         course_topic_id: {
             allowNull: false,
 			references:{
-				model:'users',
-				key:'user_id'
+				model:'course_topics',
+				key:'course_topic_id'
 			},
 			type: DataTypes.INTEGER
         },
         status: {
-            type: DataTypes.ENUM('ACTIVE', 'INACTIVE')
+            type: DataTypes.ENUM(...Object.values(constents.task_status_flags.list)),
+            defaultValue: constents.task_status_flags.default
         },
         created_at: {
             type: DataTypes.DATE,
