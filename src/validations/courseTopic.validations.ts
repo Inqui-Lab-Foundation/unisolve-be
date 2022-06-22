@@ -2,8 +2,9 @@
   import Joi from 'joi';
 
   export const courseTopicSchema = Joi.object().keys({
-      name: Joi.string().required(),
-      desc: Joi.string().required(),
+      course_module_id: Joi.string().required(),
+      topic_type_id: Joi.string().required(),
+      topic_type: Joi.string().required().valid("VIDEO","WORKSHEET","QUIZ"),
   });
   
   export const courseTopicUpdateSchema = Joi.object().keys({
