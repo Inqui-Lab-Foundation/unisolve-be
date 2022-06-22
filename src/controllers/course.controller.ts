@@ -9,6 +9,10 @@ import { courseSchema, courseUpdateSchema } from "../validations/course.validati
 import { where } from "sequelize/types";
 import { course_module } from "../models/course_module.model";
 import { course_topic } from "../models/course_topic.model";
+import { user_ctopic_progress } from "../models/user_ctopic_progress.model";
+import { Op } from "sequelize";
+import db from "../utils/dbconnection.util"
+import { constents } from "../configs/constents.config";
 export default class CourseController extends BaseController {
     model = "course";
 
@@ -66,8 +70,46 @@ export default class CourseController extends BaseController {
        let dataToReturn: any = {};
 
        whereClause[`${this.model}_id`] = req.params.id;
-       
-       let data = await this.crudService.findOne(modelClass, { where: whereClause ,include: [{model:course_module,include:[{model:course_topic}]}]});
+       let user_id =  res.locals.user_id;
+       let data = await this.crudService.findOne(modelClass, { 
+            where: whereClause ,
+            include: [{
+                model:course_module,
+                as:'course_modules',
+                include:[{
+                    model:course_topic,
+                    as :"course_topics",
+                    attributes:[ 
+
+                        "course_module_id",
+                        "course_topic_id",
+                        "topic_type_id",
+                        "topic_type",
+                        [
+                            // Note the wrapping parentheses in the call below!
+                            db.literal(`(
+                                SELECT CASE WHEN EXISTS 
+                                    (SELECT status 
+                                    FROM user_ctopic_progress as p 
+                                    WHERE p.user_id = ${user_id} 
+                                    AND p.course_topic_id = \`course_modules->course_topics\`.\`course_topic_id\`) 
+                                THEN  
+                                    (SELECT case p.status when NULL then "INCOMPLETE" ELSE p.status END AS progress 
+                                    FROM user_ctopic_progress AS p
+                                    WHERE p.course_topic_id = \`course_modules->course_topics\`.\`course_topic_id\`
+                                    AND p.user_id = ${user_id}
+                                    ORDER BY p.updated_at DESC
+                                    LIMIT 1)
+                                ELSE 
+                                    '${constents.task_status_flags.default}'
+                                END as progress
+                            )`),
+                            'progress'
+                        ]
+                    ],
+                }]}
+            ]
+        });
         //  if (data) {
         //     dataToReturn = data.dataValues;
         //     whereClause = {}
