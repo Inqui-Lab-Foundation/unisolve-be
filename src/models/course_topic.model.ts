@@ -69,7 +69,7 @@ course_topic.init(
     },
     {
         sequelize: db,
-        tableName: 'topics',
+        tableName: 'course_topics',
         timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'
