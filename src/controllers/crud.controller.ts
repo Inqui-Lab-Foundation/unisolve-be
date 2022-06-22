@@ -29,21 +29,21 @@ export default class CRUDController implements IController {
     }
 
     protected initializeRoutes(aditionalrouts: any = []): void {
-        this.router.get(`${this.path}/:model`, this.getData);
-        this.router.get(`${this.path}/:model/:id`, this.getData);
-        this.router.post(`${this.path}/:model`, this.createData);
-        this.router.post(`${this.path}/:model/withfile`, this.createDataWithFile);
-        this.router.put(`${this.path}/:model/:id`, this.updateData);
-        this.router.put(`${this.path}/:model/:id/withfile`, this.updateDataWithFile);
-        this.router.delete(`${this.path}/:model/:id`, this.deleteData);
+        this.router.get(`${this.path}/:model`, this.getData.bind(this));
+        this.router.get(`${this.path}/:model/:id`, this.getData.bind(this));
+        this.router.post(`${this.path}/:model`, this.createData.bind(this));
+        this.router.post(`${this.path}/:model/withfile`, this.createDataWithFile.bind(this));
+        this.router.put(`${this.path}/:model/:id`, this.updateData.bind(this));
+        this.router.put(`${this.path}/:model/:id/withfile`, this.updateDataWithFile.bind(this));
+        this.router.delete(`${this.path}/:model/:id`, this.deleteData.bind(this));
     }
 
-    protected async loadModel (model: string): Promise<Response | void | any> {
+    protected async loadModel(model: string): Promise<Response | void | any> {
         const modelClass = await import(`../models/${model}.model`);
         return modelClass[model];
     }
 
-    protected async getData (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             let data: any;
             const { model, id } = req.params;
@@ -70,7 +70,7 @@ export default class CRUDController implements IController {
         }
     }
 
-    protected async createData (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    protected async createData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { model } = req.params;
             if (model) {
@@ -86,7 +86,7 @@ export default class CRUDController implements IController {
         }
     }
 
-    protected async createDataWithFile (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    protected async createDataWithFile(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { model } = req.params;
             if (model) {
@@ -124,7 +124,7 @@ export default class CRUDController implements IController {
         }
     }
 
-    protected async updateData (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    protected async updateData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { model, id } = req.params;
             if (model) {
@@ -142,7 +142,7 @@ export default class CRUDController implements IController {
         }
     }
 
-    protected async updateDataWithFile (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    protected async updateDataWithFile(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { model, id } = req.params;
             if (model) {
@@ -183,7 +183,7 @@ export default class CRUDController implements IController {
         }
     }
 
-    protected async deleteData (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    protected async deleteData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             const { model, id } = req.params;
             if (model) {

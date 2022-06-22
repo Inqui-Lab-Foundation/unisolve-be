@@ -29,7 +29,7 @@ export default class AuthController implements IController {
         this.router.post(`${this.path}/login`, validationMiddleware(authValidations.login), this.login);
         this.router.get(`${this.path}/logout`, this.logout);
         this.router.post(`${this.path}/register`, validationMiddleware(authValidations.register), this.register);
-        this.router.post(`${this.path}/dynamicSignupForm`, this.dynamicSignupForm);
+        this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm) , this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
     }
 
@@ -40,10 +40,12 @@ export default class AuthController implements IController {
 
     private login = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const user_res: any = await this.crudService.findOne(user, { where: { 
-                email: req.body.email, 
-                password: await bcrypt.hashSync(req.body.password, process.env.SALT || baseConfig.SALT)
-            } });
+            const user_res: any = await this.crudService.findOne(user, {
+                where: {
+                    email: req.body.email,
+                    password: await bcrypt.hashSync(req.body.password, process.env.SALT || baseConfig.SALT)
+                }
+            });
             if (!user_res) {
                 return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
             } else {
@@ -107,6 +109,7 @@ export default class AuthController implements IController {
                     ]
                 }
             });
+            console.log("req_body:", req.body, 'user: ', user_res);
             if (user_res) return res.status(406).send(dispatcher(speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
 
             const result = await this.crudService.create(user, req.body);
@@ -123,7 +126,7 @@ export default class AuthController implements IController {
             if (result.length <= 0) {
                 return res.status(406).send(dispatcher(speeches.FILE_EMPTY, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
-            writeFileSync(path.join(process.cwd(), 'src', 'configs', 'singUp.json'), JSON.stringify(result), {
+            writeFileSync(path.join(process.cwd(), 'resources', 'configs', 'singUp.json'), JSON.stringify(result), {
                 encoding: "utf8",
                 flag: "w",
                 mode: 0o666
@@ -136,17 +139,17 @@ export default class AuthController implements IController {
 
     private getSignUpConfig = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         const options = {
-            root: path.join(process.cwd(), 'src', 'configs'),
+            root: path.join(process.cwd(), 'resources', 'configs'),
             headers: {
                 'x-timestamp': Date.now(),
                 'x-sent': true
             }
         };
-        const filePath = path.join(process.cwd(), 'src', 'configs', 'singUp.json');
+        const filePath = path.join(process.cwd(), 'resources', 'configs', 'singUp.json');
         if (filePath === 'Error') {
             return res.status(404).send(dispatcher(speeches.FILE_EMPTY, 'error', speeches.DATA_NOT_FOUND));
         }
-        const file: any = readFileSync(path.join(process.cwd(), 'src', 'configs', 'singUp.json'), {
+        const file: any = readFileSync(path.join(process.cwd(), 'resources', 'configs', 'singUp.json'), {
             encoding: 'utf8',
             flag: 'r'
         })

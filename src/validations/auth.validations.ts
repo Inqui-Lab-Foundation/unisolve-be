@@ -33,4 +33,17 @@ const register = Joi.object().keys({
     })
 });
 
-export default { login, register };
+const dynamicForm = Joi.object().keys({
+    studentName: Joi.boolean().required().messages({
+        'string.empty': speeches.NAME_REQUIRED
+    }),
+    phNumber: Joi.boolean().messages({
+        'string.empty': speeches.MOBILE_NUMBER_REQUIRED
+    }),
+    email: Joi.boolean().messages({
+        'string.empty': speeches.USER_EMAIL_REQUIRED
+    })
+});
+
+
+export default { login, register, dynamicForm };

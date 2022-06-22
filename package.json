@@ -9,7 +9,7 @@
     "build": "tsc -p tsconfig.prod.json",
     "copy:assets": "cp 'config/singUp.json' 'dist/config/singUp.json'",
     "set-node-env": "set NODE_ENV=test",
-    "test": "npm run set-node-env && jest --verbose --silent",
+    "test": "jest --verbose --silent",
     "test:watch": "npm run set-node-env && jest --watchAll --verbose --silent",
     "test:coverage": "npm run set-node-env && jest --coverage --verbose --silent",
     "dbsync": "node migrate.js",
