@@ -35,7 +35,8 @@ export const up: Migration = async ({ context: sequelize }) => {
         },
         created_by: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true,
+            defaultValue:null
         },
         created_at: {
             type: DataTypes.DATE,

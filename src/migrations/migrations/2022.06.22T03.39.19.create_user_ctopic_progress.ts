@@ -33,10 +33,20 @@ export const up: Migration = async ({ context: sequelize }) => {
             type: DataTypes.ENUM(...Object.values(constents.task_status_flags.list)),
             defaultValue: constents.task_status_flags.default
         },
+        created_by: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue:null
+        },
         created_at: {
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW,
+        },
+        updated_by: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue: null
         },
         updated_at: {
             type: DataTypes.DATE,
