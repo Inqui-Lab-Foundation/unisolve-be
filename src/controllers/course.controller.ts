@@ -124,34 +124,4 @@ export default class CourseController extends BaseController {
          return data;
     }
 
-    //TODO: add logic to below overriden method to save thumbnail image as well 
-    protected createData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-        try {
-            const { model } = req.params;
-            const data = await this.crudService.create(await this.loadModel(model), req.body);
-            if (!data) {
-                return res.status(404).send(dispatcher(data, 'error'));
-            }
-            return res.status(200).send(data);
-        } catch (error) {
-            next(error);
-        }
-    }
-
-
-
-    //TODO: add logic to below overriden method to save thumbnail image as well 
-    protected updateData = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-        try {
-            const { model, id } = req.params;
-            const data = await this.crudService.update(await this.loadModel(model), req.body, { where: { id } });
-            if (!data) {
-                return res.status(404).send(dispatcher(data, 'error'));
-            }
-            return res.status(200).send(data);
-        } catch (error) {
-            next(error);
-        }
-    }
-
 }
