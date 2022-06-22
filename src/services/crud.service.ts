@@ -51,9 +51,9 @@ export default class CRUDService  {
         }
     };
 
-    async findWhere(model: any, query: object) {
+    async findWhere(model: any, query: object, order: object = []) {
         try {
-            return await model.findAll({ where: query });
+            return await model.findAll({logging:console.log ,where: query, order: order});
         } catch (error: any) {
             return error.message;
         }
@@ -62,9 +62,9 @@ export default class CRUDService  {
     async update(model: any, update: object, query: object) {
         try {
             const data = await model.update(update, query);
-            // if(data){
-            //     delete data.dataValues.password;
-            // }
+             if(data){
+                 delete data.dataValues.password;
+            }
             return data;
         } catch (error: any) {
             return error.message;
