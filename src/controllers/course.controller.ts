@@ -17,7 +17,7 @@ export default class CourseController extends BaseController {
     model = "course";
 
     protected initializePath(): void {
-        this.path = '/course';
+        this.path = '/courses';
     }
     protected initializeValidations(): void {
         this.validations = new ValidationsHolder(courseSchema, courseUpdateSchema);
