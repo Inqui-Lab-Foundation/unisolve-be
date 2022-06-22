@@ -28,9 +28,13 @@ const courseModuleSequelize = course_module.init(
         course_id: {
             type: DataTypes.INTEGER,
         },
-        description: {
+        title: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        description: {
+            type: DataTypes.STRING,
+            allowNull: true
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),

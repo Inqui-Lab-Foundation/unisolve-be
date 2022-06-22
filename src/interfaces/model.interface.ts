@@ -2,6 +2,7 @@
 export interface courseModuleAttributes {
     course_module_id: number;
     course_id: string;
+    title: string;
     description: string;
     status: Enumerator;
     created_by: number;
