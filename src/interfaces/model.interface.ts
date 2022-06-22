@@ -29,3 +29,13 @@ export interface courseVideosAttributes {
     updated_by: number;
     updated_at: Date;
 }
+
+  export interface userCtopicProgressAttributes {
+    user_ctopic_progress_id: number;
+    user_id: number;
+    course_topic_id: number;
+    status: Enumerator;
+    created_at: Date;
+    updated_at: Date;
+  }
+  
