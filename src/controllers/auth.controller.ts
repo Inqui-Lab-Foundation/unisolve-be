@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import e, { Router, Request, Response, NextFunction } from 'express';
 import { Op } from 'sequelize';
 import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
@@ -29,7 +29,8 @@ export default class AuthController implements IController {
         this.router.post(`${this.path}/login`, validationMiddleware(authValidations.login), this.login);
         this.router.get(`${this.path}/logout`, this.logout);
         this.router.post(`${this.path}/register`, validationMiddleware(authValidations.register), this.register);
-        this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm) , this.dynamicSignupForm);
+        this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword);
+        this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm), this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
     }
 
@@ -52,17 +53,27 @@ export default class AuthController implements IController {
                 // user status checking
                 let stop_procedure: boolean = false;
                 let error_message: string = '';
-
-                if (user_res.status == 'DELETED') {
-                    stop_procedure = true;
-                    error_message = speeches.USER_DELETED;
-                } else if (user_res.status == 'LOCKED') {
-                    stop_procedure = true;
-                    error_message = speeches.USER_LOCKED;
-                } else if (user_res.status == 'INACTIVE') {
-                    stop_procedure = true;
-                    error_message = speeches.USER_INACTIVE;
+                switch (user_res.status) {
+                    case 'DELETED':
+                        stop_procedure = true;
+                        error_message = speeches.USER_DELETED;
+                    case 'LOCKED':
+                        stop_procedure = true;
+                        error_message = speeches.USER_LOCKED;
+                    case 'INACTIVE':
+                        stop_procedure = true;
+                        error_message = speeches.USER_INACTIVE
                 }
+                // if (user_res.status == 'DELETED' {
+                //     stop_procedure = true;
+                //     error_message = speeches.USER_DELETED;
+                // } else if (user_res.status == 'LOCKED') {
+                //     stop_procedure = true;
+                //     error_message = speeches.USER_LOCKED;
+                // } else if (user_res.status == 'INACTIVE') {
+                //     stop_procedure = true;
+                //     error_message = speeches.USER_INACTIVE;
+                // }
                 if (stop_procedure) {
                     return res.status(401).send(dispatcher(error_message, 'error', speeches.USER_RISTRICTED, 401));
                 }
@@ -109,11 +120,42 @@ export default class AuthController implements IController {
                     ]
                 }
             });
-            console.log("req_body:", req.body, 'user: ', user_res);
             if (user_res) return res.status(406).send(dispatcher(speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
 
             const result = await this.crudService.create(user, req.body);
             return res.status(201).send(dispatcher(result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private changePassword = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const user_res: any = await this.crudService.findOnePassword(user, {
+                where: {
+                    [Op.or]: [
+                        {
+                            email: { [Op.eq]: req.body.email }
+                        },
+                        {
+                            user_id: { [Op.like]: `%${req.body.user_id}%` }
+                        }
+                    ]
+                }
+            });
+            if (!user_res) {
+                return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
+            }
+            //comparing the password with hash
+            const match = bcrypt.compareSync(req.body.old_password, user_res.dataValues.password);
+            if (match === false) {
+                return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_PASSWORD));
+            } else {
+                const result = await this.crudService.update(user, {
+                    password: await bcrypt.hashSync(req.body.new_password, process.env.SALT || baseConfig.SALT)
+                }, { where: { user_id: user_res.dataValues.user_id } });
+                return res.status(202).send(dispatcher(result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+            }
         } catch (error) {
             next(error);
         }

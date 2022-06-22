@@ -35,17 +35,17 @@ describe("API - CRUD", () => {
         expect(response.body).toHaveProperty('data');
     });
     test("return 200 single crud item", async () => {
-        const response = await request(app.app).get('/api/v1/crud/user/2').set("Authorization", `Bearer ${token}`);
+        const response = await request(app.app).get('/api/v1/crud/user/11').set("Authorization", `Bearer ${token}`);
         expect(response.statusCode).toBe(200);
         expect(response.body).toHaveProperty('data');
     });
     test("return 200 update entry", async () => {
-        const response = await request(app.app).put('/api/v1/crud/user/2').set("Authorization", `Bearer ${token}`).send(payload.mobile);
+        const response = await request(app.app).put('/api/v1/crud/user/11').set("Authorization", `Bearer ${token}`).send(payload.mobile);
         expect(response.statusCode).toBe(200);
         expect(response.body).toHaveProperty('data');
     });
     test("return 200 delete entry", async () => {
-        const response = await request(app.app).delete('/api/v1/crud/user/2').set("Authorization", `Bearer ${token}`)
+        const response = await request(app.app).delete('/api/v1/crud/user/11').set("Authorization", `Bearer ${token}`)
         expect(response.statusCode).toBe(200);
         expect(response.body).toHaveProperty('data');
     });

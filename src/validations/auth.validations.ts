@@ -33,6 +33,21 @@ const register = Joi.object().keys({
     })
 });
 
+const changePassword = Joi.object().keys({
+    email: Joi.string().email().messages({
+        'string.empty': speeches.USER_EMAIL_REQUIRED
+    }),
+    user_id: Joi.string().messages({
+        'string.empty': speeches.USER_QUALIFICATION_REQUIRED
+    }),
+    old_password: Joi.string().required().messages({
+        'string.empty': speeches.USER_PWD_REQUIRED
+    }),
+    new_password: Joi.string().required().messages({
+        'string.empty': speeches.USER_PWD_REQUIRED
+    })
+});
+
 const dynamicForm = Joi.object().keys({
     studentName: Joi.boolean().required().messages({
         'string.empty': speeches.NAME_REQUIRED
@@ -46,4 +61,4 @@ const dynamicForm = Joi.object().keys({
 });
 
 
-export default { login, register, dynamicForm };
+export default { login, register, changePassword, dynamicForm };

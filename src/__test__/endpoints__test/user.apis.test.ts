@@ -52,6 +52,31 @@ describe("API - user login", () => {
         expect(response.statusCode).toBe(400)
     });
 });
+describe("API - user change password", () => {
+    const payload = {
+        "user_id": "16",
+        "old_password": "1235678910",
+        "new_password": "123567891011"
+    };
+    const payload2 = {
+        "user_id": "11",
+        "old_password": "1235678",
+        "new_password": "1235678910"
+    };
+    test("return 202 successfully updated", async () => {
+        const response = await request(app.app).put('/api/v1/auth/changePassword').send(payload);
+        expect(response.statusCode).toBe(202);
+        expect(response.body).toHaveProperty('data');
+    });
+    test("return 400 if user send the empty payload", async () => {
+        const response = await request(app.app).put('/api/v1/auth/changePassword').send({});
+        expect(response.statusCode).toBe(400);
+    });
+    test("return 404 user password missmatch", async () => {
+        const response = await request(app.app).put('/api/v1/auth/changePassword').send(payload2);
+        expect(response.statusCode).toBe(404)
+    });
+});
 describe("API - user logout", () => {
     test("return 200 successfully registered", async () => {
         const response = await request(app.app).get('/api/v1/auth/logout').set("Authorization", `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJlbWFpbCI6ImFkbWluQGdhbWlsLmNvbSIsImZ1bGxfbmFtZSI6bnVsbCwiaW1hZ2UiOm51bGwsImRhdGVfb2ZfYmlydGgiOm51bGwsIm1vYmlsZSI6IjEyMzQ1Njc4OTAiLCJ0ZWFtX2lkIjpudWxsLCJvcmdfbmFtZSI6bnVsbCwicXVhbGlmaWNhdGlvbiI6ImIuY29tIiwic3RyZWFtIjpudWxsLCJjaXR5IjpudWxsLCJkaXN0cmljdCI6bnVsbCwic3RhdGUiOm51bGwsImNvdW50cnkiOm51bGwsInN0YXR1cyI6IkFDVElWRSIsInJvbGUiOiJBRE1JTiIsImlzX2xvZ2dlZGluIjoiTk8iLCJsYXN0X2xvZ2luIjpudWxsLCJjcmVhdGVkX2J5IjoxMjM2NTQ3ODk5LCJjcmVhdGVkX2F0IjoiMjAyMi0wNi0yMVQxNDo1MTowNy4wMDBaIiwidXBkYXRlZF9ieSI6bnVsbCwidXBkYXRlZF9hdCI6IjIwMjItMDYtMjFUMTQ6NTE6MDcuMDAwWiIsImlhdCI6MTY1NTgyMzA4NCwiZXhwIjoxNjU2MDgyMjg0fQ.mIzNccNjPeWtJ3pvselchjGIbhoTkOQd9BQ8pU7Gjio`);

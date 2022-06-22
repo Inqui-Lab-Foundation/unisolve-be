@@ -22,6 +22,15 @@ export default class CRUDService  {
             return error.message;
         }
     };
+    async findOnePassword(model: any, query: object) {
+        try {
+            const data = await model.findOne(query);
+            return data;
+        } catch (error: any) {
+            console.log(error)
+            return error.message;
+        }
+    };
     async findAll(model: any) {
         try {
             const data = await model.findAll();
@@ -52,10 +61,10 @@ export default class CRUDService  {
 
     async update(model: any, update: object, query: object) {
         try {
-            const data =  await model.update(update, query);
-            if(data){
-                delete data.dataValues.password;
-            }
+            const data = await model.update(update, query);
+            // if(data){
+            //     delete data.dataValues.password;
+            // }
             return data;
         } catch (error: any) {
             return error.message;
