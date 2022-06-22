@@ -1,4 +1,4 @@
-import { notFound } from "boom";
+import { notFound, unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import dispatcher from "../utils/dispatch.util";
 import Joi from "joi";
@@ -13,6 +13,7 @@ import { user_ctopic_progress } from "../models/user_ctopic_progress.model";
 import { Op } from "sequelize";
 import db from "../utils/dbconnection.util"
 import { constents } from "../configs/constents.config";
+import { speeches } from "../configs/speeches.config";
 export default class CourseController extends BaseController {
     model = "course";
 
@@ -64,13 +65,12 @@ export default class CourseController extends BaseController {
     
    async  getDetailsData(req: Request, res: Response,modelClass: any) {
        let whereClause: any = {};
-       let modelClassCourseModule = await this.loadModel("course_module");
-       let modelClassTopic = await this.loadModel("course_topic");
-       let modelClassVideo = await this.loadModel("course_video");
-       let dataToReturn: any = {};
 
        whereClause[`${this.model}_id`] = req.params.id;
        let user_id =  res.locals.user_id;
+       if(!user_id){
+        throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
+       }
        let data = await this.crudService.findOne(modelClass, { 
             where: whereClause ,
             include: [{
@@ -110,17 +110,6 @@ export default class CourseController extends BaseController {
                 }]}
             ]
         });
-        //  if (data) {
-        //     dataToReturn = data.dataValues;
-        //     whereClause = {}
-        //     whereClause[`course_id`] = data.course_id;
-        //     console.log("whereClause====================",whereClause);
-        //     const courseModules = await this.crudService.findWhere(modelClassCourseModule, whereClause );
-        //     dataToReturn.courseModules = courseModules;       
-        //     console.log("data====================",dataToReturn);
-                   
-
-        //  }
          return data;
     }
 
