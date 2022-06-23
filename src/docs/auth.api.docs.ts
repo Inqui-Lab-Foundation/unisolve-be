@@ -1,4 +1,4 @@
-import { badRequestError,  notAcceptableError, unauthorizedError } from "./errors";
+import { badRequestError, notAcceptableError, notFoundError, unauthorizedError } from "./errors";
 
 export const registrationRequestBody = {
     type: 'object',
@@ -191,6 +191,59 @@ export const login = {
         },
         '401': unauthorizedError,
         '400': badRequestError
+    },
+
+}
+export const changePassword = {
+    tags: ['Authentication'],
+    description: 'Endpoint for member change password',
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    $ref: '#/components/schemas/loginRequestBody'
+                },
+            },
+        },
+    },
+    responses: {
+        '202': {
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'successfully'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: [1
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '400': badRequestError,
+        '401': unauthorizedError,
+        '404': notFoundError
     },
 
 }
