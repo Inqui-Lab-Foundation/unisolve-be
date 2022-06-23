@@ -3,6 +3,7 @@ import { constents } from '../configs/constents.config';
 import courseTopicsAttribute from '../interfaces/courseTopics.model.interface';
 import topicAttributes from '../interfaces/courseTopics.model.interface';
 import db from '../utils/dbconnection.util';
+import { course_module } from './course_module.model';
 import { user } from './user.model';
 
 export class course_topic extends Model<courseTopicsAttribute> {
@@ -11,10 +12,10 @@ export class course_topic extends Model<courseTopicsAttribute> {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    // static associate(models: any) {
-    //     // define association here
-    //     notification.belongsTo(user, { foreignKey: 'created_by', as: 'user' });
-    // }
+    static associate(models: any) {
+        // define association here
+        course_topic.belongsTo(course_module, { foreignKey: 'course_module_id', as: 'course_topics' });
+    }
 }
 
 
@@ -38,6 +39,10 @@ course_topic.init(
             type: DataTypes.ENUM(...Object.values(constents.topic_type_flags.list)),
             allowNull: false,
             defaultValue: constents.topic_type_flags.default
+        },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
@@ -68,9 +73,12 @@ course_topic.init(
     },
     {
         sequelize: db,
-        tableName: 'topics',
+        tableName: 'course_topics',
         timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'
     }
 );
+
+course_topic.belongsTo(course_module, { foreignKey: 'course_module_id', as: 'course_topics' });
+course_module.hasMany(course_topic, { foreignKey: 'course_module_id' });

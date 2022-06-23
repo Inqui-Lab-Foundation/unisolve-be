@@ -3,6 +3,7 @@ export default interface courseTopicsAttribute {
     course_module_id: number;
     topic_type_id: number;
     topic_type: Enumerator;
+    title: string;
     status: Enumerator;
     created_by: number;
     created_at: Date;

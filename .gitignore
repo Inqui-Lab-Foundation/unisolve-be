@@ -9,3 +9,4 @@ logs
 .env.old
 experiments
 src/migrations/cli/*
+src/scaffolders/*

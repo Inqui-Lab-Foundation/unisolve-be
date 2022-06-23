@@ -17,13 +17,17 @@ export const up: Migration = async ({ context: sequelize }) => {
                 key:"course_id"
             }
         },
-        description: {
+        title: {
             type: DataTypes.STRING,
             allowNull: false
         },
+        description: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         status: {
-            type: DataTypes.ENUM(...Object.values(constents.task_status_flags.list)),
-            defaultValue: constents.task_status_flags.default
+            type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            defaultValue: constents.common_status_flags.default
         },
         created_by: {
             type: DataTypes.INTEGER,

@@ -8,4 +8,6 @@
     "multer": "^2.2.0 added by vamshi on 7th June 2022 while applying Image upload for courses thumbnail.."
     "ts-node": "^10.8.1 added by aman on 13th June 2022 while adding ability for db migration scripts",
     "umzug": "^3.1.1 added by aman on 13th June 2022 while adding ability for db migration scripts",
+    "pluralize": "8.0.0 dev dependency added by aman on 22nd June 2022 while adding scaffolder",
+    "mode-cmd": "5.0.0 dev dependency added by aman on 22nd June 2022 while adding scaffolder",
   },

@@ -45,6 +45,9 @@ export const speeches = {
     NOTIFICATION_UPDATED_SUCCESSFULLY: "Notification updated successfully",
     NOTIFICATION_DELETED_SUCCESSFULLY: "Notification deleted successfully",
 
+    COMMON_STATUS_INVALID: `Status is invalid, it should be one from ${Object.values(constents.common_status_flags.list).join(", ")}.`,
+    COMMON_STATUS_REQUIRED: `Status is required, it should be one from ${Object.values(constents.common_status_flags.list).join(", ")}.`,
+
     CREATED_FILE: "successfully Created",
     FILE_EMPTY: "Unable to create a file, Please check the payload",
     FETCH_FILE: "file found",

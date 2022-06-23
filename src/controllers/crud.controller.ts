@@ -6,7 +6,6 @@ import HttpException from '../utils/exceptions/http.exception';
 import CRUDService from '../services/crud.service';
 import { notFound } from 'boom';
 import dispatcher from '../utils/dispatch.util';
-import { nextTick } from 'process';
 import { speeches } from '../configs/speeches.config';
 
 export default class CRUDController implements IController {
@@ -76,7 +75,9 @@ export default class CRUDController implements IController {
             if (model) {
                 this.model = model;
             };
-            const data = await this.crudService.create(await this.loadModel(model), req.body);
+            const modelLoaded =  await this.loadModel(model);
+            const payload = this.autoFillTrackingCollumns(req,res,modelLoaded)
+            const data = await this.crudService.create(modelLoaded, payload);
             if (!data) {
                 return res.status(404).send(dispatcher(data, 'error'));
             }
@@ -92,6 +93,7 @@ export default class CRUDController implements IController {
             if (model) {
                 this.model = model;
             };
+
             const rawfiles: any = req.files;
             const files: any = Object.values(rawfiles);
             const file_key: any = Object.keys(rawfiles);
@@ -114,7 +116,9 @@ export default class CRUDController implements IController {
             if (errs.length) {
                 return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
-            const data = await this.crudService.create(await this.loadModel(model), reqData);
+            const modelLoaded =  await this.loadModel(model);
+            const payload = this.autoFillTrackingCollumns(req,res,modelLoaded,reqData)
+            const data = await this.crudService.create(modelLoaded, payload);
             if (!data) {
                 return res.status(404).send(dispatcher(data, 'error'));
             }
@@ -130,9 +134,14 @@ export default class CRUDController implements IController {
             if (model) {
                 this.model = model;
             };
+            const user_id  = res.locals.user_id
+            console.log(user_id);
+
             const where: any = {};
             where[`${this.model}_id`] = req.params.id;
-            const data = await this.crudService.update(await this.loadModel(model), req.body, { where: where });
+            const modelLoaded =  await this.loadModel(model);
+            const payload = this.autoFillTrackingCollumns(req,res,modelLoaded)
+            const data = await this.crudService.update(modelLoaded, payload, { where: where });
             if (!data) {
                 return res.status(404).send(dispatcher(data, 'error'));
             }
@@ -148,6 +157,9 @@ export default class CRUDController implements IController {
             if (model) {
                 this.model = model;
             };
+            const user_id  = res.locals.user_id
+            console.log(user_id);
+
             const where: any = {};
             where[`${this.model}_id`] = req.params.id;
             const rawfiles: any = req.files;
@@ -173,7 +185,9 @@ export default class CRUDController implements IController {
             if (errs.length) {
                 return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
-            const data = await this.crudService.update(await this.loadModel(model), reqData, { where: where });
+            const modelLoaded =  await this.loadModel(model);
+            const payload = this.autoFillTrackingCollumns(req,res,modelLoaded,reqData)
+            const data = await this.crudService.update(modelLoaded, payload, { where: where });
             if (!data) {
                 return res.status(404).send(dispatcher(data, 'error'));
             }
@@ -199,6 +213,23 @@ export default class CRUDController implements IController {
         } catch (error) {
             next(error);
         }
+    }
+
+
+    protected autoFillTrackingCollumns (req: Request, res: Response, modelLoaded:any,reqData:any=null){
+        // console.log(res.locals);
+        let payload = req.body;
+        if(reqData!=null){
+            payload = reqData
+        }
+        if(modelLoaded.rawAttributes.created_by!==undefined){
+            payload['created_by'] = res.locals.user_id;
+        }
+        if(modelLoaded.rawAttributes.updated_by!==undefined){
+            payload['updated_by'] = res.locals.user_id; 
+        }
+
+        return payload;
     }
 }
 
