@@ -5,6 +5,7 @@ import buildError from '../utils/build_error';
 import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 import logIt from '../utils/logit.util';
 import { constents } from '../configs/constents.config';
+import dispatcher from '../utils/dispatch.util';
 
 /**
  * Error response middleware for 404 not found.
@@ -69,6 +70,6 @@ export const bodyParser: ErrorRequestHandler = async (err: any, req: Request, re
 export const genericErrorHandler: ErrorRequestHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
   await logIt(constents.log_levels.list.ERROR, `${err.message}: ${err}`, req, res);
   const error = buildError(err);
-
-  res.status(error.code).json(error);
+  
+  res.status(error.code).json(dispatcher({}, 'error',error.message,error.code))
 }

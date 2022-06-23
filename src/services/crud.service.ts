@@ -7,7 +7,7 @@ export default class CRUDService  {
             }
             return data;
         } catch (error: any) {
-            return error.message;
+            return error;
         }
     };
     async findOne(model: any, query: object) {
@@ -19,7 +19,7 @@ export default class CRUDService  {
             return data;
         } catch (error: any) {
             console.log(error)
-            return error.message;
+            return error;
         }
     };
     async findAll(model: any) {
@@ -31,14 +31,14 @@ export default class CRUDService  {
             });
             return data;
         } catch (error: any) {
-            return error.message;
+            return error;
         }
     };
     async findByPk(model: any, input: string) {
         try {
             return await model.findByPk(input);
         } catch (error: any) {
-            return error.message;
+            return error;
         }
     };
 
@@ -46,7 +46,7 @@ export default class CRUDService  {
         try {
             return await model.findAll({logging:console.log ,where: query, order: order});
         } catch (error: any) {
-            return error.message;
+            return error;
         }
     };
 
@@ -54,14 +54,14 @@ export default class CRUDService  {
         try {
             return await model.update(update, query);
         } catch (error: any) {
-            return error.message;
+            return error;
         }
     };
     async delete(model: any, query: object) {
         try {
             return await model.destroy(query);
         } catch (error: any) {
-            return error.message;
+            return error;
         }
     };
     // async createCourse(model: any, body: object) {

@@ -4,7 +4,7 @@ import fs from 'fs';
 import IController from '../interfaces/controller.interface';
 import HttpException from '../utils/exceptions/http.exception';
 import CRUDService from '../services/crud.service';
-import { notFound } from 'boom';
+import { badRequest, notFound } from 'boom';
 import dispatcher from '../utils/dispatch.util';
 import { speeches } from '../configs/speeches.config';
 
@@ -59,9 +59,13 @@ export default class CRUDController implements IController {
                     data = await this.crudService.findAll(modelClass);
                 }
 
-                if (!data) {
-                    return res.status(404).send(dispatcher(data, 'error'));
+                // if (!data) {
+                //     return res.status(404).send(dispatcher(data, 'error'));
+                // }
+                if (!data || data instanceof Error) {
+                    throw notFound(data.message)
                 }
+
                 return res.status(200).send(dispatcher(data, 'success'));
             });
         } catch (error) {
@@ -78,9 +82,14 @@ export default class CRUDController implements IController {
             const modelLoaded =  await this.loadModel(model);
             const payload = this.autoFillTrackingCollumns(req,res,modelLoaded)
             const data = await this.crudService.create(modelLoaded, payload);
-            if (!data) {
-                return res.status(404).send(dispatcher(data, 'error'));
+            
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(data, 'error'));
+            // }
+            if (!data || data instanceof Error) {
+                throw badRequest(data.message)
             }
+
             return res.status(201).send(dispatcher(data, 'created'));
         } catch (error) {
             next(error);
@@ -119,8 +128,12 @@ export default class CRUDController implements IController {
             const modelLoaded =  await this.loadModel(model);
             const payload = this.autoFillTrackingCollumns(req,res,modelLoaded,reqData)
             const data = await this.crudService.create(modelLoaded, payload);
-            if (!data) {
-                return res.status(404).send(dispatcher(data, 'error'));
+
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(data, 'error'));
+            // }
+            if (!data || data instanceof Error) {
+                throw badRequest(data.message)
             }
             return res.status(201).send(dispatcher(data, 'created'));
         } catch (error) {
@@ -142,8 +155,11 @@ export default class CRUDController implements IController {
             const modelLoaded =  await this.loadModel(model);
             const payload = this.autoFillTrackingCollumns(req,res,modelLoaded)
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
-            if (!data) {
-                return res.status(404).send(dispatcher(data, 'error'));
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(data, 'error'));
+            // }
+            if (!data || data instanceof Error) {
+                throw badRequest(data.message)
             }
             return res.status(200).send(dispatcher(data, 'updated'));
         } catch (error) {
@@ -188,8 +204,11 @@ export default class CRUDController implements IController {
             const modelLoaded =  await this.loadModel(model);
             const payload = this.autoFillTrackingCollumns(req,res,modelLoaded,reqData)
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
-            if (!data) {
-                return res.status(404).send(dispatcher(data, 'error'));
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(data, 'error'));
+            // }
+            if (!data || data instanceof Error) {
+                throw badRequest(data.message)
             }
             return res.status(200).send(dispatcher(data, 'updated'));
         } catch (error) {
@@ -206,8 +225,11 @@ export default class CRUDController implements IController {
             const where: any = {};
             where[`${this.model}_id`] = req.params.id;
             const data = await this.crudService.delete(await this.loadModel(model), { where: where });
-            if (!data) {
-                return res.status(404).send(dispatcher(data, 'error'));
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(data, 'error'));
+            // }
+            if (!data || data instanceof Error) {
+                throw badRequest(data.message)
             }
             return res.status(200).send(dispatcher(data, 'deleted'));
         } catch (error) {
