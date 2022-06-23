@@ -40,6 +40,10 @@ course_topic.init(
             allowNull: false,
             defaultValue: constents.topic_type_flags.default
         },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
             allowNull: false,

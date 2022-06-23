@@ -80,7 +80,7 @@ export default class CourseController extends BaseController {
                     model:course_topic,
                     as :"course_topics",
                     attributes:[ 
-
+                        "title",
                         "course_module_id",
                         "course_topic_id",
                         "topic_type_id",
