@@ -9,6 +9,7 @@ export const courseSchema = Joi.object().keys({
     description: Joi.string().required().messages({
         'string.empty': speeches.DESCRIPTION_REQUIRED
     }),
+    thumbnail: Joi.string().allow(null, ''),
 });
 
 export const courseUpdateSchema = Joi.object().keys({
