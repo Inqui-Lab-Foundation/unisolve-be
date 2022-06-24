@@ -1,9 +1,26 @@
-import { DataTypes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
 import questionAttribute from '../interfaces/question.model.interface';
 import db from '../utils/dbconnection.util';
+import { quiz } from './quiz.model';
 
-export class question extends Model<questionAttribute> {
+export class quiz_question extends Model<InferAttributes<quiz_question>,InferCreationAttributes<quiz_question>> {
+   declare quiz_question_id: CreationOptional<number>;
+   declare quiz_id: ForeignKey<number>;
+   declare category: string | null;
+   declare question: string;
+   declare option_a: string;
+   declare option_b: string;
+   declare option_c: string;
+   declare option_d: string;
+   declare correct_ans: string;
+   declare level: Enumerator;
+   declare redirect_to: CreationOptional<number>;
+   declare status: Enumerator;
+   declare created_by: number;
+   declare created_at: Date;
+   declare updated_by: number;
+   declare updated_at: Date;
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -15,16 +32,20 @@ export class question extends Model<questionAttribute> {
     // }
 }
 
-question.init(
+quiz_question.init(
     {
-        question_id: {
+        quiz_question_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
+        quiz_id: {
+            type: DataTypes.INTEGER,
+            allowNull:false
+        },
         category: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         question: {
             type: DataTypes.TEXT,
@@ -40,20 +61,29 @@ question.init(
         },
         option_c: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         option_d: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         correct_ans: {
             type: DataTypes.TEXT,
             allowNull: false
         },
-        status: {
-            type: DataTypes.ENUM(...Object.values(constents.notification_status_flags.list)),
+        redirect_to: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        level: {
+            type: DataTypes.ENUM(...Object.values(constents.quiz_question_level_flags.list)),
             allowNull: false,
-            defaultValue: constents.notification_status_flags.default
+            defaultValue: constents.quiz_question_level_flags.default
+        },
+        status: {
+            type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            allowNull: false,
+            defaultValue: constents.common_status_flags.default
         },
         created_by: {
             type: DataTypes.INTEGER,
@@ -79,9 +109,12 @@ question.init(
     },
     {
         sequelize: db,
-        tableName: 'questions',
+        tableName: 'quiz_question',
         timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'
     }
 );
+
+quiz_question.belongsTo(quiz,{foreignKey:'quiz_id'})
+quiz.hasMany(quiz_question,{foreignKey:'quiz_id'})

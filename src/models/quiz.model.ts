@@ -1,9 +1,16 @@
-import { DataTypes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
 import quizAttribute from '../interfaces/quiz.model.interface';
 import db from '../utils/dbconnection.util';
 
-export class quiz extends Model<quizAttribute> {
+export class quiz extends Model<InferAttributes<quiz>,InferCreationAttributes<quiz>> {
+    declare quiz_id: CreationOptional<number>;
+    declare no_of_question: number;
+    declare status: Enumerator;
+    declare created_by: number;
+    declare created_at: Date;
+    declare updated_by: number;
+    declare updated_at: Date;
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -22,19 +29,7 @@ quiz.init(
             autoIncrement: true,
             primaryKey: true
         },
-        quiz_name: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        category: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
         no_of_question: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        cut_off: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
@@ -67,7 +62,7 @@ quiz.init(
     },
     {
         sequelize: db,
-        tableName: 'quizzes',
+        tableName: 'quiz',
         timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'
