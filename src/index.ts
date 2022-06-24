@@ -10,7 +10,6 @@ import VideoController from "./controllers/video.controller";
 import TeamController from "./controllers/team.controller";
 import CourseModulesController from "./controllers/courseModule.controller";
 import CourseTopicController from "./controllers/courseTopic.controller";
-import CourseVideoController from "./controllers/courseVideo.controller";
 import WorksheetController from "./controllers/worksheet.controller";
 import UserTopicProgress from "./controllers/userTopicProgress.controller";
 
@@ -28,7 +27,6 @@ try {
         new VideoController,
         new TeamController,
         new CourseTopicController,
-        new CourseVideoController,
         new WorksheetController,
         new UserTopicProgress,
     ], Number(process.env.APP_PORT));

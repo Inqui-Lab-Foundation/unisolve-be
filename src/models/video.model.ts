@@ -1,14 +1,23 @@
-import { DataTypes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
-import { courseVideosAttributes } from '../interfaces/model.interface';
 import { constents } from '../configs/constents.config';
 
 
-export class course_video extends Model<courseVideosAttributes> { }
+export class video extends Model<InferAttributes<video>,InferCreationAttributes<video>> { 
 
-course_video.init(
+    declare video_id: CreationOptional<number>;
+    declare video_stream_id: string;
+    declare status: Enumerator;
+    declare created_by: number;
+    declare created_at: Date;
+    declare updated_by: number;
+    declare updated_at: Date;
+
+}
+
+video.init(
     {
-        course_video_id: {
+        video_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true

@@ -21,15 +21,15 @@ export interface teamAttributes {
     updated_by: number;
     updated_at: Date;
 }
-export interface courseVideosAttributes {
-    course_video_id: number;
-    video_stream_id: string;
-    status: Enumerator;
-    created_by: number;
-    created_at: Date;
-    updated_by: number;
-    updated_at: Date;
-}
+// export interface courseVideosAttributes {
+//     course_video_id: number;
+//     video_stream_id: string;
+//     status: Enumerator;
+//     created_by: number;
+//     created_at: Date;
+//     updated_by: number;
+//     updated_at: Date;
+// }
 
   // export interface userTopicProgressAttributes {
   //   user_topic_progress_id: number;

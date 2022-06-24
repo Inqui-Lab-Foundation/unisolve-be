@@ -2,10 +2,10 @@ import { Migration } from '../umzug';
 import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
 
-const tableName = "course_videos";
+const tableName = "videos";
 export const up: Migration = async ({ context: sequelize }) => {
 	await sequelize.getQueryInterface().createTable(tableName, {
-        course_video_id: {
+        video_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true

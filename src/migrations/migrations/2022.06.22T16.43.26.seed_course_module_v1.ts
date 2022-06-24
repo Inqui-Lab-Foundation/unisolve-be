@@ -106,7 +106,7 @@ async function createCourseWorksheet(sequelize:any,arg_title:string,arg_attachme
 }
 
 async function createCourseVideo(sequelize:any,arg_video_stream_id:string){
-	const courseVideoInsterted = await sequelize.getQueryInterface().bulkInsert('course_videos',[
+	const courseVideoInsterted = await sequelize.getQueryInterface().bulkInsert('videos',[
 		{
 			video_stream_id: arg_video_stream_id,
 			created_by: 1,
