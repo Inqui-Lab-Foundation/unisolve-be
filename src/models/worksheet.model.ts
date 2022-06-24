@@ -1,10 +1,17 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
-import courseWorksheetsAttribute from '../interfaces/courseWorksheets.model.interface.';
-import worksheetAttribute from '../interfaces/courseWorksheets.model.interface.';
 import db from '../utils/dbconnection.util';
 
-export class course_worksheet extends Model<courseWorksheetsAttribute> {
+export class worksheet extends Model<InferAttributes<worksheet>,InferCreationAttributes<worksheet>> {
+    declare worksheet_id: number;
+    declare description: string;
+    declare attachments: string;
+    declare status: Enumerator;
+    declare created_by: number;
+    declare created_at: Date;
+    declare updated_by: number;
+    declare updated_at: Date;
+    
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -16,16 +23,12 @@ export class course_worksheet extends Model<courseWorksheetsAttribute> {
     // }
 }
 
-course_worksheet.init(
+worksheet.init(
     {
-        course_worksheet_id: {
+        worksheet_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
-        },
-        worksheet_title: {
-            type: DataTypes.TEXT,
-            allowNull: false
         },
         description: {
             type: DataTypes.TEXT('long'),

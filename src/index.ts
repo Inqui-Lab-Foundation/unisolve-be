@@ -11,7 +11,7 @@ import TeamController from "./controllers/team.controller";
 import CourseModulesController from "./controllers/courseModule.controller";
 import CourseTopicController from "./controllers/courseTopic.controller";
 import CourseVideoController from "./controllers/courseVideo.controller";
-import CourseWorksheetController from "./controllers/courseWorksheet.controller";
+import WorksheetController from "./controllers/worksheet.controller";
 import UserTopicProgress from "./controllers/userTopicProgress.controller";
 
 // validating env variables
@@ -29,7 +29,7 @@ try {
         new TeamController,
         new CourseTopicController,
         new CourseVideoController,
-        new CourseWorksheetController,
+        new WorksheetController,
         new UserTopicProgress,
     ], Number(process.env.APP_PORT));
     // starting app

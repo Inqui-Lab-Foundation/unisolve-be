@@ -83,7 +83,7 @@ async function createCourseTopicAlongWithAssociations(sequelize:any,arg_course_m
 	if(arg_topic_type=='VIDEO'){
 		idOfTypeInserted = await createCourseVideo(sequelize,arg_title.split(" ")[1])
 	}else if(arg_topic_type=='WORKSHEET'){
-		idOfTypeInserted = await createCourseWorksheet(sequelize,title,arg_attachments)
+		idOfTypeInserted = await createCourseWorksheet(sequelize,arg_title,arg_attachments)
 	}
 
 	const idOfCourseTopicInserted = await createCourseTopic(sequelize,arg_course_module_id,idOfTypeInserted,arg_topic_type,arg_title)
@@ -93,9 +93,9 @@ async function createCourseTopicAlongWithAssociations(sequelize:any,arg_course_m
 
 
 async function createCourseWorksheet(sequelize:any,arg_title:string,arg_attachments:string){
-	const courseWsInsterted = await sequelize.getQueryInterface().bulkInsert('course_worksheets',[
+	const courseWsInsterted = await sequelize.getQueryInterface().bulkInsert('worksheets',[
 		{
-			worksheet_title: arg_title,
+			
 			attachments:arg_attachments,
 			created_by: 1,
 			updated_by: 1,

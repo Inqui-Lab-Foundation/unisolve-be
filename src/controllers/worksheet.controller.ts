@@ -1,17 +1,17 @@
 
-import { courseWorksheetSchema, courseWorksheetUpdateSchema } from "../validations/courseWorksheet.validations";
+import { worksheetSchema, worksheetUpdateSchema } from "../validations/worksheet.validations";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
 
-export default class CourseWorksheetController extends BaseController {
+export default class WorksheetController extends BaseController {
 
-    model = "course_worksheet";
+    model = "worksheet";
 
     protected initializePath(): void {
-        this.path = '/courseWorksheets';
+        this.path = '/worksheets';
     }
     protected initializeValidations(): void {
-        this.validations =  new ValidationsHolder(courseWorksheetSchema,courseWorksheetUpdateSchema);
+        this.validations =  new ValidationsHolder(worksheetSchema,worksheetUpdateSchema);
     }
     protected initializeRoutes(): void {
         //example route to add 

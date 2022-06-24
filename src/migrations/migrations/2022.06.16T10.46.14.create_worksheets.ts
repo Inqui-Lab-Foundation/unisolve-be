@@ -3,17 +3,13 @@ import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
 import { table } from 'console';
 
-const tableName = "course_worksheets";
+const tableName = "worksheets";
 export const up: Migration = async ({ context: sequelize }) => {
 	await sequelize.getQueryInterface().createTable(tableName, {
-		course_worksheet_id: {
+		worksheet_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
-        },
-        worksheet_title: {
-            type: DataTypes.TEXT,
-            allowNull: false
         },
         description: {
             type: DataTypes.TEXT('long'),
