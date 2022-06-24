@@ -1,139 +1,126 @@
-import { badRequestError, notAcceptableError, unauthorizedError } from "./errors";
+import { badRequestError, unauthorizedError } from "./errors";
 
-export const registrationRequestBody = {
+export const createCourseTopicRequestBody = {
     type: 'object',
     properties: {
-        email: {
+        course_module_id: {
             type: 'string',
-            example: 'admin@inqui-lab.org',
-            describe: 'mandatory field'
+            example: '1',
         },
-        password: {
+        topic_type_id: {
             type: 'string',
-            example: '12345678910',
-            describe: 'mandatory field'
+            example: '1',
         },
-        mobile: {
+        topic_type: {
             type: 'string',
-            example: '8654793625',
-            describe: 'mandatory field'
+            example: 'VIDEO',
         },
-        qualification: {
+        title: {
             type: 'string',
-            example: 'inqui-labs foundation',
-            describe: 'mandatory field'
-        },
-        created_by: {
-            type: 'number',
-            example: '1233423989',
-            describe: 'mandatory field'
-        },
-    },
+            example: 'video 1',
+        }
+    }
 };
-export const loginRequestBody = {
+export const courseTopicUpdatesRequestBody = {
     type: 'object',
     properties: {
-        email: {
+        status: {
             type: 'string',
-            example: 'admin@inqui-lab.org',
-        },
-        password: {
-            type: 'string',
-            example: '12345678910',
+            example: 'COMPLETED',
         }
     },
 };
-export const changePasswordRequestBody = {
+export const courseTopicProgressRequestBody = {
     type: 'object',
     properties: {
         user_id: {
             type: 'string',
-            example: '2',
+            example: '1',
         },
-        oldPassword: {
+        course_topic_id: {
             type: 'string',
-            example: '33a4da31c6569c14921f7b068a94b18e',
+            example: '1',
         },
-        newPassword: {
+        status: {
             type: 'string',
-            example: '17d3f297d157cfa29bd7fa04023bc56f',
-        }
-    },
-};
-export const dynamicSignupFormRequestBody = {
-    type: 'object',
-    properties: {
-        studentName: {
-            type: 'boolean',
-            example: 'true',
-        },
-        email: {
-            type: 'boolean',
-            example: 'true',
-        },
-        phNumber: {
-            type: 'boolean',
-            example: 'false',
+            example: 'COMPLETED',
         }
     },
 };
 
-export const dynamicSignupFormResponseBody = {
-    type: 'object',
-    properties: {
-        message: {
-            type: 'object',
-            example: {
-                'studentName': {
-                    type: 'text',
-                    name: 'studentName',
-                    required: true,
-                    selected: true,
-                    value: 'name'
-                },
-                'email': {
-                    type: 'text',
-                    name: 'email',
-                    required: true,
-                    selected: true,
-                    value: 'name'
-                },
-                'phNumber': {
-                    type: 'number',
-                    name: 'phNumber',
-                    required: false,
-                    selected: true,
-                    value: 'number'
-                }
-            }
-        }
-    }
-}
-
-export const registration = {
-    tags: ['Authentication'],
-    description: 'Endpoint for registering the new member, user role default create a ADMIN, please use the role filed for the create different levels of user, list: ( ADMIN, STUDENT, MENTOR, EVALUATOR )',
+export const createCourseTopic = {
+    tags: ['Course Topics'],
+    description: 'Endpoint for creating new Topics',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
     requestBody: {
         required: true,
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/registrationRequestBody'
+                    $ref: '#/components/schemas/createCourseTopicRequestBody'
                 },
             },
         },
     },
     responses: {
         '201': {
+            description: 'Created',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const courseTopicList = {
+    tags: ['Course Topics'],
+    description: 'Endpoint for getting list of Topics created',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    responses: {
+        '200': {
             description: 'Success',
             content: {
-                'application/ json': {
+                'applications/json': {
                     schema: {
-                        type: 'object',
                         properties: {
                             status: {
                                 type: 'number',
-                                example: '201'
+                                example: '200'
                             },
                             status_typeL: {
                                 type: 'string',
@@ -141,7 +128,7 @@ export const registration = {
                             },
                             message: {
                                 type: 'string',
-                                example: 'User registered successfully'
+                                example: 'OK'
                             },
                             count: {
                                 type: 'number',
@@ -156,30 +143,36 @@ export const registration = {
                 }
             }
         },
-        '400': badRequestError,
-        '406': notAcceptableError
+        '401': unauthorizedError,
+        '404': badRequestError
     }
 }
-export const login = {
-    tags: ['Authentication'],
-    description: 'Endpoint for member login and issues the token',
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/loginRequestBody'
-                },
-            },
+export const courseTopicById = {
+    tags: ['Course Topics'],
+    description: 'Endpoint for getting single Topics',
+    security: [
+        {
+            bearerAuth: [],
         },
-    },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'topic_id',
+            schema: {
+                type: 'integer',
+                default: 1
+            },
+            required: true,
+            description: "Add topicId to fetch specify Topics",
+        }
+    ],
     responses: {
         '200': {
-            description: 'success',
+            description: 'Success',
             content: {
-                'application/json': {
+                'applications/json': {
                     schema: {
-                        type: 'object',
                         properties: {
                             status: {
                                 type: 'number',
@@ -191,7 +184,7 @@ export const login = {
                             },
                             message: {
                                 type: 'string',
-                                example: 'login successfully'
+                                example: 'OK'
                             },
                             count: {
                                 type: 'number',
@@ -199,49 +192,20 @@ export const login = {
                             },
                             data: {
                                 type: 'array',
-                                example: [{ 'token': '', 'type': 'Bearer', 'expire': '3d' }]
-                            }
+                                example: ['object']
+                            } 
                         }
                     }
                 }
             }
         },
         '401': unauthorizedError,
-        '400': badRequestError
-    },
-
-}
-export const logout = {
-    tags: ['Authentication'],
-    description: 'Endpoint for clearing the member session',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    responses: {
-        '202': {
-            description: 'Accepted',
-            content: {
-                'application/json': {
-                    schema: {
-                        type: 'object',
-                        properties: {
-                            message: {
-                                type: 'string',
-                                example: 'cleared session successfully'
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        '401': unauthorizedError
+        '404': badRequestError
     }
 }
-export const create_dynamicSignupForm = {
-    tags: ['Authentication'],
-    description: 'Endpoint for creating a json file in the server with the requested flieds',
+export const courseTopicByIdUpdate = {
+    tags: ['Course Topics'],
+    description: 'Endpoint for updating the specific Topics',
     security: [
         {
             bearerAuth: [],
@@ -252,57 +216,22 @@ export const create_dynamicSignupForm = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/dynamicSignupFormRequestBody'
+                    $ref: '#/components/schemas/courseTopicUpdatesRequestBody'
                 },
             },
         },
     },
-    responses: {
-        '200': {
-            description: 'success',
-            content: {
-                'application/json': {
-                    schema: {
-                        type: 'object',
-                        properties: {
-                            status: {
-                                type: 'number',
-                                example: '200'
-                            },
-                            status_typeL: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'Successfully created'
-                            },
-                            count: {
-                                type: 'number',
-                                example: 1
-                            },
-                            data: {
-                                type: 'array',
-                                example: [
-                                    'object'
-                                ]
-                            }
-                        }
-                    }
-                }
-            },
-        },
-        '401': unauthorizedError,
-        '406': notAcceptableError
-    }
-}
-export const get_dynamicSignupForm = {
-    tags: ['Authentication'],
-    description: 'Endpoint for getting json file created from the server',
-    security: [
+    parameters: [
         {
-            bearerAuth: [],
-        },
+            in: 'path',
+            name: 'topic_id',
+            schema: {
+                type: 'integer',
+                default: 2
+            },
+            required: true,
+            description: "Add topicId to update specify  Topics",
+        }
     ],
     responses: {
         '200': {
@@ -310,7 +239,6 @@ export const get_dynamicSignupForm = {
             content: {
                 'application/json': {
                     schema: {
-                        type: 'object',
                         properties: {
                             status: {
                                 type: 'number',
@@ -322,7 +250,7 @@ export const get_dynamicSignupForm = {
                             },
                             message: {
                                 type: 'string',
-                                example: 'file found'
+                                example: 'OK'
                             },
                             count: {
                                 type: 'number',
@@ -337,12 +265,69 @@ export const get_dynamicSignupForm = {
                 }
             }
         },
-        '401': unauthorizedError
+        '401': unauthorizedError,
+        '404': badRequestError
     }
 }
-export const changePassword = {
-    tags: ['Authentication'],
-    description: 'Endpoint for updating the admin member password field',
+export const courseTopicByIdDelete = {
+    tags: ['Courses'],
+    description: 'Endpoint for removing a single Topics category',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    parameters: [
+        {
+            in: 'path',
+            name: 'topicId',
+            schema: {
+                type: 'integer',
+                default: 2
+            },
+            required: true,
+            description: "Add topicId to delete specify Topics",
+        }
+    ],
+    responses: {
+        '200': {
+            description: 'success',
+            content: {
+                'application/json': {
+                    schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const courseTopicProgress = {
+    tags: ['Course Topics'],
+    description: 'Endpoint for updating the topic progress',
     security: [
         {
             bearerAuth: [],
@@ -353,38 +338,38 @@ export const changePassword = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/adminChangePasswordRequestBody'
+                    $ref: '#/components/schemas/courseTopicProgressRequestBody'
                 },
             },
         },
     },
     responses: {
-        '202': {
-            description: 'Accepted',
+        '201': {
+            description: 'Created',
             content: {
                 'application/json': {
                     schema: {
                         type: 'object',
                         properties: {
                             status: {
-                                type: 'string',
-                                example: '202'
+                                type: 'number',
+                                example: '200'
                             },
-                            status_type: {
+                            status_typeL: {
                                 type: 'string',
                                 example: 'success'
                             },
                             message: {
                                 type: 'string',
-                                example: 'User password Updated'
+                                example: 'OK'
                             },
                             count: {
-                                type: 'string',
-                                example: 'null'
+                                type: 'number',
+                                example: 1
                             },
                             data: {
                                 type: 'array',
-                                example: [1]
+                                example: ['object']
                             }
                         }
                     }
@@ -392,6 +377,6 @@ export const changePassword = {
             }
         },
         '401': unauthorizedError,
-        '404': notAcceptableError
+        '404': badRequestError
     }
 }
