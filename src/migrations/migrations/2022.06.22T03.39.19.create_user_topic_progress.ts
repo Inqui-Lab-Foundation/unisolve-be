@@ -3,7 +3,7 @@ import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
 
 // you can put some table-specific imports/code here
-export const tableName = "user_ctopic_progress";
+export const tableName = "user_topic_progress";
 export const up: Migration = async ({ context: sequelize }) => {
 	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
 	//or below implementation 

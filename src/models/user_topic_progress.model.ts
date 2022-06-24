@@ -1,12 +1,21 @@
 
-import {  DataTypes, Model } from 'sequelize';
+import {  CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import db from '../utils/dbconnection.util';
-import { userCtopicProgressAttributes } from '../interfaces/model.interface';
+// import { userTopicProgressAttributes } from '../interfaces/model.interface';
 import { course_topic } from './course_topic.model';
 import { user } from './user.model';
 import { constents } from '../configs/constents.config';
 
-export class user_ctopic_progress extends Model<userCtopicProgressAttributes> {
+export class user_topic_progress extends Model<InferAttributes<user_topic_progress>,InferCreationAttributes<user_topic_progress>> {
+    declare user_topic_progress_id: CreationOptional<number>;
+    declare user_id: ForeignKey<number>;
+    declare course_topic_id: ForeignKey<number>;
+    declare status: Enumerator;
+    declare created_by: number;
+    declare created_at: Date;
+    declare updated_by: number;
+    declare updated_at: Date;
+
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -20,9 +29,9 @@ export class user_ctopic_progress extends Model<userCtopicProgressAttributes> {
 
     
 }
-user_ctopic_progress.init(
+user_topic_progress.init(
     {
-      user_ctopic_progress_id: {
+      user_topic_progress_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -63,12 +72,12 @@ user_ctopic_progress.init(
     },
     {
         sequelize: db,
-        tableName: 'user_ctopic_progress'
+        tableName: 'user_topic_progress'
     }
 );
 
 //TODO:call associate method is any association is defined
-  user_ctopic_progress.belongsTo(course_topic,{foreignKey:'course_topic_id'})
-  user_ctopic_progress.belongsTo(user,{foreignKey:'user_id'})
-  user.hasMany(user_ctopic_progress,{foreignKey:'user_id'})
-  course_topic.hasMany(user_ctopic_progress,{foreignKey:'user_id', as:'progress'})
+  user_topic_progress.belongsTo(course_topic,{foreignKey:'course_topic_id'})
+  user_topic_progress.belongsTo(user,{foreignKey:'user_id'})
+  user.hasMany(user_topic_progress,{foreignKey:'user_id'})
+  course_topic.hasMany(user_topic_progress,{foreignKey:'user_id', as:'progress'})
