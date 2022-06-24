@@ -109,7 +109,7 @@ quiz_question.init(
     },
     {
         sequelize: db,
-        tableName: 'quiz_question',
+        tableName: 'quiz_questions',
         timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'
