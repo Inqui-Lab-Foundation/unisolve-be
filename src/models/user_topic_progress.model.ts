@@ -72,7 +72,10 @@ user_topic_progress.init(
     },
     {
         sequelize: db,
-        tableName: 'user_topic_progress'
+        tableName: 'user_topic_progress',
+        timestamps: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
     }
 );
 
