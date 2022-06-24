@@ -8,7 +8,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
 	//or below implementation 
 	await sequelize.getQueryInterface().createTable(tableName, {
-		user_ctopic_progress_id: {
+		user_topic_progress_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
