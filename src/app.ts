@@ -10,7 +10,7 @@ import compression from "compression";
 import swaggerUi from 'swagger-ui-express';
 import path from "path";
 import bodyParser from "body-parser";
-import formData  from "express-form-data";
+import formData from "express-form-data";
 import os from "os";
 import IController from "./interfaces/controller.interface";
 import routeProtectionMiddleware from "./middlewares/routeProtection.middleware";
@@ -20,7 +20,7 @@ import logIt from "./utils/logit.util";
 import database from "./utils/dbconnection.util";
 import { options } from "./docs/options";
 import { speeches } from "./configs/speeches.config";
-import * as errorHandler  from "./middlewares/errorHandler.middleware";
+import * as errorHandler from "./middlewares/errorHandler.middleware";
 import { constents } from "./configs/constents.config";
 
 export default class App {
@@ -47,12 +47,13 @@ export default class App {
     }
     private doLogIt(flag: string) {
         this.app.use(async (req: Request, res: Response, next: NextFunction) => {
-            await logIt(flag, ((flag==constents.log_levels.list.INBOUND)? "Inbound request" : "Outbound responce"), req, res);
+            await logIt(flag, ((flag == constents.log_levels.list.INBOUND) ? "Inbound request" : "Outbound responce"), req, res);
             next();
         });
     }
 
     private initializeDatabase(): void {
+        console.log('name', process.env.DB_NAME, 'user', process.env.DB_USER)
         database.sync()
             // .then(() => logger.info("Connected to the Database successfully"))
             .then(async () => {
@@ -95,10 +96,10 @@ export default class App {
     }
 
     private serveStaticFiles(): void {
-        this.app.use("/assets", express.static(path.join(process.cwd(), 'resources', 'static','uploads')));
-        this.app.use("/courses", express.static(path.join(process.cwd(), 'resources', 'static','uploads','courses')));
-        this.app.use("/posters", express.static(path.join(process.cwd(), 'resources', 'static','uploads','posters')));
-        this.app.use("/images", express.static(path.join(process.cwd(), 'resources', 'static','uploads','images')));
+        this.app.use("/assets", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads')));
+        this.app.use("/courses", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'courses')));
+        this.app.use("/posters", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'posters')));
+        this.app.use("/images", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'images')));
     }
 
     private initializeDocs(): void {
@@ -153,16 +154,17 @@ export default class App {
         this.app.use(errorHandler.notFound);
 
         // Catch unhandled rejections
-        this.app.use((req: Request, res:Response, next: NextFunction) => {
+        this.app.use((req: Request, res: Response, next: NextFunction) => {
             process.on('UnhandledRejection', async err => {
                 await logIt(constents.log_levels.list.ERROR, `Unhandled rejection. Error-object: ${err}`);
                 res.send(err).end()
             });
         });
-        
+
         // Catch uncaught exceptions
-        this.app.use((req: Request, res:Response, next: NextFunction) => {
-            process.on('Uncaught exception', async err => {;
+        this.app.use((req: Request, res: Response, next: NextFunction) => {
+            process.on('Uncaught exception', async err => {
+                ;
                 await logIt(constents.log_levels.list.ERROR, `Uncaught exception. Error-object: ${err}`);
                 res.send(err).end()
             });
@@ -182,7 +184,7 @@ export default class App {
             }
         });
         console.log(
-`=================================================================
+            `=================================================================
 Available Routes:
 =================================================================`);
         console.log(`Base Path: http://localhost:${this.port}/api/v1`);
@@ -192,7 +194,7 @@ Available Routes:
         console.table(routes);
     }
 
-    public  listen(): void {
+    public listen(): void {
         this.app.listen(this.port, async () => {
             await logIt(constents.log_levels.list.INFO, `App is running at http://${process.env.APP_HOST_NAME}:${this.port}`);
 

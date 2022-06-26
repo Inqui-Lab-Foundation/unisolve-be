@@ -13,6 +13,8 @@ export const speeches = {
     UPLOAD_FAILD: "File upload failed",
 
     USER_NOT_FOUND: "User not found",
+    USER_PASSWORD: "User password doesn't match",
+    USER_PASSWORD_CHANGE: "User password updated",
     USER_RISTRICTED: "Unauthorized Access!",
     USER_DELETED: "User is ditected as deleted. Kindly contact your administrator.",
     USER_LOCKED: "User is ditected as locked. Kindly contact your administrator.",

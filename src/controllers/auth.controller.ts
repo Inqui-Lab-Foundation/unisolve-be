@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import e, { Router, Request, Response, NextFunction } from 'express';
 import { Op } from 'sequelize';
 import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
@@ -31,7 +31,8 @@ export default class AuthController implements IController {
         this.router.post(`${this.path}/login`, validationMiddleware(authValidations.login), this.login);
         this.router.get(`${this.path}/logout`, this.logout);
         this.router.post(`${this.path}/register`, validationMiddleware(authValidations.register), this.register);
-        this.router.post(`${this.path}/dynamicSignupForm`, this.dynamicSignupForm);
+        this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword);
+        this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm), this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
     }
 
@@ -42,27 +43,39 @@ export default class AuthController implements IController {
 
     private login = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const user_res: any = await this.crudService.findOne(user, { where: { 
-                email: req.body.email, 
-                password: await bcrypt.hashSync(req.body.password, process.env.SALT || baseConfig.SALT)
-            } });
+            const user_res: any = await this.crudService.findOne(user, {
+                where: {
+                    email: req.body.email,
+                    password: await bcrypt.hashSync(req.body.password, process.env.SALT || baseConfig.SALT)
+                }
+            });
             if (!user_res) {
                 return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
             } else {
                 // user status checking
                 let stop_procedure: boolean = false;
                 let error_message: string = '';
-
-                if (user_res.status == 'DELETED') {
-                    stop_procedure = true;
-                    error_message = speeches.USER_DELETED;
-                } else if (user_res.status == 'LOCKED') {
-                    stop_procedure = true;
-                    error_message = speeches.USER_LOCKED;
-                } else if (user_res.status == 'INACTIVE') {
-                    stop_procedure = true;
-                    error_message = speeches.USER_INACTIVE;
+                switch (user_res.status) {
+                    case 'DELETED':
+                        stop_procedure = true;
+                        error_message = speeches.USER_DELETED;
+                    case 'LOCKED':
+                        stop_procedure = true;
+                        error_message = speeches.USER_LOCKED;
+                    case 'INACTIVE':
+                        stop_procedure = true;
+                        error_message = speeches.USER_INACTIVE
                 }
+                // if (user_res.status == 'DELETED' {
+                //     stop_procedure = true;
+                //     error_message = speeches.USER_DELETED;
+                // } else if (user_res.status == 'LOCKED') {
+                //     stop_procedure = true;
+                //     error_message = speeches.USER_LOCKED;
+                // } else if (user_res.status == 'INACTIVE') {
+                //     stop_procedure = true;
+                //     error_message = speeches.USER_INACTIVE;
+                // }
                 if (stop_procedure) {
                     return res.status(401).send(dispatcher(error_message, 'error', speeches.USER_RISTRICTED, 401));
                 }
@@ -141,6 +154,38 @@ export default class AuthController implements IController {
         }
     }
 
+    private changePassword = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const user_res: any = await this.crudService.findOnePassword(user, {
+                where: {
+                    [Op.or]: [
+                        {
+                            email: { [Op.eq]: req.body.email }
+                        },
+                        {
+                            user_id: { [Op.like]: `%${req.body.user_id}%` }
+                        }
+                    ]
+                }
+            });
+            if (!user_res) {
+                return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
+            }
+            //comparing the password with hash
+            const match = bcrypt.compareSync(req.body.old_password, user_res.dataValues.password);
+            if (match === false) {
+                return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_PASSWORD));
+            } else {
+                const result = await this.crudService.update(user, {
+                    password: await bcrypt.hashSync(req.body.new_password, process.env.SALT || baseConfig.SALT)
+                }, { where: { user_id: user_res.dataValues.user_id } });
+                return res.status(202).send(dispatcher(result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+
     private dynamicSignupForm = async (req: Request, res: Response, next: NextFunction):
         Promise<Response | void> => {
         try {
@@ -148,7 +193,7 @@ export default class AuthController implements IController {
             if (result.length <= 0) {
                 return res.status(406).send(dispatcher(speeches.FILE_EMPTY, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
-            writeFileSync(path.join(process.cwd(), 'src', 'configs', 'singUp.json'), JSON.stringify(result), {
+            writeFileSync(path.join(process.cwd(), 'resources', 'configs', 'singUp.json'), JSON.stringify(result), {
                 encoding: "utf8",
                 flag: "w",
                 mode: 0o666
@@ -161,17 +206,17 @@ export default class AuthController implements IController {
 
     private getSignUpConfig = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         const options = {
-            root: path.join(process.cwd(), 'src', 'configs'),
+            root: path.join(process.cwd(), 'resources', 'configs'),
             headers: {
                 'x-timestamp': Date.now(),
                 'x-sent': true
             }
         };
-        const filePath = path.join(process.cwd(), 'src', 'configs', 'singUp.json');
+        const filePath = path.join(process.cwd(), 'resources', 'configs', 'singUp.json');
         if (filePath === 'Error') {
             return res.status(404).send(dispatcher(speeches.FILE_EMPTY, 'error', speeches.DATA_NOT_FOUND));
         }
-        const file: any = readFileSync(path.join(process.cwd(), 'src', 'configs', 'singUp.json'), {
+        const file: any = readFileSync(path.join(process.cwd(), 'resources', 'configs', 'singUp.json'), {
             encoding: 'utf8',
             flag: 'r'
         })

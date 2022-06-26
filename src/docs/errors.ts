@@ -64,6 +64,43 @@ export const badRequestError = {
     }
 }
 
+export const notFoundError = {
+    description: 'Not found',
+    content: {
+        'application/json': {
+            schema: {
+                type: "object",
+                properties: {
+                    status: {
+                        type: 'number',
+                        example: '404'
+                    },
+                    status_typeL: {
+                        type: 'string',
+                        example: 'error'
+                    },
+                    message: {
+                        type: 'string',
+                        example: 'Unauthorized Access! Kindly provide a valid token'
+                    },
+                    count: {
+                        type: 'number',
+                        example: 1
+                    },
+                    data: {
+                        type: 'array',
+                        example: [{
+                            "status": "",
+                            "status_type": "",
+                            "message": ""
+                        }]
+                    }
+                }
+            }
+        }
+    }
+}
+
 export const unauthorizedError = {
     description: 'unauthorized Request',
     content: {
