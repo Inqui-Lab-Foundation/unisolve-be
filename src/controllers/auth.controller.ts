@@ -83,8 +83,8 @@ export default class AuthController implements IController {
                     is_loggedin: "YES",
                     last_login: new Date().toLocaleString()
                 }, { where: { user_id: user_res.user_id } });
-                
-                user_res.is_loggedin= "YES";
+
+                user_res.is_loggedin = "YES";
                 const token = await jwtUtil.createToken(user_res.dataValues, `${process.env.PRIVATE_KEY}`);
 
                 // await sendNotification({
@@ -96,7 +96,7 @@ export default class AuthController implements IController {
                 //     status: constents.notification_status_flags.list.PUBLISHED,
                 //     created_by: user_res.user_id
                 // });
-                
+
                 // await sendNotification({
                 //     notification_type: constents.notification_types.list.EMAIL,
                 //     target_audience: user_res.email, // Keep 'ALL' for all users
@@ -186,8 +186,7 @@ export default class AuthController implements IController {
         }
     }
 
-    private dynamicSignupForm = async (req: Request, res: Response, next: NextFunction):
-        Promise<Response | void> => {
+    private dynamicSignupForm = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const result: any = dynamicForm.getFormObject(req.body);
             if (result.length <= 0) {
