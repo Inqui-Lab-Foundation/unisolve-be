@@ -45,7 +45,7 @@ export default class CRUDController implements IController {
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             let data: any;
-            const { model, id } = req.params;
+            const { model, id, } = req.params;
             if (model) {
                 this.model = model;
             };

@@ -44,6 +44,10 @@ import {
 } from "./crud.api.docs";
 import { createTeam, teamByIdDelete, teamsById, teamsByIdUpdate, teamsList, createTeamRequestBody, teamUpdatesRequestBody } from "./team.api.docs";
 import { notificationsTome, notificationWithPoster, notification, notificationsWithPosterRequestBody, notificationsRequestBody } from "./notification.api.docs";
+import {
+    createWorksheetRequestBody,
+    worksheetUpdatesRequestBody, createWorksheet, worksheetById, worksheetByIdUpdate, worksheetList, WorksheetsByIdDelete
+} from "./worksheets.api.docs";
 
 // define Swagger options with specific properties
 const options = {
