@@ -47,7 +47,38 @@ export default class CourseController extends BaseController {
                 data = await this.getDetailsData(req, res, modelClass)
             } else {
                 where[`${this.model}_id`] = req.params.id;
-                data = await this.crudService.findAll(modelClass);
+                // data = await this.crudService.findAll(modelClass);
+                data = await  modelClass.findAll({
+                    attributes: {
+                        include: [
+                            [// Note the wrapping parentheses in the call below!
+                                db.literal(`(
+                                    SELECT COUNT(*)
+                                    FROM course_modules AS cm
+                                    WHERE
+                                        cm.course_id = \`course\`.\`course_id\`
+                                )`),
+                                'course_modules_count'
+                            ],
+                            [// Note the wrapping parentheses in the call below!
+                            db.literal(`(
+                                SELECT COUNT(*)
+                                FROM course_topics AS ct
+                                JOIN course_modules as cm on cm.course_module_id = ct.course_module_id
+                                WHERE
+                                    cm.course_id = \`course\`.\`course_id\`
+                                AND
+                                    ct.topic_type = \"VIDEO\"
+                            )`),
+                            'course_videos_count'
+                        ]
+                        ]
+                    }
+                });
+                data.filter(function (rec: any) {
+                    delete rec.dataValues.password;
+                    return rec;
+                });
             }
 
             if (!data) {
