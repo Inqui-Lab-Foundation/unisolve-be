@@ -19,7 +19,8 @@ export const up: Migration = async ({ context: sequelize }) => {
             allowNull: false
         },
         thumbnail: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            defaultValue:constents.default_image_path
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),

@@ -97,5 +97,7 @@ export const constents = {
       'QUIZ': 'QUIZ'
     },
     default: 'VIDEO',
-  }
+  },
+  default_image_path:"/images/default.jpg"
+
 };

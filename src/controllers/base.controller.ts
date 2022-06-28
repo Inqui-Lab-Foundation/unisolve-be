@@ -33,8 +33,8 @@ export default class BaseController extends CRUDController {
         this.router.put(`${this.path}/:id`, validationMiddleware(this.validations?.update), this.updateData.bind(this));
         this.router.delete(`${this.path}/:id`, this.deleteData.bind(this));
 
-        this.router.post(`${this.path}/withfile`, this.createDataWithFile.bind(this));
-        this.router.put(`${this.path}/:id/withfile`, this.updateDataWithFile.bind(this));
+        this.router.post(`${this.path}/withfile`,validationMiddleware(this.validations?.create), this.createDataWithFile.bind(this));
+        this.router.put(`${this.path}/:id/withfile`, validationMiddleware(this.validations?.update),this.updateDataWithFile.bind(this));
 
         if (aditionalrouts) {
             this.router.use(aditionalrouts);
