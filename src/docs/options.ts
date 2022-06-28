@@ -10,6 +10,17 @@ import {
     courseUpdatesRequestBody
 } from "./course.api.docs";
 import {
+    courseTopicList,
+    createCourseTopic,
+    courseTopicById,
+    courseTopicByIdUpdate,
+    courseTopicByIdDelete,
+    courseTopicProgress,
+    courseTopicProgressRequestBody,
+    createCourseTopicRequestBody,
+    courseTopicUpdatesRequestBody
+} from "./courseTopic.api.docs";
+import {
     moduleList,
     createModule,
     moduleById,
@@ -34,6 +45,8 @@ import {
     logout,
     registration,
     registrationRequestBody,
+    changePassword,
+    changePasswordRequestBody,
     loginRequestBody,
     dynamicSignupFormRequestBody
 } from "./auth.api.docs";
@@ -82,7 +95,13 @@ const options = {
             name: 'Courses',
         },
         {
-            name: 'Modules',
+            name: 'Course Modules',
+        },
+        {
+            name: 'Course Topics',
+        },
+        {
+            name: 'Worksheets',
         },
         {
             name: 'Videos',
@@ -105,17 +124,20 @@ const options = {
         '/api/v1/auth/register': {
             post: registration
         },
+        '/api/v1/auth/changePassword': {
+            put: changePassword
+        },
         '/api/v1/auth/login': {
             post: login
         },
         '/api/v1/auth/logout': {
             get: logout
         },
-        //crud
         '/api/v1/auth/dynamicSignupForm': {
             post: create_dynamicSignupForm,
             get: get_dynamicSignupForm
         },
+        //crud
         '/api/v1/crud/{model_name}': {
             post: createCrud,
             get: crudList
@@ -130,21 +152,21 @@ const options = {
             put: crudUpdateWithFile
         },
         //course
-        '/api/v1/course': {
+        '/api/v1/courses': {
             post: createCourse,
             get: courseList
         },
-        '/api/v1/course/{course_id}': {
+        '/api/v1/courses/{course_id}': {
             get: courseById,
             put: courseByIdUpdate,
             delete: courseByIdDelete
         },
-        //modules
-        '/api/v1/modules': {
+        //course modules
+        '/api/v1/courseModules': {
             post: createModule,
             get: moduleList
         },
-        '/api/v1/modules/{module_id}': {
+        '/api/v1/courseModules/{module_id}': {
             get: moduleById,
             put: moduleByIdUpdate,
             delete: moduleByIdDelete
@@ -158,6 +180,29 @@ const options = {
             get: videosById,
             put: videosByIdUpdate,
             delete: videosByIdDelete
+        },
+        //courseTopics
+        '/api/v1/courseTopics': {
+            post: createCourseTopic,
+            get: courseTopicList
+        },
+        '/api/v1/courseTopics/{topic_id}': {
+            get: courseTopicById,
+            put: courseTopicByIdUpdate,
+            delete: courseTopicByIdDelete
+        },
+        '/api/v1/userTopicProgress': {
+            post: courseTopicProgress
+        },
+        //worksheets
+        '/api/v1/worksheets': {
+            post: createWorksheet,
+            get: worksheetList
+        },
+        '/api/v1/worksheet/{worksheet_id}': {
+            get: worksheetById,
+            put: worksheetByIdUpdate,
+            delete: WorksheetsByIdDelete
         },
         //teams
         '/api/v1/teams/': {
@@ -191,14 +236,20 @@ const options = {
         schemas: {
             registrationRequestBody,
             loginRequestBody,
+            changePasswordRequestBody,
             dynamicSignupFormRequestBody,
             crudRequestBody,
             crudRequestBodyWithFile,
             crudUpdatesRequestBodyWithFile,
             createCourseRequestBody,
             courseUpdatesRequestBody,
+            createCourseTopicRequestBody,
+            courseTopicUpdatesRequestBody,
+            courseTopicProgressRequestBody,
             createModuleRequestBody,
             moduleUpdatesRequestBody,
+            createWorksheetRequestBody,
+            worksheetUpdatesRequestBody,
             createVideosRequestBody,
             videosUpdatesRequestBody,
             createTeamRequestBody,

@@ -2,28 +2,65 @@ import { Migration } from '../umzug';
 import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
 
-const tableName = "courses";
+// you can put some table-specific imports/code here
+export const tableName = "quiz_questions";
 export const up: Migration = async ({ context: sequelize }) => {
+	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
+	//or below implementation 
 	await sequelize.getQueryInterface().createTable(tableName, {
-		course_id: {
+		quiz_question_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        title: {
+        quiz_id: {
+            type: DataTypes.INTEGER,
+            allowNull:false,
+			references:{
+				model:'quiz',
+				key:'quiz_id'
+			}
+        },
+        category: {
             type: DataTypes.STRING,
+            allowNull: true
+        },
+        question: {
+            type: DataTypes.TEXT,
             allowNull: false
         },
-        description: {
-            type: DataTypes.STRING,
+        option_a: {
+            type: DataTypes.TEXT,
             allowNull: false
         },
-        thumbnail: {
-            type: DataTypes.STRING,
-            defaultValue:constents.default_image_path
+        option_b: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
+        option_c: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        option_d: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        correct_ans: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
+        redirect_to: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        level: {
+            type: DataTypes.ENUM(...Object.values(constents.quiz_question_level_flags.list)),
+            allowNull: false,
+            defaultValue: constents.quiz_question_level_flags.default
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            allowNull: false,
             defaultValue: constents.common_status_flags.default
         },
         created_by: {
@@ -51,5 +88,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
+	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
+	//or below implementation 
 	await sequelize.getQueryInterface().dropTable(tableName);
 };

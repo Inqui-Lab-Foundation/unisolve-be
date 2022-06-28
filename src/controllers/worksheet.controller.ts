@@ -1,17 +1,17 @@
 
-import { userCtopicProgressSchema, userCtopicProgressUpdateSchema,  } from "../validations/userCtopicProgress.validations";
+import { worksheetSchema, worksheetUpdateSchema } from "../validations/worksheet.validations";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
 
-export default class UserCtopicProgressController extends BaseController {
+export default class WorksheetController extends BaseController {
 
-    model = "user_ctopic_progress";
+    model = "worksheet";
 
     protected initializePath(): void {
-        this.path = '/userCtopicProgress';
+        this.path = '/worksheets';
     }
     protected initializeValidations(): void {
-        this.validations =  new ValidationsHolder(userCtopicProgressSchema,userCtopicProgressUpdateSchema);
+        this.validations =  new ValidationsHolder(worksheetSchema,worksheetUpdateSchema);
     }
     protected initializeRoutes(): void {
         //example route to add 

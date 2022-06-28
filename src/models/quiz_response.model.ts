@@ -1,9 +1,19 @@
-import { DataTypes, Model } from 'sequelize';
+import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
 import questionAttribute from '../interfaces/question.model.interface';
 import db from '../utils/dbconnection.util';
+import { quiz } from './quiz.model';
 
-export class question extends Model<questionAttribute> {
+export class quiz_response extends Model<InferAttributes<quiz_response>,InferCreationAttributes<quiz_response>> {
+   declare quiz_response_id: CreationOptional<number>;
+   declare quiz_id: ForeignKey<number>;
+   declare user_id: ForeignKey<number>;
+   declare response: string;
+   declare status: Enumerator;
+   declare created_by: number;
+   declare created_at: Date;
+   declare updated_by: number;
+   declare updated_at: Date;
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -15,45 +25,25 @@ export class question extends Model<questionAttribute> {
     // }
 }
 
-question.init(
+quiz_response.init(
     {
-        question_id: {
+        quiz_response_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        category: {
+        quiz_id: {
+            type: DataTypes.INTEGER,
+            allowNull:false
+        },
+        response: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        question: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        option_a: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        option_b: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        option_c: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        option_d: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        correct_ans: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
         status: {
-            type: DataTypes.ENUM(...Object.values(constents.notification_status_flags.list)),
+            type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
             allowNull: false,
-            defaultValue: constents.notification_status_flags.default
+            defaultValue: constents.common_status_flags.default
         },
         created_by: {
             type: DataTypes.INTEGER,
@@ -79,9 +69,11 @@ question.init(
     },
     {
         sequelize: db,
-        tableName: 'questions',
+        tableName: 'quiz_responses',
         timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'
     }
 );
+
+//todo: add associations.. here 

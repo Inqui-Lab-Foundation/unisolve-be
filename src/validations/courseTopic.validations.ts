@@ -4,6 +4,7 @@
   export const courseTopicSchema = Joi.object().keys({
       course_module_id: Joi.string().required(),
       topic_type_id: Joi.string().required(),
+      title: Joi.string().required(),
       topic_type: Joi.string().required().valid("VIDEO","WORKSHEET","QUIZ"),
   });
   

@@ -1,19 +1,27 @@
 import { badRequestError, unauthorizedError } from "./errors";
 
-export const createModuleRequestBody = {
+export const createCourseTopicRequestBody = {
     type: 'object',
     properties: {
-        course_id: {
+        course_module_id: {
             type: 'string',
-            example: '126546654695',
+            example: '1',
         },
-        description: {
+        topic_type_id: {
             type: 'string',
-            example: "a state of complete physical, mental and social well-being and not merely the absence of disease and infirmity"
+            example: '1',
+        },
+        topic_type: {
+            type: 'string',
+            example: 'VIDEO',
+        },
+        title: {
+            type: 'string',
+            example: 'video 1',
         }
     }
 };
-export const moduleUpdatesRequestBody = {
+export const courseTopicUpdatesRequestBody = {
     type: 'object',
     properties: {
         status: {
@@ -22,10 +30,27 @@ export const moduleUpdatesRequestBody = {
         }
     },
 };
+export const courseTopicProgressRequestBody = {
+    type: 'object',
+    properties: {
+        user_id: {
+            type: 'string',
+            example: '1',
+        },
+        course_topic_id: {
+            type: 'string',
+            example: '1',
+        },
+        status: {
+            type: 'string',
+            example: 'COMPLETED',
+        }
+    },
+};
 
-export const createModule = {
-    tags: ['Course Modules'],
-    description: 'Endpoint for creating new module category',
+export const createCourseTopic = {
+    tags: ['Course Topics'],
+    description: 'Endpoint for creating new Topics',
     security: [
         {
             bearerAuth: [],
@@ -36,7 +61,7 @@ export const createModule = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/createModuleRequestBody'
+                    $ref: '#/components/schemas/createCourseTopicRequestBody'
                 },
             },
         },
@@ -75,12 +100,12 @@ export const createModule = {
             }
         },
         '401': unauthorizedError,
-        '404': badRequestError,
+        '404': badRequestError
     }
 }
-export const moduleList = {
-    tags: ['Course Modules'],
-    description: 'Get the list of the module',
+export const courseTopicList = {
+    tags: ['Course Topics'],
+    description: 'Endpoint for getting list of Topics created',
     security: [
         {
             bearerAuth: [],
@@ -122,9 +147,9 @@ export const moduleList = {
         '404': badRequestError
     }
 }
-export const moduleById = {
-    tags: ['Course Modules'],
-    description: 'Endpoint for getting single module',
+export const courseTopicById = {
+    tags: ['Course Topics'],
+    description: 'Endpoint for getting single Topics',
     security: [
         {
             bearerAuth: [],
@@ -133,13 +158,13 @@ export const moduleById = {
     parameters: [
         {
             in: 'path',
-            name: 'module_id',
+            name: 'topic_id',
             schema: {
                 type: 'integer',
                 default: 1
             },
             required: true,
-            description: "Add moduleId to fetch specify module",
+            description: "Add topicId to fetch specify Topics",
         }
     ],
     responses: {
@@ -168,7 +193,7 @@ export const moduleById = {
                             data: {
                                 type: 'array',
                                 example: ['object']
-                            }
+                            } 
                         }
                     }
                 }
@@ -178,9 +203,9 @@ export const moduleById = {
         '404': badRequestError
     }
 }
-export const moduleByIdUpdate = {
-    tags: ['Course Modules'],
-    description: 'Endpoint for updating the specific module',
+export const courseTopicByIdUpdate = {
+    tags: ['Course Topics'],
+    description: 'Endpoint for updating the specific Topics',
     security: [
         {
             bearerAuth: [],
@@ -191,7 +216,7 @@ export const moduleByIdUpdate = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/moduleUpdatesRequestBody'
+                    $ref: '#/components/schemas/courseTopicUpdatesRequestBody'
                 },
             },
         },
@@ -199,13 +224,13 @@ export const moduleByIdUpdate = {
     parameters: [
         {
             in: 'path',
-            name: 'module_id',
+            name: 'topic_id',
             schema: {
                 type: 'integer',
-                default: 1
+                default: 2
             },
             required: true,
-            description: "Add moduleId to update specify module",
+            description: "Add topicId to update specify  Topics",
         }
     ],
     responses: {
@@ -241,12 +266,12 @@ export const moduleByIdUpdate = {
             }
         },
         '401': unauthorizedError,
-        '404': badRequestError,
+        '404': badRequestError
     }
 }
-export const moduleByIdDelete = {
-    tags: ['Course Modules'],
-    description: 'Endpoint for removing a single module category',
+export const courseTopicByIdDelete = {
+    tags: ['Courses'],
+    description: 'Endpoint for removing a single Topics category',
     security: [
         {
             bearerAuth: [],
@@ -255,13 +280,13 @@ export const moduleByIdDelete = {
     parameters: [
         {
             in: 'path',
-            name: 'module_id',
+            name: 'topicId',
             schema: {
                 type: 'integer',
-                default: 1
+                default: 2
             },
             required: true,
-            description: "module_id to fetch",
+            description: "Add topicId to delete specify Topics",
         }
     ],
     responses: {
@@ -270,6 +295,61 @@ export const moduleByIdDelete = {
             content: {
                 'application/json': {
                     schema: {
+                        properties: {
+                            status: {
+                                type: 'number',
+                                example: '200'
+                            },
+                            status_typeL: {
+                                type: 'string',
+                                example: 'success'
+                            },
+                            message: {
+                                type: 'string',
+                                example: 'OK'
+                            },
+                            count: {
+                                type: 'number',
+                                example: 1
+                            },
+                            data: {
+                                type: 'array',
+                                example: ['object']
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        '401': unauthorizedError,
+        '404': badRequestError
+    }
+}
+export const courseTopicProgress = {
+    tags: ['Course Topics'],
+    description: 'Endpoint for updating the topic progress',
+    security: [
+        {
+            bearerAuth: [],
+        },
+    ],
+    requestBody: {
+        required: true,
+        content: {
+            'application/json': {
+                schema: {
+                    $ref: '#/components/schemas/courseTopicProgressRequestBody'
+                },
+            },
+        },
+    },
+    responses: {
+        '201': {
+            description: 'Created',
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
                         properties: {
                             status: {
                                 type: 'number',

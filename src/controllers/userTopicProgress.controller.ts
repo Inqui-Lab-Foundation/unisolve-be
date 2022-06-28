@@ -1,17 +1,17 @@
 
-import { courseVideoSchema, courseVideoUpdateSchema } from "../validations/courseVideo.validations";
+import { userTopicProgressSchema, userTopicProgressUpdateSchema,  } from "../validations/userTopicProgress.validations";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
 
-export default class CourseVideoController extends BaseController {
+export default class UserTopicProgress extends BaseController {
 
-    model = "course_video";
+    model = "user_topic_progress";
 
     protected initializePath(): void {
-        this.path = '/courseVideos';
+        this.path = '/userTopicProgress';
     }
     protected initializeValidations(): void {
-        this.validations =  new ValidationsHolder(courseVideoSchema,courseVideoUpdateSchema);
+        this.validations =  new ValidationsHolder(userTopicProgressSchema,userTopicProgressUpdateSchema);
     }
     protected initializeRoutes(): void {
         //example route to add 

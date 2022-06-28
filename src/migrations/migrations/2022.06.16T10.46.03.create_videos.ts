@@ -1,31 +1,22 @@
 import { Migration } from '../umzug';
 import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
-import { table } from 'console';
 
-const tableName = "course_worksheets";
+const tableName = "videos";
 export const up: Migration = async ({ context: sequelize }) => {
 	await sequelize.getQueryInterface().createTable(tableName, {
-		course_worksheet_id: {
+        video_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        worksheet_title: {
-            type: DataTypes.TEXT,
-            allowNull: false
-        },
-        description: {
-            type: DataTypes.TEXT('long'),
-            allowNull: false
-        },
-        attachments: {
-            type: DataTypes.TEXT('long'),
-            allowNull: false
+        video_stream_id: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
-            allowNull: false,
             defaultValue: constents.common_status_flags.default
         },
         created_by: {

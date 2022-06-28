@@ -38,6 +38,14 @@ export const constents = {
     },
     default: 'ACTIVE'
   },
+  quiz_question_level_flags: {
+    list: {
+      'HARD': 'HARD',
+      'MEDIUM': 'MEDIUM',
+      'EASY': 'EASY',
+    },
+    default: 'HARD'
+  },
   user_role_flags: {
     list: {
       'ADMIN': 'ADMIN',
@@ -89,5 +97,7 @@ export const constents = {
       'QUIZ': 'QUIZ'
     },
     default: 'VIDEO',
-  }
+  },
+  default_image_path:"/images/default.jpg"
+
 };
