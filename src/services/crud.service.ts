@@ -1,8 +1,8 @@
-export default class CRUDService  {
+export default class CRUDService {
     async create(model: any, input: any) {
         try {
             const data = await model.create({ ...input });
-            if(data){
+            if (data) {
                 delete data.dataValues.password;
             }
             return data;
@@ -13,7 +13,7 @@ export default class CRUDService  {
     async findOne(model: any, query: object) {
         try {
             const data = await model.findOne(query);
-            if(data){
+            if (data) {
                 delete data.dataValues.password;
             }
             return data;
@@ -34,10 +34,18 @@ export default class CRUDService  {
     async findAll(model: any) {
         try {
             const data = await model.findAll();
-            data.filter(function(rec: any){
+            data.filter(function (rec: any) {
                 delete rec.dataValues.password;
                 return rec;
             });
+            return data;
+        } catch (error: any) {
+            return error.message;
+        }
+    };
+    async findAndCountAll(model: any, input: object) {
+        try {
+            const data = await model.findAndCountAll(input);
             return data;
         } catch (error: any) {
             return error.message;
@@ -53,7 +61,7 @@ export default class CRUDService  {
 
     async findWhere(model: any, query: object, order: object = []) {
         try {
-            return await model.findAll({logging:console.log ,where: query, order: order});
+            return await model.findAll({ logging: console.log, where: query, order: order });
         } catch (error: any) {
             return error.message;
         }
@@ -62,8 +70,8 @@ export default class CRUDService  {
     async update(model: any, update: object, query: object) {
         try {
             const data = await model.update(update, query);
-             if(data){
-                 delete data.dataValues.password;
+            if (data) {
+                delete data.dataValues.password;
             }
             return data;
         } catch (error: any) {

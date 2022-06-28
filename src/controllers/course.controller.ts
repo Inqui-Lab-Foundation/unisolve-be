@@ -37,7 +37,7 @@ export default class CourseController extends BaseController {
     }
 
 
-    protected async getData  (req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             let data: any;
             const { model, id } = req.params;
@@ -48,7 +48,7 @@ export default class CourseController extends BaseController {
             const where: any = {};
             if (id) {
                 // where[`${this.model}_id`] = req.params.id;
-                data =  await this.getDetailsData(req,res,modelClass)
+                data = await this.getDetailsData(req, res, modelClass)
             } else {
                 where[`${this.model}_id`] = req.params.id;
                 data = await this.crudService.findAll(modelClass);
@@ -62,24 +62,24 @@ export default class CourseController extends BaseController {
             next(error);
         }
     }
-    
-   async  getDetailsData(req: Request, res: Response,modelClass: any) {
-       let whereClause: any = {};
 
-       whereClause[`${this.model}_id`] = req.params.id;
-       let user_id =  res.locals.user_id;
-       if(!user_id){
-        throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
-       }
-       let data = await this.crudService.findOne(modelClass, { 
-            where: whereClause ,
+    async getDetailsData(req: Request, res: Response, modelClass: any) {
+        let whereClause: any = {};
+
+        whereClause[`${this.model}_id`] = req.params.id;
+        let user_id = res.locals.user_id;
+        if (!user_id) {
+            throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
+        }
+        let data = await this.crudService.findOne(modelClass, {
+            where: whereClause,
             include: [{
-                model:course_module,
-                as:'course_modules',
-                include:[{
-                    model:course_topic,
-                    as :"course_topics",
-                    attributes:[ 
+                model: course_module,
+                as: 'course_modules',
+                include: [{
+                    model: course_topic,
+                    as: "course_topics",
+                    attributes: [
                         "title",
                         "course_module_id",
                         "course_topic_id",
@@ -107,10 +107,11 @@ export default class CourseController extends BaseController {
                             'progress'
                         ]
                     ],
-                }]}
+                }]
+            }
             ]
         });
-         return data;
+        return data;
     }
 
 }
