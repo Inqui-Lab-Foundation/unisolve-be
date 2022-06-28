@@ -13,7 +13,7 @@ export const up: Migration = async ({ context: sequelize }) => {
             autoIncrement: true,
             primaryKey: true
         },
-        no_of_question: {
+        no_of_questions: {
             type: DataTypes.INTEGER,
             allowNull: false
         },

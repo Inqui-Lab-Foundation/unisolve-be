@@ -5,7 +5,7 @@ import db from '../utils/dbconnection.util';
 
 export class quiz extends Model<InferAttributes<quiz>,InferCreationAttributes<quiz>> {
     declare quiz_id: CreationOptional<number>;
-    declare no_of_question: number;
+    declare no_of_questions: number;
     declare status: Enumerator;
     declare created_by: number;
     declare created_at: Date;
@@ -29,7 +29,7 @@ quiz.init(
             autoIncrement: true,
             primaryKey: true
         },
-        no_of_question: {
+        no_of_questions: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
