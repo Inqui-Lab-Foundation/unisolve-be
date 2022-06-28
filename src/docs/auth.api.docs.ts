@@ -60,7 +60,23 @@ export const dynamicSignupFormRequestBody = {
         }
     },
 };
-
+export const changePasswordRequestBody = {
+    type: 'object',
+    properties: {
+        user_id: {
+            type: 'string',
+            example: '2',
+        },
+        oldPassword: {
+            type: 'string',
+            example: '33a4da31c6569c14921f7b068a94b18e',
+        },
+        newPassword: {
+            type: 'string',
+            example: '17d3f297d157cfa29bd7fa04023bc56f',
+        }
+    },
+};
 export const dynamicSignupFormResponseBody = {
     type: 'object',
     properties: {
@@ -202,7 +218,7 @@ export const changePassword = {
         content: {
             'application/json': {
                 schema: {
-                    $ref: '#/components/schemas/loginRequestBody'
+                    $ref: '#/components/schemas/changePasswordRequestBody'
                 },
             },
         },
@@ -376,79 +392,63 @@ export const get_dynamicSignupForm = {
         '401': unauthorizedError
     }
 }
-export const changePassword = {
-    tags: ['Authentication'],
-    description: 'Endpoint for updating the admin member password field',
-    security: [
-        {
-            bearerAuth: [],
-        },
-    ],
-    requestBody: {
-        required: true,
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/adminChangePasswordRequestBody'
-                },
-            },
-        },
-    },
-    responses: {
-        '202': {
-            description: 'Accepted',
-            content: {
-                'application/json': {
-                    schema: {
-                        type: 'object',
-                        properties: {
-                            status: {
-                                type: 'string',
-                                example: '202'
-                            },
-                            status_type: {
-                                type: 'string',
-                                example: 'success'
-                            },
-                            message: {
-                                type: 'string',
-                                example: 'User password Updated'
-                            },
-                            count: {
-                                type: 'string',
-                                example: 'null'
-                            },
-                            data: {
-                                type: 'array',
-                                example: [1]
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '401': unauthorizedError,
-        '404': notAcceptableError
-    }
-}
-
-// export const adminChangePasswordRequestBody = {
-//     type: 'object',
-//     properties: {
-//         Id: {
-//             type: 'string',
-//             example: '2',
+// export const changePassword = {
+//     tags: ['Authentication'],
+//     description: 'Endpoint for updating the admin member password field',
+//     security: [
+//         {
+//             bearerAuth: [],
 //         },
-//         oldPassword: {
-//             type: 'string',
-//             example: '33a4da31c6569c14921f7b068a94b18e',
+//     ],
+//     requestBody: {
+//         required: true,
+//         content: {
+//             'application/json': {
+//                 schema: {
+//                     $ref: '#/components/schemas/adminChangePasswordRequestBody'
+//                 },
+//             },
 //         },
-//         newPassword: {
-//             type: 'string',
-//             example: '17d3f297d157cfa29bd7fa04023bc56f',
-//         }
 //     },
-// };
+//     responses: {
+//         '202': {
+//             description: 'Accepted',
+//             content: {
+//                 'application/json': {
+//                     schema: {
+//                         type: 'object',
+//                         properties: {
+//                             status: {
+//                                 type: 'string',
+//                                 example: '202'
+//                             },
+//                             status_type: {
+//                                 type: 'string',
+//                                 example: 'success'
+//                             },
+//                             message: {
+//                                 type: 'string',
+//                                 example: 'User password Updated'
+//                             },
+//                             count: {
+//                                 type: 'string',
+//                                 example: 'null'
+//                             },
+//                             data: {
+//                                 type: 'array',
+//                                 example: [1]
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         },
+//         '401': unauthorizedError,
+//         '404': notAcceptableError
+//     }
+// }
+
+
 // export const adminChangePassword = {
 //     tags: ['Admin'],
 //     description: 'Endpoint for updating the admin member password field',

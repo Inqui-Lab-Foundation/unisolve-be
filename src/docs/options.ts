@@ -60,7 +60,7 @@ import { notificationsTome, notificationWithPoster, notification, notificationsW
 import {
     createWorksheetRequestBody,
     worksheetUpdatesRequestBody, createWorksheet, worksheetById, worksheetByIdUpdate, worksheetList, WorksheetsByIdDelete
-} from "./worksheets.api.docs copy";
+} from "./worksheets.api.docs";
 
 // define Swagger options with specific properties
 const options = {

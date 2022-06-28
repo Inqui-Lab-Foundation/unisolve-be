@@ -1,5 +1,6 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response, NextFunction, response } from 'express';
 import path from 'path';
+import { Op } from 'sequelize';
 import fs from 'fs';
 import IController from '../interfaces/controller.interface';
 import HttpException from '../utils/exceptions/http.exception';
@@ -40,20 +41,47 @@ export default class CRUDController implements IController {
     protected async loadModel(model: string): Promise<Response | void | any> {
         const modelClass = await import(`../models/${model}.model`);
         return modelClass[model];
-    }
+    };
+
+    protected getPagination(page: any, size: any) {
+        const limit = size ? +size : 3;
+        const offset = page ? page * limit : 0;
+        return { limit, offset };
+    };
+
+    protected getPagingData(data: any, page: any, limit: any) {
+        const { count: totalItems, rows: dataValues } = data;
+        const currentPage = page ? +page : 0;
+        const totalPages = Math.ceil(totalItems / limit);
+        return { totalItems, dataValues, totalPages, currentPage };
+    };
 
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             let data: any;
-            const { model, id } = req.params;
+            const { model, id, } = req.params;
             if (model) {
                 this.model = model;
             };
+            // pagination
+            const { page, size, title } = req.query;
+            let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+            const { limit, offset } = this.getPagination(page, size);
+
             this.loadModel(model).then(async (modelClass: any) => {
                 const where: any = {};
                 if (id) {
                     where[`${this.model}_id`] = req.params.id;
                     data = await this.crudService.findOne(modelClass, { where: where });
+                } else if (page || size || title) {
+                    await this.crudService.findAndCountAll(modelClass, { where: condition, limit, offset })
+                        .then((response: any) => {
+                            const result = this.getPagingData(response, page, limit);
+                            data = result;
+                        })
+                        .catch((error: any) => {
+                            return res.status(500).send(dispatcher(data, 'error'))
+                        });
                 } else {
                     where[`${this.model}_id`] = req.params.id;
                     data = await this.crudService.findAll(modelClass);
@@ -79,8 +107,8 @@ export default class CRUDController implements IController {
             if (model) {
                 this.model = model;
             };
-            const modelLoaded =  await this.loadModel(model);
-            const payload = this.autoFillTrackingCollumns(req,res,modelLoaded)
+            const modelLoaded = await this.loadModel(model);
+            const payload = this.autoFillTrackingCollumns(req, res, modelLoaded)
             const data = await this.crudService.create(modelLoaded, payload);
             
             // if (!data) {
@@ -125,8 +153,8 @@ export default class CRUDController implements IController {
             if (errs.length) {
                 return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
-            const modelLoaded =  await this.loadModel(model);
-            const payload = this.autoFillTrackingCollumns(req,res,modelLoaded,reqData)
+            const modelLoaded = await this.loadModel(model);
+            const payload = this.autoFillTrackingCollumns(req, res, modelLoaded, reqData)
             const data = await this.crudService.create(modelLoaded, payload);
 
             // if (!data) {
@@ -147,13 +175,13 @@ export default class CRUDController implements IController {
             if (model) {
                 this.model = model;
             };
-            const user_id  = res.locals.user_id
+            const user_id = res.locals.user_id
             console.log(user_id);
 
             const where: any = {};
             where[`${this.model}_id`] = req.params.id;
-            const modelLoaded =  await this.loadModel(model);
-            const payload = this.autoFillTrackingCollumns(req,res,modelLoaded)
+            const modelLoaded = await this.loadModel(model);
+            const payload = this.autoFillTrackingCollumns(req, res, modelLoaded)
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));
@@ -173,7 +201,7 @@ export default class CRUDController implements IController {
             if (model) {
                 this.model = model;
             };
-            const user_id  = res.locals.user_id
+            const user_id = res.locals.user_id
             console.log(user_id);
 
             const where: any = {};
@@ -201,8 +229,8 @@ export default class CRUDController implements IController {
             if (errs.length) {
                 return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
-            const modelLoaded =  await this.loadModel(model);
-            const payload = this.autoFillTrackingCollumns(req,res,modelLoaded,reqData)
+            const modelLoaded = await this.loadModel(model);
+            const payload = this.autoFillTrackingCollumns(req, res, modelLoaded, reqData)
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));
@@ -238,17 +266,17 @@ export default class CRUDController implements IController {
     }
 
 
-    protected autoFillTrackingCollumns (req: Request, res: Response, modelLoaded:any,reqData:any=null){
+    protected autoFillTrackingCollumns(req: Request, res: Response, modelLoaded: any, reqData: any = null) {
         // console.log(res.locals);
         let payload = req.body;
-        if(reqData!=null){
+        if (reqData != null) {
             payload = reqData
         }
-        if(modelLoaded.rawAttributes.created_by!==undefined){
+        if (modelLoaded.rawAttributes.created_by !== undefined) {
             payload['created_by'] = res.locals.user_id;
         }
-        if(modelLoaded.rawAttributes.updated_by!==undefined){
-            payload['updated_by'] = res.locals.user_id; 
+        if (modelLoaded.rawAttributes.updated_by !== undefined) {
+            payload['updated_by'] = res.locals.user_id;
         }
 
         return payload;
