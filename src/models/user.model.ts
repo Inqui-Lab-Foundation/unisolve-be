@@ -1,36 +1,21 @@
-import { DataTypes, Model, Attributes } from 'sequelize';
+import { DataTypes, Model, Attributes, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import bcrypt from 'bcrypt';
 import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
 import { notification } from './notification.model';
 import { baseConfig } from '../configs/base.config';
-export interface userAttributes {
-    user_id: string;
-    email: string;
-    password: string;
-    full_name: string;
-    image: string,
-    date_of_birth: Date;
-    mobile: number;
-    team_id: string;
-    org_name: string;
-    qualification: string;
-    stream: string;
-    city: string;
-    district: string;
-    state: string;
-    country: string;
-    role: string;
-    is_loggedin: Enumerator;
-    last_login: number;
-    status: Enumerator;
-    created_by: number;
-    created_at: Date;
-    updated_by: number;
-    updated_at: Date;
-}
 
-export class user extends Model<userAttributes> {
+export class user extends Model<InferAttributes<user>, InferCreationAttributes<user>> {
+    declare user_id: CreationOptional<number>;
+    declare username: string;
+    declare full_name: string;
+    declare password: string;
+    declare role: string;
+    declare status: Enumerator;
+    declare created_by: number;
+    declare created_at: Date;
+    declare updated_by: number;
+    declare updated_at: Date;
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -65,7 +50,6 @@ export class user extends Model<userAttributes> {
     //         status: user.status,
     //         created_by: user.created_by,
     //         updated_by: user.updated_by,
-
     // }
 }
 
@@ -76,57 +60,18 @@ user.init(
             autoIncrement: true,
             primaryKey: true,
         },
-        email: {
-            type: DataTypes.STRING(55),
+        username: {
+            type: DataTypes.STRING,
             allowNull: false,
-            unique: true
+        },
+        full_name: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
         password: {
             type: DataTypes.STRING,
             allowNull: false,
             // select: false
-        },
-        full_name: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        image: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        date_of_birth: {
-            type: DataTypes.DATE,
-            allowNull: true
-        },
-        mobile: {
-            type: DataTypes.STRING(50),
-            unique: true,
-            allowNull: false
-        },
-        team_id: {
-            type: DataTypes.STRING,
-        },
-        org_name: {
-            type: DataTypes.STRING,
-        },
-        qualification: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        stream: {
-            type: DataTypes.STRING
-        },
-        city: {
-            type: DataTypes.STRING
-        },
-        district: {
-            type: DataTypes.STRING
-        },
-        state: {
-            type: DataTypes.STRING
-        },
-        country: {
-            type: DataTypes.STRING
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
@@ -146,11 +91,11 @@ user.init(
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            defaultValue:null
+            defaultValue: null
         },
         created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
         },
         updated_by: {
