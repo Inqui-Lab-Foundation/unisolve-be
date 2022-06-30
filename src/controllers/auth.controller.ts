@@ -15,6 +15,9 @@ import { speeches } from '../configs/speeches.config';
 import { baseConfig } from '../configs/base.config';
 import sendNotification from '../utils/notification.util';
 import { constents } from '../configs/constents.config';
+import { user_profile } from '../models/user_profile.model';
+import { mentor } from '../models/mentor.model';
+import { student } from '../models/student.model';
 
 export default class AuthController implements IController {
     public path: string;
@@ -28,9 +31,9 @@ export default class AuthController implements IController {
         this.initializeRoutes();
     }
     private initializeRoutes(): void {
-        this.router.post(`${this.path}/login`, validationMiddleware(authValidations.login), this.login);
+        this.router.post(`${this.path}/login`, this.login);
         this.router.get(`${this.path}/logout`, this.logout);
-        this.router.post(`${this.path}/register`, validationMiddleware(authValidations.register), this.register);
+        this.router.post(`${this.path}/register`, this.register);
         this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword);
         this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm), this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
@@ -45,7 +48,7 @@ export default class AuthController implements IController {
         try {
             const user_res: any = await this.crudService.findOne(user, {
                 where: {
-                    email: req.body.email,
+                    username: req.body.username,
                     password: await bcrypt.hashSync(req.body.password, process.env.SALT || baseConfig.SALT)
                 }
             });
@@ -83,7 +86,7 @@ export default class AuthController implements IController {
                     is_loggedin: "YES",
                     last_login: new Date().toLocaleString()
                 }, { where: { user_id: user_res.user_id } });
-
+                
                 user_res.is_loggedin = "YES";
                 const token = await jwtUtil.createToken(user_res.dataValues, `${process.env.PRIVATE_KEY}`);
 
@@ -134,20 +137,26 @@ export default class AuthController implements IController {
         // or https://umbraco.com/knowledge-base/http-status-codes/
         try {
             const user_res: any = await this.crudService.findOne(user, {
-                where: {
-                    [Op.or]: [
-                        {
-                            email: { [Op.eq]: req.body.email }
-                        },
-                        {
-                            mobile: { [Op.like]: `%${req.body.mobile}%` }
-                        }
-                    ]
-                }
+                where: { username: req.body.username }
             });
             if (user_res) return res.status(406).send(dispatcher(speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
-
             const result = await this.crudService.create(user, req.body);
+            // user role checking
+            let profile: any;
+            const whereClass = { ...req.body, user_id: result.dataValues.user_id }
+            switch (req.body.role) {
+                case 'STUDENT':
+                    profile = await this.crudService.create(student, whereClass);
+                    break;
+                case 'MENTOR':
+                    profile = await this.crudService.create(mentor, whereClass);
+                    break;
+                case 'EVALUATER':
+                    profile = await this.crudService.create(user_profile, whereClass);
+                    break;
+                default:
+                    profile = await this.crudService.create(user_profile, whereClass);
+            }
             return res.status(201).send(dispatcher(result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
         } catch (error) {
             next(error);
