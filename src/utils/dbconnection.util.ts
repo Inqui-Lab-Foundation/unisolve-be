@@ -5,16 +5,17 @@ const database = new Sequelize(
     process.env.DB_USER || '',
     process.env.DB_PASSWORD,
     {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-    // logging: console.log,
-    logging: false,
-    pool: {
-        max: 5,
-        min: 1,
-        acquire: 30000,
-        idle: 10000
-    }
-});
+        host: process.env.DB_HOST,
+        dialect: 'mysql',
+        // logging: console.log,
+        // logQueryParameters: true,
+        logging: false,
+        pool: {
+            max: 5,
+            min: 1,
+            acquire: 30000,
+            idle: 10000
+        }
+    });
 
 export default database;

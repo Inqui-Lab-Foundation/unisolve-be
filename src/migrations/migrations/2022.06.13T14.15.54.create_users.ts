@@ -5,63 +5,24 @@ import { constents } from '../../configs/constents.config';
 
 const tableName = "users";
 export const up: Migration = async ({ context: sequelize }) => {
-	await sequelize.getQueryInterface().createTable(tableName, {
-		user_id: {
+    await sequelize.getQueryInterface().createTable(tableName, {
+        user_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        email: {
-            type: DataTypes.STRING(55),
+        username: {
+            type: DataTypes.STRING,
             allowNull: false,
-            unique: true
+        },
+        full_name: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
         password: {
             type: DataTypes.STRING,
             allowNull: false,
             // select: false
-        },
-        full_name: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        image: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        date_of_birth: {
-            type: DataTypes.DATE,
-            allowNull: true
-        },
-        mobile: {
-            type: DataTypes.STRING(50),
-            unique: true,
-            allowNull: false
-        },
-        team_id: {
-            type: DataTypes.STRING,
-        },
-        org_name: {
-            type: DataTypes.STRING,
-        },
-        qualification: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        stream: {
-            type: DataTypes.STRING
-        },
-        city: {
-            type: DataTypes.STRING
-        },
-        district: {
-            type: DataTypes.STRING
-        },
-        state: {
-            type: DataTypes.STRING
-        },
-        country: {
-            type: DataTypes.STRING
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
@@ -81,11 +42,11 @@ export const up: Migration = async ({ context: sequelize }) => {
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            defaultValue:null
+            defaultValue: null
         },
         created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
         },
         updated_by: {
@@ -99,9 +60,10 @@ export const up: Migration = async ({ context: sequelize }) => {
             defaultValue: DataTypes.NOW,
             onUpdate: new Date().toLocaleString()
         }
-	});
+    });
+    
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
-	await sequelize.getQueryInterface().dropTable(tableName);
+    await sequelize.getQueryInterface().dropTable(tableName);
 };
