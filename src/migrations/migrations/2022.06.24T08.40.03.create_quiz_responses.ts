@@ -13,12 +13,24 @@ export const up: Migration = async ({ context: sequelize }) => {
             autoIncrement: true,
             primaryKey: true
         },
+        user_id: {
+            type: DataTypes.INTEGER,
+            allowNull:false,
+            references:{
+                model:"users",
+                key:"user_id"
+            }
+        },
         quiz_id: {
             type: DataTypes.INTEGER,
-            allowNull:false
+            allowNull:false,
+            references:{
+                model:"quiz",
+                key:"quiz_id"
+            }
         },
         response: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT('long'),
             allowNull: false
         },
         status: {

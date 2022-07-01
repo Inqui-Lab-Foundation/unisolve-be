@@ -12,6 +12,7 @@ import CourseModulesController from "./controllers/courseModule.controller";
 import CourseTopicController from "./controllers/courseTopic.controller";
 import WorksheetController from "./controllers/worksheet.controller";
 import UserTopicProgress from "./controllers/userTopicProgress.controller";
+import QuizController from "./controllers/quiz.controller";
 
 // validating env variables
 validateEnv();
@@ -29,6 +30,7 @@ try {
         new CourseTopicController,
         new WorksheetController,
         new UserTopicProgress,
+        new QuizController,
     ], Number(process.env.APP_PORT));
     // starting app
     app.listen();

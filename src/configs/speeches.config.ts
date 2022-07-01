@@ -34,6 +34,16 @@ export const speeches = {
     ID_REQUIRED: "ID is required, it should not be empty.",
     TEAM_NAME_REQUIRED: "Team name is required, it should not be empty.",
 
+    //quiz submit response keys
+    QUIZ_ID_REQUIRED: "Quiz ID is required, it should not be empty.",
+    QUIZ_QUESTION_ID_REQUIRED: "QUIZ QUESTION ID is required, it should not be empty.",
+    QUESTION_REQUIRED: "QUESTION is required, it should not be empty.",
+    SELCTED_OPTION_REQUIRED: "Selected option is required, it should not be empty.",
+    CORRECT_ANSWER_REQUIRED: "Correct answer is required, it should not be empty.",
+    LEVEL_REQUIRED: "Level is required, it should not be empty.",
+    CATEGORY_REQUIRED: "Category is required, it should not be empty.",
+    QUESTION_NO_REQUIRED: "Question no is required, it should not be empty.",
+
     NOTIFICATION_TYPE_INVALID: `Notification type is invalid, it should be one from ${Object.values(constents.notification_types.list).join(", ")}.`,
     NOTIFICATION_TYPE_REQUIRED: `Notification type is required, it should be one from ${Object.values(constents.notification_types.list).join(", ")}.`,
     NOTIFICATION_TARGET_AUDIENCE_REQUIRED: "Target audience is required, it should be either 'All' or user_id(s) with ',' seperated.",

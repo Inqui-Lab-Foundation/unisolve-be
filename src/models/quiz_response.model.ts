@@ -32,12 +32,16 @@ quiz_response.init(
             autoIncrement: true,
             primaryKey: true
         },
+        user_id: {
+            type: DataTypes.INTEGER,
+            allowNull:false
+        },
         quiz_id: {
             type: DataTypes.INTEGER,
             allowNull:false
         },
         response: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT('long'),
             allowNull: false
         },
         status: {
