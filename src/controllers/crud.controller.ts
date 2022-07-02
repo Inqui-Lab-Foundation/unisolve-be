@@ -73,7 +73,7 @@ export default class CRUDController implements IController {
                 if (id) {
                     where[`${this.model}_id`] = req.params.id;
                     data = await this.crudService.findOne(modelClass, { where: where });
-                } else if (page || size || title) {
+                } else {
                     await this.crudService.findAndCountAll(modelClass, { where: condition, limit, offset })
                         .then((response: any) => {
                             const result = this.getPagingData(response, page, limit);
@@ -82,11 +82,7 @@ export default class CRUDController implements IController {
                         .catch((error: any) => {
                             return res.status(500).send(dispatcher(data, 'error'))
                         });
-                } else {
-                    where[`${this.model}_id`] = req.params.id;
-                    data = await this.crudService.findAll(modelClass);
                 }
-
                 // if (!data) {
                 //     return res.status(404).send(dispatcher(data, 'error'));
                 // }
@@ -110,7 +106,7 @@ export default class CRUDController implements IController {
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingCollumns(req, res, modelLoaded)
             const data = await this.crudService.create(modelLoaded, payload);
-            
+
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));
             // }
