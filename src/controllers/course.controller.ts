@@ -103,6 +103,23 @@ export default class CourseController extends BaseController {
             include: [{
                 model: course_module,
                 as: 'course_modules',
+                attributes:[
+                    "title",
+                    "description",
+                    "course_module_id",
+                    "course_id",
+                    [
+                        db.literal(`(
+                            SELECT COUNT(*)
+                            FROM course_topics AS ct
+                            WHERE
+                                ct.course_module_id = \`course_modules\`.\`course_module_id\`
+                            AND
+                                ct.topic_type = "VIDEO"
+                        )`),
+                        'videos_count'
+                    ]
+                ],
                 include: [{
                     model: course_topic,
                     as: "course_topics",
