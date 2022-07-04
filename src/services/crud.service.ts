@@ -31,9 +31,9 @@ export default class CRUDService {
             return error.message;
         }
     };
-    async findAll(model: any) {
+    async findAll(model: any, query?: object) {
         try {
-            const data = await model.findAll();
+            const data = await model.findAll(query);
             data.filter(function (rec: any) {
                 delete rec.dataValues.password;
                 return rec;

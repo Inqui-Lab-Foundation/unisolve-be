@@ -7,7 +7,7 @@ import { quiz } from './quiz.model';
 export class quiz_question extends Model<InferAttributes<quiz_question>,InferCreationAttributes<quiz_question>> {
    declare quiz_question_id: CreationOptional<number>;
    declare quiz_id: ForeignKey<number>;
-   declare category: string | null;
+   declare question_no: number;
    declare question: string;
    declare option_a: string;
    declare option_b: string;
@@ -43,8 +43,8 @@ quiz_question.init(
             type: DataTypes.INTEGER,
             allowNull:false
         },
-        category: {
-            type: DataTypes.STRING,
+        question_no: {
+            type: DataTypes.INTEGER,
             allowNull: true
         },
         question: {

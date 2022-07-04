@@ -86,7 +86,7 @@ export default class AuthController implements IController {
                     is_loggedin: "YES",
                     last_login: new Date().toLocaleString()
                 }, { where: { user_id: user_res.user_id } });
-                
+
                 user_res.is_loggedin = "YES";
                 const token = await jwtUtil.createToken(user_res.dataValues, `${process.env.PRIVATE_KEY}`);
 
@@ -109,8 +109,11 @@ export default class AuthController implements IController {
                 //     status: constents.notification_status_flags.list.PUBLISHED,
                 //     created_by: user_res.user_id
                 // });
-
                 return res.status(200).send(dispatcher({
+                    user_id: user_res.dataValues.user_id,
+                    name: user_res.dataValues.username,
+                    full_name: user_res.dataValues.full_name,
+                    status: user_res.dataValues.status,
                     token,
                     type: 'Bearer',
                     expire: process.env.TOKEN_DEFAULT_TIMEOUT
@@ -169,7 +172,7 @@ export default class AuthController implements IController {
                 where: {
                     [Op.or]: [
                         {
-                            email: { [Op.eq]: req.body.email }
+                            username: { [Op.eq]: req.body.username }
                         },
                         {
                             user_id: { [Op.like]: `%${req.body.user_id}%` }

@@ -21,8 +21,8 @@ export const up: Migration = async ({ context: sequelize }) => {
 				key:'quiz_id'
 			}
         },
-        category: {
-            type: DataTypes.STRING,
+        question_no: {
+            type: DataTypes.INTEGER,
             allowNull: true
         },
         question: {
