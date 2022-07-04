@@ -14,5 +14,5 @@
 
 
 //postman_collection_link: {
-    "latest":"https://www.getpostman.com/collections/5455c3402e31e92cf57d"
+    "latest":"https://www.getpostman.com/collections/82237fd284454118526a"
   } 
