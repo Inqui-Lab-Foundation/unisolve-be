@@ -1,4 +1,4 @@
-import {  unauthorized } from "boom";
+import { unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import dispatcher from "../utils/dispatch.util";
 
@@ -48,7 +48,7 @@ export default class CourseController extends BaseController {
             } else {
                 where[`${this.model}_id`] = req.params.id;
                 // data = await this.crudService.findAll(modelClass);
-                data = await  modelClass.findAll({
+                data = await modelClass.findAll({
                     attributes: {
                         include: [
                             [// Note the wrapping parentheses in the call below!
@@ -61,7 +61,7 @@ export default class CourseController extends BaseController {
                                 'course_modules_count'
                             ],
                             [// Note the wrapping parentheses in the call below!
-                            db.literal(`(
+                                db.literal(`(
                                 SELECT COUNT(*)
                                 FROM course_topics AS ct
                                 JOIN course_modules as cm on cm.course_module_id = ct.course_module_id
@@ -70,8 +70,8 @@ export default class CourseController extends BaseController {
                                 AND
                                     ct.topic_type = \"VIDEO\"
                             )`),
-                            'course_videos_count'
-                        ]
+                                'course_videos_count'
+                            ]
                         ]
                     }
                 });
@@ -103,7 +103,7 @@ export default class CourseController extends BaseController {
             include: [{
                 model: course_module,
                 as: 'course_modules',
-                attributes:[
+                attributes: [
                     "title",
                     "description",
                     "course_module_id",
@@ -149,6 +149,17 @@ export default class CourseController extends BaseController {
                                 END as progress
                             )`),
                             'progress'
+                        ],
+                        [
+                            db.literal(`(
+                                SELECT video_duration
+                                FROM videos AS ct
+                                WHERE
+                                ct.video_id = \`course_modules->course_topics\`.\`topic_type_id\`
+                                AND
+                                \`course_modules->course_topics\`.\`topic_type\` = "VIDEO"
+                            )`),
+                            'video_duration'
                         ]
                     ],
                 }]
