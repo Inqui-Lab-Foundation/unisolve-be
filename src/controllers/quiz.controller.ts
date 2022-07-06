@@ -158,11 +158,19 @@ export default class QuizController extends BaseController {
 
                 dataToUpsert["response"]=JSON.stringify(user_response);
                 
-                const result =  await this.crudService.update(quizRes,dataToUpsert,{where:{quiz_id:quiz_id,user_id:user_id}})
-                if(result instanceof Error){
-                    throw internal(result.message)
+                const resultModel =  await this.crudService.update(quizRes,dataToUpsert,{where:{quiz_id:quiz_id,user_id:user_id}})
+                if(resultModel instanceof Error){
+                    throw internal(resultModel.message)
                 }
-                
+                let result:any = {}
+                result = resultModel.dataValues
+                result["is_correct"] = responseObjToAdd.is_correct;
+                if(responseObjToAdd.is_correct){
+                    result["msg"] = questionAnswered.dataValues.msg_ans_correct;
+                }else{
+                    result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
+                }
+                result["redirect_to"] = questionAnswered.dataValues.redirect_to;
                 res.status(200).send(dispatcher(result));
             }else{
                 
@@ -171,11 +179,19 @@ export default class QuizController extends BaseController {
                 dataToUpsert["response"]=JSON.stringify(user_response);
                 dataToUpsert = {...dataToUpsert,created_by:user_id}
 
-                const result =  await this.crudService.create(quiz_response,dataToUpsert)
-                if(result instanceof Error){
-                    throw internal(result.message)
+                const resultModel =  await this.crudService.create(quiz_response,dataToUpsert)
+                if(resultModel instanceof Error){
+                    throw internal(resultModel.message)
                 }
-                
+                let result:any = {}
+                result = resultModel.dataValues
+                result["is_correct"] = responseObjToAdd.is_correct;
+                if(responseObjToAdd.is_correct){
+                    result["msg"] = questionAnswered.dataValues.msg_ans_correct;
+                }else{
+                    result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
+                }
+                result["redirect_to"] = questionAnswered.dataValues.redirect_to;
                 res.status(200).send(dispatcher(result));
             }
         }catch(err){
