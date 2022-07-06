@@ -15,7 +15,10 @@ export class quiz_question extends Model<InferAttributes<quiz_question>,InferCre
    declare option_d: string;
    declare correct_ans: string;
    declare level: Enumerator;
-   declare redirect_to: CreationOptional<number>;
+   declare msg_ans_correct:string;
+   declare msg_ans_wrong:string;
+   declare question_image:string;
+   declare redirect_to: ForeignKey<number>;
    declare status: Enumerator;
    declare created_by: number;
    declare created_at: Date;
@@ -71,14 +74,29 @@ quiz_question.init(
             type: DataTypes.TEXT,
             allowNull: false
         },
-        redirect_to: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
         level: {
             type: DataTypes.ENUM(...Object.values(constents.quiz_question_level_flags.list)),
             allowNull: false,
             defaultValue: constents.quiz_question_level_flags.default
+        },
+        redirect_to: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        question_image: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
+
+        msg_ans_correct: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            defaultValue:"",
+        },
+        msg_ans_wrong: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            defaultValue:"",
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),

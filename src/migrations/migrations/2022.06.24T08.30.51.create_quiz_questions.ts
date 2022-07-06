@@ -49,14 +49,29 @@ export const up: Migration = async ({ context: sequelize }) => {
             type: DataTypes.TEXT,
             allowNull: false
         },
-        redirect_to: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
         level: {
             type: DataTypes.ENUM(...Object.values(constents.quiz_question_level_flags.list)),
             allowNull: false,
             defaultValue: constents.quiz_question_level_flags.default
+        },
+        redirect_to: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        question_image: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
+
+        msg_ans_correct: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            defaultValue:"",
+        },
+        msg_ans_wrong: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+            defaultValue:"",
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),

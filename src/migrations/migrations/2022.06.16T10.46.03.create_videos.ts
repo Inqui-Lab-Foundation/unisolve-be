@@ -15,6 +15,11 @@ export const up: Migration = async ({ context: sequelize }) => {
             allowNull: false,
             unique: true
         },
+        video_duration:{
+            type: DataTypes.STRING,
+            allowNull: false, 
+            defaultValue: '-1' 
+        },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
             defaultValue: constents.common_status_flags.default
