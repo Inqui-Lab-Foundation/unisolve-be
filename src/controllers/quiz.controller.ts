@@ -62,8 +62,11 @@ export default class QuizController extends BaseController {
                 question_no = noOfQuestionsAnswered;
                 if(lastQuestionAnsewered.level == "HARD"){
                     level = "MEDIUM"
-                }else {
+                }else if(lastQuestionAnsewered.level == "MEDIUM"){
                     level = "EASY"
+                }else if(lastQuestionAnsewered.level == "EASY"){
+                    question_no = noOfQuestionsAnswered+1;
+                    level = "HARD"
                 }
             }
         }
@@ -74,7 +77,29 @@ export default class QuizController extends BaseController {
             throw internal(nextQuestionsToChooseFrom.message)
         }
         if(nextQuestionsToChooseFrom){
-            res.status(200).send(dispatcher(nextQuestionsToChooseFrom))
+            let resultQuestion:any = {}
+            let optionsArr = []
+            if(nextQuestionsToChooseFrom.dataValues.option_a){
+                optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_a)
+            }
+            if(nextQuestionsToChooseFrom.dataValues.option_b){
+                optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_b)
+            }
+            if(nextQuestionsToChooseFrom.dataValues.option_c){
+                optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_c)
+            }
+            if(nextQuestionsToChooseFrom.dataValues.option_d){
+                optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_d)
+            }
+            
+            
+            resultQuestion["quiz_id"] = nextQuestionsToChooseFrom.dataValues.quiz_id;
+            resultQuestion["quiz_question_id"] = nextQuestionsToChooseFrom.dataValues.quiz_question_id;
+            resultQuestion["question_no"] = nextQuestionsToChooseFrom.dataValues.question_no;
+            resultQuestion["options"] = optionsArr;
+            resultQuestion["level"] = nextQuestionsToChooseFrom.dataValues.level;
+
+            res.status(200).send(dispatcher(resultQuestion))
         }else{
             res.status(200).send(dispatcher("Quiz has been completed no more questions to display"))
         }
