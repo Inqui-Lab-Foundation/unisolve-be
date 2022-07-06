@@ -55,6 +55,8 @@ async function createQuizQuestion(
 			correct_ans:arg_correct_ans,
 			redirect_to:arg_redirect_to,
 			level:arg_level,
+			msg_ans_correct:"keep up the good work.",
+			msg_ans_wrong:"Opps may be you need to watch video again.",
 			created_by: 1,
 			updated_by: 1,
 		}

@@ -62,8 +62,11 @@ export default class QuizController extends BaseController {
                 question_no = noOfQuestionsAnswered;
                 if(lastQuestionAnsewered.level == "HARD"){
                     level = "MEDIUM"
-                }else {
+                }else if(lastQuestionAnsewered.level == "MEDIUM"){
                     level = "EASY"
+                }else if(lastQuestionAnsewered.level == "EASY"){
+                    question_no = noOfQuestionsAnswered+1;
+                    level = "HARD"
                 }
             }
         }
@@ -74,7 +77,29 @@ export default class QuizController extends BaseController {
             throw internal(nextQuestionsToChooseFrom.message)
         }
         if(nextQuestionsToChooseFrom){
-            res.status(200).send(dispatcher(nextQuestionsToChooseFrom))
+            let resultQuestion:any = {}
+            let optionsArr = []
+            if(nextQuestionsToChooseFrom.dataValues.option_a){
+                optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_a)
+            }
+            if(nextQuestionsToChooseFrom.dataValues.option_b){
+                optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_b)
+            }
+            if(nextQuestionsToChooseFrom.dataValues.option_c){
+                optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_c)
+            }
+            if(nextQuestionsToChooseFrom.dataValues.option_d){
+                optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_d)
+            }
+            
+            
+            resultQuestion["quiz_id"] = nextQuestionsToChooseFrom.dataValues.quiz_id;
+            resultQuestion["quiz_question_id"] = nextQuestionsToChooseFrom.dataValues.quiz_question_id;
+            resultQuestion["question_no"] = nextQuestionsToChooseFrom.dataValues.question_no;
+            resultQuestion["options"] = optionsArr;
+            resultQuestion["level"] = nextQuestionsToChooseFrom.dataValues.level;
+
+            res.status(200).send(dispatcher(resultQuestion))
         }else{
             res.status(200).send(dispatcher("Quiz has been completed no more questions to display"))
         }
@@ -133,11 +158,19 @@ export default class QuizController extends BaseController {
 
                 dataToUpsert["response"]=JSON.stringify(user_response);
                 
-                const result =  await this.crudService.update(quizRes,dataToUpsert,{where:{quiz_id:quiz_id,user_id:user_id}})
-                if(result instanceof Error){
-                    throw internal(result.message)
+                const resultModel =  await this.crudService.update(quizRes,dataToUpsert,{where:{quiz_id:quiz_id,user_id:user_id}})
+                if(resultModel instanceof Error){
+                    throw internal(resultModel.message)
                 }
-                
+                let result:any = {}
+                result = resultModel.dataValues
+                result["is_correct"] = responseObjToAdd.is_correct;
+                if(responseObjToAdd.is_correct){
+                    result["msg"] = questionAnswered.dataValues.msg_ans_correct;
+                }else{
+                    result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
+                }
+                result["redirect_to"] = questionAnswered.dataValues.redirect_to;
                 res.status(200).send(dispatcher(result));
             }else{
                 
@@ -146,11 +179,19 @@ export default class QuizController extends BaseController {
                 dataToUpsert["response"]=JSON.stringify(user_response);
                 dataToUpsert = {...dataToUpsert,created_by:user_id}
 
-                const result =  await this.crudService.create(quiz_response,dataToUpsert)
-                if(result instanceof Error){
-                    throw internal(result.message)
+                const resultModel =  await this.crudService.create(quiz_response,dataToUpsert)
+                if(resultModel instanceof Error){
+                    throw internal(resultModel.message)
                 }
-                
+                let result:any = {}
+                result = resultModel.dataValues
+                result["is_correct"] = responseObjToAdd.is_correct;
+                if(responseObjToAdd.is_correct){
+                    result["msg"] = questionAnswered.dataValues.msg_ans_correct;
+                }else{
+                    result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
+                }
+                result["redirect_to"] = questionAnswered.dataValues.redirect_to;
                 res.status(200).send(dispatcher(result));
             }
         }catch(err){
