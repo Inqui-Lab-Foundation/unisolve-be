@@ -96,6 +96,7 @@ export default class QuizController extends BaseController {
             resultQuestion["quiz_id"] = nextQuestionsToChooseFrom.dataValues.quiz_id;
             resultQuestion["quiz_question_id"] = nextQuestionsToChooseFrom.dataValues.quiz_question_id;
             resultQuestion["question_no"] = nextQuestionsToChooseFrom.dataValues.question_no;
+            resultQuestion["question"] = nextQuestionsToChooseFrom.dataValues.question;
             resultQuestion["options"] = optionsArr;
             resultQuestion["level"] = nextQuestionsToChooseFrom.dataValues.level;
 
