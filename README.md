@@ -42,7 +42,8 @@ Requirements for the software and other tools to build, test and push
    - ```yarn start:dev``` || ```npm start:dev``` This will start the application in development mode
    - ```yarn start:prod``` || ```npm start:prod```  This will start the application and run on port 3002
 
-   - **Note:** For the first time, if you want to create all tables in the selected database, it is recommended to run ```node migrate.js``` from route directory.
+   - **Pre-Note:**: you must build the project once using ```npm run build``` before executing the below command
+   - **Note:** For the first time, if you want to create all tables in the selected database, it is recommended to run ```npm run migrate up``` from route directory.
 
 5. if required, you can change port and others details in `.env` file. if the `.env` file gets failed to load, it can load the default values from `base.config.ts` which is under `/src/configs/`.
 
@@ -112,17 +113,16 @@ unisolve-be                            # Project route directory
 #### **Generate Migrations(DEV):**
 
 to create a new empty migation file you can run 
-
-- node src/migrations/migrate.js create --name name_you_want_for_migration_file.ts
-
-```npm run migrate:init```
+```npm run migrate create -- --name=name_you_want_for_migration_file.ts```
 
 upon calling the above command a new file will be generated at src/migrations/migrations/ folder with name xxxxtimestampxxx.name_you_want_for_migration_file.ts
 once you have generated migration file you can call 
 
 #### **UP/DOWN Migrations(other than DEV):**
 
-```node src/migrations/migrate.js up``` command will execute all pending migrations.
+**Note:**: you must build the project once before executing the below command
+
+```npm run migrate up``` command will execute all pending migrations.
 
 ## Database rules
 
