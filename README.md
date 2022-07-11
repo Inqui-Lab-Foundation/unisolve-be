@@ -13,7 +13,7 @@ for notes on deploying the project on a live system.
 
 ### Prerequisites
 
-- Node.js 
+- Node.js (atleast-- node: 14.17.0, npm: 16.14.13)
 - Typescript 
 - Express
 - MySQL
