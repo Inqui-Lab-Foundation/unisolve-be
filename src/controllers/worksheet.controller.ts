@@ -20,7 +20,7 @@ export default class WorksheetController extends BaseController {
     }
     protected initializeRoutes(): void {
         //example route to add 
-        this.router.get(this.path+"/:id/response", this.submitResponse.bind(this));
+        this.router.post(this.path+"/:id/response", this.submitResponse.bind(this));
 
         super.initializeRoutes();
     }
