@@ -14,7 +14,7 @@ import dispatcher from '../utils/dispatch.util';
  * @param {Object} res
  */
 export function notFound(req:Request, res:Response) {
-  console.log(res)
+  // console.log(res)
   res.status(HttpStatus.NOT_FOUND).json({
       code: HttpStatus.NOT_FOUND,
       message: HttpStatus.getStatusText(HttpStatus.NOT_FOUND),
@@ -71,5 +71,5 @@ export const genericErrorHandler: ErrorRequestHandler = async (err: any, req: Re
   await logIt(constents.log_levels.list.ERROR, `${err.message}: ${err}`, req, res);
   const error = buildError(err);
   
-  res.status(error.code).json(dispatcher({}, 'error',error.message,error.code))
+  res.status(error.code).send(dispatcher({}, 'error',error.message,error.code))
 }

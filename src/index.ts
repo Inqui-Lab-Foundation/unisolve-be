@@ -16,6 +16,7 @@ import QuizController from "./controllers/quiz.controller";
 import FaqCategoryController from "./controllers/faq_category.controller";
 import FaqController from "./controllers/faq.controller";
 
+import OrganizationController from "./controllers/organization.controller";
 
 // validating env variables
 validateEnv();
@@ -36,6 +37,7 @@ try {
         new QuizController,
         new FaqCategoryController,
         new FaqController
+        new OrganizationController
     ], Number(process.env.APP_PORT));
     // starting app
     app.listen();
