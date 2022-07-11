@@ -20,15 +20,15 @@ export default class WorksheetController extends BaseController {
     }
     protected initializeRoutes(): void {
         //example route to add 
-        this.router.get(this.path+"/:worksheet_id/response", this.submitResponse.bind(this));
+        this.router.get(this.path+"/:id/response", this.submitResponse.bind(this));
 
         super.initializeRoutes();
     }
 
     protected async submitResponse(req:Request,res:Response,next:NextFunction):Promise<Response | void>{
-        const { worksheet_id } =  req.params;
+        const worksheet_id =  req.params.id;
         if(!worksheet_id){
-            throw badRequest(speeches.QUIZ_ID_REQUIRED);
+            throw badRequest(speeches.WORKSHEET_ID_REQUIRED);
         }
 
         const rawfiles: any = req.files;
