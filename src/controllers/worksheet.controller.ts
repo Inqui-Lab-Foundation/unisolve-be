@@ -38,36 +38,30 @@ export default class WorksheetController extends BaseController {
         const rawfiles: any = req.files;
         const files: any = Object.values(rawfiles);
         const file_key: any = Object.keys(rawfiles);
-        console.log(file_key);
         const reqData: any = req.body;
         const errs: any = [];
         let attachments = "";
         for (const file_name of Object.keys(files)) {
             const file = files[file_name];
-            console.log(file);
             let filename = file.path.split(path.sep).pop();
             filename = ""+Date.now()+"_"+filename
             const targetPath = path.join(process.cwd(), 'resources', 'static', 'uploads', 'worksheets' ,'responses', filename);
-            await fs.copyFile(file.path, targetPath, async (err) => {
-                if (err) {
+            const copyResult:any = await fs.promises.copyFile(file.path, targetPath);
+            if(copyResult instanceof Error) {
                     errs.push(`Error uploading file: ${file.originalFilename}`);
                     // console.log(err)
-                    // throw internal(`Error uploading file: ${file.originalFilename}`)
-
-                } else {
+                    // throw internal(`Error uploading file: ${file.originalFilename}`)   
+            } else {
                     
-                    reqData[file.fieldName] = `/assets/worksheets/responses/${filename}`;
-                    attachments  = attachments+`/assets/worksheets/responses/${filename},`
-                    console.log(attachments)
-                    //todo: add this fieldname to an comma separarted variable called atttachments
-                }
-            });
+                reqData[file.fieldName] = `/assets/worksheets/responses/${filename}`;
+                attachments  = attachments+`/assets/worksheets/responses/${filename},`
+                // console.log(attachments)
+            }
         }
         if (errs.length) {
             return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
         }
 
-        //todo: prepare object with attachment variable to be put into the worksheet response db 
         const modelLoaded = await this.loadModel("worksheet_response");
         
         let dataToBeUploaded:any = {};
