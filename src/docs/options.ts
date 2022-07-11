@@ -61,6 +61,7 @@ import {
     createWorksheetRequestBody,
     worksheetUpdatesRequestBody, createWorksheet, worksheetById, worksheetByIdUpdate, worksheetList, WorksheetsByIdDelete
 } from "./worksheets.api.docs";
+import { organizationList, createOrganization, organizationSingle, organizationDelete, organizationUpdate, createOrganizationWithFile, organizationRequestBody, organizationRequestBodyWithFile, organizationUpdatesRequestBody } from "./organization.api.docs";
 
 // define Swagger options with specific properties
 const options = {
@@ -111,6 +112,9 @@ const options = {
         },
         {
             name: 'Notifications',
+        },
+        {
+            name: 'Organization',
         },
     ],
     paths: {
@@ -224,6 +228,18 @@ const options = {
         '/api/v1/notifications/sendwithposter': {
             post: notificationWithPoster
         },
+        //organization
+        '/api/v1/organization/': {
+            post: createOrganization,
+            get: organizationList
+        },
+        '/api/v1/organization/{organization_id}': {
+            put: organizationUpdate,
+            delete: organizationDelete
+        },
+        '/api/v1/organization/withFile': {
+            post: createOrganizationWithFile
+        }
     },
     components: {
         securitySchemes: {
@@ -255,7 +271,10 @@ const options = {
             createTeamRequestBody,
             teamUpdatesRequestBody,
             notificationsWithPosterRequestBody,
-            notificationsRequestBody
+            notificationsRequestBody,
+            organizationRequestBody,
+            organizationRequestBodyWithFile,
+            organizationUpdatesRequestBody
         },
     },
 };
