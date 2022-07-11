@@ -32,7 +32,6 @@ export default class WorksheetController extends BaseController {
                 throw badRequest(speeches.WORKSHEET_ID_REQUIRED);
             }
             const user_id =  res.locals.user_id;
-            // const user_id = null
             if(!user_id){
                 throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
             }
