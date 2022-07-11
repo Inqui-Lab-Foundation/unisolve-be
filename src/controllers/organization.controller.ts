@@ -26,15 +26,12 @@ export default class OrganizationController extends BaseController {
     protected async createDataWithFile(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const rawfiles: any = req.files;
         const files: any = Object.values(rawfiles);
-        const org_details: any = [];
         for (const file_name of Object.keys(files)) {
             const file = files[file_name];
-            await fs.createReadStream(file.path)
-                .pipe(csvParser())
-                .on('data', async (data: any) => {
-                    if (data.organization_name === undefined || data.organization_code === undefined || data.details === undefined) {
-                        console.log('undefined');
-                    }
+            const stream = fs.createReadStream(file.path).pipe(csvParser());
+            stream.on('data', async (data: any) => {
+                if (Object.entries(data).length > 0) {
+                    // console.log('fetch: ', data, 'length: ', Object.entries(data).length);
                     const modelLoaded = await this.loadModel(this.model);
                     const payload = this.autoFillTrackingCollumns(req, res, modelLoaded, data);
                     const preLoadedData: any = this.crudService.findOne(modelLoaded, { where: { organization_name: data.organization_name } });
@@ -43,8 +40,10 @@ export default class OrganizationController extends BaseController {
                     } else {
                         await this.crudService.create(modelLoaded, payload);
                     }
-                })
-                .on('end', () => res.send({ message: 'success' }));
+                }
+            })
+            stream.on('end', () => res.send({ message: 'success' }));
+            stream.on('error', (error: any) => res.send({ message: error }));
         }
     }
 }
