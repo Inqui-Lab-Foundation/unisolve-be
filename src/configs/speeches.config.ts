@@ -68,4 +68,7 @@ export const speeches = {
 
     EMAIL_SEND_ERROR: "Faild to send email",
     EMAIL_SEND_SUCCESS: "Email sent successfully.",
+
+    FAQ_CATEGORY: "Category is required.",
+    FAQ_ANSWER: "Answer is required.",
 }
