@@ -1,6 +1,8 @@
+import { badRequest, internal } from "boom";
 import csvParser from "csv-parser";
 import { NextFunction, Request, Response } from "express";
 import fs from 'fs';
+import { date } from "joi";
 import path from 'path';
 import { speeches } from "../configs/speeches.config";
 import dispatcher from "../utils/dispatch.util";
@@ -24,26 +26,33 @@ export default class OrganizationController extends BaseController {
         super.initializeRoutes();
     };
     protected async createDataWithFile(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        const rawfiles: any = req.files;
-        const files: any = Object.values(rawfiles);
-        for (const file_name of Object.keys(files)) {
-            const file = files[file_name];
-            const stream = fs.createReadStream(file.path).pipe(csvParser());
-            stream.on('data', async (data: any) => {
-                if (Object.entries(data).length > 0) {
-                    // console.log('fetch: ', data, 'length: ', Object.entries(data).length);
-                    const modelLoaded = await this.loadModel(this.model);
-                    const payload = this.autoFillTrackingCollumns(req, res, modelLoaded, data);
-                    const preLoadedData: any = this.crudService.findOne(modelLoaded, { where: { organization_name: data.organization_name } });
-                    if (preLoadedData) {
-                        console.log('data existing');
-                    } else {
-                        await this.crudService.create(modelLoaded, payload);
-                    }
-                }
-            })
-            stream.on('end', () => res.send({ message: 'success' }));
-            stream.on('error', (error: any) => res.send({ message: error }));
+        const Error: any = [];
+        //@ts-ignore
+        if (req.files.data === undefined) {
+            console.log('first')
+            throw badRequest();
         }
+        //@ts-ignore
+        const stream = fs.createReadStream(req.files.data.path).pipe(csvParser());
+        stream.on('data', async (data: any) => {
+            if (Object.entries(data).length > 0) {
+                const modelLoaded = await this.loadModel(this.model);
+                const payload = this.autoFillTrackingCollumns(req, res, modelLoaded, data);
+                const preLoadedData: any = await this.crudService.findOne(modelLoaded, { where: { organization_name: data.organization_name } });
+                if (preLoadedData) {
+                    Error.push(badRequest().message);
+                } else {
+                    await this.crudService.create(modelLoaded, payload);
+                }
+            }
+        })
+        stream.on('error', error => Error.push(error));
+        stream.on('end', () => {
+            if (Error.length > 0) {
+                next(badRequest());
+            } else {
+                res.send(dispatcher(null, 'success', 'created', 200));
+            }
+        });
     }
 }
