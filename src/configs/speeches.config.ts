@@ -44,6 +44,10 @@ export const speeches = {
     CATEGORY_REQUIRED: "Category is required, it should not be empty.",
     QUESTION_NO_REQUIRED: "Question no is required, it should not be empty.",
 
+    //worksheet submit resoponse keys 
+    WORKSHEET_ID_REQUIRED:"WORKSHEET ID is required, it should not be empty.",
+    WORKSHEET_FILE:"WORKSHEET_FILE is required, it should not be empty.",
+
     NOTIFICATION_TYPE_INVALID: `Notification type is invalid, it should be one from ${Object.values(constents.notification_types.list).join(", ")}.`,
     NOTIFICATION_TYPE_REQUIRED: `Notification type is required, it should be one from ${Object.values(constents.notification_types.list).join(", ")}.`,
     NOTIFICATION_TARGET_AUDIENCE_REQUIRED: "Target audience is required, it should be either 'All' or user_id(s) with ',' seperated.",

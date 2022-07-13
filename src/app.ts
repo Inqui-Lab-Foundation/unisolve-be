@@ -97,7 +97,8 @@ export default class App {
 
     private serveStaticFiles(): void {
         this.app.use("/assets", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads')));
-        this.app.use("/courses", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'courses')));
+        this.app.use("/assets/courses", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'courses')));
+        this.app.use("/assets/defaults", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'default')));
         this.app.use("/posters", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'posters')));
         this.app.use("/images", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'images')));
     }
