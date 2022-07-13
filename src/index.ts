@@ -36,7 +36,7 @@ try {
         new UserTopicProgress,
         new QuizController,
         new FaqCategoryController,
-        new FaqController
+        new FaqController,
         new OrganizationController
     ], Number(process.env.APP_PORT));
     // starting app
