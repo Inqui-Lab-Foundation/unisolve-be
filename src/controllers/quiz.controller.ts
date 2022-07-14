@@ -3,6 +3,8 @@
 import { badRequest, internal, unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import { invalid } from "joi";
+import { Op } from "sequelize";
+import { constents } from "../configs/constents.config";
 import { speeches } from "../configs/speeches.config";
 import validationMiddleware from "../middlewares/validation.middleware";
 import { course_topic } from "../models/course_topic.model";
@@ -34,6 +36,7 @@ export default class QuizController extends BaseController {
     protected async  getNextQuestion(req:Request,res:Response,next:NextFunction): Promise<Response | void> {
         
         const  quiz_id  = req.params.id;
+        const  paramStatus :any = req.query.status;
         const user_id =  res.locals.user_id;
         if(!quiz_id){
             throw badRequest(speeches.QUIZ_ID_REQUIRED);
@@ -51,6 +54,13 @@ export default class QuizController extends BaseController {
         if(quizRes instanceof Error){
             throw internal(quizRes.message)
         }
+        let whereClauseStatusPart:any = {}
+        let boolStatusWhereClauseRequired = false
+        if(paramStatus && (paramStatus in constents.common_status_flags.list)){
+            whereClauseStatusPart = {"status":paramStatus}
+            boolStatusWhereClauseRequired = true;
+        }
+
         let level = "HARD"
         let question_no = 1
         let nextQuestion:any=null;
@@ -60,26 +70,36 @@ export default class QuizController extends BaseController {
             let user_response:any = {}
             user_response =  JSON.parse(quizRes.dataValues.response);
             // console.log(user_response);
+            let questionNosAsweredArray = Object.keys(user_response);
+            questionNosAsweredArray = questionNosAsweredArray.sort((a,b) => (a > b ? -1 : 1));
             const noOfQuestionsAnswered = Object.keys(user_response).length
             // console.log(noOfQuestionsAnswered)
-            const lastQuestionAnsewered = user_response[noOfQuestionsAnswered]
+            const lastQuestionAnsewered = user_response[questionNosAsweredArray[0]]//we have assumed that this length will always have atleast 1 item ; this could potentially be a source of bug, but is not since this should always be true based on above checks ..
             if(lastQuestionAnsewered.selected_option == lastQuestionAnsewered.correct_answer){
-                question_no = noOfQuestionsAnswered+1;
+                question_no = lastQuestionAnsewered.question_no+1;
 
             }else{
-                question_no = noOfQuestionsAnswered;
+                question_no = lastQuestionAnsewered.question_no;
                 if(lastQuestionAnsewered.level == "HARD"){
                     level = "MEDIUM"
                 }else if(lastQuestionAnsewered.level == "MEDIUM"){
                     level = "EASY"
                 }else if(lastQuestionAnsewered.level == "EASY"){
-                    question_no = noOfQuestionsAnswered+1;
+                    question_no = lastQuestionAnsewered.question_no+1;
                     level = "HARD"
                 }
             }
         }
         
-        const nextQuestionsToChooseFrom = await this.crudService.findOne(quiz_question,{where:{quiz_id:quiz_id,level:level,question_no:question_no}})
+        const nextQuestionsToChooseFrom = await this.crudService.findOne(quiz_question,{where:{
+            [Op.and]:[
+                whereClauseStatusPart,
+                {quiz_id:quiz_id},
+                {level:level},
+                {question_no:question_no},
+            ]
+            
+        }})
         
         if(nextQuestionsToChooseFrom instanceof Error){
             throw internal(nextQuestionsToChooseFrom.message)
@@ -111,7 +131,11 @@ export default class QuizController extends BaseController {
             res.status(200).send(dispatcher(resultQuestion))
         }else{
             //update worksheet topic progress for this user to completed..!!
-            const updateProgress =  await this.crudService.create(user_topic_progress,{"user_id":user_id,"course_topic_id":curr_topic.course_topic_id,"status":"COMPLETED"})
+            if(!boolStatusWhereClauseRequired || 
+                (boolStatusWhereClauseRequired && paramStatus == "ACTIVE")){
+                const updateProgress =  await this.crudService.create(user_topic_progress,{"user_id":user_id,"course_topic_id":curr_topic.course_topic_id,"status":"COMPLETED"})
+            }
+            
             //send response that quiz is completed..!!
             res.status(200).send(dispatcher("Quiz has been completed no more questions to display"))
         }
