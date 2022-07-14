@@ -3,10 +3,14 @@
         "name": "unisolve",
         "script": "./dist/src/index.js",
         "exec_mode": "fork",
-        "instances": 1,
+        "instances": 2,
         "env": {
             "NODE_ENV": "production",
             "PORT": "3002"
+        },
+        "env_testing": {
+            "NODE_ENV": "testing",
+            "PORT": "3003"
         }
     }
 ]
