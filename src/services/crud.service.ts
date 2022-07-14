@@ -10,12 +10,19 @@ export default class CRUDService {
             return error;
         }
     };
+    async bulkCreate(model: any, input: any) {
+        try {
+            const data = await model.bulkCreate(input);
+            return data;
+        } catch (error: any) {
+            return error;
+        }
+    };
     async findOne(model: any, query: object) {
         try {
             const data = await model.findOne(query);
-            if (data) {
-                delete data.dataValues.password;
-            }
+            if (data) delete data.dataValues.password;
+            if (data === null) return false;
             return data;
         } catch (error: any) {
             console.log(error)
