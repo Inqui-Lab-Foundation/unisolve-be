@@ -1,13 +1,14 @@
 import { Router, Request, Response, NextFunction, response } from 'express';
 import path from 'path';
 import { Op } from 'sequelize';
-import fs from 'fs';
+import fs, { stat } from 'fs';
 import IController from '../interfaces/controller.interface';
 import HttpException from '../utils/exceptions/http.exception';
 import CRUDService from '../services/crud.service';
 import { badRequest, notFound } from 'boom';
 import dispatcher from '../utils/dispatch.util';
 import { speeches } from '../configs/speeches.config';
+import { constents } from '../configs/constents.config';
 
 export default class CRUDController implements IController {
     model: string = "";
@@ -59,7 +60,8 @@ export default class CRUDController implements IController {
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             let data: any;
-            const { model, id, } = req.params;
+            const { model, id} = req.params;
+            const paramStatus:any = req.query.status;
             if (model) {
                 this.model = model;
             };
@@ -70,27 +72,45 @@ export default class CRUDController implements IController {
 
             this.loadModel(model).then(async (modelClass: any) => {
                 const where: any = {};
+                let whereClauseStatusPart:any = {};
+                if(paramStatus && (paramStatus in constents.common_status_flags.list)){
+                    whereClauseStatusPart = {"status":paramStatus}
+                }
                 if (id) {
                     where[`${this.model}_id`] = req.params.id;
-                    data = await this.crudService.findOne(modelClass, { where: where });
+                    data = await this.crudService.findOne(modelClass, { where: {
+                        [Op.and]: [
+                            whereClauseStatusPart,
+                            where,
+                          ]
+                    } });
                 } else {
-                    await this.crudService.findAndCountAll(modelClass, { where: condition, limit, offset })
-                        .then((response: any) => {
-                            const result = this.getPagingData(response, page, limit);
-                            data = result;
-                        })
-                        .catch((error: any) => {
+                    const resonse = await this.crudService.findAndCountAll(modelClass, { where: {
+                        [Op.and]: [
+                            whereClauseStatusPart,
+                            condition
+                          ]
+                    }, limit, offset }).catch((error: any) => {
                             return res.status(500).send(dispatcher(data, 'error'))
                         });
+
+                        const result = this.getPagingData(response, page, limit);
+                            data = result;
                 }
                 // if (!data) {
                 //     return res.status(404).send(dispatcher(data, 'error'));
                 // }
                 if (!data || data instanceof Error) {
-                    throw notFound(data.message)
+                    if(data!=null){
+                        throw notFound(data.message)
+                    }else{
+                        throw notFound()
+                    }
                 }
 
                 return res.status(200).send(dispatcher(data, 'success'));
+            }).catch(error=>{
+                next(error)
             });
         } catch (error) {
             next(error);
