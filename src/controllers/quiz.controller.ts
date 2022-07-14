@@ -5,8 +5,10 @@ import { NextFunction, Request, Response } from "express";
 import { invalid } from "joi";
 import { speeches } from "../configs/speeches.config";
 import validationMiddleware from "../middlewares/validation.middleware";
+import { course_topic } from "../models/course_topic.model";
 import { quiz_question } from "../models/quiz_question.model";
 import { quiz_response } from "../models/quiz_response.model";
+import { user_topic_progress } from "../models/user_topic_progress.model";
 import dispatcher from "../utils/dispatch.util";
 import { quizNextQuestionSchema, quizSchema, quizSubmitResponseSchema, quizUpdateSchema } from "../validations/quiz.validations";
 import ValidationsHolder from "../validations/validationHolder";
@@ -39,6 +41,12 @@ export default class QuizController extends BaseController {
         if(!user_id){
             throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
         }
+        //check if the given quiz is a valid topic
+        const curr_topic =  await this.crudService.findOne(course_topic,{where:{"topic_type_id":quiz_id,"topic_type":"QUIZ"}})
+        if(!curr_topic || curr_topic instanceof Error){
+            throw badRequest("INVALID TOPIC");
+        }
+
         const quizRes = await this.crudService.findOne(quiz_response,{where: {quiz_id:quiz_id,user_id:user_id}});
         if(quizRes instanceof Error){
             throw internal(quizRes.message)
@@ -102,6 +110,9 @@ export default class QuizController extends BaseController {
 
             res.status(200).send(dispatcher(resultQuestion))
         }else{
+            //update worksheet topic progress for this user to completed..!!
+            const updateProgress =  await this.crudService.create(user_topic_progress,{"user_id":user_id,"course_topic_id":curr_topic.course_topic_id,"status":"COMPLETED"})
+            //send response that quiz is completed..!!
             res.status(200).send(dispatcher("Quiz has been completed no more questions to display"))
         }
         
