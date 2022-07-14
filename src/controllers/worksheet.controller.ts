@@ -8,6 +8,8 @@ import { speeches } from "../configs/speeches.config";
 import path from "path";
 import fs from 'fs';
 import dispatcher from "../utils/dispatch.util";
+import { user_topic_progress } from "../models/user_topic_progress.model";
+import { course_topic } from "../models/course_topic.model";
 export default class WorksheetController extends BaseController {
 
     model = "worksheet";
@@ -36,6 +38,13 @@ export default class WorksheetController extends BaseController {
                 throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
             }
 
+            //check if the given worksheet is a valid topic
+            const curr_workshet_topic =  await this.crudService.findOne(course_topic,{where:{"topic_type_id":worksheet_id,"topic_type":"WORKSHEET"}})
+            if(!curr_workshet_topic || curr_workshet_topic instanceof Error){
+                throw badRequest("INVALID TOPIC");
+            }
+
+            //copy attached file in assets/worksheets/responses and add its path in attachment variable
             const rawfiles: any = req.files;
             const files: any = Object.values(rawfiles);
             const file_key: any = Object.keys(rawfiles);
@@ -68,13 +77,16 @@ export default class WorksheetController extends BaseController {
             }
 
             const modelLoaded = await this.loadModel("worksheet_response");
-            
+            //create an entry in worksheet submission table
             let dataToBeUploaded:any = {};
             dataToBeUploaded["worksheet_id"]= worksheet_id
             dataToBeUploaded["user_id"] = user_id
             dataToBeUploaded["attachments"]= attachments
             const payload = this.autoFillTrackingCollumns(req, res, modelLoaded, dataToBeUploaded)
             const data = await this.crudService.create(modelLoaded, payload);
+
+            //update worksheet topic progress for this user to completed..!!
+            const updateProgress =  await this.crudService.create(user_topic_progress,{"user_id":user_id,"course_topic_id":curr_workshet_topic.course_topic_id,"status":"COMPLETED"})
             res.status(200).send(dispatcher(data,"success"));
             
 
