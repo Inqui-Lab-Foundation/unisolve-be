@@ -52,7 +52,6 @@ export default class CRUDController implements IController {
 
     protected getPagingData(data: any, page: any, limit: any) {
         const { count: totalItems, rows: dataValues } = data;
-        console.log(data);
         const currentPage = page ? +page : 0;
         const totalPages = Math.ceil(totalItems / limit);
         return { totalItems, dataValues, totalPages, currentPage };
@@ -96,10 +95,8 @@ export default class CRUDController implements IController {
                             condition
                             ]
                     }, limit, offset })
-                    // console.log(" before getPagingData",resonse);
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
-                    // console.log(" before getPagingData",data);
                 } catch(error:any){
                     return res.status(500).send(dispatcher(data, 'error'))
                 }
