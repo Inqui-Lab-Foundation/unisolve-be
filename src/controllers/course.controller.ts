@@ -208,6 +208,19 @@ export default class CourseController extends BaseController {
                                 \`course_modules->course_topics\`.\`topic_type\` = "VIDEO"
                             )`),
                             'video_duration'
+                        ],
+                        [
+                            db.literal(`(
+                                SELECT 
+                                CASE
+                                    WHEN ct.topic_type = "VIDEO" THEN 1
+                                    WHEN ct.topic_type = "QUIZ" THEN 2
+                                    WHEN ct.topic_type = "WORKSHEET" THEN 3
+                                END AS topic_type_order
+                                FROM course_topics as ct
+                                WHERE ct.course_topic_id = \`course_modules->course_topics\`.\`course_topic_id\`
+                            )`),
+                            'topic_type_order'
                         ]
                     ],
                     where:{
@@ -217,7 +230,12 @@ export default class CourseController extends BaseController {
                     },
                 }]
             }
-            ]
+            ],
+            order: [
+                // [{model: course_module, as: 'course_modules'},{model: course_topic, as: 'course_topics'},'topic_type_order', 'ASC'],
+                db.literal(`\`course_modules.course_topics.topic_type_order\` ASC`),
+                [course_module,course_topic,'course_topic_id', 'ASC'],
+            ],
         });
         return data;
     }
