@@ -69,8 +69,6 @@ export default class CRUDController implements IController {
             const { page, size, title } = req.query;
             let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
-            console.log(limit)
-            console.log(offset)
             const modelClass = await this.loadModel(model).catch(error=>{
                 next(error)
             });
