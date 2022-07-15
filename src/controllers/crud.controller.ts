@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction, response } from 'express';
+import e, { Router, Request, Response, NextFunction, response } from 'express';
 import path from 'path';
 import { Op } from 'sequelize';
 import fs, { stat } from 'fs';
@@ -52,6 +52,7 @@ export default class CRUDController implements IController {
 
     protected getPagingData(data: any, page: any, limit: any) {
         const { count: totalItems, rows: dataValues } = data;
+        console.log(data);
         const currentPage = page ? +page : 0;
         const totalPages = Math.ceil(totalItems / limit);
         return { totalItems, dataValues, totalPages, currentPage };
@@ -88,27 +89,21 @@ export default class CRUDController implements IController {
                         ]
                 } });
             } else {
-                const resonse = await this.crudService.findAndCountAll(modelClass, { where: {
-                    [Op.and]: [
-                        whereClauseStatusPart,
-                        condition
-                        ]
-                }, limit, offset }).then((response)=>{
-                    const result = this.getPagingData(response, page, limit);
+                try{
+                    const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, { where: {
+                        [Op.and]: [
+                            whereClauseStatusPart,
+                            condition
+                            ]
+                    }, limit, offset })
+                    // console.log(" before getPagingData",resonse);
+                    const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
-                }).catch((error: any) => {
-                        return res.status(500).send(dispatcher(data, 'error'))
-                    });
-
-                    
-                // await this.crudService.findAndCountAll(modelClass, { where: condition, limit, offset })
-                //         .then((response: any) => {
-                //             const result = this.getPagingData(response, page, limit);
-                //             data = result;
-                //         })
-                //         .catch((error: any) => {
-                //             return res.status(500).send(dispatcher(data, 'error'))
-                //         });
+                    // console.log(" before getPagingData",data);
+                } catch(error:any){
+                    return res.status(500).send(dispatcher(data, 'error'))
+                }
+                
             }
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));
