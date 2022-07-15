@@ -69,7 +69,8 @@ export default class CRUDController implements IController {
             const { page, size, title } = req.query;
             let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
-
+            console.log(limit)
+            console.log(offset)
             const modelClass = await this.loadModel(model).catch(error=>{
                 next(error)
             });
@@ -92,12 +93,22 @@ export default class CRUDController implements IController {
                         whereClauseStatusPart,
                         condition
                         ]
-                }, limit, offset }).catch((error: any) => {
+                }, limit, offset }).then((response)=>{
+                    const result = this.getPagingData(response, page, limit);
+                    data = result;
+                }).catch((error: any) => {
                         return res.status(500).send(dispatcher(data, 'error'))
                     });
 
-                    const result = this.getPagingData(response, page, limit);
-                        data = result;
+                    
+                // await this.crudService.findAndCountAll(modelClass, { where: condition, limit, offset })
+                //         .then((response: any) => {
+                //             const result = this.getPagingData(response, page, limit);
+                //             data = result;
+                //         })
+                //         .catch((error: any) => {
+                //             return res.status(500).send(dispatcher(data, 'error'))
+                //         });
             }
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));
