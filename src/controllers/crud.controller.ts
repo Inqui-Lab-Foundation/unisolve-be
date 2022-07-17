@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction, response } from 'express';
+import e, { Router, Request, Response, NextFunction, response } from 'express';
 import path from 'path';
 import { Op } from 'sequelize';
 import fs, { stat } from 'fs';
@@ -69,8 +69,6 @@ export default class CRUDController implements IController {
             const { page, size, title } = req.query;
             let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
-            console.log(limit)
-            console.log(offset)
             const modelClass = await this.loadModel(model).catch(error=>{
                 next(error)
             });
@@ -88,27 +86,19 @@ export default class CRUDController implements IController {
                         ]
                 } });
             } else {
-                const resonse = await this.crudService.findAndCountAll(modelClass, { where: {
-                    [Op.and]: [
-                        whereClauseStatusPart,
-                        condition
-                        ]
-                }, limit, offset }).then((response)=>{
-                    const result = this.getPagingData(response, page, limit);
+                try{
+                    const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, { where: {
+                        [Op.and]: [
+                            whereClauseStatusPart,
+                            condition
+                            ]
+                    }, limit, offset })
+                    const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
-                }).catch((error: any) => {
-                        return res.status(500).send(dispatcher(data, 'error'))
-                    });
-
-                    
-                // await this.crudService.findAndCountAll(modelClass, { where: condition, limit, offset })
-                //         .then((response: any) => {
-                //             const result = this.getPagingData(response, page, limit);
-                //             data = result;
-                //         })
-                //         .catch((error: any) => {
-                //             return res.status(500).send(dispatcher(data, 'error'))
-                //         });
+                } catch(error:any){
+                    return res.status(500).send(dispatcher(data, 'error'))
+                }
+                
             }
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));

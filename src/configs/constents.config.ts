@@ -46,6 +46,13 @@ export const constents = {
     },
     default: 'HARD'
   },
+  quiz_question_type_flags: {
+    list: {
+      'MCQ': 'MCQ',
+      'MRQ': 'MRQ',
+    },
+    default: 'MRQ'
+  },
   user_role_flags: {
     list: {
       'ADMIN': 'ADMIN',
