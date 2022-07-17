@@ -128,6 +128,7 @@ export default class QuizController extends BaseController {
             resultQuestion["question_image"] = nextQuestionsToChooseFrom.dataValues.question_image;
             resultQuestion["options"] = optionsArr;
             resultQuestion["level"] = nextQuestionsToChooseFrom.dataValues.level;
+            resultQuestion["type"] = nextQuestionsToChooseFrom.dataValues.type;
 
             res.status(200).send(dispatcher(resultQuestion))
         }else{

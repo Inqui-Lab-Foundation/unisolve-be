@@ -50,6 +50,8 @@ export const constents = {
     list: {
       'MCQ': 'MCQ',
       'MRQ': 'MRQ',
+      'DRAW': 'DRAW',
+      'TEXT': 'TEXT',
     },
     default: 'MRQ'
   },

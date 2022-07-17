@@ -58,11 +58,11 @@ reflective_quiz_question.init(
         },
         option_a: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         option_b: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         option_c: {
             type: DataTypes.TEXT,
@@ -74,7 +74,7 @@ reflective_quiz_question.init(
         },
         correct_ans: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         level: {
             type: DataTypes.ENUM(...Object.values(constents.quiz_question_level_flags.list)),

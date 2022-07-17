@@ -142,6 +142,7 @@ export default class VideoController extends BaseController {
             resultQuestion["question_image"] = questionRaw.question_image;
             resultQuestion["options"] = optionsArr;
             resultQuestion["level"] = questionRaw.level;
+            resultQuestion["type"] = questionRaw.type;
             return resultQuestion;
         })
         
