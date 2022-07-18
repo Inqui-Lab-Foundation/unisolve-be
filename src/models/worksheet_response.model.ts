@@ -1,6 +1,7 @@
 import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
+import { worksheet } from './worksheet.model';
 
 export class worksheet_response extends Model<InferAttributes<worksheet_response>,InferCreationAttributes<worksheet_response>> {
     declare worksheet_response_id: CreationOptional<number>;
@@ -79,3 +80,6 @@ worksheet_response.init(
         updatedAt: 'updated_at'
     }
 );
+
+worksheet_response.belongsTo(worksheet,{ foreignKey: 'worksheet_id'})
+worksheet.hasMany(worksheet_response,{ foreignKey: 'worksheet_id'})
