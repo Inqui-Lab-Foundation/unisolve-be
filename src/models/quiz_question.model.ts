@@ -15,6 +15,7 @@ export class quiz_question extends Model<InferAttributes<quiz_question>,InferCre
    declare option_d: string;
    declare correct_ans: string;
    declare level: Enumerator;
+   declare type: Enumerator;
    declare msg_ans_correct:string;
    declare msg_ans_wrong:string;
    declare question_image:string;
@@ -78,6 +79,11 @@ quiz_question.init(
             type: DataTypes.ENUM(...Object.values(constents.quiz_question_level_flags.list)),
             allowNull: false,
             defaultValue: constents.quiz_question_level_flags.default
+        },
+        type: {
+            type: DataTypes.ENUM(...Object.values(constents.quiz_question_type_flags.list)),
+            allowNull: false,
+            defaultValue: constents.quiz_question_type_flags.default
         },
         redirect_to: {
             type: DataTypes.INTEGER,

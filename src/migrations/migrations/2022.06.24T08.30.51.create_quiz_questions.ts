@@ -54,6 +54,11 @@ export const up: Migration = async ({ context: sequelize }) => {
             allowNull: false,
             defaultValue: constents.quiz_question_level_flags.default
         },
+        type: {
+            type: DataTypes.ENUM(...Object.values(constents.quiz_question_type_flags.list)),
+            allowNull: false,
+            defaultValue: constents.quiz_question_type_flags.default
+        },
         redirect_to: {
             type: DataTypes.INTEGER,
             allowNull: true
