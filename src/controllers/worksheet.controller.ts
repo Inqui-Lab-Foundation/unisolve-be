@@ -3,13 +3,17 @@ import { worksheetSchema, worksheetUpdateSchema } from "../validations/worksheet
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
 import { NextFunction, Request, Response } from "express";
-import { badRequest, internal, unauthorized } from "boom";
+import { badRequest, internal, notFound, unauthorized } from "boom";
 import { speeches } from "../configs/speeches.config";
 import path from "path";
 import fs from 'fs';
+import db from "../utils/dbconnection.util"
 import dispatcher from "../utils/dispatch.util";
 import { user_topic_progress } from "../models/user_topic_progress.model";
 import { course_topic } from "../models/course_topic.model";
+import { constents } from "../configs/constents.config";
+import { Op } from "sequelize";
+import { worksheet_response } from "../models/worksheet_response.model";
 export default class WorksheetController extends BaseController {
 
     model = "worksheet";
@@ -25,6 +29,133 @@ export default class WorksheetController extends BaseController {
         this.router.post(this.path+"/:id/response", this.submitResponse.bind(this));
 
         super.initializeRoutes();
+    }
+
+    protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            let data: any;
+            const { model, id} = req.params;
+            const paramStatus:any = req.query.status;
+            if (model) {
+                this.model = model;
+            };
+            
+            let user_id = res.locals.user_id;
+            if (!user_id) {
+                throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
+            }
+            
+            // pagination
+            const { page, size, title } = req.query;
+            let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+            const { limit, offset } = this.getPagination(page, size);
+            const modelClass = await this.loadModel(model).catch(error=>{
+                next(error)
+            });
+            const where: any = {};
+            let whereClauseStatusPart:any = {};
+            if(paramStatus && (paramStatus in constents.common_status_flags.list)){
+                whereClauseStatusPart = {"status":paramStatus}
+            }
+            if (id) {
+                where[`${this.model}_id`] = req.params.id;
+                data = await this.crudService.findOne(modelClass, { 
+                    where: {
+                        [Op.and]: [
+                            whereClauseStatusPart,
+                            where,
+                        ]
+                    },
+                    attributes:[
+                        "worksheet_id",
+                        "attachments",
+                        "status",
+                        "description",
+                        "updated_at",
+                        [   
+                            // Note the wrapping parentheses in the call below!
+                            db.literal(`(
+                                SELECT CASE WHEN EXISTS 
+                                    (SELECT attachments 
+                                    FROM worksheet_responses as wr 
+                                    WHERE wr.user_id = ${user_id} 
+                                    AND wr.worksheet_id = \`worksheet\`.\`worksheet_id\`)
+                                THEN  
+                                    (SELECT attachments 
+                                    FROM worksheet_responses as wr 
+                                    WHERE wr.user_id = ${user_id} 
+                                    AND wr.worksheet_id = \`worksheet\`.\`worksheet_id\`
+                                    ORDER BY wr.updated_at DESC
+                                    LIMIT 1)
+                                ELSE 
+                                    NULL
+                                END as response
+                            )`),
+                            'response'
+                        ],
+                    ]
+                 });
+            } else {
+                try{
+                    const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, { 
+                        where: {
+                            [Op.and]: [
+                                whereClauseStatusPart,
+                                condition
+                            ]
+                        },
+                        attributes:[
+                            "worksheet_id",
+                            "attachments",
+                            "status",
+                            "description",
+                            "updated_at",
+                            [   
+                                // Note the wrapping parentheses in the call below!
+                                db.literal(`(
+                                    SELECT CASE WHEN EXISTS 
+                                        (SELECT attachments 
+                                        FROM worksheet_responses as wr 
+                                        WHERE wr.user_id = ${user_id} 
+                                        AND wr.worksheet_id = \`worksheet\`.\`worksheet_id\`) 
+                                    THEN  
+                                        (SELECT attachments 
+                                        FROM worksheet_responses as wr 
+                                        WHERE wr.user_id = ${user_id} 
+                                        AND wr.worksheet_id = \`worksheet\`.\`worksheet_id\` 
+                                        ORDER BY wr.updated_at DESC
+                                        LIMIT 1)
+                                    ELSE 
+                                        NULL
+                                    END as response
+                                )`),
+                                'response'
+                            ],
+                        ],
+                        limit,
+                        offset })
+                    const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
+                    data = result;
+                } catch(error:any){
+                    return res.status(500).send(dispatcher(data, 'error'))
+                }
+                
+            }
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(data, 'error'));
+            // }
+            if (!data || data instanceof Error) {
+                if(data!=null){
+                    throw notFound(data.message)
+                }else{
+                    throw notFound()
+                }
+            }
+
+            return res.status(200).send(dispatcher(data, 'success'));
+        } catch (error) {
+            next(error);
+        }
     }
 
     protected async submitResponse(req:Request,res:Response,next:NextFunction){
