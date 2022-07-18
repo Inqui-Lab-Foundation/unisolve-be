@@ -67,7 +67,9 @@ export default class App {
     }
 
     private initializeMiddlewares(): void {
-        this.app.use(helmet());   // helmet for secure headers
+        this.app.use(helmet({
+            crossOriginResourcePolicy: false,
+          }));   // helmet for secure headers
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
