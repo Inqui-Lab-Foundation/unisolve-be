@@ -1,5 +1,7 @@
 import e, { Router, Request, Response, NextFunction } from 'express';
 import { Op } from 'sequelize';
+import * as csv from "fast-csv";
+import fs from 'fs';
 import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import bcrypt from 'bcrypt';
@@ -18,12 +20,14 @@ import { constents } from '../configs/constents.config';
 import { user_profile } from '../models/user_profile.model';
 import { mentor } from '../models/mentor.model';
 import { student } from '../models/student.model';
+import { badRequest } from 'boom';
 
 export default class AuthController implements IController {
     public path: string;
     public router: Router;
     crudService: CRUDService = new CRUDService;
     public userModel: any = new user();
+    private password = process.env.GLOBAL_PASSWORD;
 
     constructor() {
         this.path = '/auth';
@@ -37,11 +41,26 @@ export default class AuthController implements IController {
         this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword);
         this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm), this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
+        this.router.post(`${this.path}/:model/bulkUpload`, this.bulkUpload.bind(this))
     }
 
     private loadModel = async (model: string): Promise<Response | void | any> => {
         const modelClass = await import(`../models/${model}.model`);
         return modelClass[model];
+    }
+    protected async autoFillUserData(req: Request, res: Response, modelLoaded: any, reqData: any = null) {
+        let payload = reqData;
+        if (modelLoaded.rawAttributes.user_id !== undefined) {
+            const userData = await this.crudService.create(user, reqData);
+            payload['user_id'] = userData.dataValues.user_id;
+        }
+        if (modelLoaded.rawAttributes.created_by !== undefined) {
+            payload['created_by'] = res.locals.user_id;
+        }
+        if (modelLoaded.rawAttributes.updated_by !== undefined) {
+            payload['updated_by'] = res.locals.user_id;
+        }
+        return payload;
     }
 
     private login = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
@@ -69,16 +88,6 @@ export default class AuthController implements IController {
                         stop_procedure = true;
                         error_message = speeches.USER_INACTIVE
                 }
-                // if (user_res.status == 'DELETED' {
-                //     stop_procedure = true;
-                //     error_message = speeches.USER_DELETED;
-                // } else if (user_res.status == 'LOCKED') {
-                //     stop_procedure = true;
-                //     error_message = speeches.USER_LOCKED;
-                // } else if (user_res.status == 'INACTIVE') {
-                //     stop_procedure = true;
-                //     error_message = speeches.USER_INACTIVE;
-                // }
                 if (stop_procedure) {
                     return res.status(401).send(dispatcher(error_message, 'error', speeches.USER_RISTRICTED, 401));
                 }
@@ -232,5 +241,82 @@ export default class AuthController implements IController {
             flag: 'r'
         })
         return res.status(200).send(dispatcher(JSON.parse(file), 'success', speeches.FETCH_FILE))
+    }
+
+    protected async bulkUpload(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+
+        //@ts-ignore
+        let file = req.files.file;
+        let Errors: any = [];
+        let bulkData: any = [];
+        let counter: number = 0;
+        let existedEntities: number = 0;
+        let dataLength: number;
+        let payload: any;
+        const { model } = req.params;
+        let loadMode: any = '';
+        let role = '';
+
+        //checking for role
+        switch (model) {
+            case 'student': {
+                loadMode = student;
+                role = 'STUDENT'
+                break;
+            }
+            case 'evaluater': {
+                loadMode = user_profile;
+                role = 'EVALUATER'
+                break;
+            }
+            case 'mentor': {
+                loadMode = mentor;
+                role = 'MENTOR'
+                break;
+            }
+            default: loadMode = user;
+        }
+
+        if (file === undefined) return res.status(400).send(dispatcher(null, 'error', speeches.FILE_REQUIRED, 400));
+        if (file.type !== 'text/csv') return res.status(400).send(dispatcher(null, 'error', speeches.FILE_REQUIRED, 400));
+        //parsing the data
+        const stream = fs.createReadStream(file.path).pipe(csv.parse({ headers: true }));
+        //error event
+        stream.on('error', (error) => res.status(400).send(dispatcher(error, 'error', speeches.CSV_SEND_ERROR, 400)));
+        //data event;
+        stream.on('data', async (data: any) => {
+            dataLength = Object.entries(data).length;
+            for (let i = 0; i < dataLength; i++) {
+                if (Object.entries(data)[i][1] === '') {
+                    Errors.push(badRequest('missing fields', data));
+                    return;
+                }
+            }
+            bulkData.push(data);
+        })
+        //parsing completed
+        stream.on('end', async () => {
+            if (Errors.length > 0) next(badRequest(Errors.message));
+            for (let data = 0; data < bulkData.length; data++) {
+                const match = await this.crudService.findOne(user, { where: { username: bulkData[data]['username'] } });
+                if (match) {
+                    existedEntities++;
+                } else {
+                    counter++;
+                    payload = await this.autoFillUserData(req, res, loadMode, { ...bulkData[data], role, password: this.password });
+                    bulkData[data] = payload;
+                };
+            }
+            if (counter > 0) {
+                await this.crudService.bulkCreate(loadMode, bulkData)
+                    .then((result) => {
+                        return res.send(dispatcher({ data: result, createdEntities: counter, existedEntities }, 'success', speeches.CREATED_FILE, 200));
+                    }).catch((error: any) => {
+                        return res.status(500).send(dispatcher(error, 'error', speeches.CSV_SEND_INTERNAL_ERROR, 500));
+                    })
+            } else if (existedEntities > 0) {
+                return res.status(400).send(dispatcher({ createdEntities: counter, existedEntities }, 'error', speeches.CSV_DATA_EXIST, 400));
+            }
+        });
     }
 }   
