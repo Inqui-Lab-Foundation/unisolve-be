@@ -13,7 +13,7 @@ export const speeches = {
     UPLOAD_FAILD: "File upload failed",
 
     USER_NOT_FOUND: "User not found",
-    USER_PASSWORD: "User password doesn't match",
+    USER_PASSWORD: "User pasword doesn't match",
     USER_PASSWORD_CHANGE: "User password updated",
     USER_RISTRICTED: "Unauthorized Access!",
     USER_DELETED: "User is ditected as deleted. Kindly contact your administrator.",
@@ -64,4 +64,8 @@ export const speeches = {
 
     EMAIL_SEND_ERROR: "Faild to send email",
     EMAIL_SEND_SUCCESS: "Email sent successfully.",
+    FILE_REQUIRED: "Csv file is required",
+    CSV_SEND_ERROR: "Failed to reading the file date",
+    CSV_SEND_INTERNAL_ERROR: 'Something went wrong while create contact admin',
+    CSV_DATA_EXIST: 'Data existing'
 }
