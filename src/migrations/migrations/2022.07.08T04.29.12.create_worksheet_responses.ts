@@ -2,26 +2,32 @@ import { Migration } from '../umzug';
 import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
 
-const tableName = "videos";
+// you can put some table-specific imports/code here
+export const tableName = "worksheet_responses";
 export const up: Migration = async ({ context: sequelize }) => {
+	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
+	//or below implementation 
 	await sequelize.getQueryInterface().createTable(tableName, {
-        video_id: {
+		worksheet_response_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        video_stream_id: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
+        worksheet_id: {
+            type: DataTypes.INTEGER,
+            allowNull:false
         },
-        video_duration:{
-            type: DataTypes.STRING,
-            allowNull: false, 
-            defaultValue: '-1' 
+        user_id: {
+            type: DataTypes.INTEGER,
+            allowNull:false
+        },
+        attachments: {
+            type: DataTypes.TEXT('long'),
+            allowNull: false
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            allowNull: false,
             defaultValue: constents.common_status_flags.default
         },
         created_by: {
@@ -49,5 +55,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
+	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
+	//or below implementation 
 	await sequelize.getQueryInterface().dropTable(tableName);
 };

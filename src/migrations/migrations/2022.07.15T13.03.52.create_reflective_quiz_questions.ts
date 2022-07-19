@@ -3,23 +3,19 @@ import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
 
 // you can put some table-specific imports/code here
-export const tableName = "quiz_questions";
+export const tableName = "reflective_quiz_questions";
 export const up: Migration = async ({ context: sequelize }) => {
 	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
 	//or below implementation 
 	await sequelize.getQueryInterface().createTable(tableName, {
-		quiz_question_id: {
+		reflective_quiz_question_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        quiz_id: {
+        video_id: {
             type: DataTypes.INTEGER,
-            allowNull:false,
-			references:{
-				model:'quiz',
-				key:'quiz_id'
-			}
+            allowNull:false
         },
         question_no: {
             type: DataTypes.INTEGER,
@@ -31,11 +27,11 @@ export const up: Migration = async ({ context: sequelize }) => {
         },
         option_a: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         option_b: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         option_c: {
             type: DataTypes.TEXT,
@@ -47,7 +43,7 @@ export const up: Migration = async ({ context: sequelize }) => {
         },
         correct_ans: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         level: {
             type: DataTypes.ENUM(...Object.values(constents.quiz_question_level_flags.list)),

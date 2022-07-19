@@ -1,24 +1,32 @@
-import { Migration } from '../umzug';
-import { DataTypes } from 'sequelize';
-import { constents } from '../../configs/constents.config';
+import {  DataTypes, Model } from 'sequelize';
+import { constents } from '../configs/constents.config';
+import db from '../utils/dbconnection.util';
+import { faq } from './faq.model';
 
-const tableName = "videos";
-export const up: Migration = async ({ context: sequelize }) => {
-	await sequelize.getQueryInterface().createTable(tableName, {
-        video_id: {
+
+export interface faqCategoryAttributes {
+    faq_category_id: number;
+    category_name: string;
+    status: Enumerator;
+    created_by: number;
+    created_at: Date;
+    updated_by: number;
+    updated_at: Date;
+}
+
+export class faq_category extends Model<faqCategoryAttributes> { }
+
+
+faq_category.init(
+    {
+        faq_category_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        video_stream_id: {
+        category_name: {
             type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
-        },
-        video_duration:{
-            type: DataTypes.STRING,
-            allowNull: false, 
-            defaultValue: '-1' 
+            allowNull: false
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
@@ -45,9 +53,15 @@ export const up: Migration = async ({ context: sequelize }) => {
             defaultValue: DataTypes.NOW,
             onUpdate: new Date().toLocaleString()
         }
-	  });
-};
+    },
+    {
+        sequelize: db,
+        tableName: 'faq_categories',
+        timestamps: true,
+        updatedAt: 'updated_at',
+        createdAt: 'created_at',
+    }
+);
 
-export const down: Migration = async ({ context: sequelize }) => {
-	await sequelize.getQueryInterface().dropTable(tableName);
-};
+faq_category.belongsTo(faq, { foreignKey: 'faq_category_id'});
+faq.hasMany(faq_category, { foreignKey: 'faq_category_id'});

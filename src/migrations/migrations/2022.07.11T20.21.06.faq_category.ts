@@ -2,23 +2,20 @@ import { Migration } from '../umzug';
 import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
 
-const tableName = "videos";
+// you can put some table-specific imports/code here
+export const tableName = "faq_categories";
 export const up: Migration = async ({ context: sequelize }) => {
+	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
+	//or below implementation 
 	await sequelize.getQueryInterface().createTable(tableName, {
-        video_id: {
+		faq_category_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        video_stream_id: {
+        category_name: {
             type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
-        },
-        video_duration:{
-            type: DataTypes.STRING,
-            allowNull: false, 
-            defaultValue: '-1' 
+            allowNull: false
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
@@ -49,5 +46,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
+	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
+	//or below implementation 
 	await sequelize.getQueryInterface().dropTable(tableName);
 };

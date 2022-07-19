@@ -1,4 +1,4 @@
-import {  unauthorized } from "boom";
+import { unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import dispatcher from "../utils/dispatch.util";
 
@@ -10,6 +10,7 @@ import { course_topic } from "../models/course_topic.model";
 import db from "../utils/dbconnection.util"
 import { constents } from "../configs/constents.config";
 import { speeches } from "../configs/speeches.config";
+import { Op } from "sequelize";
 export default class CourseController extends BaseController {
     model = "course";
 
@@ -37,18 +38,37 @@ export default class CourseController extends BaseController {
         try {
             let data: any;
             const { model, id } = req.params;
+            const paramStatus:any = req.query.status
             if (model) {
                 this.model = model;
             };
+
+            // pagination
+            const { page, size, title } = req.query;
+            let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+            const { limit, offset } = this.getPagination(page, size);
             const modelClass = await this.loadModel(model)
+            
+            
             const where: any = {};
+           
+            let whereClauseStatusPart:any = {};
+            let whereClauseStatusPartLiteral = "1=1";
+            let addWhereClauseStatusPart = false
+            if(paramStatus && (paramStatus in constents.common_status_flags.list)){
+                whereClauseStatusPart = {"status":paramStatus}
+                whereClauseStatusPartLiteral = `status = "${paramStatus}"`
+                addWhereClauseStatusPart =true;
+            }
+
+            
             if (id) {
                 // where[`${this.model}_id`] = req.params.id;
                 data = await this.getDetailsData(req, res, modelClass)
             } else {
-                where[`${this.model}_id`] = req.params.id;
+                // where[`${this.model}_id`] = req.params.id;
                 // data = await this.crudService.findAll(modelClass);
-                data = await  modelClass.findAll({
+                data = await modelClass.findAll({
                     attributes: {
                         include: [
                             [// Note the wrapping parentheses in the call below!
@@ -56,23 +76,33 @@ export default class CourseController extends BaseController {
                                     SELECT COUNT(*)
                                     FROM course_modules AS cm
                                     WHERE
+                                        ${addWhereClauseStatusPart?"cm."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
+                                    AND
                                         cm.course_id = \`course\`.\`course_id\`
                                 )`),
                                 'course_modules_count'
                             ],
                             [// Note the wrapping parentheses in the call below!
-                            db.literal(`(
+                                db.literal(`(
                                 SELECT COUNT(*)
                                 FROM course_topics AS ct
                                 JOIN course_modules as cm on cm.course_module_id = ct.course_module_id
                                 WHERE
+                                    ${addWhereClauseStatusPart?"ct."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
+                                AND
                                     cm.course_id = \`course\`.\`course_id\`
                                 AND
                                     ct.topic_type = \"VIDEO\"
                             )`),
-                            'course_videos_count'
+                                'course_videos_count'
+                            ]
                         ]
-                        ]
+                    },
+                    where:{
+                        [Op.and]: [
+                            whereClauseStatusPart,
+                            condition,
+                            ]
                     }
                 });
                 data.filter(function (rec: any) {
@@ -94,6 +124,17 @@ export default class CourseController extends BaseController {
         let whereClause: any = {};
 
         whereClause[`${this.model}_id`] = req.params.id;
+        
+        const paramStatus:any = req.query.status;
+        let whereClauseStatusPart:any = {};
+        let whereClauseStatusPartLiteral = "1=1";
+        let addWhereClauseStatusPart = false
+        if(paramStatus && (paramStatus in constents.common_status_flags.list)){
+            whereClauseStatusPart = {"status":paramStatus}
+            whereClauseStatusPartLiteral = `status = "${paramStatus}"`
+            addWhereClauseStatusPart =true;
+        }
+
         let user_id = res.locals.user_id;
         if (!user_id) {
             throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
@@ -103,7 +144,7 @@ export default class CourseController extends BaseController {
             include: [{
                 model: course_module,
                 as: 'course_modules',
-                attributes:[
+                attributes: [
                     "title",
                     "description",
                     "course_module_id",
@@ -113,6 +154,8 @@ export default class CourseController extends BaseController {
                             SELECT COUNT(*)
                             FROM course_topics AS ct
                             WHERE
+                                ${addWhereClauseStatusPart?"ct."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
+                            AND
                                 ct.course_module_id = \`course_modules\`.\`course_module_id\`
                             AND
                                 ct.topic_type = "VIDEO"
@@ -120,6 +163,11 @@ export default class CourseController extends BaseController {
                         'videos_count'
                     ]
                 ],
+                where:{
+                    [Op.and]:[
+                        whereClauseStatusPart
+                    ]
+                },
                 include: [{
                     model: course_topic,
                     as: "course_topics",
@@ -149,11 +197,45 @@ export default class CourseController extends BaseController {
                                 END as progress
                             )`),
                             'progress'
+                        ],
+                        [
+                            db.literal(`(
+                                SELECT video_duration
+                                FROM videos AS ct
+                                WHERE
+                                ct.video_id = \`course_modules->course_topics\`.\`topic_type_id\`
+                                AND
+                                \`course_modules->course_topics\`.\`topic_type\` = "VIDEO"
+                            )`),
+                            'video_duration'
+                        ],
+                        [
+                            db.literal(`(
+                                SELECT 
+                                CASE
+                                    WHEN ct.topic_type = "VIDEO" THEN 1
+                                    WHEN ct.topic_type = "QUIZ" THEN 2
+                                    WHEN ct.topic_type = "WORKSHEET" THEN 3
+                                END AS topic_type_order
+                                FROM course_topics as ct
+                                WHERE ct.course_topic_id = \`course_modules->course_topics\`.\`course_topic_id\`
+                            )`),
+                            'topic_type_order'
                         ]
                     ],
+                    where:{
+                        [Op.and]:[
+                            whereClauseStatusPart
+                        ]
+                    },
                 }]
             }
-            ]
+            ],
+            order: [
+                // [{model: course_module, as: 'course_modules'},{model: course_topic, as: 'course_topics'},'topic_type_order', 'ASC'],
+                db.literal(`\`course_modules.course_topics.topic_type_order\` ASC`),
+                [course_module,course_topic,'course_topic_id', 'ASC'],
+            ],
         });
         return data;
     }

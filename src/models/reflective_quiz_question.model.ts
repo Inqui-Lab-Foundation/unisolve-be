@@ -1,25 +1,52 @@
-import { Migration } from '../umzug';
-import { DataTypes } from 'sequelize';
-import { constents } from '../../configs/constents.config';
+import { CreationOptional, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import { constents } from '../configs/constents.config';
+import questionAttribute from '../interfaces/question.model.interface';
+import db from '../utils/dbconnection.util';
+import { quiz } from './quiz.model';
+import { video } from './video.model';
 
-// you can put some table-specific imports/code here
-export const tableName = "quiz_questions";
-export const up: Migration = async ({ context: sequelize }) => {
-	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
-	//or below implementation 
-	await sequelize.getQueryInterface().createTable(tableName, {
-		quiz_question_id: {
+export class reflective_quiz_question extends Model<InferAttributes<reflective_quiz_question>,InferCreationAttributes<reflective_quiz_question>> {
+   declare reflective_quiz_question_id: CreationOptional<number>;
+   declare video_id: ForeignKey<number>;
+   declare question_no: number;
+   declare question: string;
+   declare option_a: string;
+   declare option_b: string;
+   declare option_c: string;
+   declare option_d: string;
+   declare correct_ans: string;
+   declare level: Enumerator;
+   declare type: Enumerator;
+   declare msg_ans_correct:string;
+   declare msg_ans_wrong:string;
+   declare question_image:string;
+   declare redirect_to: ForeignKey<number>;
+   declare status: Enumerator;
+   declare created_by: number;
+   declare created_at: Date;
+   declare updated_by: number;
+   declare updated_at: Date;
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    // static associate(models: any) {
+    //     // define association here
+    //     notification.belongsTo(user, { foreignKey: 'created_by', as: 'user' });
+    // }
+}
+
+reflective_quiz_question.init(
+    {
+        reflective_quiz_question_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        quiz_id: {
+        video_id: {
             type: DataTypes.INTEGER,
-            allowNull:false,
-			references:{
-				model:'quiz',
-				key:'quiz_id'
-			}
+            allowNull:false
         },
         question_no: {
             type: DataTypes.INTEGER,
@@ -31,11 +58,11 @@ export const up: Migration = async ({ context: sequelize }) => {
         },
         option_a: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         option_b: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         option_c: {
             type: DataTypes.TEXT,
@@ -47,7 +74,7 @@ export const up: Migration = async ({ context: sequelize }) => {
         },
         correct_ans: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         level: {
             type: DataTypes.ENUM(...Object.values(constents.quiz_question_level_flags.list)),
@@ -104,11 +131,15 @@ export const up: Migration = async ({ context: sequelize }) => {
             defaultValue: DataTypes.NOW,
             onUpdate: new Date().toLocaleString()
         }
-	  });
-};
+    },
+    {
+        sequelize: db,
+        tableName: 'reflective_quiz_questions',
+        timestamps: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at'
+    }
+);
 
-export const down: Migration = async ({ context: sequelize }) => {
-	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
-	//or below implementation 
-	await sequelize.getQueryInterface().dropTable(tableName);
-};
+reflective_quiz_question.belongsTo(video,{foreignKey:'video_id'})
+video.hasMany(reflective_quiz_question,{foreignKey:'video_id'})

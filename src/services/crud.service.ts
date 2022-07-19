@@ -53,9 +53,10 @@ export default class CRUDService {
     async findAndCountAll(model: any, input: object) {
         try {
             const data = await model.findAndCountAll(input);
+            if(data==null)return false;
             return data;
         } catch (error: any) {
-            return error.message;
+            return error;
         }
     };
     async findByPk(model: any, input: string) {
