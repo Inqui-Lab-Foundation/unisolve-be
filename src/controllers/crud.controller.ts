@@ -1,5 +1,6 @@
 import e, { Router, Request, Response, NextFunction, response } from 'express';
 import path from 'path';
+import * as csv from "fast-csv";
 import { Op } from 'sequelize';
 import fs, { stat } from 'fs';
 import IController from '../interfaces/controller.interface';
@@ -37,6 +38,7 @@ export default class CRUDController implements IController {
         this.router.put(`${this.path}/:model/:id`, this.updateData.bind(this));
         this.router.put(`${this.path}/:model/:id/withfile`, this.updateDataWithFile.bind(this));
         this.router.delete(`${this.path}/:model/:id`, this.deleteData.bind(this));
+        this.router.post(`${this.path}/:model/bulkUpload`, this.bulkUpload.bind(this));
     }
 
     protected async loadModel(model: string): Promise<Response | void | any> {
@@ -45,7 +47,7 @@ export default class CRUDController implements IController {
     };
 
     protected getPagination(page: any, size: any) {
-        const limit = size ? +size : 3;
+        const limit = size ? +size : 10;
         const offset = page ? page * limit : 0;
         return { limit, offset };
     };
@@ -56,6 +58,22 @@ export default class CRUDController implements IController {
         const totalPages = Math.ceil(totalItems / limit);
         return { totalItems, dataValues, totalPages, currentPage };
     };
+
+    protected autoFillTrackingCollumns(req: Request, res: Response, modelLoaded: any, reqData: any = null) {
+        // console.log(res.locals);
+        let payload = req.body;
+        if (reqData != null) {
+            payload = reqData
+        }
+        if (modelLoaded.rawAttributes.created_by !== undefined) {
+            payload['created_by'] = res.locals.user_id;
+        }
+        if (modelLoaded.rawAttributes.updated_by !== undefined) {
+            payload['updated_by'] = res.locals.user_id;
+        }
+
+        return payload;
+    }
 
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
@@ -281,22 +299,58 @@ export default class CRUDController implements IController {
         }
     }
 
+    protected async bulkUpload(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const { model } = req.params;
+        if (model) {
+            this.model = model;
+        };
+        //@ts-ignore
+        let file = req.files.data;
+        let Errors: any = [];
+        let bulkData: any = [];
+        let counter: number = 0;
+        let existedEntities: number = 0;
+        let dataLength: number;
 
-    protected autoFillTrackingCollumns(req: Request, res: Response, modelLoaded: any, reqData: any = null) {
-        // console.log(res.locals);
-        let payload = req.body;
-        if (reqData != null) {
-            payload = reqData
-        }
-        if (modelLoaded.rawAttributes.created_by !== undefined) {
-            payload['created_by'] = res.locals.user_id;
-        }
-        if (modelLoaded.rawAttributes.updated_by !== undefined) {
-            payload['updated_by'] = res.locals.user_id;
-        }
+        if (file === undefined) return res.status(400).send(dispatcher(null, 'error', speeches.FILE_REQUIRED, 400));
+        if (file.type !== 'text/csv') return res.status(400).send(dispatcher(null, 'error', speeches.FILE_REQUIRED, 400));
 
-        return payload;
+        const modelLoaded = await this.loadModel(model);
+
+        const stream = fs.createReadStream(file.path).pipe(csv.parse({ headers: true }));
+
+        stream.on('error', (error) => res.status(400).send(dispatcher(error, 'error', speeches.CSV_SEND_ERROR, 400)));
+        stream.on('data', async (data: any) => {
+            dataLength = Object.entries(data).length;
+            for (let i = 0; i < dataLength; i++) {
+                if (Object.entries(data)[i][1] === '') {
+                    Errors.push(badRequest('missing fields', data));
+                    return;
+                }
+            } bulkData.push(data);
+        })
+        stream.on('end', async () => {
+            if (Errors.length > 0) next(badRequest(Errors.message));
+            for (let data = 0; data < bulkData.length; data++) {
+                const payload = this.autoFillTrackingCollumns(req, res, modelLoaded, bulkData[data]);
+                const match = await this.crudService.findOne(modelLoaded, { where: bulkData[data] });
+                if (match) {
+                    existedEntities++;
+                } else {
+                    counter++;
+                    bulkData[data] = payload;
+                }
+            }
+            if (counter > 0) {
+                await this.crudService.bulkCreate(modelLoaded, bulkData)
+                    .then((result) => {
+                        return res.send(dispatcher({ data: result, createdEntities: counter, existedEntities }, 'success', speeches.CREATED_FILE, 200));
+                    }).catch((error: any) => {
+                        return res.status(500).send(dispatcher(error, 'error', speeches.CSV_SEND_INTERNAL_ERROR, 500));
+                    })
+            } else if (existedEntities > 0) {
+                return res.status(400).send(dispatcher({ createdEntities: counter, existedEntities }, 'error', speeches.CSV_DATA_EXIST, 400));
+            }
+        });
     }
 }
-
-

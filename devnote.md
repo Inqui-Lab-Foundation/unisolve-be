@@ -13,6 +13,7 @@
   },
 
 
-// postman_collection_link: {
-    "latest":"https://www.getpostman.com/collections/82237fd284454118526a"
+//postman_collection_link: {
+    "postman QA":"https://www.getpostman.com/collections/aea568aec8b3bc8381d9",
+    "postman Prod":"https://www.getpostman.com/collections/c1f402c7d7262b6555ce",
   } 
