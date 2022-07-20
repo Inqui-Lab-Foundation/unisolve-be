@@ -10,25 +10,27 @@ import validationMiddleware from "../middlewares/validation.middleware";
 import { course_topic } from "../models/course_topic.model";
 import { quiz_question } from "../models/quiz_question.model";
 import { quiz_response } from "../models/quiz_response.model";
+import { reflective_quiz_question } from "../models/reflective_quiz_question.model";
+import { reflective_quiz_response } from "../models/reflective_quiz_response.model";
 import { user_topic_progress } from "../models/user_topic_progress.model";
 import dispatcher from "../utils/dispatch.util";
-import { quizNextQuestionSchema, quizSchema, quizSubmitResponseSchema, quizUpdateSchema } from "../validations/quiz.validations";
+import { quizNextQuestionSchema, quizSchema, quizSubmitResponseSchema, quizUpdateSchema } from "../validations/reflective_quiz.validations";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
 
-export default class QuizController extends BaseController {
+export default class ReflectiveQuizController extends BaseController {
 
-    model = "quiz";
+    model = "reflective_quiz_question";
 
     protected initializePath(): void {
-        this.path = '/quiz';
+        this.path = '/reflectiveQuiz';
     }
     protected initializeValidations(): void {
         this.validations =  new ValidationsHolder(quizSchema,quizUpdateSchema);
     }
     protected initializeRoutes(): void {
         //example route to add 
-        this.router.get(this.path+"/:id/nextQuestion/",this.getNextQuestion.bind(this));
+        // this.router.get(this.path+"/:id/nextQuestion/",this.getNextQuestion.bind(this));
         this.router.post(this.path+"/:id/response/",validationMiddleware(quizSubmitResponseSchema),this.submitResponse.bind(this));
         super.initializeRoutes();
     }
@@ -122,7 +124,7 @@ export default class QuizController extends BaseController {
             
             
             resultQuestion["quiz_id"] = nextQuestionsToChooseFrom.dataValues.quiz_id;
-            resultQuestion["quiz_question_id"] = nextQuestionsToChooseFrom.dataValues.quiz_question_id;
+            resultQuestion["reflective_quiz_question_id"] = nextQuestionsToChooseFrom.dataValues.reflective_quiz_question_id;
             resultQuestion["question_no"] = nextQuestionsToChooseFrom.dataValues.question_no;
             resultQuestion["question"] = nextQuestionsToChooseFrom.dataValues.question;
             resultQuestion["question_image"] = nextQuestionsToChooseFrom.dataValues.question_image;
@@ -147,13 +149,13 @@ export default class QuizController extends BaseController {
     protected async submitResponse(req:Request,res:Response,next:NextFunction) {
         try{
             
-            const  quiz_id  = req.params.id;
-            const {quiz_question_id,selected_option} = req.body;
+            const  video_id  = req.params.id;
+            const {reflective_quiz_question_id,selected_option} = req.body;
             const user_id =  res.locals.user_id;
-            if(!quiz_id){
+            if(!video_id){
                 throw badRequest(speeches.QUIZ_ID_REQUIRED);
             }
-            if(!quiz_question_id){
+            if(!reflective_quiz_question_id){
                 throw badRequest(speeches.QUIZ_QUESTION_ID_REQUIRED);
             }
 
@@ -161,7 +163,7 @@ export default class QuizController extends BaseController {
                 throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
             }
 
-            const questionAnswered = await this.crudService.findOne(quiz_question,{where: {quiz_question_id:quiz_question_id}});
+            const questionAnswered = await this.crudService.findOne(reflective_quiz_question,{where: {reflective_quiz_question_id:reflective_quiz_question_id}});
             if(questionAnswered instanceof Error){
                 throw internal(questionAnswered.message)
             }
@@ -170,13 +172,19 @@ export default class QuizController extends BaseController {
             }
 
 
-            const quizRes = await this.crudService.findOne(quiz_response,{where: {quiz_id:quiz_id,user_id:user_id}});
+            const quizRes = await this.crudService.findOne(reflective_quiz_response,{where: {video_id:video_id,user_id:user_id}});
             if(quizRes instanceof Error){
                 throw internal(quizRes.message)
             }          
             // console.log(quizRes);
             let dataToUpsert:any = {}
-            dataToUpsert = {quiz_id:quiz_id,user_id:user_id,updated_by:user_id}
+            dataToUpsert = {video_id:video_id,user_id:user_id,updated_by:user_id}
+            
+            //copy all attachments....
+            const attachmentsCopyResult = await this.copyAllFiles(req,null,"reflective_quiz","responses");
+            if (attachmentsCopyResult.errors.length>0) {
+                return res.status(406).send(dispatcher(attachmentsCopyResult.errors, 'error', speeches.NOT_ACCEPTABLE, 406));
+            }
 
             let responseObjToAdd:any = {}
             responseObjToAdd = {
@@ -185,7 +193,8 @@ export default class QuizController extends BaseController {
                 correct_answer:questionAnswered.dataValues.correct_ans,
                 level:questionAnswered.dataValues.level,
                 question_no:questionAnswered.dataValues.question_no,
-                is_correct:selected_option==questionAnswered.correct_ans
+                attachments:attachmentsCopyResult.attachments,
+                is_correct:selected_option==questionAnswered.correct_ans,      
             }
             
             let user_response:any = {}
@@ -196,7 +205,7 @@ export default class QuizController extends BaseController {
 
                 dataToUpsert["response"]=JSON.stringify(user_response);
                 
-                const resultModel =  await this.crudService.update(quizRes,dataToUpsert,{where:{quiz_id:quiz_id,user_id:user_id}})
+                const resultModel =  await this.crudService.update(quizRes,dataToUpsert,{where:{video_id:video_id,user_id:user_id}})
                 if(resultModel instanceof Error){
                     throw internal(resultModel.message)
                 }
@@ -217,7 +226,7 @@ export default class QuizController extends BaseController {
                 dataToUpsert["response"]=JSON.stringify(user_response);
                 dataToUpsert = {...dataToUpsert,created_by:user_id}
 
-                const resultModel =  await this.crudService.create(quiz_response,dataToUpsert)
+                const resultModel =  await this.crudService.create(reflective_quiz_response,dataToUpsert)
                 if(resultModel instanceof Error){
                     throw internal(resultModel.message)
                 }
@@ -233,6 +242,7 @@ export default class QuizController extends BaseController {
                 res.status(200).send(dispatcher(result));
             }
         }catch(err){
+            console.log(err)
             next(err)
         }
     }

@@ -71,7 +71,7 @@ export const speeches = {
     FILE_REQUIRED: "Csv file is required",
     CSV_SEND_ERROR: "Failed to reading the file date",
     CSV_SEND_INTERNAL_ERROR: 'Something went wrong while create contact admin',
-    CSV_DATA_EXIST: 'Data existing'
+    CSV_DATA_EXIST: 'Data existing',
     FAQ_CATEGORY: "Category is required.",
     FAQ_ANSWER: "Answer is required."
 }
