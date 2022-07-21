@@ -1,9 +1,13 @@
 import { CronJob } from 'cron';
 
-export default class BaseJobs {
+export default class BaseJobs extends CronJob {
+    public jobs: any
     public job_name: any;
     public cronJob: any;
     constructor() {
+        super('* * * * * *', () => {
+            console.log('first')
+        });
         this.init();
     };
     protected init(): void {
@@ -16,6 +20,5 @@ export default class BaseJobs {
         console.log(message);
     };
     public schedule() {
-
     }
 }
