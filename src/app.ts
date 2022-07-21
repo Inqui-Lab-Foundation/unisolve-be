@@ -23,6 +23,7 @@ import { speeches } from "./configs/speeches.config";
 import * as errorHandler from "./middlewares/errorHandler.middleware";
 import { constents } from "./configs/constents.config";
 import BadgesController from "./jobs/badges.jobs";
+import { CronManager } from "./jobs/jobManger";
 
 export default class App {
     public app: Application;
@@ -69,8 +70,9 @@ export default class App {
     }
 
     private initializeJobs(): void {
-        const job1 = new BadgesController();
-        job1.schedule();
+        const job = new CronManager();
+        job.addJob('keepItUp', '* * * * * *', () => { console.log('running keepItUP') })
+        // job.startJob('keepItUp');
     }
 
     private initializeMiddlewares(): void {
