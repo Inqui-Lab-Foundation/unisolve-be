@@ -73,8 +73,8 @@ export default class App {
 
     private initializeJobs(): void {
         const cronManager = CronManager.getInstance()
-        cronManager.addJob(new BadgesJob());
-        cronManager.startAll();
+        // cronManager.addJob(new BadgesJob());
+        // cronManager.startAll();
     }
 
     private initializeMiddlewares(): void {
