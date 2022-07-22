@@ -5,11 +5,14 @@ import db from '../utils/dbconnection.util';
 import { notification } from './notification.model';
 import { baseConfig } from '../configs/base.config';
 import { user } from './user.model';
+import { organization } from './organization.model';
 
 
 export class mentor extends Model<InferAttributes<mentor>, InferCreationAttributes<mentor>> {
     declare mentor_id: CreationOptional<number>;
     declare team_id: string;
+    declare user_id: number;
+    declare org_code: string;
     declare full_name: string;
     declare date_of_birth: Date;
     declare organization_name: string;
@@ -45,12 +48,16 @@ mentor.init(
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        full_name: {
+        org_code: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         team_id: {
             type: DataTypes.STRING,
+        },
+        full_name: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
         date_of_birth: {
             type: DataTypes.DATE,
@@ -125,3 +132,5 @@ mentor.init(
 
 mentor.belongsTo(user, { foreignKey: 'user_id', constraints: false });
 user.hasOne(mentor, { foreignKey: 'user_id', constraints: false, scope: { role: 'MENTOR' } });
+mentor.belongsTo(organization, { foreignKey: 'org_code', constraints: false });
+organization.hasOne(mentor, { foreignKey: 'org_code', constraints: false, scope: { role: 'MENTOR' } });
