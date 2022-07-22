@@ -3,12 +3,12 @@ import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
 
 // you can put some table-specific imports/code here
-export const tableName = "user_profiles";
+export const tableName = "admins";
 export const up: Migration = async ({ context: sequelize }) => {
 	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
 	//or below implementation 
 	await sequelize.getQueryInterface().createTable(tableName, {
-		user_profile_id: {
+		admin_id: {
 			type: DataTypes.INTEGER,
 			autoIncrement: true,
 			primaryKey: true,
@@ -27,14 +27,6 @@ export const up: Migration = async ({ context: sequelize }) => {
 		},
 		date_of_birth: {
 			type: DataTypes.DATE,
-			allowNull: true
-		},
-		organization_name: {
-			type: DataTypes.STRING,
-			allowNull: true,
-		},
-		qualification: {
-			type: DataTypes.STRING,
 			allowNull: true
 		},
 		city: {

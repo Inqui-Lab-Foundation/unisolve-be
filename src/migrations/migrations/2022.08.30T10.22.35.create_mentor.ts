@@ -3,21 +3,44 @@ import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
 
 // you can put some table-specific imports/code here
-export const tableName = "organizations";
+export const tableName = "mentors";
 export const up: Migration = async ({ context: sequelize }) => {
 	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
 	//or below implementation 
 	await sequelize.getQueryInterface().createTable(tableName, {
-		org_id: {
+		mentor_id: {
 			type: DataTypes.INTEGER,
 			autoIncrement: true,
-			primaryKey: true
+			primaryKey: true,
 		},
-		org_name: {
+		user_id: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			references: {
+				model: 'users',
+				key: 'user_id'
+			}
+		},
+		org_code: {
+			type: DataTypes.STRING,
+			allowNull: true,
+			references: {
+				model: 'organizations',
+				key: 'org_code'
+			}
+		},
+		team_id: {
+			type: DataTypes.STRING,
+		},
+		full_name: {
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
-		org_code: {
+		date_of_birth: {
+			type: DataTypes.DATE,
+			allowNull: true
+		},
+		qualification: {
 			type: DataTypes.STRING,
 			allowNull: false
 		},
@@ -31,15 +54,6 @@ export const up: Migration = async ({ context: sequelize }) => {
 			type: DataTypes.STRING
 		},
 		country: {
-			type: DataTypes.STRING
-		},
-		principal_name: {
-			type: DataTypes.STRING
-		},
-		principal_mobile: {
-			type: DataTypes.STRING
-		},
-		principal_email: {
 			type: DataTypes.STRING
 		},
 		status: {
@@ -68,7 +82,6 @@ export const up: Migration = async ({ context: sequelize }) => {
 			onUpdate: new Date().toLocaleString()
 		}
 	});
-	await sequelize.getQueryInterface().addIndex(tableName, ['org_code'])
 };
 
 export const down: Migration = async ({ context: sequelize }) => {

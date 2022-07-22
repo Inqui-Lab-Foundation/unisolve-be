@@ -5,17 +5,17 @@ import { constents } from '../../configs/constents.config';
 // you can put some table-specific imports/code here
 export const tableName = "reflective_quiz_questions";
 export const up: Migration = async ({ context: sequelize }) => {
-	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
-	//or below implementation 
-	await sequelize.getQueryInterface().createTable(tableName, {
-		reflective_quiz_question_id: {
+    // await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
+    //or below implementation 
+    await sequelize.getQueryInterface().createTable(tableName, {
+        reflective_quiz_question_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
         video_id: {
             type: DataTypes.INTEGER,
-            allowNull:false
+            allowNull: false
         },
         question_no: {
             type: DataTypes.INTEGER,
@@ -67,12 +67,12 @@ export const up: Migration = async ({ context: sequelize }) => {
         msg_ans_correct: {
             type: DataTypes.TEXT,
             allowNull: true,
-            defaultValue:"",
+            defaultValue: "",
         },
         msg_ans_wrong: {
             type: DataTypes.TEXT,
             allowNull: true,
-            defaultValue:"",
+            defaultValue: "",
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
@@ -82,11 +82,11 @@ export const up: Migration = async ({ context: sequelize }) => {
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            defaultValue:null
+            defaultValue: null
         },
         created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
         },
         updated_by: {
@@ -100,11 +100,11 @@ export const up: Migration = async ({ context: sequelize }) => {
             defaultValue: DataTypes.NOW,
             onUpdate: new Date().toLocaleString()
         }
-	  });
+    });
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
-	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
-	//or below implementation 
-	await sequelize.getQueryInterface().dropTable(tableName);
+    // 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
+    //or below implementation 
+    await sequelize.getQueryInterface().dropTable(tableName);
 };

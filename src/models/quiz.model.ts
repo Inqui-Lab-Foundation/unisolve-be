@@ -45,7 +45,7 @@ quiz.init(
         },
         created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
         },
         updated_by: {

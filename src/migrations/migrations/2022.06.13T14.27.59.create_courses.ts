@@ -16,7 +16,7 @@ export const up: Migration = async ({ context: sequelize }) => {
         },
         description: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         thumbnail: {
             type: DataTypes.STRING,
@@ -33,7 +33,7 @@ export const up: Migration = async ({ context: sequelize }) => {
         },
         created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
         },
         updated_by: {

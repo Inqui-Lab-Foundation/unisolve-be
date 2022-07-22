@@ -4,27 +4,27 @@ import questionAttribute from '../interfaces/question.model.interface';
 import db from '../utils/dbconnection.util';
 import { quiz } from './quiz.model';
 
-export class quiz_question extends Model<InferAttributes<quiz_question>,InferCreationAttributes<quiz_question>> {
-   declare quiz_question_id: CreationOptional<number>;
-   declare quiz_id: ForeignKey<number>;
-   declare question_no: number;
-   declare question: string;
-   declare option_a: string;
-   declare option_b: string;
-   declare option_c: string;
-   declare option_d: string;
-   declare correct_ans: string;
-   declare level: Enumerator;
-   declare type: Enumerator;
-   declare msg_ans_correct:string;
-   declare msg_ans_wrong:string;
-   declare question_image:string;
-   declare redirect_to: ForeignKey<number>;
-   declare status: Enumerator;
-   declare created_by: number;
-   declare created_at: Date;
-   declare updated_by: number;
-   declare updated_at: Date;
+export class quiz_question extends Model<InferAttributes<quiz_question>, InferCreationAttributes<quiz_question>> {
+    declare quiz_question_id: CreationOptional<number>;
+    declare quiz_id: ForeignKey<number>;
+    declare question_no: number;
+    declare question: string;
+    declare option_a: string;
+    declare option_b: string;
+    declare option_c: string;
+    declare option_d: string;
+    declare correct_ans: string;
+    declare level: Enumerator;
+    declare type: Enumerator;
+    declare msg_ans_correct: string;
+    declare msg_ans_wrong: string;
+    declare question_image: string;
+    declare redirect_to: ForeignKey<number>;
+    declare status: Enumerator;
+    declare created_by: number;
+    declare created_at: Date;
+    declare updated_by: number;
+    declare updated_at: Date;
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -45,7 +45,7 @@ quiz_question.init(
         },
         quiz_id: {
             type: DataTypes.INTEGER,
-            allowNull:false
+            allowNull: false
         },
         question_no: {
             type: DataTypes.INTEGER,
@@ -97,12 +97,12 @@ quiz_question.init(
         msg_ans_correct: {
             type: DataTypes.TEXT,
             allowNull: true,
-            defaultValue:"",
+            defaultValue: "",
         },
         msg_ans_wrong: {
             type: DataTypes.TEXT,
             allowNull: true,
-            defaultValue:"",
+            defaultValue: "",
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
@@ -112,11 +112,11 @@ quiz_question.init(
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            defaultValue:null
+            defaultValue: null
         },
         created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
         },
         updated_by: {
@@ -140,5 +140,5 @@ quiz_question.init(
     }
 );
 
-quiz_question.belongsTo(quiz,{foreignKey:'quiz_id'})
-quiz.hasMany(quiz_question,{foreignKey:'quiz_id'})
+quiz_question.belongsTo(quiz, { foreignKey: 'quiz_id' })
+quiz.hasMany(quiz_question, { foreignKey: 'quiz_id' })

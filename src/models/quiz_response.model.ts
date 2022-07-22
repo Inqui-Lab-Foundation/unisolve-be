@@ -4,16 +4,16 @@ import questionAttribute from '../interfaces/question.model.interface';
 import db from '../utils/dbconnection.util';
 import { quiz } from './quiz.model';
 
-export class quiz_response extends Model<InferAttributes<quiz_response>,InferCreationAttributes<quiz_response>> {
-   declare quiz_response_id: CreationOptional<number>;
-   declare quiz_id: ForeignKey<number>;
-   declare user_id: ForeignKey<number>;
-   declare response: string;
-   declare status: Enumerator;
-   declare created_by: number;
-   declare created_at: Date;
-   declare updated_by: number;
-   declare updated_at: Date;
+export class quiz_response extends Model<InferAttributes<quiz_response>, InferCreationAttributes<quiz_response>> {
+    declare quiz_response_id: CreationOptional<number>;
+    declare quiz_id: ForeignKey<number>;
+    declare user_id: ForeignKey<number>;
+    declare response: string;
+    declare status: Enumerator;
+    declare created_by: number;
+    declare created_at: Date;
+    declare updated_by: number;
+    declare updated_at: Date;
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -34,11 +34,11 @@ quiz_response.init(
         },
         user_id: {
             type: DataTypes.INTEGER,
-            allowNull:false
+            allowNull: false
         },
         quiz_id: {
             type: DataTypes.INTEGER,
-            allowNull:false
+            allowNull: false
         },
         response: {
             type: DataTypes.TEXT('long'),
@@ -52,11 +52,11 @@ quiz_response.init(
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            defaultValue:null
+            defaultValue: null
         },
         created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
         },
         updated_by: {

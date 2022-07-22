@@ -5,14 +5,10 @@ import db from '../utils/dbconnection.util';
 import { notification } from './notification.model';
 import { baseConfig } from '../configs/base.config';
 import { user } from './user.model';
-import { organization } from './organization.model';
 
-
-export class mentor extends Model<InferAttributes<mentor>, InferCreationAttributes<mentor>> {
-    declare mentor_id: CreationOptional<number>;
-    declare team_id: string;
-    declare user_id: number;
-    declare org_code: string;
+export class evaluater extends Model<InferAttributes<evaluater>, InferCreationAttributes<evaluater>> {
+    declare evaluater_id: CreationOptional<number>;
+    declare user_id: string;
     declare full_name: string;
     declare date_of_birth: Date;
     declare organization_name: string;
@@ -33,13 +29,13 @@ export class mentor extends Model<InferAttributes<mentor>, InferCreationAttribut
      */
     static associate(models: any) {
         // define association here
-        mentor.hasMany(notification, { sourceKey: 'notification_id', as: 'notifications' });
+        evaluater.hasMany(notification, { sourceKey: 'notification_id', as: 'notifications' });
     }
 }
 
-mentor.init(
+evaluater.init(
     {
-        mentor_id: {
+        evaluater_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
@@ -47,13 +43,6 @@ mentor.init(
         user_id: {
             type: DataTypes.INTEGER,
             allowNull: false
-        },
-        org_code: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        team_id: {
-            type: DataTypes.STRING,
         },
         full_name: {
             type: DataTypes.STRING,
@@ -69,7 +58,7 @@ mentor.init(
         },
         qualification: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         city: {
             type: DataTypes.STRING
@@ -111,7 +100,7 @@ mentor.init(
     },
     {
         sequelize: db,
-        tableName: 'mentors',
+        tableName: 'evaluaters',
         timestamps: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',
@@ -130,7 +119,5 @@ mentor.init(
     }
 );
 
-mentor.belongsTo(user, { foreignKey: 'user_id', constraints: false });
-user.hasOne(mentor, { foreignKey: 'user_id', constraints: false, scope: { role: 'MENTOR' } });
-mentor.belongsTo(organization, { foreignKey: 'org_code', constraints: false });
-organization.hasOne(mentor, { foreignKey: 'org_code', constraints: false, scope: { role: 'MENTOR' } });
+evaluater.belongsTo(user, { foreignKey: 'user_id' , constraints: false});
+user.hasOne(evaluater, { foreignKey: 'user_id', constraints: false, scope: { role: 'EVALUATER' }});

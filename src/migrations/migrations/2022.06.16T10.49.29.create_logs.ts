@@ -4,8 +4,8 @@ import { constents } from '../../configs/constents.config';
 
 const tableName = "logs";
 export const up: Migration = async ({ context: sequelize }) => {
-	await sequelize.getQueryInterface().createTable(tableName, {
-		log_id: {
+    await sequelize.getQueryInterface().createTable(tableName, {
+        log_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -37,7 +37,7 @@ export const up: Migration = async ({ context: sequelize }) => {
             type: DataTypes.TEXT('long'),
             allowNull: false
         },
-        status_code:{
+        status_code: {
             type: DataTypes.ENUM(...constents.status_codes.list),
             allowNull: false,
             defaultValue: constents.status_codes.default
@@ -67,9 +67,9 @@ export const up: Migration = async ({ context: sequelize }) => {
             allowNull: false,
             defaultValue: DataTypes.NOW
         }
-	  });
+    });
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
-	await sequelize.getQueryInterface().dropTable(tableName);
+    await sequelize.getQueryInterface().dropTable(tableName);
 };

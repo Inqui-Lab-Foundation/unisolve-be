@@ -4,8 +4,8 @@ import { constents } from '../../configs/constents.config';
 
 const tableName = "teams";
 export const up: Migration = async ({ context: sequelize }) => {
-	await sequelize.getQueryInterface().createTable(tableName, {
-		team_id: {
+    await sequelize.getQueryInterface().createTable(tableName, {
+        team_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -25,11 +25,11 @@ export const up: Migration = async ({ context: sequelize }) => {
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            defaultValue:null
+            defaultValue: null
         },
         created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
         },
         updated_by: {
@@ -43,9 +43,9 @@ export const up: Migration = async ({ context: sequelize }) => {
             defaultValue: DataTypes.NOW,
             onUpdate: new Date().toLocaleString()
         }
-	  });
+    });
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
-	await sequelize.getQueryInterface().dropTable(tableName);
+    await sequelize.getQueryInterface().dropTable(tableName);
 };

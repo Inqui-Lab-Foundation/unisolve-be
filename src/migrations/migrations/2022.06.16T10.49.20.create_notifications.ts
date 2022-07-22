@@ -4,7 +4,7 @@ import { constents } from '../../configs/constents.config';
 
 const tableName = "notifications";
 export const up: Migration = async ({ context: sequelize }) => {
-	await sequelize.getQueryInterface().createTable(tableName, {
+    await sequelize.getQueryInterface().createTable(tableName, {
         notification_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
@@ -47,11 +47,11 @@ export const up: Migration = async ({ context: sequelize }) => {
         },
         created_by: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true
         },
-        created_at:{
+        created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
         },
         updated_by: {
@@ -59,15 +59,15 @@ export const up: Migration = async ({ context: sequelize }) => {
             allowNull: true,
             defaultValue: null
         },
-        updated_at:{
+        updated_at: {
             type: DataTypes.DATE,
             allowNull: true,
             defaultValue: DataTypes.NOW,
             onUpdate: new Date().toLocaleString()
         }
-	  });
+    });
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
-	await sequelize.getQueryInterface().dropTable(tableName);
+    await sequelize.getQueryInterface().dropTable(tableName);
 };

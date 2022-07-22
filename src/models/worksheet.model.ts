@@ -2,7 +2,7 @@ import { DataTypes, InferAttributes, InferCreationAttributes, Model } from 'sequ
 import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
 
-export class worksheet extends Model<InferAttributes<worksheet>,InferCreationAttributes<worksheet>> {
+export class worksheet extends Model<InferAttributes<worksheet>, InferCreationAttributes<worksheet>> {
     declare worksheet_id: number;
     declare description: string;
     declare attachments: string;
@@ -11,7 +11,7 @@ export class worksheet extends Model<InferAttributes<worksheet>,InferCreationAtt
     declare created_at: Date;
     declare updated_by: number;
     declare updated_at: Date;
-    
+
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -32,7 +32,7 @@ worksheet.init(
         },
         description: {
             type: DataTypes.TEXT('long'),
-            allowNull: false
+            allowNull: true
         },
         attachments: {
             type: DataTypes.TEXT('long'),
@@ -46,11 +46,11 @@ worksheet.init(
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            defaultValue:null
+            defaultValue: null
         },
         created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
         },
         updated_by: {

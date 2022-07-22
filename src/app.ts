@@ -22,7 +22,10 @@ import { options } from "./docs/options";
 import { speeches } from "./configs/speeches.config";
 import * as errorHandler from "./middlewares/errorHandler.middleware";
 import { constents } from "./configs/constents.config";
-import BadgesController from "./jobs/badges.jobs";
+
+import BadgesJob from "./jobs/badges.jobs";
+import { CronManager } from "./jobs/cronManager";
+
 
 export default class App {
     public app: Application;
@@ -69,8 +72,9 @@ export default class App {
     }
 
     private initializeJobs(): void {
-        const job1 = new BadgesController();
-        job1.schedule();
+        const cronManager = CronManager.getInstance()
+        // cronManager.addJob(new BadgesJob());
+        // cronManager.startAll();
     }
 
     private initializeMiddlewares(): void {

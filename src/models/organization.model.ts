@@ -4,10 +4,16 @@ import { constents } from '../configs/constents.config';
 
 
 export class organization extends Model<InferAttributes<organization>, InferCreationAttributes<organization>> {
-    declare organization_id: CreationOptional<number>;
-    declare organization_name: string;
-    declare organization_code: string;
-    declare details: string;
+    declare org_id: CreationOptional<number>;
+    declare org_name: string;
+    declare org_code: string;
+    declare city: string;
+    declare district: string;
+    declare state: string;
+    declare country: string;
+    declare principal_name: string;
+    declare principal_email: string;
+    declare principal_mobile: string;
     declare status: Enumerator;
     declare created_by: number;
     declare created_at: Date;
@@ -16,22 +22,39 @@ export class organization extends Model<InferAttributes<organization>, InferCrea
 }
 
 organization.init({
-    organization_id: {
+    org_id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    organization_name: {
+    org_name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    organization_code: {
+    org_code: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    details: {
-        type: DataTypes.STRING,
-        allowNull: true
+    city: {
+        type: DataTypes.STRING
+    },
+    district: {
+        type: DataTypes.STRING
+    },
+    state: {
+        type: DataTypes.STRING
+    },
+    country: {
+        type: DataTypes.STRING
+    },
+    principal_name: {
+        type: DataTypes.STRING
+    },
+    principal_mobile: {
+        type: DataTypes.STRING
+    },
+    principal_email: {
+        type: DataTypes.STRING
     },
     status: {
         type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),

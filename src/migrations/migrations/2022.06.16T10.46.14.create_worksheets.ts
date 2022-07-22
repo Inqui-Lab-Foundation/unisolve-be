@@ -13,7 +13,7 @@ export const up: Migration = async ({ context: sequelize }) => {
         },
         description: {
             type: DataTypes.TEXT('long'),
-            allowNull: false
+            allowNull: true
         },
         attachments: {
             type: DataTypes.TEXT('long'),
@@ -31,7 +31,7 @@ export const up: Migration = async ({ context: sequelize }) => {
         },
         created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
             defaultValue: DataTypes.NOW,
         },
         updated_by: {
