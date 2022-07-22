@@ -8,22 +8,39 @@ export const up: Migration = async ({ context: sequelize }) => {
 	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
 	//or below implementation 
 	await sequelize.getQueryInterface().createTable(tableName, {
-		organization_id: {
+		org_id: {
 			type: DataTypes.INTEGER,
 			autoIncrement: true,
 			primaryKey: true
 		},
-		organization_name: {
+		org_name: {
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
-		organization_code: {
+		org_code: {
 			type: DataTypes.STRING,
 			allowNull: false
 		},
-		details: {
-			type: DataTypes.STRING,
-			allowNull: true
+		city: {
+			type: DataTypes.STRING
+		},
+		district: {
+			type: DataTypes.STRING
+		},
+		state: {
+			type: DataTypes.STRING
+		},
+		country: {
+			type: DataTypes.STRING
+		},
+		principal_name: {
+			type: DataTypes.STRING
+		},
+		principal_mobile: {
+			type: DataTypes.STRING
+		},
+		principal_email: {
+			type: DataTypes.STRING
 		},
 		status: {
 			type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
@@ -51,6 +68,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 			onUpdate: new Date().toLocaleString()
 		}
 	});
+	await sequelize.getQueryInterface().addIndex(tableName, ['org_code'])
 };
 
 export const down: Migration = async ({ context: sequelize }) => {
