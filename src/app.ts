@@ -22,8 +22,9 @@ import { options } from "./docs/options";
 import { speeches } from "./configs/speeches.config";
 import * as errorHandler from "./middlewares/errorHandler.middleware";
 import { constents } from "./configs/constents.config";
-import { CronManager } from "./jobs/CronManager";
+
 import BadgesJob from "./jobs/badges.jobs";
+import { CronManager } from "./jobs/cronManager";
 
 
 export default class App {
