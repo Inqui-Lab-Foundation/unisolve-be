@@ -17,10 +17,12 @@ import { speeches } from '../configs/speeches.config';
 import { baseConfig } from '../configs/base.config';
 import sendNotification from '../utils/notification.util';
 import { constents } from '../configs/constents.config';
-import { user_profile } from '../models/user_profile.model';
+import { admin } from '../models/admin.model';
 import { mentor } from '../models/mentor.model';
 import { student } from '../models/student.model';
+import { evaluater } from '../models/evaluater.model';
 import { badRequest } from 'boom';
+import { organization } from '../models/organization.model';
 
 export default class AuthController implements IController {
     public path: string;
@@ -157,17 +159,22 @@ export default class AuthController implements IController {
             let profile: any;
             const whereClass = { ...req.body, user_id: result.dataValues.user_id }
             switch (req.body.role) {
-                case 'STUDENT':
+                case 'STUDENT': {
                     profile = await this.crudService.create(student, whereClass);
                     break;
-                case 'MENTOR':
-                    profile = await this.crudService.create(mentor, whereClass);
+                }
+                case 'MENTOR': {
+                    if (req.body.org_code) {
+                        profile = await this.crudService.create(mentor, whereClass);
+                        break;
+                    } else { res.status(400).send({ messene: 'error' }) }
+                }
+                case 'EVALUATER': {
+                    profile = await this.crudService.create(evaluater, whereClass);
                     break;
-                case 'EVALUATER':
-                    profile = await this.crudService.create(user_profile, whereClass);
-                    break;
+                }
                 default:
-                    profile = await this.crudService.create(user_profile, whereClass);
+                    profile = await this.crudService.create(admin, whereClass);
             }
             return res.status(201).send(dispatcher(result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
         } catch (error) {
@@ -265,7 +272,7 @@ export default class AuthController implements IController {
                 break;
             }
             case 'evaluater': {
-                loadMode = user_profile;
+                loadMode = evaluater;
                 role = 'EVALUATER'
                 break;
             }

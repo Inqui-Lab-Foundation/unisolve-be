@@ -6,8 +6,8 @@ import { notification } from './notification.model';
 import { baseConfig } from '../configs/base.config';
 import { user } from './user.model';
 
-export class user_profile extends Model<InferAttributes<user_profile>, InferCreationAttributes<user_profile>> {
-    declare user_profile_id: CreationOptional<number>;
+export class evaluater extends Model<InferAttributes<evaluater>, InferCreationAttributes<evaluater>> {
+    declare evaluater_id: CreationOptional<number>;
     declare user_id: string;
     declare full_name: string;
     declare date_of_birth: Date;
@@ -29,13 +29,13 @@ export class user_profile extends Model<InferAttributes<user_profile>, InferCrea
      */
     static associate(models: any) {
         // define association here
-        user_profile.hasMany(notification, { sourceKey: 'notification_id', as: 'notifications' });
+        evaluater.hasMany(notification, { sourceKey: 'notification_id', as: 'notifications' });
     }
 }
 
-user_profile.init(
+evaluater.init(
     {
-        user_profile_id: {
+        evaluater_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
@@ -100,7 +100,7 @@ user_profile.init(
     },
     {
         sequelize: db,
-        tableName: 'user_profiles',
+        tableName: 'evaluaters',
         timestamps: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',
@@ -119,6 +119,5 @@ user_profile.init(
     }
 );
 
-user_profile.belongsTo(user, { foreignKey: 'user_id' , constraints: false});
-user.hasOne(user_profile, { foreignKey: 'user_id', constraints: false, scope: { role: 'ADMIN' }});
-user.hasOne(user_profile, { foreignKey: 'user_id', constraints: false, scope: { role: 'EVALUATER' }});
+evaluater.belongsTo(user, { foreignKey: 'user_id' , constraints: false});
+user.hasOne(evaluater, { foreignKey: 'user_id', constraints: false, scope: { role: 'EVALUATER' }});
