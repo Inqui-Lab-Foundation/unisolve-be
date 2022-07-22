@@ -5,7 +5,7 @@ import db from '../utils/dbconnection.util';
 import { notification } from './notification.model';
 import { baseConfig } from '../configs/base.config';
 import { user } from './user.model';
-import { user_profile } from './user_profile.model';
+import { admin } from './admin.model';
 import { mentor } from './mentor.model';
 
 export class student extends Model<InferAttributes<student>, InferCreationAttributes<student>> {
