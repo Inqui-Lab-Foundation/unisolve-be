@@ -21,5 +21,4 @@ export default class DefaultJob extends BaseJobs {
             this.callBackFunction()
         }
     }
-
 }

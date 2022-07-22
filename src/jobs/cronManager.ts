@@ -3,10 +3,10 @@ import BadgesJob from './badges.jobs';
 import BaseJob from './base.job';
 import DefaultJob from './default.job';
 
-export class CronManager{
+export class CronManager {
     public jobs: any;
 
-    private static instance:CronManager;
+    private static instance: CronManager;
 
     private constructor() {
         this.jobs = {};
@@ -28,20 +28,20 @@ export class CronManager{
     //     this.jobs.push(job);
     // };
 
-    public addNewJob(name: any, periodText: any, fn: any) {  
-        this.jobs[name] = new DefaultJob(name,periodText,fn );
+    public addNewJob(name: any, periodText: any, fn: any) {
+        this.jobs[name] = new DefaultJob(name, periodText, fn);
     };
 
-    public addJob(argJob:BaseJob) {
-        if(!argJob){
-            throw Error("Pleae make sure that Job is initialised properly before passing it to the CronManager..");
+    public addJob(argJob: BaseJob) {
+        if (!argJob) {
+            throw Error("Pleae make sure that Job is initialized properly before passing it to the CronManager..");
         }
-        if(!argJob.cronJob){
-            throw Error("Pleae make sure that Job is initialised properly before passing it to the CronManager..");
+        if (!argJob.cronJob) {
+            throw Error("Pleae make sure that Job is initialized properly before passing it to the CronManager..");
         }
         this.jobs[argJob.name] = argJob;
     };
-    
+
     public stopJob(name: any) {
         this.jobs[name].stop();
     }
@@ -50,7 +50,7 @@ export class CronManager{
     }
     public stopAll() {
         for (let name in this.jobs) {
-             this.jobs[name].stop()
+            this.jobs[name].stop()
         }
     }
     public listJobs() {
@@ -67,15 +67,15 @@ export class CronManager{
     public startJob(name: any) {
         for (let name in this.jobs) {
             const activeJob = this.jobs[name];
-            if (activeJob.name === name ) {
+            if (activeJob.name === name) {
                 activeJob.cronJob.start();
             }
         }
     };
     public startAll() {
         for (let name in this.jobs) {
-            console.log(name)    
-             this.jobs[name].start()
+            console.log(name)
+            this.jobs[name].start()
         }
     }
     public runningJob(name: any) {
