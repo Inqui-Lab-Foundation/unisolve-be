@@ -6,9 +6,5 @@ export HOME="/home/ubuntu/"
 export PM2_HOME=/home/ubuntu/.pm2
 pm2 save --force
 pm2 stop all
-pm2 delete all
 cd /home/ubuntu/unisolve-be
-npm install
-npm run build
 npm run start:prod
-pm2 save --force
