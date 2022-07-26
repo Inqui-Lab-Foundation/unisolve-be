@@ -7,7 +7,7 @@ export default class FaqCategoryController extends BaseController {
     model = "faq_category";
 
     protected initializePath(): void {
-        this.path = '/faq_category';
+        this.path = '/faqCategories';
     }
     protected initializeValidations(): void {
         this.validations =  new ValidationsHolder(faqCategorySchema,faqCategorySchemaUpdateSchema);
