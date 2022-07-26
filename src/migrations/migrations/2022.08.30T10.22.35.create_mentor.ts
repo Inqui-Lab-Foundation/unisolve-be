@@ -21,12 +21,12 @@ export const up: Migration = async ({ context: sequelize }) => {
 				key: 'user_id'
 			}
 		},
-		org_code: {
+		organization_code: {
 			type: DataTypes.STRING,
 			allowNull: true,
 			references: {
 				model: 'organizations',
-				key: 'org_code'
+				key: 'organization_code'
 			}
 		},
 		team_id: {

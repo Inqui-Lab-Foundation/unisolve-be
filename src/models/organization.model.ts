@@ -4,9 +4,9 @@ import { constents } from '../configs/constents.config';
 
 
 export class organization extends Model<InferAttributes<organization>, InferCreationAttributes<organization>> {
-    declare org_id: CreationOptional<number>;
-    declare org_name: string;
-    declare org_code: string;
+    declare organization_id: CreationOptional<number>;
+    declare organization_name: string;
+    declare organization_code: string;
     declare city: string;
     declare district: string;
     declare state: string;
@@ -22,16 +22,16 @@ export class organization extends Model<InferAttributes<organization>, InferCrea
 }
 
 organization.init({
-    org_id: {
+    organization_id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
-    org_name: {
+    organization_name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    org_code: {
+    organization_code: {
         type: DataTypes.STRING,
         allowNull: false
     },

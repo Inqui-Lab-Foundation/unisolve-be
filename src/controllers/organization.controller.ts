@@ -9,6 +9,7 @@ import dispatcher from "../utils/dispatch.util";
 import ValidationsHolder from "../validations/validationHolder";
 import { videoSchema, videoUpdateSchema } from "../validations/video.validations";
 import BaseController from "./base.controller";
+import { organizationSchema, organizationUpdateSchema } from "../validations/organization.validations";
 
 export default class OrganizationController extends BaseController {
 
@@ -18,7 +19,7 @@ export default class OrganizationController extends BaseController {
         this.path = '/organizations';
     }
     protected initializeValidations(): void {
-        this.validations = new ValidationsHolder(null, null);;
+        this.validations = new ValidationsHolder( organizationSchema, organizationUpdateSchema);
     }
     protected initializeRoutes(): void {
         // this.router.post(`${this.path}`, this.createData);
