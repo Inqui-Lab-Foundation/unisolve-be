@@ -125,6 +125,7 @@ export default class AuthController implements IController {
                     name: user_res.dataValues.username,
                     full_name: user_res.dataValues.full_name,
                     status: user_res.dataValues.status,
+                    role: user_res.dataValues.role,
                     token,
                     type: 'Bearer',
                     expire: process.env.TOKEN_DEFAULT_TIMEOUT
