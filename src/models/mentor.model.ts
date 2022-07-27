@@ -12,7 +12,7 @@ export class mentor extends Model<InferAttributes<mentor>, InferCreationAttribut
     declare mentor_id: CreationOptional<number>;
     declare team_id: string;
     declare user_id: number;
-    declare org_code: string;
+    declare organization_code: string;
     declare full_name: string;
     declare date_of_birth: Date;
     declare organization_name: string;
@@ -48,7 +48,7 @@ mentor.init(
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        org_code: {
+        organization_code: {
             type: DataTypes.STRING,
             allowNull: false
         },
