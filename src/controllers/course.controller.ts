@@ -140,10 +140,41 @@ export default class CourseController extends BaseController {
             throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
         }
         let data = await this.crudService.findOne(modelClass, {
-            where: whereClause,
+            where:whereClause,
+             
+            attributes: {
+                include: [
+                    [// Note the wrapping parentheses in the call below!
+                        db.literal(`(
+                            SELECT COUNT(*)
+                            FROM course_modules AS cm
+                            WHERE
+                                ${addWhereClauseStatusPart?"cm."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
+                            AND
+                                cm.course_id = \`course\`.\`course_id\`
+                        )`),
+                        'course_modules_count'
+                    ],
+                    [// Note the wrapping parentheses in the call below!
+                        db.literal(`(
+                        SELECT COUNT(*)
+                        FROM course_topics AS ct
+                        JOIN course_modules as cm on cm.course_module_id = ct.course_module_id
+                        WHERE
+                            ${addWhereClauseStatusPart?"ct."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
+                        AND
+                            cm.course_id = \`course\`.\`course_id\`
+                        AND
+                            ct.topic_type = \"VIDEO\"
+                    )`),
+                        'course_videos_count'
+                    ]
+                ]
+            },
             include: [{
                 model: course_module,
                 as: 'course_modules',
+                required:false,
                 attributes: [
                     "title",
                     "description",
@@ -171,6 +202,7 @@ export default class CourseController extends BaseController {
                 include: [{
                     model: course_topic,
                     as: "course_topics",
+                    required:false,
                     attributes: [
                         "title",
                         "course_module_id",
