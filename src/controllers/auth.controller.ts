@@ -165,7 +165,7 @@ export default class AuthController implements IController {
                     break;
                 }
                 case 'MENTOR': {
-                    if (req.body.org_code) {
+                    if (req.body.organization_code) {
                         profile = await this.crudService.create(mentor, whereClass);
                         break;
                     } else { res.status(400).send({ messene: 'error' }) }
