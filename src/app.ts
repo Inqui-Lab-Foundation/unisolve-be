@@ -22,10 +22,10 @@ import { options } from "./docs/options";
 import { speeches } from "./configs/speeches.config";
 import * as errorHandler from "./middlewares/errorHandler.middleware";
 import { constents } from "./configs/constents.config";
-
+import fs from 'fs';
 import BadgesJob from "./jobs/badges.jobs";
 import { CronManager } from "./jobs/cronManager";
-
+import https from 'https'
 
 export default class App {
     public app: Application;
@@ -99,9 +99,9 @@ export default class App {
                 status: 200,
                 status_type: "success",
                 apis: {
-                    docks: `http://${process.env.APP_HOST_name}:${process.env.APP_PORT}/docs`,
-                    apis: `http://${process.env.APP_HOST_name}:${process.env.APP_PORT}/api/v1`,
-                    healthcheck: `http://${process.env.APP_HOST_name}:${process.env.APP_PORT}/healthcheck`,
+                    docks: `https://${process.env.APP_HOST_NAME}:${process.env.APP_PORT}/docs`,
+                    apis: `https://${process.env.APP_HOST_NAME}:${process.env.APP_PORT}/api/v1`,
+                    healthcheck: `https://${process.env.APP_HOST_NAME}:${process.env.APP_PORT}/healthcheck`,
                 },
             }
             res.status(resData.status).send(resData).end();
@@ -211,13 +211,22 @@ Available Routes:
     }
 
     public listen(): void {
+        let options = {
+            key: fs.readFileSync(path.join(process.cwd(), 'resources', 'ssl', 'key.pem')),
+            cert: fs.readFileSync(path.join(process.cwd(), 'resources', 'ssl', 'cert.pem'))
+        };
+        // https.createServer(options, this.app).listen(this.port, async () => {
+        //     await logIt(constents.log_levels.list.INFO, `App is running at https://${process.env.APP_HOST_NAME}:${this.port}`);
+        //     if (process.env.SHOW_ROUTES === "true") {
+        //         this.showRoutes();
+        //     }
+        // });
         this.app.listen(this.port, async () => {
             await logIt(constents.log_levels.list.INFO, `App is running at http://${process.env.APP_HOST_NAME}:${this.port}`);
 
             if (process.env.SHOW_ROUTES === "true") {
                 this.showRoutes();
             }
-
         });
     }
 
