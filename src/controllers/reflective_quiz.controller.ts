@@ -13,13 +13,14 @@ import { quiz_response } from "../models/quiz_response.model";
 import { reflective_quiz_question } from "../models/reflective_quiz_question.model";
 import { reflective_quiz_response } from "../models/reflective_quiz_response.model";
 import { user_topic_progress } from "../models/user_topic_progress.model";
+import ReflectiveQuizService from "../services/reflective_quiz_.service";
 import dispatcher from "../utils/dispatch.util";
 import { quizNextQuestionSchema, quizSchema, quizSubmitResponseSchema, quizUpdateSchema } from "../validations/reflective_quiz.validations";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
 
 export default class ReflectiveQuizController extends BaseController {
-
+    reflectiveQuizService:ReflectiveQuizService = new ReflectiveQuizService
     model = "reflective_quiz_question";
 
     protected initializePath(): void {
@@ -40,71 +41,10 @@ export default class ReflectiveQuizController extends BaseController {
             const  video_id  = req.params.id;
             const  paramStatus :any = req.query.status;
             const user_id =  res.locals.user_id;
-            if(!video_id){
-                throw badRequest(speeches.QUIZ_ID_REQUIRED);
-            }
-            if(!user_id){
-                throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
-            }
-            //check if the given quiz is a valid topic
-            const curr_topic =  await this.crudService.findOne(course_topic,{where:{"topic_type_id":video_id,"topic_type":"QUIZ"}})
-            if(!curr_topic || curr_topic instanceof Error){
-                throw badRequest("INVALID TOPIC");
-            }
-
-            const quizRes = await this.crudService.findOne(reflective_quiz_response,{where: {video_id:video_id,user_id:user_id}});
-            if(quizRes instanceof Error){
-                throw internal(quizRes.message)
-            }
-            let whereClauseStatusPart:any = {}
-            let boolStatusWhereClauseRequired = false
-            if(paramStatus && (paramStatus in constents.common_status_flags.list)){
-                whereClauseStatusPart = {"status":paramStatus}
-                boolStatusWhereClauseRequired = true;
-            }
-
-            let level = "HARD"
-            let question_no = 1
-            let nextQuestion:any=null;
-            // console.log(quizRes)
-            if(quizRes){
-                //TOOO :: implement checking response and based on that change the 
-                let user_response:any = {}
-                user_response =  JSON.parse(quizRes.dataValues.response);
-                // console.log(user_response);
-                let questionNosAsweredArray = Object.keys(user_response);
-                questionNosAsweredArray = questionNosAsweredArray.sort((a,b) => (a > b ? -1 : 1));
-                const noOfQuestionsAnswered = Object.keys(user_response).length
-                // console.log(noOfQuestionsAnswered)
-                const lastQuestionAnsewered = user_response[questionNosAsweredArray[0]]//we have assumed that this length will always have atleast 1 item ; this could potentially be a source of bug, but is not since this should always be true based on above checks ..
-                // if(lastQuestionAnsewered.selected_option == lastQuestionAnsewered.correct_answer){
-                    question_no = lastQuestionAnsewered.question_no+1;
-                    level = "HARD";
-                // }else{
-                //     question_no = lastQuestionAnsewered.question_no;
-                //     if(lastQuestionAnsewered.level == "HARD"){
-                //         level = "MEDIUM"
-                //     }else if(lastQuestionAnsewered.level == "MEDIUM"){
-                //         level = "EASY"
-                //     }else if(lastQuestionAnsewered.level == "EASY"){
-                //         question_no = lastQuestionAnsewered.question_no+1;
-                //         level = "HARD"
-                //     }
-                // }
-            }
             
-            const nextQuestionsToChooseFrom = await this.crudService.findOne(reflective_quiz_question,{where:{
-                [Op.and]:[
-                    whereClauseStatusPart,
-                    {video_id:video_id},
-                    {level:level},
-                    {question_no:question_no},
-                ]
-                
-            }})
-            
+            const nextQuestionsToChooseFrom:any = await this.reflectiveQuizService.fetchNextQuestion(user_id,video_id,paramStatus)
             if(nextQuestionsToChooseFrom instanceof Error){
-                throw internal(nextQuestionsToChooseFrom.message)
+                throw nextQuestionsToChooseFrom;
             }
             if(nextQuestionsToChooseFrom){
                 let resultQuestion:any = {}
@@ -147,6 +87,9 @@ export default class ReflectiveQuizController extends BaseController {
             next(err)
         }
     }
+
+
+    
 
     protected async submitResponse(req:Request,res:Response,next:NextFunction) {
         try{

@@ -73,7 +73,7 @@ reflective_quiz_response.init(
     },
     {
         sequelize: db,
-        tableName: 'reflective_quiz_response',
+        tableName: 'reflective_quiz_responses',
         timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'
