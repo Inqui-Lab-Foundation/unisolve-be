@@ -5,13 +5,15 @@ import { ParsedQs } from "qs";
 import { Op } from "sequelize";
 import { constents } from "../configs/constents.config";
 import { reflective_quiz_question } from "../models/reflective_quiz_question.model";
+import ReflectiveQuizService from "../services/reflective_quiz_.service";
+import database from "../utils/dbconnection.util";
 import dispatcher from "../utils/dispatch.util";
 import ValidationsHolder from "../validations/validationHolder";
 import { videoSchema, videoUpdateSchema } from "../validations/video.validations";
 import BaseController from "./base.controller";
 
 export default class VideoController extends BaseController {
-
+    reflectiveQuizService:ReflectiveQuizService = new ReflectiveQuizService
     model = "video";
 
     protected initializeValidations(): void {
@@ -60,6 +62,41 @@ export default class VideoController extends BaseController {
                     include:{
                         required:false,
                         model:reflective_quiz_question,
+                        // attributes:[
+                        //     //this was done to add a flag of status whether the question was completed or not 
+                        //         "video_id",
+                        //         "reflective_quiz_question_id",
+                        //         "question_no",
+                        //         "question",
+                        //         "option_a",
+                        //         "option_b",
+                        //         "option_b",
+                        //         "option_d",
+                        //         "question_image",
+                        //         "type",
+                        //         "level",
+                        //         "status",
+                        //         "created_by",
+                        //         "created_at",
+                        //         "updated_by",
+                        //         "updated_at",
+                        //         [// Note the wrapping parentheses in the call below!
+                        //             database.literal(`(
+                        //                 SELECT CASE WHEN EXISTS
+                        //                     (SELECT video_id
+                        //                     FROM reflective_quiz_responses AS rfqr
+                        //                     WHERE
+                        //                         rfqr.video_id = \`video\`.\`video_id\`
+                        //                     )
+                        //                 THEN
+                        //                     "COMPLETED"
+                        //                 ELSE
+                        //                     "INCOMPLETE"
+                        //                 END AS rfq_status
+                        //             )`),
+                        //             'rfq_status'
+                        //         ],
+                        // ],
                         where:{
                             [Op.and]:[
                                 whereClauseStatusPart
@@ -67,7 +104,7 @@ export default class VideoController extends BaseController {
                         },
                     },
                 });
-                data = this.formatOneRowProperly(data)
+                data = await this.formatOneRowProperly(data)
             } else {
                 try{
                     const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, {
@@ -80,6 +117,41 @@ export default class VideoController extends BaseController {
                             include:{
                                 required:false,
                                 model:reflective_quiz_question,
+                            //     attributes:[
+                            //     //this was done to add a flag of status whether the question was completed or not 
+                            //         "video_id",
+                            //         "reflective_quiz_question_id",
+                            //         "question_no",
+                            //         "question",
+                            //         "option_a",
+                            //         "option_b",
+                            //         "option_b",
+                            //         "option_d",
+                            //         "question_image",
+                            //         "type",
+                            //         "level",
+                            //         "status",
+                            //         "created_by",
+                            //         "created_at",
+                            //         "updated_by",
+                            //         "updated_at",
+                            //         [// Note the wrapping parentheses in the call below!
+                            //             database.literal(`(
+                            //                 SELECT CASE WHEN EXISTS 
+                            //                     (SELECT video_id
+                            //                     FROM reflective_quiz_responses AS rfqr
+                            //                     WHERE
+                            //                         rfqr.video_id = \`video\`.\`video_id\`
+                            //                     )
+                            //                 THEN
+                            //                     "COMPLETED"
+                            //                 ELSE
+                            //                     "INCOMPLETE"
+                            //                 END AS rfq_status
+                            //             )`),
+                            //             'rfq_status'
+                            //         ],
+                            // ],
                                 where:{
                                     [Op.and]:[
                                         whereClauseStatusPart
@@ -91,7 +163,7 @@ export default class VideoController extends BaseController {
                         })
                     let result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     
-                    result  = this.formatAllRowsProperly(result);
+                    result  = await this.formatAllRowsProperly(result);
                     // console.log(result)
                     data = result;
                 } catch(error:any){
@@ -115,7 +187,8 @@ export default class VideoController extends BaseController {
             next(error);
         }
     }
-    protected formatOneRowProperly(data:any):any{
+
+    protected async formatOneRowProperly(data:any){
         let dataModified = JSON.parse(JSON.stringify(data));
         const newVideoRow =   dataModified
                 
@@ -143,19 +216,32 @@ export default class VideoController extends BaseController {
             resultQuestion["options"] = optionsArr;
             resultQuestion["level"] = questionRaw.level;
             resultQuestion["type"] = questionRaw.type;
+            resultQuestion["rfq_status"] = questionRaw.rfq_status;
             return resultQuestion;
         })
         
         newVideoRow.reflective_quiz_questions =  newQuestionsFomratted
+        if(newQuestionsFomratted && newQuestionsFomratted.length >0){
+            //TODO:
+            //db intensive operation especially for a loop 
+            //optimise it going forward 
+            const nextQuestionsToChooseFrom =  await this.reflectiveQuizService.fetchNextQuestion(1,dataModified.video_id,null)
+            newVideoRow.reflective_quiz_status = (nextQuestionsToChooseFrom)?"INCOMPLETE":"COMPLETED";
+        }else{
+            newVideoRow.reflective_quiz_status = "COMPLETED";
+        }
+        
         return newVideoRow;
     }
-    protected formatAllRowsProperly(data:any):any{
+    protected async formatAllRowsProperly(data:any){
         let result:any={}
         let dataModified = JSON.parse(JSON.stringify(data));
 
-        result = dataModified.dataValues.map((videoRow:any)=>{
-                return this.formatOneRowProperly(videoRow)
+        result = await Promise.all(
+            dataModified.dataValues.map(async (videoRow:any)=>{
+                return await this.formatOneRowProperly(videoRow)
             })
+        )
         return result;
     }
 
