@@ -79,8 +79,8 @@ export default class CRUDController implements IController {
         try {
             
             let data: any;
-            const { model, id} = req.params;
-            const paramStatus:any = req.query.status;
+            const { model, id } = req.params;
+            const paramStatus: any = req.query.status;
             if (model) {
                 this.model = model;
             };
@@ -88,44 +88,54 @@ export default class CRUDController implements IController {
             const { page, size, title } = req.query;
             let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
-            const modelClass = await this.loadModel(model).catch(error=>{
+            const modelClass = await this.loadModel(model).catch(error => {
                 next(error)
             });
             const where: any = {};
-            let whereClauseStatusPart:any = {};
-            if(paramStatus && (paramStatus in constents.common_status_flags.list)){
-                whereClauseStatusPart = {"status":paramStatus}
+            let whereClauseStatusPart: any = {};
+            if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
+                whereClauseStatusPart = { "status": paramStatus }
             }
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
-                data = await this.crudService.findOne(modelClass, { where: {
-                    [Op.and]: [
-                        whereClauseStatusPart,
-                        where,
-                        ]
-                } });
-            } else {
-                try{
-                    const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, { where: {
+                data = await this.crudService.findOne(modelClass, {
+                    where: {
                         [Op.and]: [
                             whereClauseStatusPart,
-                            condition
+                            where,
+                        ]
+                    }
+                });
+            } else {
+                try {
+                    const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, {
+                        where: {
+                            [Op.and]: [
+                                whereClauseStatusPart,
+                                condition
                             ]
-                    }, limit, offset })
+                        }, limit, offset
+                    })
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
-                } catch(error:any){
+                } catch (error: any) {
                     return res.status(500).send(dispatcher(data, 'error'))
                 }
-                
+
             }
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));
             // }
             if (!data || data instanceof Error) {
+                if (data != null) {
+                    throw notFound(data.message)
+                } else {
+                    throw notFound()
+                }
                 res.status(200).send(dispatcher(null,"error",speeches.DATA_NOT_FOUND));
                 // if(data!=null){
-                //     throw notFound(data.message)
+                //     throw 
+                (data.message)
                 // }else{
                 //     throw notFound()
                 // }
