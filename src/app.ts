@@ -211,10 +211,10 @@ Available Routes:
     }
 
     public listen(): void {
-        let options = {
-            key: fs.readFileSync(path.join(process.cwd(), 'resources', 'ssl', 'key.pem')),
-            cert: fs.readFileSync(path.join(process.cwd(), 'resources', 'ssl', 'cert.pem'))
-        };
+        // let options = {
+        //     key: fs.readFileSync(path.join(process.cwd(), 'resources', 'ssl', 'key.pem')),
+        //     cert: fs.readFileSync(path.join(process.cwd(), 'resources', 'ssl', 'cert.pem'))
+        // };
         // https.createServer(options, this.app).listen(this.port, async () => {
         //     await logIt(constents.log_levels.list.INFO, `App is running at https://${process.env.APP_HOST_NAME}:${this.port}`);
         //     if (process.env.SHOW_ROUTES === "true") {
