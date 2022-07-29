@@ -77,6 +77,7 @@ export default class CRUDController implements IController {
 
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
+            
             let data: any;
             const { model, id } = req.params;
             const paramStatus: any = req.query.status;
@@ -131,6 +132,13 @@ export default class CRUDController implements IController {
                 } else {
                     throw notFound()
                 }
+                res.status(200).send(dispatcher(null,"error",speeches.DATA_NOT_FOUND));
+                // if(data!=null){
+                //     throw 
+                (data.message)
+                // }else{
+                //     throw notFound()
+                // }
             }
 
             return res.status(200).send(dispatcher(data, 'success'));
