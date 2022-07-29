@@ -5,10 +5,11 @@ import { speeches } from "../configs/speeches.config";
 import { course_topic } from "../models/course_topic.model";
 import { reflective_quiz_question } from "../models/reflective_quiz_question.model";
 import { reflective_quiz_response } from "../models/reflective_quiz_response.model";
+import BaseService from "./base.service";
 import CRUDService from "./crud.service";
 
-export default class ReflectiveQuizService {
-    crudService: CRUDService = new CRUDService();
+export default class ReflectiveQuizService extends BaseService{
+    
     public async fetchNextQuestion(user_id:number,video_id:any,paramStatus:any){
         try{
             if(!video_id){

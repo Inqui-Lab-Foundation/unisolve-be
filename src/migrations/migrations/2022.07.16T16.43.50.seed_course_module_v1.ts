@@ -33,7 +33,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 	const cmInserted2 = await createCourseModule(sequelize,courseInserted[0].course_id,"ME AND US")
 	await createCourseTopicAlongWithAssociations(sequelize,cmInserted2,"VIDEO","Our Team")
 	await createCourseTopicAlongWithAssociations(sequelize,cmInserted2,"VIDEO","Your journey ahead")
-	await createCourseTopicAlongWithAssociations(sequelize,cmInserted2,"QUIZ","Quiz 2")
+	await createCourseTopicAlongWithAssociations(sequelize,cmInserted2,"QUIZ","Quiz 2")//note :: if you comment this out then u will also have to fix the quiz id in quiz seeder 
 	await createCourseTopicAlongWithAssociations(sequelize,cmInserted2,"WORKSHEET","WORKSHEET 2")
 
 	//mod 3
@@ -165,6 +165,7 @@ async function createCourseVideo(sequelize:any,arg_video_stream_id:string){
 	const courseVideoInsterted = await sequelize.getQueryInterface().bulkInsert('videos',[
 		{
 			video_stream_id: arg_video_stream_id,
+			video_duration: 240,
 			created_by: 1,
 			updated_by: 1,
 		}

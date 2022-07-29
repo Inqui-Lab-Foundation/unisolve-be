@@ -193,6 +193,8 @@ repository](https://github.com/PurpleBooth/a-good-readme-template/tags).
 
   - **Pradeep Gandla**
   - **[Harishkumar](https://github.com/harishkumarreddy)**
+  - **[Aman Satija](https://amansatija.com)**
+  - **[Vamshi]()**
 
 See also the list of
 [contributors](https://github.com/PurpleBooth/a-good-readme-template/contributors)
