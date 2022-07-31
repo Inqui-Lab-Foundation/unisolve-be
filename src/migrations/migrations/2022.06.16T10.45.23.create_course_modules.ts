@@ -22,7 +22,7 @@ export const up: Migration = async ({ context: sequelize }) => {
             allowNull: false
         },
         description: {
-            type: DataTypes.STRING,
+            type:  DataTypes.TEXT('long'),
             allowNull: true
         },
         status: {
