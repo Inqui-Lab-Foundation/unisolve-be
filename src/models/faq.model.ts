@@ -30,11 +30,11 @@ faq.init(
             allowNull: false
         },
         question: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT("long"),
             allowNull: false
         },
         answer: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT("long"),
             allowNull: false
         },
         status: {
