@@ -13,41 +13,43 @@ export const up: Migration = async ({ context: sequelize }) => {
 	//or below implementation 
 	const courseInserted : any = await sequelize.getQueryInterface().insert(new course(),'courses',{
 		title: 'UNISOLVE',
-		description: "Description \n"+
-		"1. Inspiration\n"+
-		"Welcome to the First step in your Problem Solving Journey.\n"+
-		"Do you want to make a difference in the world around you but are not sure how?\n"+
-	   	"The watch the story of our Problem Solvers: Adila, Aryn, Shama, and Amir.\n"+
-	   	"What inspired them to be Problem Solvers? Let us see and get inspired too!\n"+
-		"2. Me and Us\n"+
-		"Congratulation on the start of your Journey.\n"+
-		"Do you know what makes a great team?\n"+
-		"Let's find out what Aryn's teacher has to say about it.\n"+
-		"3. Feel & Find\n"+
-		"Phew! Just like Amir and his team, you too have a strong team of Problem Solvers.\n"+
-		"But you know, Amir and his team are confused about how to Find problems in their community.\n"+
-		"I am sure you too must be wondering.\n"+
-		"Farah and their teacher helped them out. But who is Farah?\n"+
-		"Let's find out! \n"+
-		"4. Explore\n"+
-		"Are you ready with your chosen Problem?\n"+
-		"Remember? Shama and the team too have chosen a problem to solve.\n"+
-		"But do they know enough about the problem they identified?\n"+
-		"Let us see how they Explored the problem deeper to understand it better!\n"+
-		"5. Give Ideas\n"+
-		"Give yourself a pat on your back for completing more than half of the Problem Solving Journey.\n"+
-		"You are a Star. The Journey ahead is full of Fun and Learning.\n"+
-		"Ideas! Ideas! Ideas!\n"+
-		"Let's see how Aryn and the team came up with them and learn from them how to Give Ideas!\n"+
-		"6. Make & Test\n"+
-		"Now Comes the most exciting step in your Problem Solving Journey: Make your Idea Real.\n"+
-		"Are you excited to see how Adila and the team did that?\n"+
-		"We are excited too, to tell you their story!\n"+
-		"So, why wait? Let's watch and learn!\n"+
-		"7. Conclusion\n"+
-		"Once a Problem Solver, Always a Problem Solver!\n"+
-		"A huge Hi-fi from us to the Problem Solver in you.\n"+
-		"We have just one more thing to tell you. Please watch (edited)\n",
+		description: `
+Description 
+	1. Inspiration
+		Welcome to the First step in your Problem Solving Journey.
+		Do you want to make a difference in the world around you but are not sure how?
+		The watch the story of our Problem Solvers: Adila, Aryn, Shama, and Amir.
+		What inspired them to be Problem Solvers? Let us see and get inspired too!
+	2. Me and Us
+		Congratulation on the start of your Journey.
+		Do you know what makes a great team?
+		Let's find out what Aryn's teacher has to say about it.
+	3. Feel & Find
+		Phew! Just like Amir and his team, you too have a strong team of Problem Solvers.
+		But you know, Amir and his team are confused about how to Find problems in their community.
+		I am sure you too must be wondering.
+		Farah and their teacher helped them out. But who is Farah?
+		Let's find out! 
+	4. Explore
+		Are you ready with your chosen Problem?
+		Remember? Shama and the team too have chosen a problem to solve.
+		But do they know enough about the problem they identified?
+		Let us see how they Explored the problem deeper to understand it better!
+	5. Give Ideas
+		Give yourself a pat on your back for completing more than half of the Problem Solving Journey.
+		You are a Star. The Journey ahead is full of Fun and Learning.
+		Ideas! Ideas! Ideas!
+		Let's see how Aryn and the team came up with them and learn from them how to Give Ideas!
+	6. Make & Test
+		Now Comes the most exciting step in your Problem Solving Journey: Make your Idea Real.
+		Are you excited to see how Adila and the team did that?
+		We are excited too, to tell you their story!
+		So, why wait? Let's watch and learn!
+	7. Conclusion
+		Once a Problem Solver, Always a Problem Solver!
+		A huge Hi-fi from us to the Problem Solver in you.
+		We have just one more thing to tell you. Please watch (edited)
+		`,
         created_by: 1,
 		updated_by: 1,
 	});
