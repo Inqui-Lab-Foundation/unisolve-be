@@ -1,12 +1,13 @@
+import bcrypt from 'bcrypt';
+import axios from 'axios';
 import { Request, Response, NextFunction } from 'express';
 
 import { speeches } from '../configs/speeches.config';
+import { baseConfig } from '../configs/base.config';
+import { user } from '../models/user.model';
 import dispatcher from '../utils/dispatch.util';
 import authService from '../services/auth.service';
 import BaseController from './base.controller';
-import { user } from '../models/user.model';
-import { URL } from 'url';
-import axios from 'axios';
 
 export default class MentorController extends BaseController {
     model = "mentor";
@@ -23,39 +24,37 @@ export default class MentorController extends BaseController {
         //example route to add
         //this.router.get(`${this.path}/`, this.getData);
         this.router.post(`${this.path}/register`, this.register.bind(this));
-        // this.router.post(`${this.path}/validateOtp`, this.validateOtp.bind(this));
+        this.router.post(`${this.path}/validateOtp`, this.validateOtp.bind(this));
         this.router.post(`${this.path}/login`, this.login.bind(this));
         this.router.get(`${this.path}/logout`, this.logout.bind(this));
         this.router.put(`${this.path}/changePassword`, this.changePassword.bind(this));
         super.initializeRoutes();
     }
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        // const checkOrgCode = await this.authService.checkOrgDetails(req.body.organization_code);
-        // if (!checkOrgCode || checkOrgCode instanceof Error) {
-        //     res.status(400).send(dispatcher(null, 'error', speeches.BAD_REQUEST))
-        // }
-        // if (!req.body.username || req.body.username === "") req.body.username = req.body.full_name.replace('s / +/ /g', "");
-        // if (!req.body.password || req.body.password === "") req.body.password = this.password;
-        const otp = Math.random().toFixed(6).substr(-6)
+        if (!req.body.organization_code || req.body.organization_code === "") return res.status(406).send(dispatcher(speeches.ORG_CODE_REQUIRED, 'error', speeches.NOT_ACCEPTABLE, 406));
+        const otp = Math.random().toFixed(6).substr(-6);
+        // console.log("otp: ", otp);
         const generateOtp = (mobile: any, otp: any) => axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
-            .then(resp => console.log(resp));
-        generateOtp(req.body.mobile, otp);
+            .then(resp => console.log(resp))
+            .catch(error => console.error(error));
         req.body.password = otp;
-        console.log(req.body.password);
         const result = await this.authService.register(req.body);
-        if (result === false) return res.status(406).send(dispatcher(speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
-        return res.status(201).send(dispatcher(result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        if (result === false) {
+            return res.status(406).send(dispatcher(speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
+        }
+        generateOtp(req.body.mobile, otp);
+        return res.status(201).send(dispatcher({ result: result, otp }, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
-    // private async validateOtp(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-    //     const otp = req.body.otp;
-    //     const match = await this.authService.crudService.findOne(user, { where: { otp } });
-    //     if (!match) {
-    //         res.status(404).send(dispatcher(null, 'error', speeches.BAD_REQUEST))
-    //     } else {
-    //         res.status(200).send(dispatcher(match, 'success', speeches.USER_LOGIN_SUCCESS))
-    //     }
-    // }
+    private async validateOtp(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const user_res = await this.authService.crudService.findOnePassword(user, { where: { user_id: req.body.user_id } });
+        const match = bcrypt.compareSync(req.body.otp, user_res.dataValues.password);
+        if (!match) {
+            res.status(404).send(dispatcher(null, 'error', speeches.OTP_FAIL))
+        } else {
+            res.status(200).send(dispatcher(match, 'success', speeches.OTP_FOUND))
+        }
+    }
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const result = await this.authService.login(req.body);
