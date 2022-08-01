@@ -1,6 +1,7 @@
 import {  DataTypes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
+import { faq_category } from './faq_category.model';
 
 
 export interface faqAttributes {
@@ -70,3 +71,6 @@ faq.init(
         createdAt: 'created_at',
     }
 );
+
+faq.belongsTo(faq_category, { foreignKey: 'faq_category_id'});
+faq_category.hasMany(faq, { foreignKey: 'faq_category_id'});

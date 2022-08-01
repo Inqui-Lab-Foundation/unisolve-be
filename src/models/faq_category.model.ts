@@ -63,5 +63,3 @@ faq_category.init(
     }
 );
 
-faq_category.belongsTo(faq, { foreignKey: 'faq_category_id'});
-faq.hasMany(faq_category, { foreignKey: 'faq_category_id'});
