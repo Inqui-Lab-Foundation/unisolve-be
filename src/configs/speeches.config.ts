@@ -73,5 +73,8 @@ export const speeches = {
     CSV_SEND_INTERNAL_ERROR: 'Something went wrong while create contact admin',
     CSV_DATA_EXIST: 'Data existing',
     FAQ_CATEGORY: "Category is required.",
-    FAQ_ANSWER: "Answer is required."
+    FAQ_ANSWER: "Answer is required.",
+    ORG_CODE_REQUIRED: "Organization code is required.",
+    OTP_FAIL: "Wrong OTP Detected.",
+    OTP_FOUND: "OTP matched."
 }
