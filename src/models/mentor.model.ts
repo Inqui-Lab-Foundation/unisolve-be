@@ -20,6 +20,7 @@ export class mentor extends Model<InferAttributes<mentor>, InferCreationAttribut
     declare district: string;
     declare state: string;
     declare country: string;
+    declare mobile: string;
     declare status: Enumerator;
     declare created_by: number;
     declare created_at: Date;
@@ -76,6 +77,9 @@ mentor.init(
             type: DataTypes.STRING
         },
         country: {
+            type: DataTypes.STRING
+        },
+        mobile: {
             type: DataTypes.STRING
         },
         status: {
