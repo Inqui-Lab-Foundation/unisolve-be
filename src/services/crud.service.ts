@@ -77,12 +77,15 @@ export default class CRUDService {
 
     async update(model: any, update: object, query: object) {
         try {
+            
             const data = await model.update(update, query);
-            if (data) {
-                delete data.dataValues.password;
-            }
+            // console.log(data)
+            // if (data) {
+            //     delete data.dataValues.password;
+            // }
             return data;
         } catch (error: any) {
+            // console.log(error)
             return error;
         }
     };
