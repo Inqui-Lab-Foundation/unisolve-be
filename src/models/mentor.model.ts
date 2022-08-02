@@ -15,12 +15,12 @@ export class mentor extends Model<InferAttributes<mentor>, InferCreationAttribut
     declare organization_code: string;
     declare full_name: string;
     declare date_of_birth: Date;
-    declare organization_name: string;
     declare qualification: string;
     declare city: string;
     declare district: string;
     declare state: string;
     declare country: string;
+    declare mobile: string;
     declare status: Enumerator;
     declare created_by: number;
     declare created_at: Date;
@@ -63,10 +63,6 @@ mentor.init(
             type: DataTypes.DATE,
             allowNull: true
         },
-        organization_name: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
         qualification: {
             type: DataTypes.STRING,
             allowNull: false
@@ -81,6 +77,9 @@ mentor.init(
             type: DataTypes.STRING
         },
         country: {
+            type: DataTypes.STRING
+        },
+        mobile: {
             type: DataTypes.STRING
         },
         status: {
@@ -132,5 +131,5 @@ mentor.init(
 
 mentor.belongsTo(user, { foreignKey: 'user_id', constraints: false });
 user.hasOne(mentor, { foreignKey: 'user_id', constraints: false, scope: { role: 'MENTOR' } });
-mentor.belongsTo(organization, { foreignKey: 'org_code', constraints: false });
-organization.hasOne(mentor, { foreignKey: 'org_code', constraints: false, scope: { role: 'MENTOR' } });
+mentor.belongsTo(organization, { foreignKey: 'organization_code', constraints: false });
+organization.hasOne(mentor, { foreignKey: 'organization_code', constraints: false, scope: { role: 'MENTOR' } });
