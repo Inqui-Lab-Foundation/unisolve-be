@@ -1,4 +1,6 @@
 import bcrypt from 'bcrypt';
+import { randomUUID } from 'crypto';
+import { nanoid } from 'nanoid';
 import { Op } from 'sequelize';
 
 import { baseConfig } from '../configs/base.config';
@@ -37,6 +39,9 @@ export default class authService {
             const whereClass = { ...requestBody, user_id: result.dataValues.user_id }
             switch (requestBody.role) {
                 case 'STUDENT': {
+                    if (!whereClass.UUID) {
+                        whereClass.UUID = nanoid(6).toUpperCase()
+                    }
                     Profile = await this.crudService.create(student, whereClass);
                     break;
                 }
