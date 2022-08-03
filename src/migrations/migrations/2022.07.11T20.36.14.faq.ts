@@ -18,11 +18,11 @@ export const up: Migration = async ({ context: sequelize }) => {
             allowNull: false
         },
         question: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT("long"),
             allowNull: false
         },
         answer: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT("long"),
             allowNull: false
         },
         status: {

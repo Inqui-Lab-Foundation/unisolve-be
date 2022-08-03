@@ -454,10 +454,10 @@ export const up: Migration = async ({ context: sequelize }) => {
 			`,
 			"MRQ",
 			null)
-	///QUIZ 3
+	///QUIZ 3 but quiz_id = 2 because 2nd module doesnt have quiz 
 	//////Question  9
 	await createQuizQuestion(sequelize,
-		3,9,`Shama, during one of her visits to the community, talked to people who were exercising in a park and found out that mosquitoes flying around in the morning is a huge problem they face everyday while exercising.
+		2,9,`Shama, during one of her visits to the community, talked to people who were exercising in a park and found out that mosquitoes flying around in the morning is a huge problem they face everyday while exercising.
 
 		Which of the following problem finding techniques do you see Adila making use of to find problems.
 		`,
@@ -474,7 +474,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		null)
 
 	await createQuizQuestion(sequelize,
-		3,9,`Match Column A to Column B`,
+		2,9,`Match Column A to Column B`,
 		"A-3, B-2, C-4, D-1",
 		"A-1, B-4, C-3, D-2",
 		"A-1, B-4. C-2, D-3",
@@ -487,7 +487,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		"MRQ",
 		"/images/quiz_3_q9_medium_q_image.png")
 	await createQuizQuestion(sequelize,
-		3,9,`Which of the following techniques will help you find problems that you are not aware of`,
+		2,9,`Which of the following techniques will help you find problems that you are not aware of`,
 		"Research",
 		"Interview",
 		"PEAK Criteria",
@@ -502,7 +502,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 	
 	//////Question  10
 	await createQuizQuestion(sequelize,
-		3,10,`Look at the following I SEE - I WISH Statements:
+		2,10,`Look at the following I SEE - I WISH Statements:
 		I SEE      - I see that there is a lot of dust in the air near our home.
 		I WISH - I wish all schools have a playground for children to play..
 		
@@ -520,7 +520,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		null)
 
 	await createQuizQuestion(sequelize,
-		3,10,`Shama, while on her way to school, observed a problem while thinking about the I SEE - I WISH technique. Look at her I SEE Statement:
+		2,10,`Shama, while on her way to school, observed a problem while thinking about the I SEE - I WISH technique. Look at her I SEE Statement:
 		I SEE      - I see that a lot of trees have been cut to build roads
 		
 		What do you think is an appropriate I WISH statement for the above?`,
@@ -537,7 +537,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		null)
 	
 	await createQuizQuestion(sequelize,
-		3,10,`Which of the following is true about writing an I WISH statement`,
+		2,10,`Which of the following is true about writing an I WISH statement`,
 		"The I WISH statement should help you think about the solution.",
 		"The I WISH statement is used to find more information about the problem. ",
 		null,

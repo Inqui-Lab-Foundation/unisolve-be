@@ -222,7 +222,7 @@ export default class CRUDController implements IController {
                 this.model = model;
             };
             const user_id = res.locals.user_id
-            console.log(user_id);
+            // console.log(user_id);
 
             const where: any = {};
             where[`${this.model}_id`] = req.params.id;
