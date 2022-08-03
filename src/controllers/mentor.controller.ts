@@ -43,7 +43,7 @@ export default class MentorController extends BaseController {
             return res.status(406).send(dispatcher(speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
         }
         generateOtp(req.body.mobile, otp);
-        return res.status(201).send(dispatcher({ result: result, otp }, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        return res.status(201).send(dispatcher({ result, otp }, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
     private async validateOtp(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
