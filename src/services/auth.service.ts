@@ -1,6 +1,9 @@
 import bcrypt from 'bcrypt';
+import { nanoid } from 'nanoid';
 import { Op } from 'sequelize';
 
+import jwtUtil from '../utils/jwt.util';
+import CRUDService from "./crud.service";
 import { baseConfig } from '../configs/base.config';
 import { speeches } from '../configs/speeches.config';
 import { admin } from "../models/admin.model";
@@ -9,8 +12,7 @@ import { mentor } from "../models/mentor.model";
 import { organization } from '../models/organization.model';
 import { student } from "../models/student.model";
 import { user } from "../models/user.model";
-import jwtUtil from '../utils/jwt.util';
-import CRUDService from "./crud.service";
+import c from 'config';
 
 export default class authService {
     crudService: CRUDService = new CRUDService;
@@ -18,7 +20,6 @@ export default class authService {
 
     async checkOrgDetails(organization_code: any) {
         try {
-            // console.log(organization_code)
             const org = await this.crudService.findOne(organization, { where: { organization_code } })
             return org;
         } catch (error) {
@@ -37,6 +38,9 @@ export default class authService {
             const whereClass = { ...requestBody, user_id: result.dataValues.user_id }
             switch (requestBody.role) {
                 case 'STUDENT': {
+                    if (!whereClass.UUID) {
+                        whereClass.UUID = nanoid(6).toUpperCase()
+                    }
                     Profile = await this.crudService.create(student, whereClass);
                     break;
                 }
@@ -58,7 +62,6 @@ export default class authService {
             return error;
         }
     }
-
     async login(requestBody: any) {
         const result: any = {};
         try {
@@ -133,7 +136,6 @@ export default class authService {
             return result;
         }
     }
-
     async logout(requestBody: any, responseBody: any) {
         let result: any = {};
         try {
@@ -148,7 +150,6 @@ export default class authService {
             return result;
         }
     }
-
     async changePassword(requestBody: any, responseBody: any) {
         let result: any = {};
         try {
@@ -180,6 +181,36 @@ export default class authService {
                 result['data'] = response;
                 return result;
             }
+        } catch (error) {
+            result['error'] = error;
+            return result;
+        }
+    }
+    async restPassword(requestBody: any, responseBody: any) {
+        let result: any = {};
+        try {
+            const user_res: any = await this.crudService.findOnePassword(user, {
+                where: {
+                    [Op.or]: [
+                        {
+                            username: { [Op.eq]: requestBody.username }
+                        },
+                        {
+                            user_id: { [Op.like]: `%${requestBody.user_id}%` }
+                        }
+                    ]
+                }
+            });
+            if (!user_res) {
+                result['user_res'] = user_res;
+                return result;
+            }
+            const generatedRandomId = nanoid(6).toUpperCase();
+            const response = await this.crudService.update(user, {
+                password: await bcrypt.hashSync(generatedRandomId, process.env.SALT || baseConfig.SALT)
+            }, { where: { user_id: user_res.dataValues.user_id } });
+            result = { data: response, password: generatedRandomId };
+            return result;
         } catch (error) {
             result['error'] = error;
             return result;

@@ -22,7 +22,7 @@ import { mentor } from '../models/mentor.model';
 import { student } from '../models/student.model';
 import { evaluater } from '../models/evaluater.model';
 import { badRequest } from 'boom';
-import { organization } from '../models/organization.model';
+import { nanoid } from 'nanoid'
 
 export default class AuthController implements IController {
     public path: string;
@@ -161,6 +161,9 @@ export default class AuthController implements IController {
             const whereClass = { ...req.body, user_id: result.dataValues.user_id }
             switch (req.body.role) {
                 case 'STUDENT': {
+                    if (!whereClass.UUID) {
+                        whereClass.UUID = nanoid(6).toUpperCase()
+                    }
                     profile = await this.crudService.create(student, whereClass);
                     break;
                 }
@@ -176,7 +179,7 @@ export default class AuthController implements IController {
                 }
                 default:
                     profile = await this.crudService.create(admin, whereClass);
-            }
+            };
             return res.status(201).send(dispatcher(result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
         } catch (error) {
             next(error);

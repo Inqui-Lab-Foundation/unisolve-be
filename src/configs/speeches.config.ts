@@ -33,6 +33,8 @@ export const speeches = {
     DESCRIPTION_REQUIRED: "Description is required, it should not be empty.",
     ID_REQUIRED: "ID is required, it should not be empty.",
     TEAM_NAME_REQUIRED: "Team name is required, it should not be empty.",
+    TEAM_NAME_ID: "Team ID is required, it should not be empty.",
+    TEAM_NOT_FOUND: "Team not found, check the teamID.",
 
     //quiz submit response keys
     QUIZ_ID_REQUIRED: "Quiz ID is required, it should not be empty.",

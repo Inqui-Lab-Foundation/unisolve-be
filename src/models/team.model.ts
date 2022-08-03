@@ -3,9 +3,9 @@ import db from '../utils/dbconnection.util';
 import { teamAttributes } from '../interfaces/model.interface';
 import { constents } from '../configs/constents.config';
 
-export class teams extends Model<teamAttributes> { }
+export class team extends Model<teamAttributes> { }
 
-teams.init(
+team.init(
     {
         team_id: {
             type: DataTypes.INTEGER,
@@ -27,7 +27,7 @@ teams.init(
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            defaultValue:null
+            defaultValue: null
         },
         created_at: {
             type: DataTypes.DATE,

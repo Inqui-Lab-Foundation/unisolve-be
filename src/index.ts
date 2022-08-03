@@ -19,6 +19,9 @@ import FaqController from "./controllers/faq.controller";
 import OrganizationController from "./controllers/organization.controller";
 import ReflectiveQuizController from "./controllers/reflective_quiz.controller";
 import MentorController from "./controllers/mentor.controller";
+import StudentController from "./controllers/student.controller";
+import AdminController from "./controllers/admin.controller";
+import EvaluaterController from "./controllers/evulator.controller";
 
 // validating env variables
 validateEnv();
@@ -42,6 +45,9 @@ try {
         new OrganizationController,
         new ReflectiveQuizController,
         new MentorController,
+        new AdminController,
+        new StudentController,
+        new EvaluaterController
     ], Number(process.env.APP_PORT));
     // starting app
     app.listen();
