@@ -23,6 +23,7 @@ export default class StudentController extends BaseController {
         this.router.post(`${this.path}/login`, this.login.bind(this));
         this.router.get(`${this.path}/logout`, this.logout.bind(this));
         this.router.put(`${this.path}/changePassword`, this.changePassword.bind(this));
+        this.router.post(`${this.path}/resetPassword`, this.resetPassword.bind(this));
         super.initializeRoutes();
     }
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -63,6 +64,17 @@ export default class StudentController extends BaseController {
             return res.status(404).send(dispatcher(result.match, 'error', speeches.USER_PASSWORD));
         } else {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+        }
+    }
+    private async resetPassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        // accept the user_id or user_name from the req.body and update the password in the user table
+        const result = await this.authService.restPassword(req.body, res);
+        if (!result) {
+            return res.status(404).send(dispatcher(result.user_res, 'error', speeches.USER_NOT_FOUND));
+        } else if (result.match) {
+            return res.status(404).send(dispatcher(result.match, 'error', speeches.USER_PASSWORD));
+        } else {
+            return res.status(202).send(dispatcher(result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
 };
