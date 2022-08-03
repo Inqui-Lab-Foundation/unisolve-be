@@ -10,11 +10,16 @@ import { mentor } from './mentor.model';
 
 export class student extends Model<InferAttributes<student>, InferCreationAttributes<student>> {
     declare student_id: CreationOptional<number>;
+    declare UUID: string;
+    declare user_id: number;
     declare team_id: string;
     declare full_name: string;
     declare date_of_birth: Date;
     declare qualification: string;
     declare institute_name: string;
+    declare Age: number;
+    declare Grade: string;
+    declare Gender: string;
     declare city: string;
     declare district: string;
     declare state: string;
@@ -46,6 +51,9 @@ student.init(
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        UUID: {
+            type: DataTypes.STRING,
+        },
         team_id: {
             type: DataTypes.STRING,
         },
@@ -64,6 +72,18 @@ student.init(
         qualification: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        Age: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        Grade: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        Gender: {
+            type: DataTypes.ENUM(...Object.values(constents.gender_flags.list)),
+            defaultValue: constents.gender_flags.default
         },
         city: {
             type: DataTypes.STRING
