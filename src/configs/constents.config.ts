@@ -107,6 +107,14 @@ export const constents = {
     },
     default: 'VIDEO',
   },
-  default_image_path:"/images/default.jpg"
+  gender_flags: {
+    list: {
+      'FEMALE': 'FEMALE',
+      'MALE': 'MALE',
+      'OTHERS': 'OTHERS'
+    },
+    default: 'MALE',
+  },
+  default_image_path: "/images/default.jpg"
 
 };
