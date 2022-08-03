@@ -8,6 +8,9 @@ import db from "../utils/dbconnection.util"
 import dispatcher from "../utils/dispatch.util";
 import { notFound } from "boom";
 import { speeches } from "../configs/speeches.config";
+import { team } from "../models/team.model";
+import { student } from "../models/student.model";
+import { user } from "../models/user.model";
 
 export default class TeamController extends BaseController {
 
@@ -21,10 +24,8 @@ export default class TeamController extends BaseController {
     }
     protected initializeRoutes(): void {
         //example route to add 
-        //this.router.get(`${this.path}/`, this.getData);
+        this.router.get(`${this.path}/:id/members`, this.getTeamMembers.bind(this));
         super.initializeRoutes();
-
-
     }
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
@@ -56,6 +57,7 @@ export default class TeamController extends BaseController {
                     attributes: [
                         'team_name',
                         'team_id',
+                        'mentor_id',
                         'status',
                         'created_at',
                         'created_by',
@@ -85,6 +87,7 @@ export default class TeamController extends BaseController {
                         attributes: [
                             'team_name',
                             'team_id',
+                            'mentor_id',
                             'status',
                             'created_at',
                             'created_by',
@@ -137,5 +140,24 @@ export default class TeamController extends BaseController {
         } catch (error) {
             next(error);
         }
-    }
+    };
+    protected async getTeamMembers(req: Request, res: Response, next: NextFunction) {
+        // accept the team_id from the params and find the students details, user_id
+        const team_id = req.params.id;
+        if (!team_id || team_id === "") {
+            return res.status(400).send(dispatcher(null, 'error', speeches.TEAM_NAME_ID));
+        }
+        const team_res = await this.crudService.findOne(team, { where: { team_id } });
+        if (!team_res) {
+            return res.status(400).send(dispatcher(null, 'error', speeches.TEAM_NOT_FOUND));
+        }
+        const student_res = await this.crudService.findAll(student, {
+            where: { team_id },
+            // include: {
+            //     model: user,
+            //     required: true
+            // }
+        });
+        return res.status(200).send(dispatcher(student_res, 'success'));
+    };
 }
