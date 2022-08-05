@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unisolve-backend
+  labels:
+    app: unisolve-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unisolve-be
+  template:
+    metadata:
+      labels:
+        app: unisolve-be
+    spec:
+      containers:
+      - name: unisolve-be
+        image: unisolve-be
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3002
+        env:
+        - name: DB_HOST
+          value: "host.minikube.internal"  
