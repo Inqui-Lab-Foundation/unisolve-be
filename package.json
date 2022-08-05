@@ -46,6 +46,8 @@
     "multer": "^1.4.4",
     "mysql2": "^2.3.3",
     "nanoid": "^3.1.32",
+    "newman": "^5.3.2",
+    "newman-reporter-htmlextra": "^1.22.10",
     "nodemailer": "^6.7.5",
     "npm": "^8.5.5",
     "prom-client": "^14.0.1",
