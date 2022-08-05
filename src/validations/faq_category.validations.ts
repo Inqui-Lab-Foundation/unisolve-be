@@ -13,5 +13,8 @@ export const faqCategorySchemaUpdateSchema = Joi.object().keys({
     status: Joi.string().valid(...Object.values(constents.common_status_flags.list)).required().messages({
         'any.only': speeches.NOTIFICATION_STATUS_INVALID,
         'string.empty': speeches.NOTIFICATION_STATUS_REQUIRED
+    }),
+    category_name: Joi.string().messages({
+        'string.empty': speeches.NAME_REQUIRED
     })
 });
