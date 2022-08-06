@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "npm run start:dev",
+    "startapitest":"newman run ./postman/Unisolve-API-DocsQANEW.postman_collection.json -e ./postman/QAUnisolve.postman_environment.json",
     "start:dev": "nodemon",
     "start:prod": "pm2 start  processes.json --env production",
     "start:QA": "pm2 start  processes.json --env testing",
