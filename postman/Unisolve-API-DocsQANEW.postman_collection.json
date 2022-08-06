@@ -1400,36 +1400,6 @@
 							"response": []
 						},
 						{
-							"name": "Bulkupload",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "file",
-											"type": "file",
-											"src": "/C:/Users/user/Downloads/mentor_data.csv"
-										}
-									]
-								},
-								"url": {
-									"raw": "{{baseurl}}/auth/mentor/bulkupload",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"auth",
-										"mentor",
-										"bulkupload"
-									]
-								},
-								"description": "### Endpoint to create bulk records with the field requested in the payload.\n\n**Request payload must contain the following fields:**\n\n*   file: form-data"
-							},
-							"response": []
-						},
-						{
 							"name": "ChangePasswordOldPwdNull",
 							"request": {
 								"method": "PUT",
@@ -1524,6 +1494,52 @@
 									]
 								},
 								"description": "### Endpoint for updating the admin password:\n\n**Request payload must contain the following fields:**\n\n*   user_id : STRING,\n*   old_password: STRING,\n*   new_password: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Bulkupload",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test.skip('skip test',function(){\r",
+											"\r",
+											"    pm.response.to.have.status(200);\r",
+											"}\r",
+											"\r",
+											")"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/gururaj/Downloads/mentor_data.csv"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/mentor/bulkupload",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"mentor",
+										"bulkupload"
+									]
+								},
+								"description": "### Endpoint to create bulk records with the field requested in the payload.\n\n**Request payload must contain the following fields:**\n\n*   file: form-data"
 							},
 							"response": []
 						}
@@ -1966,7 +1982,7 @@
 										{
 											"key": "data",
 											"type": "file",
-											"src": "/C:/Users/user/Downloads/organizations_data.csv"
+											"src": "/C:/Users/gururaj/Downloads/organizations_data.csv"
 										}
 									]
 								},
