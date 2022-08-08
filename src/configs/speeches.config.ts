@@ -11,7 +11,7 @@ export const speeches = {
     NOT_ACCEPTABLE: "Not Acceptable",
     DATA_NOT_FOUND: "Data not found",
     UPLOAD_FAILD: "File upload failed",
-
+    MENTOR_EXISTS: "Not Acceptable, user already exists",
     USER_NOT_FOUND: "User not found",
     USER_PASSWORD: "User pasword doesn't match",
     USER_PASSWORD_CHANGE: "User password updated",
@@ -47,8 +47,8 @@ export const speeches = {
     QUESTION_NO_REQUIRED: "Question no is required, it should not be empty.",
 
     //worksheet submit resoponse keys 
-    WORKSHEET_ID_REQUIRED:"WORKSHEET ID is required, it should not be empty.",
-    WORKSHEET_FILE:"WORKSHEET_FILE is required, it should not be empty.",
+    WORKSHEET_ID_REQUIRED: "WORKSHEET ID is required, it should not be empty.",
+    WORKSHEET_FILE: "WORKSHEET_FILE is required, it should not be empty.",
 
     NOTIFICATION_TYPE_INVALID: `Notification type is invalid, it should be one from ${Object.values(constents.notification_types.list).join(", ")}.`,
     NOTIFICATION_TYPE_REQUIRED: `Notification type is required, it should be one from ${Object.values(constents.notification_types.list).join(", ")}.`,
