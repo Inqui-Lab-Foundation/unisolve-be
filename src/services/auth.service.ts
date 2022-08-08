@@ -27,39 +27,42 @@ export default class authService {
         }
     }
     async register(requestBody: any) {
+        let response: any = {};
+        let profile: any;
         try {
             const user_res = await this.crudService.findOne(user, { where: { username: requestBody.username } });
             if (user_res) {
-                return false;
+                response['user_res'] = user_res;
+                return response
             }
-            // requestBody.password = await bcrypt.hashSync(requestBody.password, process.env.SALT || baseConfig.SALT)
             const result = await this.crudService.create(user, requestBody);
-            let Profile: any;
             const whereClass = { ...requestBody, user_id: result.dataValues.user_id }
             switch (requestBody.role) {
                 case 'STUDENT': {
                     if (!whereClass.UUID) {
                         whereClass.UUID = nanoid(6).toUpperCase()
                     }
-                    Profile = await this.crudService.create(student, whereClass);
+                    profile = await this.crudService.create(student, whereClass);
                     break;
                 }
                 case 'MENTOR': {
                     if (requestBody.organization_code) {
-                        Profile = await this.crudService.create(mentor, whereClass);
+                        profile = await this.crudService.create(mentor, whereClass);
                         break;
                     } else return false;
                 }
                 case 'EVALUATER': {
-                    Profile = await this.crudService.create(evaluater, whereClass);
+                    profile = await this.crudService.create(evaluater, whereClass);
                     break;
                 }
                 default:
-                    Profile = await this.crudService.create(admin, whereClass);
+                    profile = await this.crudService.create(admin, whereClass);
             }
-            return Profile;
-        } catch (error) {
-            return error;
+            response['profile'] = profile;
+            return response;
+        } catch (error: any) {
+            response['error'] = error;
+            return response
         }
     }
     async login(requestBody: any) {

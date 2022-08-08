@@ -33,17 +33,18 @@ export default class MentorController extends BaseController {
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         if (!req.body.organization_code || req.body.organization_code === "") return res.status(406).send(dispatcher(speeches.ORG_CODE_REQUIRED, 'error', speeches.NOT_ACCEPTABLE, 406));
         const otp = Math.random().toFixed(6).substr(-6);
-        // console.log("otp: ", otp);
         const generateOtp = (mobile: any, otp: any) => axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
             .then(resp => console.log(resp))
             .catch(error => console.error(error));
         req.body.password = otp;
         const result = await this.authService.register(req.body);
-        if (result === false) {
-            return res.status(406).send(dispatcher(speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
+        if (result.user_res) {
+            return res.status(406).send(dispatcher(result.user_res.dataValues, 'error', speeches.MENTOR_EXISTS, 406));
         }
         generateOtp(req.body.mobile, otp);
-        return res.status(201).send(dispatcher({ result, otp }, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        const data = result.profile.dataValues;
+        data['otp'] = otp;
+        return res.status(201).send(dispatcher(data, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
     private async validateOtp(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
