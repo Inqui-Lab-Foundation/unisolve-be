@@ -13,6 +13,7 @@ export const wildcardRoutes = [
     "/api/v1/evaluaters/register",
     "/api/v1/admins/register",
     "/api/v1/organizations/checkOrg",
+    "/api/v1/mentors/validateOtp",
     "/assets/*",
     "/posters/*",
     "/images/*",
