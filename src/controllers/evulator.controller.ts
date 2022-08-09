@@ -4,6 +4,8 @@ import { speeches } from '../configs/speeches.config';
 import dispatcher from '../utils/dispatch.util';
 import authService from '../services/auth.service';
 import BaseController from './base.controller';
+import ValidationsHolder from '../validations/validationHolder';
+import { evaluaterSchema, evaluaterUpdateSchema } from '../validations/evaluater.validationa';
 
 export default class EvaluaterController extends BaseController {
     model = "evaluater";
@@ -14,7 +16,7 @@ export default class EvaluaterController extends BaseController {
         this.path = '/evaluaters';
     }
     protected initializeValidations(): void {
-        // this.validations = new ValidationsHolder(teamSchema, teamUpdateSchema);
+        this.validations = new ValidationsHolder(evaluaterSchema, evaluaterUpdateSchema);
     }
     protected initializeRoutes(): void {
         //example route to add
