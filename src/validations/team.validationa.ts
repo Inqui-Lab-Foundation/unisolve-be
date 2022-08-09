@@ -21,8 +21,5 @@ export const teamSchema = Joi.object().keys({
 });
 
 export const teamUpdateSchema = Joi.object().keys({
-    status: Joi.string().valid(...Object.values(constents.common_status_flags.list)).required().messages({
-        'any.only': speeches.NOTIFICATION_STATUS_INVALID,
-        'string.empty': speeches.NOTIFICATION_STATUS_REQUIRED
-    })
+    status: Joi.string().valid(...Object.values(constents.common_status_flags.list)).required()
 });
