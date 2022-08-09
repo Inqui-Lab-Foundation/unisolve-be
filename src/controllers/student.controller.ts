@@ -4,6 +4,9 @@ import { speeches } from '../configs/speeches.config';
 import dispatcher from '../utils/dispatch.util';
 import authService from '../services/auth.service';
 import BaseController from './base.controller';
+import { studentSchema, studentUpdateSchema } from '../validations/student.validationa';
+import ValidationsHolder from '../validations/validationHolder';
+import validationMiddleware from '../middlewares/validation.middleware';
 
 export default class StudentController extends BaseController {
     model = "student";
@@ -14,36 +17,44 @@ export default class StudentController extends BaseController {
         this.path = '/students';
     }
     protected initializeValidations(): void {
-        // this.validations = new ValidationsHolder(teamSchema, teamUpdateSchema);
+        this.validations = new ValidationsHolder(studentSchema, studentUpdateSchema);
     }
     protected initializeRoutes(): void {
         //example route to add
         //this.router.get(`${this.path}/`, this.getData);
-        this.router.post(`${this.path}/register`, this.register.bind(this));
-        this.router.post(`${this.path}/login`, this.login.bind(this));
+        this.router.post(`${this.path}/register`, validationMiddleware(studentSchema), this.register.bind(this));
+        this.router.post(`${this.path}/login`, validationMiddleware(studentSchema), this.login.bind(this));
         this.router.get(`${this.path}/logout`, this.logout.bind(this));
-        this.router.put(`${this.path}/changePassword`, this.changePassword.bind(this));
-        this.router.post(`${this.path}/resetPassword`, this.resetPassword.bind(this));
+        this.router.put(`${this.path}/changePassword`, validationMiddleware(studentSchema), this.changePassword.bind(this));
+        this.router.post(`${this.path}/resetPassword`, validationMiddleware(studentSchema), this.resetPassword.bind(this));
         super.initializeRoutes();
     }
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        // status codes reference: https://www.restapitutorial.com/httpstatuscodes.html 
-        // or https://umbraco.com/knowledge-base/http-status-codes/
         if (!req.body.username || req.body.username === "") req.body.username = req.body.full_name.replace('s / +/ /g', "");
         if (!req.body.password || req.body.password === "") req.body.password = this.password;
         const result = await this.authService.register(req.body);
-        if (result === false) return res.status(406).send(dispatcher(speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
-        return res.status(201).send(dispatcher(result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        if (result.user_res) return res.status(406).send(dispatcher(result.user_res.dataValues, 'error', speeches.STUDENT_EXISTS, 406));
+        return res.status(201).send(dispatcher(result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        const result = await this.authService.login(req.body);
+        let teamDetails: any;
+        let studentDetails: any;
+        let result;
+        result = await this.authService.login(req.body);
         if (!result) {
             return res.status(404).send(dispatcher(result, 'error', speeches.USER_NOT_FOUND));
         } else if (result.error) {
             return res.status(401).send(dispatcher(result.error, 'error', speeches.USER_RISTRICTED, 401));
         } else {
-            return res.status(200).send(dispatcher(result.data, 'success', speeches.USER_LOGIN_SUCCESS));
+            studentDetails = await this.authService.getServiceDetails('student', { user_id: result.data.user_id });
+            if (studentDetails) {
+                teamDetails = await this.authService.getServiceDetails('team', { team_id: studentDetails.dataValues.team_id });
+                result.data['team_id'] = studentDetails.dataValues.team_id;
+                result.data['mentor_id'] = teamDetails.dataValues.mentor_id;
+                result.data['team_name'] = teamDetails.dataValues.team_name;
+                return res.status(200).send(dispatcher(result.data, 'success', speeches.USER_LOGIN_SUCCESS));
+            } else return res.status(404).send(dispatcher(result, 'error', speeches.USER_NOT_FOUND));
         }
     }
 

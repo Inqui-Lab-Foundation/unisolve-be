@@ -26,13 +26,11 @@ export default class EvaluaterController extends BaseController {
         super.initializeRoutes();
     }
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        // status codes reference: https://www.restapitutorial.com/httpstatuscodes.html 
-        // or https://umbraco.com/knowledge-base/http-status-codes/
         if (!req.body.username || req.body.username === "") req.body.username = req.body.full_name.replace('s / +/ /g', "");
         if (!req.body.password || req.body.password === "") req.body.password = this.password;
         const result = await this.authService.register(req.body);
-        if (result === false) return res.status(406).send(dispatcher(speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
-        return res.status(201).send(dispatcher(result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        if (result.user_res) return res.status(406).send(dispatcher(result.user_res.dataValues, 'error', speeches.EVALUATER_EXISTS, 406));
+        return res.status(201).send(dispatcher(result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
