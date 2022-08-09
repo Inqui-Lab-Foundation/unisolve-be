@@ -12,7 +12,7 @@ import { mentor } from "../models/mentor.model";
 import { organization } from '../models/organization.model';
 import { student } from "../models/student.model";
 import { user } from "../models/user.model";
-import c from 'config';
+import { team } from '../models/team.model';
 
 export default class authService {
     crudService: CRUDService = new CRUDService;
@@ -22,6 +22,26 @@ export default class authService {
         try {
             const org = await this.crudService.findOne(organization, { where: { organization_code } })
             return org;
+        } catch (error) {
+            return error;
+        }
+    }
+    async getServiceDetails(service: string, query_parameter: any) {
+        let model: any;
+        switch (service) {
+            case 'student':
+                model = student;
+                break
+            case 'team':
+                model = team;
+                break;
+            default: model = null;
+        }
+        try {
+            const details = await this.crudService.findOne(model, { where: query_parameter })
+            if (details instanceof Error) {
+                return 'not'
+            } return details;
         } catch (error) {
             return error;
         }
@@ -122,6 +142,7 @@ export default class authService {
                 //     status: constents.notification_status_flags.list.PUBLISHED,
                 //     created_by: user_res.user_id
                 // });
+
                 result['data'] = {
                     user_id: user_res.dataValues.user_id,
                     name: user_res.dataValues.username,
