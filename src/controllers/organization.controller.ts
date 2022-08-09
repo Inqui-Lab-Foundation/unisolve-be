@@ -9,8 +9,9 @@ import dispatcher from "../utils/dispatch.util";
 import ValidationsHolder from "../validations/validationHolder";
 import { videoSchema, videoUpdateSchema } from "../validations/video.validations";
 import BaseController from "./base.controller";
-import { organizationSchema, organizationUpdateSchema } from "../validations/organization.validations";
+import { organizationCheckSchema, organizationSchema, organizationUpdateSchema } from "../validations/organization.validations";
 import authService from "../services/auth.service";
+import validationMiddleware from "../middlewares/validation.middleware";
 
 export default class OrganizationController extends BaseController {
 
@@ -24,7 +25,7 @@ export default class OrganizationController extends BaseController {
         this.validations = new ValidationsHolder(organizationSchema, organizationUpdateSchema);
     }
     protected initializeRoutes(): void {
-        this.router.post(`${this.path}/checkOrg`, this.checkOrgDetails.bind(this));
+        this.router.post(`${this.path}/checkOrg`, validationMiddleware(organizationCheckSchema), this.checkOrgDetails.bind(this));
         super.initializeRoutes();
     };
     private async checkOrgDetails(req: Request, res: Response, next: NextFunction): Promise<Response | void> {

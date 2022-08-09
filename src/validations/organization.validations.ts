@@ -20,3 +20,8 @@ export const organizationUpdateSchema = Joi.object().keys({
         'string.empty': speeches.COMMON_STATUS_REQUIRED
     }),
 });
+export const organizationCheckSchema = Joi.object().keys({
+    organization_code: Joi.string().required().messages({
+        'string.empty': speeches.ORG_CODE_REQUIRED
+    }),
+});
