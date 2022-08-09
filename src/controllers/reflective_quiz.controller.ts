@@ -1,6 +1,6 @@
 
 
-import { badRequest, internal, unauthorized } from "boom";
+import { badRequest, internal, notFound, unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import { invalid } from "joi";
 import { Op } from "sequelize";
@@ -10,6 +10,7 @@ import validationMiddleware from "../middlewares/validation.middleware";
 import { course_topic } from "../models/course_topic.model";
 import { quiz_question } from "../models/quiz_question.model";
 import { quiz_response } from "../models/quiz_response.model";
+import { quiz_survey_question } from "../models/quiz_survey_question.model";
 import { reflective_quiz_question } from "../models/reflective_quiz_question.model";
 import { reflective_quiz_response } from "../models/reflective_quiz_response.model";
 import { user_topic_progress } from "../models/user_topic_progress.model";
@@ -34,6 +35,84 @@ export default class ReflectiveQuizController extends BaseController {
         this.router.get(this.path+"/:id/nextQuestion/",this.getNextQuestion.bind(this));
         this.router.post(this.path+"/:id/response/",validationMiddleware(quizSubmitResponseSchema),this.submitResponse.bind(this));
         super.initializeRoutes();
+    }
+
+    protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            
+            let data: any;
+            const { model, id } = req.params;
+            const paramStatus: any = req.query.status;
+            if (model) {
+                this.model = model;
+            };
+            // pagination
+            const { page, size, title } = req.query;
+            let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+            const { limit, offset } = this.getPagination(page, size);
+            const modelClass = await this.loadModel(model).catch(error => {
+                next(error)
+            });
+            const where: any = {};
+            let whereClauseStatusPart: any = {};
+            if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
+                whereClauseStatusPart = { "status": paramStatus }
+            }
+            if (id) {
+                where[`${this.model}_id`] = req.params.id;
+                data = await this.crudService.findOne(modelClass, {
+                    where: {
+                        [Op.and]: [
+                            whereClauseStatusPart,
+                            where,
+                        ]
+                    },
+                    include:{
+                        model:quiz_survey_question,
+                    }                  
+                });
+            } else {
+                try {
+                    const responseOfFindAndCountAll = await this.crudService.findAll(modelClass, {
+                        where: {
+                            [Op.and]: [
+                                whereClauseStatusPart,
+                                condition
+                            ]
+                        },
+                        include:{
+                            model:quiz_survey_question,
+                        },limit, offset
+                    })
+                    const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
+                    data = result;
+                } catch (error: any) {
+                    return res.status(500).send(dispatcher(data, 'error'))
+                }
+
+            }
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(data, 'error'));
+            // }
+            if (!data || data instanceof Error) {
+                if (data != null) {
+                    throw notFound(data.message)
+                } else {
+                    throw notFound()
+                }
+                res.status(200).send(dispatcher(null,"error",speeches.DATA_NOT_FOUND));
+                // if(data!=null){
+                //     throw 
+                (data.message)
+                // }else{
+                //     throw notFound()
+                // }
+            }
+
+            return res.status(200).send(dispatcher(data, 'success'));
+        } catch (error) {
+            next(error);
+        }
     }
 
     protected async  getNextQuestion(req:Request,res:Response,next:NextFunction): Promise<Response | void> {
