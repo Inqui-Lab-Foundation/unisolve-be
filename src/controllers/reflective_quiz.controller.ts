@@ -1,6 +1,6 @@
 
 
-import { badRequest, internal, unauthorized } from "boom";
+import { badRequest, internal, notFound, unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import { invalid } from "joi";
 import { Op } from "sequelize";
@@ -10,6 +10,7 @@ import validationMiddleware from "../middlewares/validation.middleware";
 import { course_topic } from "../models/course_topic.model";
 import { quiz_question } from "../models/quiz_question.model";
 import { quiz_response } from "../models/quiz_response.model";
+import { quiz_survey_question } from "../models/quiz_survey_question.model";
 import { reflective_quiz_question } from "../models/reflective_quiz_question.model";
 import { reflective_quiz_response } from "../models/reflective_quiz_response.model";
 import { user_topic_progress } from "../models/user_topic_progress.model";
