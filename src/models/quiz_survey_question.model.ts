@@ -6,8 +6,8 @@ import { quiz } from './quiz.model';
 import { quiz_survey } from './quiz_survey.model';
 
 export class quiz_survey_question extends Model<InferAttributes<quiz_survey_question>, InferCreationAttributes<quiz_survey_question>> {
-    declare quiz_question_id: CreationOptional<number>;
-    declare quiz_id: ForeignKey<number>;
+    declare quiz_survey_question_id: CreationOptional<number>;
+    declare quiz_survey_id: ForeignKey<number>;
     declare question_no: number;
     declare question: string;
     declare option_a: string;
@@ -39,12 +39,12 @@ export class quiz_survey_question extends Model<InferAttributes<quiz_survey_ques
 
 quiz_survey_question.init(
     {
-        quiz_question_id: {
+        quiz_survey_question_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        quiz_id: {
+        quiz_survey_id: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
@@ -140,5 +140,5 @@ quiz_survey_question.init(
     }
 );
 
-quiz_survey_question.belongsTo(quiz_survey, { foreignKey: 'quiz_id' })
-quiz_survey.hasMany(quiz_survey_question, { foreignKey: 'quiz_id' })
+quiz_survey_question.belongsTo(quiz_survey, { foreignKey: 'quiz_survey_id' })
+quiz_survey.hasMany(quiz_survey_question, { foreignKey: 'quiz_survey_id' })

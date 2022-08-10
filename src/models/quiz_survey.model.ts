@@ -4,7 +4,7 @@ import quizAttribute from '../interfaces/quiz.model.interface';
 import db from '../utils/dbconnection.util';
 
 export class quiz_survey extends Model<InferAttributes<quiz_survey>,InferCreationAttributes<quiz_survey>> {
-    declare quiz_id: CreationOptional<number>;
+    declare quiz_survey_id: CreationOptional<number>;
     declare no_of_questions: number;
     declare role: string;
     declare name: string;
@@ -27,7 +27,7 @@ export class quiz_survey extends Model<InferAttributes<quiz_survey>,InferCreatio
 
 quiz_survey.init(
     {
-        quiz_id: {
+        quiz_survey_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true

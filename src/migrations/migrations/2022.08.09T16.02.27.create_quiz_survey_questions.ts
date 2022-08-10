@@ -8,12 +8,12 @@ export const up: Migration = async ({ context: sequelize }) => {
 	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
 	//or below implementation 
 	await sequelize.getQueryInterface().createTable(tableName, {
-		quiz_question_id: {
+		quiz_survey_question_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        quiz_id: {
+        quiz_survey_id: {
             type: DataTypes.INTEGER,
             allowNull: false
         },

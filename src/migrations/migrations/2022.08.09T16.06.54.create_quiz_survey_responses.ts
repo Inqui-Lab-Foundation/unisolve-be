@@ -17,7 +17,7 @@ export const up: Migration = async ({ context: sequelize }) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        quiz_id: {
+        quiz_survey_id: {
             type: DataTypes.INTEGER,
             allowNull: false
         },

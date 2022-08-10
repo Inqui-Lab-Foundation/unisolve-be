@@ -1,6 +1,6 @@
 
 
-import { badRequest, internal, unauthorized } from "boom";
+import { badRequest, internal, notFound, unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import { invalid } from "joi";
 import { Op } from "sequelize";
@@ -10,9 +10,11 @@ import validationMiddleware from "../middlewares/validation.middleware";
 import { course_topic } from "../models/course_topic.model";
 import { quiz_question } from "../models/quiz_question.model";
 import { quiz_response } from "../models/quiz_response.model";
+import { quiz_survey_question } from "../models/quiz_survey_question.model";
+import { quiz_survey_response } from "../models/quiz_survey_response.model";
 import { user_topic_progress } from "../models/user_topic_progress.model";
 import dispatcher from "../utils/dispatch.util";
-import { quizNextQuestionSchema, quizSchema, quizSubmitResponseSchema, quizUpdateSchema } from "../validations/quiz.validations";
+import {  quizSchema, quizSubmitResponseSchema, quizSubmitResponsesSchema, quizUpdateSchema } from "../validations/quiz_survey.validations";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
 
@@ -29,28 +31,109 @@ export default class QuizSurveyController extends BaseController {
     protected initializeRoutes(): void {
         //example route to add 
         this.router.get(this.path+"/:id/nextQuestion/",this.getNextQuestion.bind(this));
-        this.router.post(this.path+"/:id/response/",validationMiddleware(quizSubmitResponseSchema),this.submitResponse.bind(this));
+        this.router.post(this.path+"/:id/response/",validationMiddleware(quizSubmitResponseSchema),this.submitResponseSingle.bind(this));
+        this.router.post(this.path+"/:id/responses/",validationMiddleware(quizSubmitResponsesSchema),this.submitResponses.bind(this));
         super.initializeRoutes();
     }
+    protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            
+            let data: any;
+            const { model, id } = req.params;
+            const paramStatus: any = req.query.status;
+            if (model) {
+                this.model = model;
+            };
+            // pagination
+            const { page, size, title } = req.query;
+            let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+            const { limit, offset } = this.getPagination(page, size);
+            const modelClass = await this.loadModel(model).catch(error => {
+                next(error)
+            });
+            const where: any = {};
+            let whereClauseStatusPart: any = {};
+            if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
+                whereClauseStatusPart = { "status": paramStatus }
+            }
+            if (id) {
+                where[`${this.model}_id`] = req.params.id;
+                data = await this.crudService.findOne(modelClass, {
+                    where: {
+                        [Op.and]: [
+                            whereClauseStatusPart,
+                            where,
+                        ]
+                    },
+                    include:{
+                        required:false,
+                        model:quiz_survey_question,
+                    }                  
+                });
+            } else {
+                try {
+                    const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, {
+                        where: {
+                            [Op.and]: [
+                                whereClauseStatusPart,
+                                condition
+                            ]
+                        },
+                        include:{
+                            required:false,
+                            model:quiz_survey_question,
+                        },limit, offset
+                    })
+                    const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
+                    data = result;
+                } catch (error: any) {
+                    return res.status(500).send(dispatcher(data, 'error'))
+                }
+
+            }
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(data, 'error'));
+            // }
+            if (!data || data instanceof Error) {
+                if (data != null) {
+                    throw notFound(data.message)
+                } else {
+                    throw notFound()
+                }
+                res.status(200).send(dispatcher(null,"error",speeches.DATA_NOT_FOUND));
+                // if(data!=null){
+                //     throw 
+                (data.message)
+                // }else{
+                //     throw notFound()
+                // }
+            }
+
+            return res.status(200).send(dispatcher(data, 'success'));
+        } catch (error) {
+            next(error);
+        }
+    }
+
 
     protected async  getNextQuestion(req:Request,res:Response,next:NextFunction): Promise<Response | void> {
         
-        const  quiz_id  = req.params.id;
+        const  quiz_survey_id  = req.params.id;
         const  paramStatus :any = req.query.status;
         const user_id =  res.locals.user_id;
-        if(!quiz_id){
+        if(!quiz_survey_id){
             throw badRequest(speeches.QUIZ_ID_REQUIRED);
         }
         if(!user_id){
             throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
         }
-        //check if the given quiz is a valid topic
-        const curr_topic =  await this.crudService.findOne(course_topic,{where:{"topic_type_id":quiz_id,"topic_type":"QUIZ"}})
-        if(!curr_topic || curr_topic instanceof Error){
-            throw badRequest("INVALID TOPIC");
-        }
+        //do not check for course topic in this case .... //check if the given quiz is a valid topic
+        // const curr_topic =  await this.crudService.findOne(course_topic,{where:{"topic_type_id":quiz_id,"topic_type":"QUIZ"}})
+        // if(!curr_topic || curr_topic instanceof Error){
+        //     throw badRequest("INVALID TOPIC");
+        // }
 
-        const quizRes = await this.crudService.findOne(quiz_response,{where: {quiz_id:quiz_id,user_id:user_id}});
+        const quizRes = await this.crudService.findOne(quiz_survey_response,{where: {quiz_survey_id:quiz_survey_id,user_id:user_id}});
         if(quizRes instanceof Error){
             throw internal(quizRes.message)
         }
@@ -91,10 +174,10 @@ export default class QuizSurveyController extends BaseController {
             }
         }
         
-        const nextQuestionsToChooseFrom = await this.crudService.findOne(quiz_question,{where:{
+        const nextQuestionsToChooseFrom = await this.crudService.findOne(quiz_survey_question,{where:{
             [Op.and]:[
                 whereClauseStatusPart,
-                {quiz_id:quiz_id},
+                {quiz_survey_id:quiz_survey_id},
                 {level:level},
                 {question_no:question_no},
             ]
@@ -133,10 +216,10 @@ export default class QuizSurveyController extends BaseController {
             res.status(200).send(dispatcher(resultQuestion))
         }else{
             //update worksheet topic progress for this user to completed..!!
-            if(!boolStatusWhereClauseRequired || 
-                (boolStatusWhereClauseRequired && paramStatus == "ACTIVE")){
-                const updateProgress =  await this.crudService.create(user_topic_progress,{"user_id":user_id,"course_topic_id":curr_topic.course_topic_id,"status":"COMPLETED"})
-            }
+            // if(!boolStatusWhereClauseRequired || 
+            //     (boolStatusWhereClauseRequired && paramStatus == "ACTIVE")){
+            //     const updateProgress =  await this.crudService.create(user_topic_progress,{"user_id":user_id,"course_topic_id":curr_topic.course_topic_id,"status":"COMPLETED"})
+            // }
             
             //send response that quiz is completed..!!
             res.status(200).send(dispatcher("Quiz has been completed no more questions to display"))
@@ -144,43 +227,53 @@ export default class QuizSurveyController extends BaseController {
         
     }
 
-    protected async submitResponse(req:Request,res:Response,next:NextFunction) {
+    protected async submitResponseSingle(req:Request,res:Response,next:NextFunction) {
         try{
             
-            const  quiz_id  = req.params.id;
-            const {quiz_question_id,selected_option} = req.body;
+            const  quiz_survey_id  = req.params.id;
+            const {quiz_survey_question_id,selected_option} = req.body;
             const user_id =  res.locals.user_id;
-            if(!quiz_id){
+            if(!quiz_survey_id){
                 throw badRequest(speeches.QUIZ_ID_REQUIRED);
             }
-            if(!quiz_question_id){
+            if(!quiz_survey_question_id){
                 throw badRequest(speeches.QUIZ_QUESTION_ID_REQUIRED);
             }
-
+            
             if(!user_id){
                 throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
             }
 
-            const questionAnswered = await this.crudService.findOne(quiz_question,{where: {quiz_question_id:quiz_question_id}});
+            const result =  await this.insertSingleResponse(user_id,quiz_survey_id,quiz_survey_question_id,selected_option);
+            res.status(200).send(dispatcher(result))
+        }catch(err){
+            next(err)
+        }
+    }
+
+    protected async insertSingleResponse(user_id:any,quiz_survey_id:any,quiz_survey_question_id:any,selected_option:any){
+        try{
+            const questionAnswered = await this.crudService.findOne(quiz_survey_question,{where: {quiz_survey_question_id:quiz_survey_question_id}});
             if(questionAnswered instanceof Error){
                 throw internal(questionAnswered.message)
             }
             if(!questionAnswered){
                 throw invalid("Invalid Quiz question id")
             }
-
-
-            const quizRes = await this.crudService.findOne(quiz_response,{where: {quiz_id:quiz_id,user_id:user_id}});
+    
+    
+            const quizRes = await this.crudService.findOne(quiz_survey_response,{where: {quiz_survey_id:quiz_survey_id,user_id:user_id}});
             if(quizRes instanceof Error){
                 throw internal(quizRes.message)
             }          
             // console.log(quizRes);
             let dataToUpsert:any = {}
-            dataToUpsert = {quiz_id:quiz_id,user_id:user_id,updated_by:user_id}
-
+            dataToUpsert = {quiz_survey_id:quiz_survey_id,user_id:user_id,updated_by:user_id}
+    
             let responseObjToAdd:any = {}
             responseObjToAdd = {
-                ...req.body,
+                quiz_survey_id:quiz_survey_id,
+                selected_option:selected_option,
                 question:questionAnswered.dataValues.question,
                 correct_answer:questionAnswered.dataValues.correct_ans,
                 level:questionAnswered.dataValues.level,
@@ -196,7 +289,7 @@ export default class QuizSurveyController extends BaseController {
 
                 dataToUpsert["response"]=JSON.stringify(user_response);
                 
-                const resultModel =  await this.crudService.update(quizRes,dataToUpsert,{where:{quiz_id:quiz_id,user_id:user_id}})
+                const resultModel =  await this.crudService.update(quizRes,dataToUpsert,{where:{quiz_survey_id:quiz_survey_id,user_id:user_id}})
                 if(resultModel instanceof Error){
                     throw internal(resultModel.message)
                 }
@@ -209,7 +302,7 @@ export default class QuizSurveyController extends BaseController {
                     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
                 }
                 result["redirect_to"] = questionAnswered.dataValues.redirect_to;
-                res.status(200).send(dispatcher(result));
+                return result;
             }else{
                 
                 user_response[questionAnswered.dataValues.question_no]=responseObjToAdd;
@@ -217,7 +310,7 @@ export default class QuizSurveyController extends BaseController {
                 dataToUpsert["response"]=JSON.stringify(user_response);
                 dataToUpsert = {...dataToUpsert,created_by:user_id}
 
-                const resultModel =  await this.crudService.create(quiz_response,dataToUpsert)
+                const resultModel =  await this.crudService.create(quiz_survey_response,dataToUpsert)
                 if(resultModel instanceof Error){
                     throw internal(resultModel.message)
                 }
@@ -230,8 +323,47 @@ export default class QuizSurveyController extends BaseController {
                     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
                 }
                 result["redirect_to"] = questionAnswered.dataValues.redirect_to;
-                res.status(200).send(dispatcher(result));
+                return result;
             }
+
+        }catch(err){
+            return err;
+        }
+        
+    }
+
+    protected async submitResponses(req:Request,res:Response,next:NextFunction) {
+        try{
+            
+            const  quiz_survey_id  = req.params.id;
+            const {responses} = req.body;
+            const user_id =  res.locals.user_id;
+            if(!quiz_survey_id){
+                throw badRequest(speeches.QUIZ_ID_REQUIRED);
+            }
+            if(!responses){
+                throw badRequest(speeches.QUIZ_QUESTION_ID_REQUIRED);
+            }
+
+            if(!user_id){
+                throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
+            }
+            const results:any = []
+            let result:any={}
+            await Promise.all(
+                responses.map( async (element:any) => {
+                    // console.log(element)
+                    result =   await this.insertSingleResponse(user_id,quiz_survey_id,element.quiz_survey_question_id,element.selected_option)    
+                    if(!result|| result instanceof Error){
+                      throw badRequest();
+                    }else{
+                      results.push(result);
+                    }
+                  }
+                )
+            );
+            res.status(200).send(dispatcher(result))
+
         }catch(err){
             next(err)
         }

@@ -6,7 +6,7 @@ import { quiz } from './quiz.model';
 
 export class quiz_survey_response extends Model<InferAttributes<quiz_survey_response>, InferCreationAttributes<quiz_survey_response>> {
     declare quiz_response_id: CreationOptional<number>;
-    declare quiz_id: ForeignKey<number>;
+    declare quiz_survey_id: ForeignKey<number>;
     declare user_id: ForeignKey<number>;
     declare response: string;
     declare status: Enumerator;
@@ -36,7 +36,7 @@ quiz_survey_response.init(
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        quiz_id: {
+        quiz_survey_id: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
