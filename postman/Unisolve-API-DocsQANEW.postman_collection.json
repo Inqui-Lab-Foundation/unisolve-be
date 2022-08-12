@@ -574,6 +574,22 @@
 										],
 										"type": "text/javascript"
 									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 406\", function () {\r",
+											"    pm.response.to.have.status(406);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Not Acceptable\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
 								}
 							],
 							"request": {
@@ -651,12 +667,26 @@
 						},
 						{
 							"name": "ChangePasswordOldPwdNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"password not match\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Password is required, it should not be empty.\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "PUT",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"12345678910\",\r\n    \"new_password\": \"1234567891011\"\r\n}",
+									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"\",\r\n    \"new_password\": \"1234567891011\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -679,12 +709,26 @@
 						},
 						{
 							"name": "ChangePasswordNewPwdNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"New password null\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Password is required, it should not be empty.\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "PUT",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"12345678910\",\r\n    \"new_password\": \"1234567891011\"\r\n}",
+									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"12345678910\",\r\n    \"new_password\": \"\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1010,6 +1054,20 @@
 						},
 						{
 							"name": "Logout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"Logout from App\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.data).to.eql(\"Logout Successful\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [],
@@ -1034,7 +1092,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"12345678910\",\r\n    \"new_password\": \"1234567891011\"\r\n}",
+									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"wHm6eGCL7uFOArs=\",\r\n    \"new_password\": \"wHm6eGCL7uFOArs=\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1057,6 +1115,20 @@
 						},
 						{
 							"name": "ChangePasswordOldPwdNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"password not match\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Password is required, it should not be empty.\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "PUT",
 								"header": [],
@@ -1085,6 +1157,20 @@
 						},
 						{
 							"name": "ChangePasswordNewPwdNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"New password null\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Password is required, it should not be empty.\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "PUT",
 								"header": [],
@@ -1255,7 +1341,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"username\": \"{{mentor}}{{randomMentorName}}{{postFixUrl}}\",\r\n    \"full_name\": \"mentor user\",\r\n    \"password\": \"wHm6eGCL7uFOArs=\",\r\n    \"mobile\": \"7989892334\",\r\n    \"role\": \"MENTOR\",\r\n    \"team_id\": \"12433\",\r\n    \"date_of_birth\": \"1989-06-20\",\r\n    \"organization_code\" : \"CHIREC1\",\r\n    \"qualification\": \"bs.c\",\r\n    \"city\": \"hyderabad\",\r\n    \"district\": \"somehthing\",\r\n    \"state\": \"tg\",\r\n    \"country\": \"bs.c\",\r\n    \"created_by\": 1236547899\r\n}",
+									"raw": "{\r\n    \"username\": \"{{mentor}}{{randomMentorName}}{{postFixUrl}}\",\r\n    \"full_name\": \"mentor user\",\r\n    \"password\": \"wHm6eGCL7uFOArs=\",\r\n    \"mobile\": \"7989892334\",\r\n    \"role\": \"MENTOR\",\r\n    \"team_id\": \"12433\",\r\n    \"date_of_birth\": \"1989-06-20\",\r\n    \"organization_code\" : \"rk223\",\r\n    \"qualification\": \"bs.c\",\r\n    \"city\": \"hyderabad\",\r\n    \"district\": \"somehthing\",\r\n    \"state\": \"tg\",\r\n    \"country\": \"bs.c\",\r\n    \"created_by\": 1236547899\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1401,6 +1487,20 @@
 						},
 						{
 							"name": "ChangePasswordOldPwdNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"password not match\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Password is required, it should not be empty.\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "PUT",
 								"header": [],
@@ -1429,6 +1529,20 @@
 						},
 						{
 							"name": "ChangePasswordNewPwdNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"New password null\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Password is required, it should not be empty.\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "PUT",
 								"header": [],
@@ -1670,7 +1784,10 @@
 											"    }\r",
 											"});\r",
 											"\r",
-											""
+											"pm.test(\"Login Successful\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Login Successful\");\r",
+											"});"
 										],
 										"type": "text/javascript"
 									}
@@ -1704,6 +1821,20 @@
 						},
 						{
 							"name": "Logout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"Logout from App\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Logout Successful\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [],
@@ -2151,7 +2282,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"course_id\": \"12\",\r\n    \"title\":\"INSPIRATION\",\r\n    \"description\": \"a state of complete physical, mental and social well-being and not merely the absence of disease and infirmity\"\r\n}",
+									"raw": "{\r\n    \"course_id\": \"13\",\r\n    \"title\":\"INSPIRATION\",\r\n    \"description\": \"a state of complete physical, mental and social well-being and not merely the absence of disease and infirmity\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3076,6 +3207,24 @@
 					"item": [
 						{
 							"name": "Organizations",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -3103,6 +3252,24 @@
 						},
 						{
 							"name": "Organization check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"file found\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -3116,12 +3283,59 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseurl}}/organizations",
+									"raw": "{{baseurl}}/organizations/checkOrg",
 									"host": [
 										"{{baseurl}}"
 									],
 									"path": [
-										"organizations"
+										"organizations",
+										"checkOrg"
+									]
+								},
+								"description": "### Endpoint for check organization is existed.\n\n**Request payload must contain the following fields:**\n\n*   organiazation_code: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "OrganizationInvalidCheck",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Bad Request\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"organization_code\": \"rk223_12312332\",\r\n        \"organization_name\": \"rk college\"\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/organizations/checkOrg",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"organizations",
+										"checkOrg"
 									]
 								},
 								"description": "### Endpoint for check organization is existed.\n\n**Request payload must contain the following fields:**\n\n*   organiazation_code: STRING"
@@ -3199,7 +3413,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"status\": \"INACTIVE\"\r\n}",
+									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3207,13 +3421,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseurl}}/organizations/113",
+									"raw": "{{baseurl}}/organizations/2",
 									"host": [
 										"{{baseurl}}"
 									],
 									"path": [
 										"organizations",
-										"113"
+										"2"
 									]
 								},
 								"description": "### Endpoint for updating the specific organization\n\n**Request payload must contain the following fields:**\n\n*   Status: STRING"
@@ -3273,7 +3487,88 @@
 							"response": []
 						},
 						{
+							"name": "FaqsCrud",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Create FAQ\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											" saveData=JSON.parse(responseBody)\r",
+											" \r",
+											"pm.environment.set(\"faq_id\", saveData.data[0].faq_id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"question\": \"Health\",\r\n    \"answer\": \"BWUi6BS9T5Y\",\r\n    \"faq_category_id\":\"1\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/crud/faq",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"faq"
+									]
+								},
+								"description": "### Endpoint for creating new video record\n\n**Request payload must contain the following fields:**\n\n*   module: STRING,\n*   video_steam_id: STRING"
+							},
+							"response": []
+						},
+						{
 							"name": "Faqs",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"List all FAQ's\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"let a = pm.response.json();\r",
+											"saveData=JSON.stringify(a)\r",
+											"\r",
+											"pm.environment.set(\"faq_id\", saveData.data[0].dataValues[0].faq_id);\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [],
@@ -3292,6 +3587,82 @@
 						},
 						{
 							"name": "Faqs/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Verify Data\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"\r",
+											"    var a =\r",
+											"        pm.environment.get(\"faq_id\");\r",
+											"    pm.expect(jsonData.data[0].faq_id).to.eql(a);\r",
+											"});\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqs/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs",
+										"{{faq_id}}"
+									]
+								},
+								"description": "### Endpoint for getting single video"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/{id} Crud",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Verify Data\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.data[0].faq_id).to.eql(5);\r",
+											"});\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/crud/faq/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"faq",
+										"{{faq_id}}"
+									]
+								},
+								"description": "### Endpoint for getting single video"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/crudParamData",
 							"request": {
 								"method": "GET",
 								"header": [],
@@ -3324,13 +3695,41 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseurl}}/faqs/1",
+									"raw": "{{baseurl}}/faqs/5",
 									"host": [
 										"{{baseurl}}"
 									],
 									"path": [
 										"faqs",
-										"1"
+										"5"
+									]
+								},
+								"description": "### Endpoint for updating the specific video\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/CRUD{id}",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/faqs/5",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs",
+										"5"
 									]
 								},
 								"description": "### Endpoint for updating the specific video\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
@@ -3339,17 +3738,76 @@
 						},
 						{
 							"name": "Faqs/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"postman.setNextRequest(\"FaqsCrud\")\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{baseurl}}/faqs/27",
+									"raw": "{{baseurl}}/faqs/{{faq_id}}",
 									"host": [
 										"{{baseurl}}"
 									],
 									"path": [
 										"faqs",
-										"27"
+										"{{faq_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single vide record"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/crud/delete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"postman.setNextRequest(\"FaqsCrud\")\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/crud/faq/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"faq",
+										"{{faq_id}}"
 									]
 								},
 								"description": "### Endpoint for removing a single vide record"
@@ -3363,12 +3821,81 @@
 					"item": [
 						{
 							"name": "FaqCategories",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Faqs\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											" saveData=JSON.parse(responseBody)\r",
+											" \r",
+											"pm.environment.set(\"faq_category_id\", saveData.data[0].faq_category_id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"category_name\": \"Health\"\r\n}",
+									"raw": "{\r\n    \"category_name\": \"Wealth\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/faqCategories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategories"
+									]
+								},
+								"description": "### Endpoint for creating new video record\n\n**Request payload must contain the following fields:**\n\n*   module: STRING,\n*   video_steam_id: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqCategoriesCrud",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Faqs\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											" saveData=JSON.parse(responseBody)\r",
+											" \r",
+											"pm.environment.set(\"faq_category_id\", saveData.data[0].faq_category_id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"category_name\": \"Wealth\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3407,18 +3934,75 @@
 							"response": []
 						},
 						{
-							"name": "FaqCategories/{id}",
+							"name": "FaqCategoriesCRUD",
 							"request": {
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseurl}}/faqCategories/1",
+									"raw": "{{baseurl}}/faqCategories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategories"
+									]
+								},
+								"description": "### Endpoint for getting list of videos created"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqCategoriesCRUDId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqCategorie/{{faq_category_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategorie",
+										"{{faq_category_id}}"
+									]
+								},
+								"description": "### Endpoint for getting list of videos created"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqCategories/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Verify Data\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"\r",
+											"    var a =\r",
+											"        pm.environment.get(\"faq_category_id\");\r",
+											"    pm.expect(jsonData.data[0].faq_category_id).to.eql(a);\r",
+											"});\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqCategories/{{faq_category_id}}",
 									"host": [
 										"{{baseurl}}"
 									],
 									"path": [
 										"faqCategories",
-										"1"
+										"{{faq_category_id}}"
 									]
 								},
 								"description": "### Endpoint for getting single video"
@@ -3432,7 +4016,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
+									"raw": "{\r\n    \"Status\": \"DRAFT\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3440,13 +4024,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseurl}}/faqCategories/1",
+									"raw": "{{baseurl}}/faqCategories/{{faq_category_id}}",
 									"host": [
 										"{{baseurl}}"
 									],
 									"path": [
 										"faqCategories",
-										"1"
+										"{{faq_category_id}}"
 									]
 								},
 								"description": "### Endpoint for updating the specific video\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
@@ -3455,17 +4039,67 @@
 						},
 						{
 							"name": "FaqCategories/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"postman.setNextRequest(\"FaqCategories\")\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{baseurl}}/faqCategories/27",
+									"raw": "{{baseurl}}/faqCategories/{{faq_category_id}}",
 									"host": [
 										"{{baseurl}}"
 									],
 									"path": [
 										"faqCategories",
-										"27"
+										"{{faq_category_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single vide record"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqCategoriesCrud",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqCategorie/{{faq_category_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategorie",
+										"{{faq_category_id}}"
 									]
 								},
 								"description": "### Endpoint for removing a single vide record"

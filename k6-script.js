@@ -18,7 +18,7 @@ postman[Symbol.for("initial")]({
     URL: "http://15.207.254.154:3002s"
   },
   environment: {
-    baseurl: "http://13.233.168.25:3002/api/v1",
+    baseurl: "http://qa.inquitech.in:3002/api/v1",
     token: "",
     randomUserName: "",
     postFixUrl: "@unisolve.org",
@@ -28,7 +28,9 @@ postman[Symbol.for("initial")]({
     mentor: "mentor",
     randomMentorName: "",
     evaluator: "evaluator",
-    randomEvaluatorName: ""
+    randomEvaluatorName: "",
+    faq_id: "",
+    faq_category_id: ""
   }
 });
 
@@ -37,10 +39,10 @@ files["C:/Users/gururaj/Downloads/mentor_data.csv"] = http.file(
   open("C:/Users/gururaj/Downloads/mentor_data.csv", "b"),
   "mentor_data.csv"
 );
-files["C:/Users/gururaj/Downloads/evaluater_data.csv"] = http.file(
-  open("C:/Users/gururaj/Downloads/evaluater_data.csv", "b"),
-  "evaluater_data.csv"
-);
+// files["C:/Users/gururaj/Downloads/evaluater_data.csv"] = http.file(
+//   open("C:/Users/gururaj/Downloads/evaluater_data.csv", "b"),
+//   "evaluater_data.csv"
+// );
 // files[
 //   "C:/Users/haris/OneDrive/Pictures/Screenshot 2022-05-31 085332.png"
 // ] = http.file(
@@ -50,10 +52,10 @@ files["C:/Users/gururaj/Downloads/evaluater_data.csv"] = http.file(
 //   ),
 //   "Screenshot 2022-05-31 085332.png"
 // );
-files["C:/Users/gururaj/Downloads/organizations_data.csv"] = http.file(
-  open("C:/Users/gururaj/Downloads/organizations_data.csv", "b"),
-  "organizations_data.csv"
-);
+// files["C:/Users/gururaj/Downloads/organizations_data.csv"] = http.file(
+//   open("C:/Users/gururaj/Downloads/organizations_data.csv", "b"),
+//   "organizations_data.csv"
+// );
 // files[
 //   "/home/aman/Pictures/Screenshot from 2021-06-05 14-51-49.png"
 // ] = http.file(
@@ -81,7 +83,7 @@ export default function() {
     group("Admins", function() {
       postman[Request]({
         name: "Login",
-        id: "bfe1f65b-e9c2-4724-9cae-23966da11949",
+        id: "a8160ff0-1f28-4185-90ea-b8f757eb9547",
         method: "POST",
         address: "{{baseurl}}/auth/login",
         data:
@@ -202,7 +204,7 @@ export default function() {
 
       postman[Request]({
         name: "LoginWithInvalidUser",
-        id: "d4fd403c-1748-440c-8855-65ad33c76991",
+        id: "3400796c-7e72-434c-9d93-b431f8fecac1",
         method: "POST",
         address: "{{baseurl}}/auth/login",
         data:
@@ -323,7 +325,7 @@ export default function() {
 
       postman[Request]({
         name: "Register",
-        id: "4b991060-f44c-4f18-b9d0-95e1901b11ae",
+        id: "bbab812f-c80b-4f05-9f26-46581349e7c0",
         method: "POST",
         address: "{{baseurl}}/auth/register",
         data:
@@ -368,7 +370,7 @@ export default function() {
 
       postman[Request]({
         name: "LoginAfterRegister",
-        id: "a83b7e25-1e2c-43e9-bd2e-f3e3fee4d9d1",
+        id: "7a20a80f-1db0-4e90-a86d-74b002919bf0",
         method: "POST",
         address: "{{baseurl}}/auth/login",
         data:
@@ -489,7 +491,7 @@ export default function() {
 
       postman[Request]({
         name: "RegisterWithInvalidData",
-        id: "71e05c5a-40b8-4111-b61d-6c5e3b112f67",
+        id: "015ee33b-ba42-4eb1-95a9-518c7056262f",
         method: "POST",
         address: "{{baseurl}}/auth/register",
         data:
@@ -520,6 +522,16 @@ export default function() {
           }
           pm.environment.set("randomUserName", randomString());
         },
+        post(response) {
+          pm.test("Status code is 406", function() {
+            pm.response.to.have.status(406);
+          });
+
+          pm.test("Your test name", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.message).to.eql("Not Acceptable");
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -527,7 +539,7 @@ export default function() {
 
       postman[Request]({
         name: "Logout",
-        id: "f1d9394a-dea6-471b-b3df-89eab20a1b7d",
+        id: "a9f06f72-4d63-4d47-a5a6-4daacfe9711b",
         method: "GET",
         address: "{{baseurl}}/auth/logout",
         auth(config, Var) {
@@ -537,7 +549,7 @@ export default function() {
 
       postman[Request]({
         name: "ChangePassword",
-        id: "a158f87f-db78-4627-aa76-f2e06f96ce77",
+        id: "88252846-82f3-4154-ad8d-75f17b51146d",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
@@ -549,11 +561,19 @@ export default function() {
 
       postman[Request]({
         name: "ChangePasswordOldPwdNull",
-        id: "f6358749-adbf-490e-8813-b072e80cec9d",
+        id: "3ca8d12f-6009-4606-9a60-8c32c598d643",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
-          '{\r\n    "user_id": "4",\r\n    "old_password": "12345678910",\r\n    "new_password": "1234567891011"\r\n}',
+          '{\r\n    "user_id": "4",\r\n    "old_password": "",\r\n    "new_password": "1234567891011"\r\n}',
+        post(response) {
+          pm.test("password not match", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.errors[0]).to.eql(
+              "Password is required, it should not be empty."
+            );
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -561,11 +581,19 @@ export default function() {
 
       postman[Request]({
         name: "ChangePasswordNewPwdNull",
-        id: "120a6dc1-bdd0-40d3-8373-7daa4fc7778c",
+        id: "0c73f275-4752-4cb4-b023-30057856aece",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
-          '{\r\n    "user_id": "4",\r\n    "old_password": "12345678910",\r\n    "new_password": "1234567891011"\r\n}',
+          '{\r\n    "user_id": "4",\r\n    "old_password": "12345678910",\r\n    "new_password": ""\r\n}',
+        post(response) {
+          pm.test("New password null", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.errors[0]).to.eql(
+              "Password is required, it should not be empty."
+            );
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -573,7 +601,7 @@ export default function() {
 
       postman[Request]({
         name: "ChangePasswordIDNull",
-        id: "dda5dba2-ddd0-4d69-9a23-18182f60a033",
+        id: "eaf19f44-972f-4a48-809e-39308cd87268",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
@@ -593,7 +621,7 @@ export default function() {
 
       postman[Request]({
         name: "DynamicSignupForm",
-        id: "67c2e09b-c3d1-4226-baa1-d4bf1ea70ed9",
+        id: "bb9111d4-2f90-473e-9a47-6fe56db1cecb",
         method: "POST",
         address: "{{baseurl}}/auth/dynamicSignupForm",
         data: '{\r\n    "studentName": true,\r\n    "phNumber": false\r\n}',
@@ -604,7 +632,7 @@ export default function() {
 
       postman[Request]({
         name: "DynamicSignupForm",
-        id: "c5c2ce65-3df6-4d10-83a7-572ac3078538",
+        id: "6a3a2387-5c42-46d2-a66f-acf7f4f3c533",
         method: "GET",
         address: "{{baseurl}}/auth/dynamicSignupForm",
         auth(config, Var) {
@@ -616,7 +644,7 @@ export default function() {
     group("Students", function() {
       postman[Request]({
         name: "Login",
-        id: "45ad7ff4-edc2-4b5d-9b95-5b5a90f4984a",
+        id: "01c22fbc-3897-419e-8f95-76493d9a114d",
         method: "POST",
         address: "{{baseurl}}/auth/login",
         data:
@@ -638,7 +666,7 @@ export default function() {
 
       postman[Request]({
         name: "LoginInvalidData",
-        id: "55965ff2-babf-4242-a51b-a25e0ee9a23d",
+        id: "d081257a-b284-4fab-91ee-7a045889698f",
         method: "POST",
         address: "{{baseurl}}/auth/login",
         data:
@@ -656,7 +684,7 @@ export default function() {
 
       postman[Request]({
         name: "Register",
-        id: "2abcb8f8-29ba-4249-a097-92313bb0ff1a",
+        id: "83c1f40b-9381-47b2-ad6a-e6f8ff6cc619",
         method: "POST",
         address: "{{baseurl}}/auth/register",
         data:
@@ -700,7 +728,7 @@ export default function() {
 
       postman[Request]({
         name: "LoginAfterRegister",
-        id: "9d55b04f-22a6-4044-a829-07cca0cec149",
+        id: "37c187e2-941b-44c9-af40-1c199446837a",
         method: "POST",
         address: "{{baseurl}}/auth/login",
         data:
@@ -722,9 +750,15 @@ export default function() {
 
       postman[Request]({
         name: "Logout",
-        id: "4c70be7b-ef34-4cf0-8a38-575ae71af387",
+        id: "ce6fb502-fce4-4c87-be01-609942540a45",
         method: "GET",
         address: "{{baseurl}}/auth/logout",
+        post(response) {
+          pm.test("Logout from App", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.data).to.eql("Logout Successful");
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -732,11 +766,11 @@ export default function() {
 
       postman[Request]({
         name: "ChangePassword",
-        id: "97a45ae4-4c90-4873-a5d9-61a64d0ab11d",
+        id: "0299a7e1-c655-4b52-ad2f-ab8140dcdf8b",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
-          '{\r\n    "user_id": "4",\r\n    "old_password": "12345678910",\r\n    "new_password": "1234567891011"\r\n}',
+          '{\r\n    "user_id": "4",\r\n    "old_password": "wHm6eGCL7uFOArs=",\r\n    "new_password": "wHm6eGCL7uFOArs="\r\n}',
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -744,11 +778,19 @@ export default function() {
 
       postman[Request]({
         name: "ChangePasswordOldPwdNull",
-        id: "3bb7b3b2-45a5-4bbd-9d74-afe4f2806ce9",
+        id: "a154b730-6d0c-4282-b801-3a71184fc6a9",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
           '{\r\n    "user_id": "4",\r\n    "old_password": "",\r\n    "new_password": "1234567891011"\r\n}',
+        post(response) {
+          pm.test("password not match", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.errors[0]).to.eql(
+              "Password is required, it should not be empty."
+            );
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -756,11 +798,19 @@ export default function() {
 
       postman[Request]({
         name: "ChangePasswordNewPwdNull",
-        id: "3eb4d0a8-83cf-4af6-a751-73963e6cf1b9",
+        id: "9a414cb2-87ce-413a-b359-c06184090de3",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
           '{\r\n    "user_id": "4",\r\n    "old_password": "12345678910",\r\n    "new_password": ""\r\n}',
+        post(response) {
+          pm.test("New password null", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.errors[0]).to.eql(
+              "Password is required, it should not be empty."
+            );
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -768,7 +818,7 @@ export default function() {
 
       postman[Request]({
         name: "ChangePasswordIDNull",
-        id: "0501b729-4485-4a15-aa15-91035c0eca2f",
+        id: "8ba96b86-c6c1-4987-b45a-84e8cb39820c",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
@@ -790,7 +840,7 @@ export default function() {
     group("Mentors", function() {
       postman[Request]({
         name: "Login",
-        id: "dbe5b15c-538c-42a9-8342-c14e2d5c3330",
+        id: "4d53879d-3036-4ae2-9119-06c3a92b9c65",
         method: "POST",
         address: "{{baseurl}}/mentors/login",
         data:
@@ -812,11 +862,11 @@ export default function() {
 
       postman[Request]({
         name: "Register",
-        id: "f8f2308f-d954-4d21-a2a8-bfcd2cb91dda",
+        id: "7be45b2a-f67f-4bf1-9cd6-7fd8667c32ad",
         method: "POST",
         address: "{{baseurl}}/mentors/register",
         data:
-          '{\r\n    "username": "{{mentor}}{{randomMentorName}}{{postFixUrl}}",\r\n    "full_name": "mentor user",\r\n    "password": "wHm6eGCL7uFOArs=",\r\n    "mobile": "7989892334",\r\n    "role": "MENTOR",\r\n    "team_id": "12433",\r\n    "date_of_birth": "1989-06-20",\r\n    "organization_code" : "CHIREC1",\r\n    "qualification": "bs.c",\r\n    "city": "hyderabad",\r\n    "district": "somehthing",\r\n    "state": "tg",\r\n    "country": "bs.c",\r\n    "created_by": 1236547899\r\n}',
+          '{\r\n    "username": "{{mentor}}{{randomMentorName}}{{postFixUrl}}",\r\n    "full_name": "mentor user",\r\n    "password": "wHm6eGCL7uFOArs=",\r\n    "mobile": "7989892334",\r\n    "role": "MENTOR",\r\n    "team_id": "12433",\r\n    "date_of_birth": "1989-06-20",\r\n    "organization_code" : "rk223",\r\n    "qualification": "bs.c",\r\n    "city": "hyderabad",\r\n    "district": "somehthing",\r\n    "state": "tg",\r\n    "country": "bs.c",\r\n    "created_by": 1236547899\r\n}',
         pre() {
           function randomString(
             minValue,
@@ -856,7 +906,7 @@ export default function() {
 
       postman[Request]({
         name: "LoginAfterRegister",
-        id: "39cd8862-1322-4668-9419-65bf10a5e17b",
+        id: "46fe25dd-977d-4a1a-9b42-fa83f4e2f857",
         method: "POST",
         address: "{{baseurl}}/mentors/login",
         data:
@@ -878,7 +928,7 @@ export default function() {
 
       postman[Request]({
         name: "ValidateOTP",
-        id: "f101dbe3-32b2-43c5-9cc7-63b6ddcaf630",
+        id: "308e72e4-14ab-4718-880c-206bcab36996",
         method: "POST",
         address: "{{baseurl}}/mentors/validateOtp",
         data: '{\r\n    "user_id": "30",\r\n    "otp": "493547"\r\n}',
@@ -889,7 +939,7 @@ export default function() {
 
       postman[Request]({
         name: "Logout",
-        id: "0d9503b3-1280-4668-b316-d11e4f11b606",
+        id: "062e480f-c144-4bf5-9244-bed90c898afd",
         method: "GET",
         address: "{{baseurl}}/mentors/logout",
         auth(config, Var) {
@@ -899,7 +949,7 @@ export default function() {
 
       postman[Request]({
         name: "ChangePassword",
-        id: "1ccc62eb-1201-4f01-b0a9-db31f4a62cb0",
+        id: "d62bd2f4-9d1c-47bc-bdfa-66947d62d093",
         method: "PUT",
         address: "{{baseurl}}/mentors/changePassword",
         data:
@@ -911,11 +961,19 @@ export default function() {
 
       postman[Request]({
         name: "ChangePasswordOldPwdNull",
-        id: "98748d74-233e-4b40-897f-6c6dcfdf276c",
+        id: "bf053b30-9fa2-4797-9e3a-1f99977ea5c2",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
           '{\r\n    "user_id": "4",\r\n    "old_password": "",\r\n    "new_password": "1234567891011"\r\n}',
+        post(response) {
+          pm.test("password not match", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.errors[0]).to.eql(
+              "Password is required, it should not be empty."
+            );
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -923,11 +981,19 @@ export default function() {
 
       postman[Request]({
         name: "ChangePasswordNewPwdNull",
-        id: "7b9e15b2-a735-4687-bbbb-3ccd578d4018",
+        id: "c2fe2631-af6d-4675-97a5-91f20d1e7e45",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
           '{\r\n    "user_id": "4",\r\n    "old_password": "12345678910",\r\n    "new_password": ""\r\n}',
+        post(response) {
+          pm.test("New password null", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.errors[0]).to.eql(
+              "Password is required, it should not be empty."
+            );
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -935,7 +1001,7 @@ export default function() {
 
       postman[Request]({
         name: "ChangePasswordIDNull",
-        id: "825c0b57-8fdb-46a2-98b0-0ebcfcdf1f4f",
+        id: "f01fd154-6048-4820-8d1f-085281600d8c",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
@@ -955,7 +1021,7 @@ export default function() {
 
       postman[Request]({
         name: "Bulkupload",
-        id: "37832dfb-8717-4a33-895c-622ab635ab0b",
+        id: "13763262-2e81-4223-b4dd-9f2f9d261a2e",
         method: "POST",
         address: "{{baseurl}}/auth/mentor/bulkupload",
         data: {
@@ -975,7 +1041,7 @@ export default function() {
     group("Evaluater", function() {
       postman[Request]({
         name: "Login",
-        id: "090c6ddc-53ec-4cfd-8c9b-30cbc380170c",
+        id: "40d0fb9a-2d1b-4c7a-8822-4bfe6aeb8847",
         method: "POST",
         address: "{{baseurl}}/auth/login",
         data:
@@ -997,7 +1063,7 @@ export default function() {
 
       postman[Request]({
         name: "Register",
-        id: "20277b7d-5acd-48e1-8431-9ae01447ee86",
+        id: "5a88e39d-4013-425d-b15d-b50904d65a20",
         method: "POST",
         address: "{{baseurl}}/auth/register",
         data:
@@ -1035,7 +1101,7 @@ export default function() {
 
       postman[Request]({
         name: "LoginAfterRegister",
-        id: "e658ec80-4a3f-4d01-94b7-91e2613d4558",
+        id: "9331dccb-14a5-4414-99f4-ec1f2a8c2003",
         method: "POST",
         address: "{{baseurl}}/auth/login",
         data:
@@ -1049,6 +1115,11 @@ export default function() {
               pm.collectionVariables.set("token", response.data[0].token);
             }
           });
+
+          pm.test("Login Successful", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.message).to.eql("Login Successful");
+          });
         },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
@@ -1057,9 +1128,15 @@ export default function() {
 
       postman[Request]({
         name: "Logout",
-        id: "f6d178f4-7ef0-4044-8e7d-6f4cdef5f3f3",
+        id: "99c207d4-d82b-49b9-bb39-cf1e96113180",
         method: "GET",
         address: "{{baseurl}}/auth/logout",
+        post(response) {
+          pm.test("Logout from App", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.message).to.eql("Logout Successful");
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -1067,7 +1144,7 @@ export default function() {
 
       postman[Request]({
         name: "ChangePassword",
-        id: "c31134cf-de59-4db5-8fcb-b6ea646b5235",
+        id: "0a680b1b-872d-4440-97d6-9823d54b08a8",
         method: "PUT",
         address: "{{baseurl}}/auth/changePassword",
         data:
@@ -1079,7 +1156,7 @@ export default function() {
 
       postman[Request]({
         name: "Bulkupload",
-        id: "6336c5f6-e89e-4c3b-916c-d923b3471d49",
+        id: "d7a583ae-f702-46ee-8640-e4f31337190c",
         method: "POST",
         address: "{{baseurl}}/auth/evaluater/bulkupload",
         data: {
@@ -1094,7 +1171,7 @@ export default function() {
     group("Crud", function() {
       postman[Request]({
         name: "Crud",
-        id: "f217a7e9-09d4-47cb-9092-e098c4d30dc9",
+        id: "a270e163-9387-4284-9c61-30fff957805a",
         method: "POST",
         address: "{{baseurl}}/crud/faqs",
         data:
@@ -1111,7 +1188,7 @@ export default function() {
 
       postman[Request]({
         name: "CrudWithFile",
-        id: "612751ed-6dc1-4fd1-8e49-f5f245a836da",
+        id: "c13ffc95-e85c-43a1-829a-265958e4b67a",
         method: "POST",
         address: "{{baseurl}}/crud/user/withfile",
         data: {
@@ -1147,7 +1224,7 @@ export default function() {
 
       postman[Request]({
         name: "CrudWithBulkupload",
-        id: "71fa8c49-480a-4422-ad96-116744d3c676",
+        id: "dfda201e-bdba-4ba7-a3bf-da3f2dc930d2",
         method: "POST",
         address: "{{baseurl}}/crud/organization/bulkupload",
         data: {
@@ -1165,7 +1242,7 @@ export default function() {
 
       postman[Request]({
         name: "Crud",
-        id: "b9fdc8de-dbbf-4d02-9a4c-2ecdf845deaa",
+        id: "3a33653f-6845-4640-bc8b-4fe620401cd4",
         method: "GET",
         address: "{{baseurl}}/crud/course",
         auth(config, Var) {
@@ -1175,7 +1252,7 @@ export default function() {
 
       postman[Request]({
         name: "Crud/{id}",
-        id: "a73242cd-745e-4e3e-9422-645eb91b00ee",
+        id: "b9bab300-e4f5-4a6c-b573-1d8c3153ce99",
         method: "GET",
         address: "{{baseurl}}/crud/user/1",
         auth(config, Var) {
@@ -1185,7 +1262,7 @@ export default function() {
 
       postman[Request]({
         name: "Crud/?param={data}",
-        id: "11adf34d-5a80-4d72-a57f-114d0c8694db",
+        id: "a8c4589d-3cc2-45ea-9f21-ac7d5b1fffb0",
         method: "GET",
         address: "{{baseurl}}/crud/user?page=1&size=3",
         auth(config, Var) {
@@ -1195,7 +1272,7 @@ export default function() {
 
       postman[Request]({
         name: "Crud/{id}",
-        id: "1c14c237-c2d7-4b02-9c52-5fa675fc5346",
+        id: "1ac3804c-f158-49c4-a353-9b21205793e1",
         method: "PUT",
         address: "{{baseurl}}/crud/user/1",
         data: '{\r\n    "mobile": "1234967890"\r\n}',
@@ -1206,7 +1283,7 @@ export default function() {
 
       postman[Request]({
         name: "CrudWithFile/{id}",
-        id: "445641ac-4cd9-45f5-a2f2-764b6f71adee",
+        id: "8eabde50-f316-43c8-8382-a63bce9f3060",
         method: "PUT",
         address: "{{baseurl}}/crud/user/1",
         auth(config, Var) {
@@ -1216,7 +1293,7 @@ export default function() {
 
       postman[Request]({
         name: "Delete crud",
-        id: "735a4e68-b21d-4c4f-b2b5-af2fc9fa5b5e",
+        id: "11c43e89-fc0a-4033-ac72-33d0b1fd545c",
         method: "DELETE",
         address: "{{baseurl}}/crud/user/1",
         auth(config, Var) {
@@ -1228,11 +1305,11 @@ export default function() {
     group("Course Modules", function() {
       postman[Request]({
         name: "CourseModules",
-        id: "ddc0129d-f257-4eff-974d-0e4ec8a9494e",
+        id: "812da515-8d0f-49ec-8bb0-bf02ff02ad7f",
         method: "POST",
         address: "{{baseurl}}/courseModules",
         data:
-          '{\r\n    "course_id": "12",\r\n    "title":"INSPIRATION",\r\n    "description": "a state of complete physical, mental and social well-being and not merely the absence of disease and infirmity"\r\n}',
+          '{\r\n    "course_id": "13",\r\n    "title":"INSPIRATION",\r\n    "description": "a state of complete physical, mental and social well-being and not merely the absence of disease and infirmity"\r\n}',
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -1240,7 +1317,7 @@ export default function() {
 
       postman[Request]({
         name: "CourseModules",
-        id: "4f0362fa-63a7-4b99-bfb6-4df69c990ad5",
+        id: "4646ef13-64f1-4440-9489-26709a65e256",
         method: "GET",
         address: "{{baseurl}}/courseModules",
         auth(config, Var) {
@@ -1250,7 +1327,7 @@ export default function() {
 
       postman[Request]({
         name: "CourseModules/{id}",
-        id: "439a7975-c251-4c67-8a50-3f2ee1b46e74",
+        id: "004014a7-0d46-4270-b6a7-28b05196b5c6",
         method: "GET",
         address: "{{baseurl}}/courseModules/1",
         auth(config, Var) {
@@ -1260,7 +1337,7 @@ export default function() {
 
       postman[Request]({
         name: "CourseModules/{id}",
-        id: "b8da2f60-d56c-4e63-bb8c-9f1f3d1761b7",
+        id: "045180e8-912d-418d-bf96-784f9db8a0d0",
         method: "PUT",
         address: "{{baseurl}}/courseModules/1",
         data: '{\r\n    "status": "Completed"\r\n}',
@@ -1271,7 +1348,7 @@ export default function() {
 
       postman[Request]({
         name: "CourseModules/{id}",
-        id: "f1f7d708-7b70-4f3f-a158-8fd9bea80ed6",
+        id: "6f225abe-925a-4235-bbf7-4d057f250e09",
         method: "DELETE",
         address: "{{baseurl}}/courseModules/1",
         auth(config, Var) {
@@ -1281,7 +1358,7 @@ export default function() {
 
       postman[Request]({
         name: "Course",
-        id: "ff90be87-ca20-4952-a68f-39f35959db89",
+        id: "bf4e642e-aa4a-4bbb-af54-73ba9963c74f",
         method: "POST",
         address: "{{baseurl}}/courses/withFile",
         data: {
@@ -1299,7 +1376,7 @@ export default function() {
     group("Course Topics", function() {
       postman[Request]({
         name: "CourseTopics",
-        id: "eaeb4322-0ea9-42a9-9645-d70bd03345ab",
+        id: "72ca6547-e871-4e3d-a28f-c1bd075bcf71",
         method: "POST",
         address: "{{baseurl}}/courseTopics",
         data:
@@ -1311,7 +1388,7 @@ export default function() {
 
       postman[Request]({
         name: "CourseTopics",
-        id: "dd9834dd-cf03-4294-abd7-8847a26d6d8c",
+        id: "1671fd59-eee2-48b6-b35d-eec1262c4fb5",
         method: "GET",
         address: "{{baseurl}}/courseTopics",
         auth(config, Var) {
@@ -1321,7 +1398,7 @@ export default function() {
 
       postman[Request]({
         name: "CourseTopics/{id}",
-        id: "8994bb93-20e9-4f78-97de-f98cca7573da",
+        id: "befc75b4-315f-4f2b-9f39-9d5ca06fc413",
         method: "GET",
         address: "{{baseurl}}/courseTopics/1",
         auth(config, Var) {
@@ -1331,7 +1408,7 @@ export default function() {
 
       postman[Request]({
         name: "CourseTopics/{id}",
-        id: "38e2a72e-3421-4d49-91d3-94b5e39b7856",
+        id: "7e04be02-0145-4380-89f2-3abc0f658a62",
         method: "PUT",
         address: "{{baseurl}}/courseTopics/1",
         data: '{\r\n    "status": "Completed"\r\n}',
@@ -1342,7 +1419,7 @@ export default function() {
 
       postman[Request]({
         name: "CourseTopics/{id}",
-        id: "26f6454d-63ae-40ca-99cd-66ed718459a9",
+        id: "5203c6b6-4e5a-4177-9540-23ee98ac83cb",
         method: "DELETE",
         address: "{{baseurl}}/courseTopics/:id",
         auth(config, Var) {
@@ -1352,7 +1429,7 @@ export default function() {
 
       postman[Request]({
         name: "Update User Progresss",
-        id: "2e93ec8b-616a-4db9-9e09-f6970a69b3b6",
+        id: "398d7a19-f04d-48d1-a4c0-82d0e6cd6df6",
         method: "POST",
         address: "{{baseurl}}/userTopicProgress",
         data:
@@ -1366,7 +1443,7 @@ export default function() {
     group("Courses", function() {
       postman[Request]({
         name: "Coruse",
-        id: "46ac7c00-0206-4fa8-aeb0-4fa3b81a255c",
+        id: "6d7c8cf0-3735-4bc8-902b-68c6f48b7099",
         method: "GET",
         address: "{{baseurl}}/courses/",
         auth(config, Var) {
@@ -1376,7 +1453,7 @@ export default function() {
 
       postman[Request]({
         name: "Course/{id}",
-        id: "04547460-af34-43cf-b987-283adc76296f",
+        id: "aa0df419-f138-4593-ada7-f458ca4a4bad",
         method: "GET",
         address: "{{baseurl}}/courses/1",
         auth(config, Var) {
@@ -1386,7 +1463,7 @@ export default function() {
 
       postman[Request]({
         name: "Course/{id}",
-        id: "c67aefa8-7408-4823-96d3-78ffbc6ce00c",
+        id: "139688f7-186a-4876-8661-f35441d1e37f",
         method: "PUT",
         address: "{{baseurl}}/courses/1",
         data: '{\r\n    "status": "COMPLETED"\r\n}',
@@ -1397,7 +1474,7 @@ export default function() {
 
       postman[Request]({
         name: "Course{id}",
-        id: "ed2ebfce-008f-4519-9875-1f322b146b3e",
+        id: "075b90cb-62ae-46f9-a26a-3de62db9b5a8",
         method: "DELETE",
         address: "{{baseurl}}/courses/1",
         auth(config, Var) {
@@ -1409,7 +1486,7 @@ export default function() {
     group("Videos", function() {
       postman[Request]({
         name: "Videos",
-        id: "fd828f9b-abe3-4c2c-a2d3-9a3e2b6f55e7",
+        id: "6722395a-15a2-42d4-ae80-028a9824fad6",
         method: "POST",
         address: "{{baseurl}}/videos",
         data:
@@ -1421,7 +1498,7 @@ export default function() {
 
       postman[Request]({
         name: "Videos",
-        id: "7cd70f44-4ee5-4967-ac61-8f1fd94db25a",
+        id: "71e00253-ca40-43ae-beee-41b3ea0a84af",
         method: "GET",
         address: "{{baseurl}}/videos",
         auth(config, Var) {
@@ -1431,7 +1508,7 @@ export default function() {
 
       postman[Request]({
         name: "Videos/{id}",
-        id: "ca6487d1-9c4d-4967-91a4-ac3a58683b0c",
+        id: "dc6edde6-ba5f-4522-95f6-979b53eba381",
         method: "GET",
         address: "{{baseurl}}/videos/1",
         auth(config, Var) {
@@ -1441,7 +1518,7 @@ export default function() {
 
       postman[Request]({
         name: "Videos/{id}",
-        id: "714e2202-7aa0-4034-9df0-1892ef4d3ced",
+        id: "8e0c3537-f35d-4aac-ae0a-1488c7168c61",
         method: "PUT",
         address: "{{baseurl}}/videos/1",
         data: '{\r\n    "status": "ACTIVE"\r\n}',
@@ -1452,7 +1529,7 @@ export default function() {
 
       postman[Request]({
         name: "Videos/{id}",
-        id: "5d0248c3-268e-40de-9c56-bf08c1dc6b85",
+        id: "8aee7ce8-b91a-4c82-9c10-56ee302d5c72",
         method: "DELETE",
         address: "{{baseurl}}/videos/27",
         auth(config, Var) {
@@ -1464,7 +1541,7 @@ export default function() {
     group("Worksheets", function() {
       postman[Request]({
         name: "Worksheets",
-        id: "81e4c4e5-6cc9-4310-8d23-566f6f4784bc",
+        id: "34374376-2d0f-4eb6-b840-db2546a9d292",
         method: "POST",
         address: "{{baseurl}}/worksheets",
         data:
@@ -1476,7 +1553,7 @@ export default function() {
 
       postman[Request]({
         name: "Worksheets/{id}/response",
-        id: "fadd70d5-5756-4800-a499-d9439a3e3951",
+        id: "b2d2a731-3f21-4211-b5be-e30c83e1105e",
         method: "POST",
         address: "{{baseurl}}/worksheets/1/response",
         data: {
@@ -1490,7 +1567,7 @@ export default function() {
 
       postman[Request]({
         name: "worksheets",
-        id: "b50ecb2a-d5a1-4322-a3e5-33cb13f1dbed",
+        id: "5f691586-1727-4a9e-99ee-107c9fe4ebae",
         method: "GET",
         address: "{{baseurl}}/worksheets",
         auth(config, Var) {
@@ -1500,7 +1577,7 @@ export default function() {
 
       postman[Request]({
         name: "worksheets/{id}",
-        id: "df681690-cb63-484e-85d9-ef1da56f9d05",
+        id: "d8161396-2719-4ac0-b143-6b5a69acf4f1",
         method: "GET",
         address: "{{baseurl}}/worksheets/1",
         auth(config, Var) {
@@ -1510,7 +1587,7 @@ export default function() {
 
       postman[Request]({
         name: "worksheets/{id}",
-        id: "60821178-100f-46f0-a1e5-f9b4aac985a6",
+        id: "e43ab795-101f-49b9-a357-a66950cdfa7c",
         method: "PUT",
         address: "{{baseurl}}/worksheets/1",
         data: '{\r\n    "status": "COMPLETED"\r\n}',
@@ -1521,7 +1598,7 @@ export default function() {
 
       postman[Request]({
         name: "worksheets/{id}",
-        id: "64aaf912-c635-4f5c-b086-c439a5cdf4fb",
+        id: "e3aacbdd-d71a-4166-bb6d-f6d0ea7b97bb",
         method: "DELETE",
         address: "{{baseurl}}/worksheets/:id",
         auth(config, Var) {
@@ -1533,7 +1610,7 @@ export default function() {
     group("Teams", function() {
       postman[Request]({
         name: "Teams",
-        id: "7ce02e5c-d4c8-4922-b6c5-8b9ca01dd268",
+        id: "f1311a00-b97d-477c-aaf3-e70fba6f3649",
         method: "POST",
         address: "{{baseurl}}/teams",
         data:
@@ -1545,7 +1622,7 @@ export default function() {
 
       postman[Request]({
         name: "Teams",
-        id: "deac124c-6212-4468-be28-068118f26db8",
+        id: "0073adb7-f2e9-45e0-a499-2e1713382fa5",
         method: "GET",
         address: "{{baseurl}}/teams",
         auth(config, Var) {
@@ -1555,7 +1632,7 @@ export default function() {
 
       postman[Request]({
         name: "Teams{id}",
-        id: "728f969f-a381-4b7a-a668-d16ab8d93659",
+        id: "d0abe8fb-e43c-4aea-9fb7-bd8bf814dd93",
         method: "GET",
         address: "{{baseurl}}/teams/:id",
         auth(config, Var) {
@@ -1565,7 +1642,7 @@ export default function() {
 
       postman[Request]({
         name: "Teams/{id}",
-        id: "de7167c9-0cb0-4870-849e-ec9eef4a835c",
+        id: "3601c9a5-ccff-4fdd-b424-50bd2af6545b",
         method: "PUT",
         address: "{{baseurl}}/teams/:id",
         data: '{\r\n    "status": "Active"\r\n}',
@@ -1576,7 +1653,7 @@ export default function() {
 
       postman[Request]({
         name: "Teams/{id}",
-        id: "ab822c30-a30c-4d8d-9f35-abc94330da4a",
+        id: "765d480a-4f9f-4715-bdab-d6c83881d865",
         method: "DELETE",
         address: "{{baseurl}}/teams/:id",
         auth(config, Var) {
@@ -1588,7 +1665,7 @@ export default function() {
     group("Notifications", function() {
       postman[Request]({
         name: "Notifications sent to current user",
-        id: "5df4ff3a-99a7-449b-97d7-a9bc4c74cd73",
+        id: "c238c90c-89b7-4282-a8db-8521d27b08e7",
         method: "GET",
         address: "{{baseurl}}/notifications/tome",
         auth(config, Var) {
@@ -1598,7 +1675,7 @@ export default function() {
 
       postman[Request]({
         name: "Sent a new Notifications",
-        id: "0dd35f0b-f67b-466f-9a95-577b2c06e652",
+        id: "0c46f4c5-a856-4959-9506-e406518e243b",
         method: "POST",
         address: "{{baseurl}}/notifications/send",
         data:
@@ -1610,7 +1687,7 @@ export default function() {
 
       postman[Request]({
         name: "Sent a new Notifications with Poster",
-        id: "e319bd3c-9b87-40b7-b9d2-8664c5ecee25",
+        id: "cb2442ae-48a9-4852-92be-d01fac33c2f3",
         method: "POST",
         address: "{{baseurl}}/notifications/sendwithposter",
         data: {
@@ -1633,11 +1710,21 @@ export default function() {
     group("Organization", function() {
       postman[Request]({
         name: "Organizations",
-        id: "e03db9e4-9a34-4934-b7ea-9571d39c5a27",
+        id: "c84d6115-2ee0-4efe-9ee7-eba19c821b34",
         method: "POST",
         address: "{{baseurl}}/organizations",
         data:
           '{\r\n    "organization_name": "rk college",\r\n    "organization_code": "rk223",\r\n    "details": "rk college intermedite junior"\r\n}',
+        post(response) {
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(201);
+          });
+
+          pm.test("Verify success message", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.status_type).to.eql("success");
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -1645,11 +1732,43 @@ export default function() {
 
       postman[Request]({
         name: "Organization check",
-        id: "f3865b03-8e8a-4cb5-a85c-cf8446d5a3e2",
+        id: "e644cfe2-d84e-43fb-903b-9711363de074",
         method: "POST",
-        address: "{{baseurl}}/organizations",
+        address: "{{baseurl}}/organizations/checkOrg",
         data:
           '{\r\n    "organization_code": "rk223",\r\n        "organization_name": "rk college"\r\n\r\n}',
+        post(response) {
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(200);
+          });
+
+          pm.test("Your test name", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.message).to.eql("file found");
+          });
+        },
+        auth(config, Var) {
+          config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
+        }
+      });
+
+      postman[Request]({
+        name: "OrganizationInvalidCheck",
+        id: "175585c6-54a4-4bf4-80cf-8395048c8b26",
+        method: "POST",
+        address: "{{baseurl}}/organizations/checkOrg",
+        data:
+          '{\r\n    "organization_code": "rk223_12312332",\r\n        "organization_name": "rk college"\r\n\r\n}',
+        post(response) {
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(400);
+          });
+
+          pm.test("Your test name", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.message).to.eql("Bad Request");
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -1657,7 +1776,7 @@ export default function() {
 
       postman[Request]({
         name: "Organizations/withFile",
-        id: "8c4eb695-7b7c-4006-a44f-7905c95bde09",
+        id: "27e0e46d-0594-42ed-bb31-2a3d072656e9",
         method: "POST",
         address: "{{baseurl}}/organizations",
         data:
@@ -1669,7 +1788,7 @@ export default function() {
 
       postman[Request]({
         name: "Organizations",
-        id: "d36dcb89-3d1d-4cfb-8ffd-3ac21eaca413",
+        id: "345bcd07-9bfa-469c-82a7-932fda5892e0",
         method: "GET",
         address: "{{baseurl}}/organizations",
         auth(config, Var) {
@@ -1679,7 +1798,7 @@ export default function() {
 
       postman[Request]({
         name: "Organizations/{id}",
-        id: "0f227548-1c52-4d0e-a550-89b6a3797539",
+        id: "923679e5-27bd-40a2-ae07-6938ca5d5c0b",
         method: "GET",
         address: "{{baseurl}}/organizations/114",
         auth(config, Var) {
@@ -1689,10 +1808,10 @@ export default function() {
 
       postman[Request]({
         name: "Organizations/{id}",
-        id: "c75e303c-475e-4c6e-88a9-ad6dd14adf51",
+        id: "0d68ffaa-46f8-4dfb-9144-7dc9c753a4a6",
         method: "PUT",
-        address: "{{baseurl}}/organizations/113",
-        data: '{\r\n    "status": "INACTIVE"\r\n}',
+        address: "{{baseurl}}/organizations/2",
+        data: '{\r\n    "status": "ACTIVE"\r\n}',
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -1700,7 +1819,7 @@ export default function() {
 
       postman[Request]({
         name: "Organizations/{id}",
-        id: "db5192b6-d08f-4fd9-bed0-81d0298ea40b",
+        id: "a7f60d2f-b69f-41cc-8f6d-7159f26bd955",
         method: "DELETE",
         address: "{{baseurl}}/organizations/113",
         auth(config, Var) {
@@ -1712,7 +1831,7 @@ export default function() {
     group("Faqs", function() {
       postman[Request]({
         name: "Faqs",
-        id: "8bb415c6-53ba-4617-9932-110305eea245",
+        id: "c591c066-e0b5-4c42-b93c-296d6a8bcd2d",
         method: "POST",
         address: "{{baseurl}}/faqs",
         data:
@@ -1723,10 +1842,49 @@ export default function() {
       });
 
       postman[Request]({
+        name: "FaqsCrud",
+        id: "82cba59c-954a-485d-a86a-543bc0cfd723",
+        method: "POST",
+        address: "{{baseurl}}/crud/faq",
+        data:
+          '{\r\n    "question": "Health",\r\n    "answer": "BWUi6BS9T5Y",\r\n    "faq_category_id":"1"\r\n}',
+        post(response) {
+          pm.test("Create FAQ", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.status_type).to.eql("success");
+          });
+
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(201);
+          });
+          saveData = JSON.parse(responseBody);
+
+          pm.environment.set("faq_id", saveData.data[0].faq_id);
+        },
+        auth(config, Var) {
+          config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
+        }
+      });
+
+      postman[Request]({
         name: "Faqs",
-        id: "12492e9d-5bd7-4f86-a657-f1f70d07f4d5",
+        id: "436cc2d5-d690-435b-bd68-5f9765edeb90",
         method: "GET",
         address: "{{baseurl}}/faqs",
+        post(response) {
+          pm.test("List all FAQ's", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.message).to.eql("OK");
+          });
+
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(200);
+          });
+          let a = pm.response.json();
+          saveData = JSON.stringify(a);
+
+          pm.environment.set("faq_id", saveData.data[0].dataValues[0].faq_id);
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -1734,7 +1892,47 @@ export default function() {
 
       postman[Request]({
         name: "Faqs/{id}",
-        id: "0997d9b7-e247-485c-aac5-82de87be5034",
+        id: "154742f7-1033-4586-a960-7a44100a67ec",
+        method: "GET",
+        address: "{{baseurl}}/faqs/{{faq_id}}",
+        post(response) {
+          pm.test("Verify Data", function() {
+            var jsonData = pm.response.json();
+
+            var a = pm.environment.get("faq_id");
+            pm.expect(jsonData.data[0].faq_id).to.eql(a);
+          });
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(200);
+          });
+        },
+        auth(config, Var) {
+          config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
+        }
+      });
+
+      postman[Request]({
+        name: "Faqs/{id} Crud",
+        id: "59bdc8f9-601b-4779-9ee9-7538ffd0b7c1",
+        method: "GET",
+        address: "{{baseurl}}/crud/faq/{{faq_id}}",
+        post(response) {
+          pm.test("Verify Data", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.data[0].faq_id).to.eql(5);
+          });
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(200);
+          });
+        },
+        auth(config, Var) {
+          config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
+        }
+      });
+
+      postman[Request]({
+        name: "Faqs/crudParamData",
+        id: "bd086b7c-1422-401a-beb5-013487f7e610",
         method: "GET",
         address: "{{baseurl}}/faqs/3",
         auth(config, Var) {
@@ -1744,9 +1942,20 @@ export default function() {
 
       postman[Request]({
         name: "Faqs/{id}",
-        id: "e18e3e07-d735-4af9-baa7-5fdd9bd8c1db",
+        id: "a4b9c20a-02b3-4d79-9d65-639601e8c74d",
         method: "PUT",
-        address: "{{baseurl}}/faqs/1",
+        address: "{{baseurl}}/faqs/5",
+        data: '{\r\n    "status": "ACTIVE"\r\n}',
+        auth(config, Var) {
+          config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
+        }
+      });
+
+      postman[Request]({
+        name: "Faqs/CRUD{id}",
+        id: "33437afb-3af1-4f47-a350-5f27538d7c0f",
+        method: "PUT",
+        address: "{{baseurl}}/faqs/5",
         data: '{\r\n    "status": "ACTIVE"\r\n}',
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
@@ -1755,9 +1964,34 @@ export default function() {
 
       postman[Request]({
         name: "Faqs/{id}",
-        id: "a5296b50-a317-4fea-a366-507642b529da",
+        id: "54452797-6e3d-45a4-9811-8dc9d30284ba",
         method: "DELETE",
-        address: "{{baseurl}}/faqs/27",
+        address: "{{baseurl}}/faqs/{{faq_id}}",
+        post(response) {
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(200);
+          });
+
+          postman.setNextRequest("FaqsCrud");
+        },
+        auth(config, Var) {
+          config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
+        }
+      });
+
+      postman[Request]({
+        name: "Faqs/crud/delete",
+        id: "2ad4f07f-b7e0-418f-8031-9aa3a3f51e09",
+        method: "DELETE",
+        address: "{{baseurl}}/crud/faq/{{faq_id}}",
+        pre() {
+          postman.setNextRequest("FaqsCrud");
+        },
+        post(response) {
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(200);
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -1767,10 +2001,53 @@ export default function() {
     group("FaqCategories", function() {
       postman[Request]({
         name: "FaqCategories",
-        id: "19fb2cd0-da8d-4b9e-a936-ce178cd0a42b",
+        id: "2cccaa57-7dc3-4101-a1a1-1bc2cc8903ba",
         method: "POST",
         address: "{{baseurl}}/faqCategories",
-        data: '{\r\n    "category_name": "Health"\r\n}',
+        data: '{\r\n    "category_name": "Wealth"\r\n}',
+        post(response) {
+          pm.test("Faqs", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.status_type).to.eql("success");
+          });
+
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(201);
+          });
+          saveData = JSON.parse(responseBody);
+
+          pm.environment.set(
+            "faq_category_id",
+            saveData.data[0].faq_category_id
+          );
+        },
+        auth(config, Var) {
+          config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
+        }
+      });
+
+      postman[Request]({
+        name: "FaqCategoriesCrud",
+        id: "afaa0bcc-1133-413c-af01-aa9d9ebd6b3b",
+        method: "POST",
+        address: "{{baseurl}}/faqCategories",
+        data: '{\r\n    "category_name": "Wealth"\r\n}',
+        post(response) {
+          pm.test("Faqs", function() {
+            var jsonData = pm.response.json();
+            pm.expect(jsonData.status_type).to.eql("success");
+          });
+
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(201);
+          });
+          saveData = JSON.parse(responseBody);
+
+          pm.environment.set(
+            "faq_category_id",
+            saveData.data[0].faq_category_id
+          );
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -1778,7 +2055,7 @@ export default function() {
 
       postman[Request]({
         name: "FaqCategories",
-        id: "928f659b-412c-4257-8180-5a7286609913",
+        id: "dca4e81e-15f5-49d9-ad0d-fb4fb83bf20c",
         method: "GET",
         address: "{{baseurl}}/faqCategories",
         auth(config, Var) {
@@ -1787,10 +2064,20 @@ export default function() {
       });
 
       postman[Request]({
-        name: "FaqCategories/{id}",
-        id: "c2c8648e-d8ae-4b51-8314-a12a9292747e",
+        name: "FaqCategoriesCRUD",
+        id: "d7e0f962-135d-4ae9-bfce-818d903b1f35",
         method: "GET",
-        address: "{{baseurl}}/faqCategories/1",
+        address: "{{baseurl}}/faqCategories",
+        auth(config, Var) {
+          config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
+        }
+      });
+
+      postman[Request]({
+        name: "FaqCategoriesCRUDId",
+        id: "7b911023-abb7-4c24-9187-2bf6850c88b3",
+        method: "GET",
+        address: "{{baseurl}}/faqCategorie/{{faq_category_id}}",
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -1798,10 +2085,31 @@ export default function() {
 
       postman[Request]({
         name: "FaqCategories/{id}",
-        id: "c4272d99-531a-448a-97f1-391ec18682c9",
+        id: "fa20e3c6-45a9-4ccb-97b0-e0ed8781f03d",
+        method: "GET",
+        address: "{{baseurl}}/faqCategories/{{faq_category_id}}",
+        post(response) {
+          pm.test("Verify Data", function() {
+            var jsonData = pm.response.json();
+
+            var a = pm.environment.get("faq_category_id");
+            pm.expect(jsonData.data[0].faq_category_id).to.eql(a);
+          });
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(200);
+          });
+        },
+        auth(config, Var) {
+          config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
+        }
+      });
+
+      postman[Request]({
+        name: "FaqCategories/{id}",
+        id: "e8f6d503-6b6d-41f1-809a-aa2d00645812",
         method: "PUT",
-        address: "{{baseurl}}/faqCategories/1",
-        data: '{\r\n    "status": "ACTIVE"\r\n}',
+        address: "{{baseurl}}/faqCategories/{{faq_category_id}}",
+        data: '{\r\n    "Status": "DRAFT"\r\n}',
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -1809,9 +2117,31 @@ export default function() {
 
       postman[Request]({
         name: "FaqCategories/{id}",
-        id: "7bb35d7b-3bd4-4915-af8d-68de1e6199e1",
+        id: "d35a75b6-6e56-4dec-8a3b-d88650fd927c",
         method: "DELETE",
-        address: "{{baseurl}}/faqCategories/27",
+        address: "{{baseurl}}/faqCategories/{{faq_category_id}}",
+        post(response) {
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(200);
+          });
+
+          postman.setNextRequest("FaqCategories");
+        },
+        auth(config, Var) {
+          config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
+        }
+      });
+
+      postman[Request]({
+        name: "FaqCategoriesCrud",
+        id: "706284ff-7366-4dfd-8b84-49747df225c2",
+        method: "DELETE",
+        address: "{{baseurl}}/faqCategorie/{{faq_category_id}}",
+        post(response) {
+          pm.test("Status code is 200", function() {
+            pm.response.to.have.status(200);
+          });
+        },
         auth(config, Var) {
           config.headers.Authorization = `Bearer ${pm[Var]("token")}`;
         }
@@ -1820,7 +2150,7 @@ export default function() {
 
     postman[Request]({
       name: "Healthcheck",
-      id: "02588af1-577b-40ce-9af5-d59b5ec7bd0e",
+      id: "4b483d71-7459-40dd-8a6a-a8b7a8a8f92d",
       method: "GET",
       address: "{{URL}}/healthcheck",
       auth(config, Var) {
