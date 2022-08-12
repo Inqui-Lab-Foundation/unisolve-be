@@ -10,7 +10,6 @@ import { notFound } from "boom";
 import { speeches } from "../configs/speeches.config";
 import { team } from "../models/team.model";
 import { student } from "../models/student.model";
-import { user } from "../models/user.model";
 
 export default class TeamController extends BaseController {
 
@@ -151,12 +150,19 @@ export default class TeamController extends BaseController {
         if (!team_res) {
             return res.status(400).send(dispatcher(null, 'error', speeches.TEAM_NOT_FOUND));
         }
+        const where: any = { team_id };
+        let whereClauseStatusPart: any = {};
+        const paramStatus: any = req.query.status;
+        if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
+            whereClauseStatusPart = { "status": paramStatus }
+        }
         const student_res = await this.crudService.findAll(student, {
-            where: { team_id },
-            // include: {
-            //     model: user,
-            //     required: true
-            // }
+            where: {
+                [Op.and]: [
+                    whereClauseStatusPart,
+                    where
+                ]
+            }
         });
         return res.status(200).send(dispatcher(student_res, 'success'));
     };

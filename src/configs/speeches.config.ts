@@ -1,6 +1,16 @@
 import { constents } from "./constents.config";
 
 export const speeches = {
+    USER_USERNAME_REQUIRED: "Username can not be null/empty",
+    USER_FULLNAME_REQUIRED: "full_name can not be null/empty",
+    USER_ROLE_REQUIRED: "Role can not be null/empty",
+    USER_TEAMID_REQUIRED: "Team_id can not be null/empty",
+    USER_PASSWORD_REQUIRED: "Password cant not be null/empty",
+    USER_USERID_REQUIRED: "User_id cant not be null/empty",
+    USER_OLDPASSWORD_REQUIRED: "Old Password cant not be null/empty",
+    USER_NEWPASSWORD_REQUIRED: "New Password cant not be null/empty",
+    USER_ORGANIZATION_CODE_REQUIRED: "New Password cant not be null/empty",
+
     WELCOME_MESSAGE: "Welcome to the Unisolve APIs",
     UNABLE_TO_CREATE_TOKEN: "Unable to create token",
     INVALID_DATA_SEND_TO_CREATE_TOKEN: "Invalid data send to create token",
@@ -11,7 +21,10 @@ export const speeches = {
     NOT_ACCEPTABLE: "Not Acceptable",
     DATA_NOT_FOUND: "Data not found",
     UPLOAD_FAILD: "File upload failed",
-
+    MENTOR_EXISTS: "Not Acceptable, Mentor already exists",
+    STUDENT_EXISTS: "Not Acceptable, Student already exists",
+    ADMIN_EXISTS: "Not Acceptable, Admin already exists",
+    EVALUATER_EXISTS: "Not Acceptable, Evaluater already exists",
     USER_NOT_FOUND: "User not found",
     USER_PASSWORD: "User pasword doesn't match",
     USER_PASSWORD_CHANGE: "User password updated",
@@ -47,8 +60,8 @@ export const speeches = {
     QUESTION_NO_REQUIRED: "Question no is required, it should not be empty.",
 
     //worksheet submit resoponse keys 
-    WORKSHEET_ID_REQUIRED:"WORKSHEET ID is required, it should not be empty.",
-    WORKSHEET_FILE:"WORKSHEET_FILE is required, it should not be empty.",
+    WORKSHEET_ID_REQUIRED: "WORKSHEET ID is required, it should not be empty.",
+    WORKSHEET_FILE: "WORKSHEET_FILE is required, it should not be empty.",
 
     NOTIFICATION_TYPE_INVALID: `Notification type is invalid, it should be one from ${Object.values(constents.notification_types.list).join(", ")}.`,
     NOTIFICATION_TYPE_REQUIRED: `Notification type is required, it should be one from ${Object.values(constents.notification_types.list).join(", ")}.`,
@@ -77,6 +90,7 @@ export const speeches = {
     FAQ_CATEGORY: "Category is required.",
     FAQ_ANSWER: "Answer is required.",
     ORG_CODE_REQUIRED: "Organization code is required.",
+    ORG_CODE_NOT_EXISTS: "Organization code does not exists.",
     OTP_FAIL: "Wrong OTP Detected.",
     OTP_FOUND: "OTP matched."
 }
