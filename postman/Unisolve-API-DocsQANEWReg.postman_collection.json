@@ -3602,7 +3602,8 @@
 											"    pm.response.to.have.status(200);\r",
 											"});\r",
 											"\r",
-											"postman.setNextRequest(\"FaqCategories\")\r",
+											"//postman.setNextRequest(\"FaqCategories\")\r",
+
 											""
 										],
 										"type": "text/javascript"
@@ -3619,40 +3620,6 @@
 									],
 									"path": [
 										"faqCategories",
-										"{{faq_category_id}}"
-									]
-								},
-								"description": "### Endpoint for removing a single vide record"
-							},
-							"response": []
-						},
-						{
-							"name": "FaqCategoriesCrud",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseurl}}/faqCategorie/{{faq_category_id}}",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"faqCategorie",
 										"{{faq_category_id}}"
 									]
 								},
