@@ -1,0 +1,3714 @@
+{
+	"info": {
+		"_postman_id": "6a572fac-cdda-46b2-ae79-bdecccc1ca65",
+		"name": "Unisolve-API-DocsQANEWReg",
+		"description": "### **Unisolve backend applications api backup documentation with in details endpoints description**\n\n*   Server: `http://localhost:3002`\n*   Scheme supported: **HTTP**\n*   Security for Authentication: **JWT**",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "329058"
+	},
+	"item": [
+		{
+			"name": "V1",
+			"item": [
+				{
+					"name": "Admins",
+					"item": [
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);\r",
+											"    if(pm.response.code == 200 || pm.response.code == 201){\r",
+											"        const response = pm.response.json();\r",
+											"        pm.environment.set('token', response.data[0].token);\r",
+											"        pm.collectionVariables.set(\"token\", response.data[0].token);\r",
+											"    }\r",
+											"    pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Login Successful\");\r",
+											"});\r",
+											"});\r",
+											"\r",
+											"// Schema validation test\r",
+											"const schema = {\r",
+											"     \r",
+											"     \"title\": \"Root Schema\",\r",
+											"    \"type\": \"object\",\r",
+											"    \"default\": {},\r",
+											"    \"required\": [\r",
+											"        \"status\",\r",
+											"        \"status_type\",\r",
+											"        \"message\",\r",
+											"        \"count\",\r",
+											"        \"data\"\r",
+											"    ],\r",
+											"    \"properties\": {\r",
+											"        \"status\": {\r",
+											"            \"title\": \"The status Schema\",\r",
+											"            \"type\": \"number\",\r",
+											"            \"default\": 0\r",
+											"        },\r",
+											"        \"status_type\": {\r",
+											"            \"title\": \"The status_type Schema\",\r",
+											"            \"type\": \"string\",\r",
+											"            \"default\": \"\"\r",
+											"        },\r",
+											"        \"message\": {\r",
+											"            \"title\": \"The message Schema\",\r",
+											"            \"type\": \"string\",\r",
+											"            \"default\": \"\"\r",
+											"        },\r",
+											"        \"count\": {\r",
+											"            \"title\": \"The count Schema\",\r",
+											"            \"type\": \"number\",\r",
+											"            \"default\": 0\r",
+											"        },\r",
+											"        \"data\": {\r",
+											"            \"title\": \"The data Schema\",\r",
+											"            \"type\": \"array\",\r",
+											"            \"default\": [],\r",
+											"            \"items\": {\r",
+											"                \"title\": \"A Schema\",\r",
+											"                \"type\": \"object\",\r",
+											"                \"default\": {},\r",
+											"                \"required\": [\r",
+											"                    \"user_id\",\r",
+											"                    \"name\",\r",
+											"                    \"full_name\",\r",
+											"                    \"status\",\r",
+											"                    \"role\",\r",
+											"                    \"token\",\r",
+											"                    \"type\",\r",
+											"                    \"expire\"\r",
+											"                ],\r",
+											"                \"properties\": {\r",
+											"                    \"user_id\": {\r",
+											"                        \"title\": \"The user_id Schema\",\r",
+											"                        \"type\": \"number\",\r",
+											"                        \"default\": 0\r",
+											"                    },\r",
+											"                    \"name\": {\r",
+											"                        \"title\": \"The name Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"full_name\": {\r",
+											"                        \"title\": \"The full_name Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"status\": {\r",
+											"                        \"title\": \"The status Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"role\": {\r",
+											"                        \"title\": \"The role Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"token\": {\r",
+											"                        \"title\": \"The token Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"type\": {\r",
+											"                        \"title\": \"The type Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"expire\": {\r",
+											"                        \"title\": \"The expire Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    }\r",
+											"                }\r",
+											"            }\r",
+											"        }\r",
+											"    }\r",
+											"};\r",
+											"pm.test(\"Validate schema\", () => {\r",
+											"pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"admin@unisolve.org\",\r\n    \"password\": \"wHm6eGCL7uFOArs=\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/login",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": "### Endpoint for admin login and issues the token\n\n**Request payload must contain the following fields:**\n\n*   USERNAME : STRING\n*   PASSWORD : STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "LoginWithInvalidUser",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);\r",
+											"    if(pm.response.code == 200 || pm.response.code == 201){\r",
+											"        const response = pm.response.json();\r",
+											"        pm.environment.set('token', response.data[0].token);\r",
+											"        pm.collectionVariables.set(\"token\", response.data[0].token);\r",
+											"    }\r",
+											"    pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Login Successful\");\r",
+											"});\r",
+											"});\r",
+											"\r",
+											"// Schema validation test\r",
+											"const schema = {\r",
+											"     \r",
+											"     \"title\": \"Root Schema\",\r",
+											"    \"type\": \"object\",\r",
+											"    \"default\": {},\r",
+											"    \"required\": [\r",
+											"        \"status\",\r",
+											"        \"status_type\",\r",
+											"        \"message\",\r",
+											"        \"count\",\r",
+											"        \"data\"\r",
+											"    ],\r",
+											"    \"properties\": {\r",
+											"        \"status\": {\r",
+											"            \"title\": \"The status Schema\",\r",
+											"            \"type\": \"number\",\r",
+											"            \"default\": 0\r",
+											"        },\r",
+											"        \"status_type\": {\r",
+											"            \"title\": \"The status_type Schema\",\r",
+											"            \"type\": \"string\",\r",
+											"            \"default\": \"\"\r",
+											"        },\r",
+											"        \"message\": {\r",
+											"            \"title\": \"The message Schema\",\r",
+											"            \"type\": \"string\",\r",
+											"            \"default\": \"\"\r",
+											"        },\r",
+											"        \"count\": {\r",
+											"            \"title\": \"The count Schema\",\r",
+											"            \"type\": \"number\",\r",
+											"            \"default\": 0\r",
+											"        },\r",
+											"        \"data\": {\r",
+											"            \"title\": \"The data Schema\",\r",
+											"            \"type\": \"array\",\r",
+											"            \"default\": [],\r",
+											"            \"items\": {\r",
+											"                \"title\": \"A Schema\",\r",
+											"                \"type\": \"object\",\r",
+											"                \"default\": {},\r",
+											"                \"required\": [\r",
+											"                    \"user_id\",\r",
+											"                    \"name\",\r",
+											"                    \"full_name\",\r",
+											"                    \"status\",\r",
+											"                    \"role\",\r",
+											"                    \"token\",\r",
+											"                    \"type\",\r",
+											"                    \"expire\"\r",
+											"                ],\r",
+											"                \"properties\": {\r",
+											"                    \"user_id\": {\r",
+											"                        \"title\": \"The user_id Schema\",\r",
+											"                        \"type\": \"number\",\r",
+											"                        \"default\": 0\r",
+											"                    },\r",
+											"                    \"name\": {\r",
+											"                        \"title\": \"The name Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"full_name\": {\r",
+											"                        \"title\": \"The full_name Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"status\": {\r",
+											"                        \"title\": \"The status Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"role\": {\r",
+											"                        \"title\": \"The role Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"token\": {\r",
+											"                        \"title\": \"The token Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"type\": {\r",
+											"                        \"title\": \"The type Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"expire\": {\r",
+											"                        \"title\": \"The expire Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    }\r",
+											"                }\r",
+											"            }\r",
+											"        }\r",
+											"    }\r",
+											"};\r",
+											"pm.test(\"Validate schema\", () => {\r",
+											"pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"admin@unisolve.org\",\r\n    \"password\": \"wHm6eGCL7uFOArs=\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/login",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": "### Endpoint for admin login and issues the token\n\n**Request payload must contain the following fields:**\n\n*   USERNAME : STRING\n*   PASSWORD : STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Register",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function randomString(minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZwewr') {",
+											"    if (!minValue) {",
+											"        minValue = 10;",
+											"        maxValue = 20;",
+											"    }",
+											"",
+											"    if (!maxValue) {",
+											"        maxValue = minValue;",
+											"    }",
+											"",
+											"    let length = _.random(minValue, maxValue),",
+											"        randomString = \"\";",
+											"",
+											"    for (let i = 0; i < length; i++)",
+											"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));",
+											"    return randomString;",
+											"}",
+											" ",
+											" pm.environment.set(\"randomUserName\", randomString());",
+											"",
+											" "
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"User creation \", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eq(\"User registered successfully\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{admin}}{{randomUserName}}{{postFixUrl}}\",\r\n    \"full_name\": \"admin user\",\r\n    \"password\": \"wHm6eGCL7uFOArs=\",\r\n    \"role\": \"ADMIN\",\r\n    \"team_id\": \"12433\",\r\n    \"date_of_birth\": \"1989-06-20\",\r\n    \"qualification\": \"bs.c\",\r\n    \"city\": \"hyderabad\",\r\n    \"district\": \"somehthing\",\r\n    \"state\": \"tg\",\r\n    \"country\": \"bs.c\",\r\n    \"created_by\": 1236547899\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/register",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								},
+								"description": "### **Endpoint for registering the Admin:**\n\n**Request payload must contain the following fields:**\n\n*   username: STRING,\n*   password: STRING,\n*   full_name: STRING,\n*   role: STRING,\n*   team_id: STRING,\n*   data_of_birth: STRING ( format: \"yyyy-mm-dd\" ),\n*   organization_name: STRING\n*   qualification: STRING,\n*   created_by: NUMBER ( format: 11 characters ),\n*   city: STRING,\n*   district: STRING,\n*   state: STRING,\n*   country: STRING,"
+							},
+							"response": []
+						},
+						{
+							"name": "LoginAfterRegister",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);\r",
+											"    if(pm.response.code == 200 || pm.response.code == 201){\r",
+											"        const response = pm.response.json();\r",
+											"        pm.environment.set('token', response.data[0].token);\r",
+											"        pm.collectionVariables.set(\"token\", response.data[0].token);\r",
+											"    }\r",
+											"    pm.test(\"login after new registration\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Login Successful\");\r",
+											"});\r",
+											"});\r",
+											"\r",
+											"// Schema validation test\r",
+											"const schema = {\r",
+											"     \r",
+											"     \"title\": \"Root Schema\",\r",
+											"    \"type\": \"object\",\r",
+											"    \"default\": {},\r",
+											"    \"required\": [\r",
+											"        \"status\",\r",
+											"        \"status_type\",\r",
+											"        \"message\",\r",
+											"        \"count\",\r",
+											"        \"data\"\r",
+											"    ],\r",
+											"    \"properties\": {\r",
+											"        \"status\": {\r",
+											"            \"title\": \"The status Schema\",\r",
+											"            \"type\": \"number\",\r",
+											"            \"default\": 0\r",
+											"        },\r",
+											"        \"status_type\": {\r",
+											"            \"title\": \"The status_type Schema\",\r",
+											"            \"type\": \"string\",\r",
+											"            \"default\": \"\"\r",
+											"        },\r",
+											"        \"message\": {\r",
+											"            \"title\": \"The message Schema\",\r",
+											"            \"type\": \"string\",\r",
+											"            \"default\": \"\"\r",
+											"        },\r",
+											"        \"count\": {\r",
+											"            \"title\": \"The count Schema\",\r",
+											"            \"type\": \"number\",\r",
+											"            \"default\": 0\r",
+											"        },\r",
+											"        \"data\": {\r",
+											"            \"title\": \"The data Schema\",\r",
+											"            \"type\": \"array\",\r",
+											"            \"default\": [],\r",
+											"            \"items\": {\r",
+											"                \"title\": \"A Schema\",\r",
+											"                \"type\": \"object\",\r",
+											"                \"default\": {},\r",
+											"                \"required\": [\r",
+											"                    \"user_id\",\r",
+											"                    \"name\",\r",
+											"                    \"full_name\",\r",
+											"                    \"status\",\r",
+											"                    \"role\",\r",
+											"                    \"token\",\r",
+											"                    \"type\",\r",
+											"                    \"expire\"\r",
+											"                ],\r",
+											"                \"properties\": {\r",
+											"                    \"user_id\": {\r",
+											"                        \"title\": \"The user_id Schema\",\r",
+											"                        \"type\": \"number\",\r",
+											"                        \"default\": 0\r",
+											"                    },\r",
+											"                    \"name\": {\r",
+											"                        \"title\": \"The name Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"full_name\": {\r",
+											"                        \"title\": \"The full_name Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"status\": {\r",
+											"                        \"title\": \"The status Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"role\": {\r",
+											"                        \"title\": \"The role Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"token\": {\r",
+											"                        \"title\": \"The token Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"type\": {\r",
+											"                        \"title\": \"The type Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    },\r",
+											"                    \"expire\": {\r",
+											"                        \"title\": \"The expire Schema\",\r",
+											"                        \"type\": \"string\",\r",
+											"                        \"default\": \"\"\r",
+											"                    }\r",
+											"                }\r",
+											"            }\r",
+											"        }\r",
+											"    }\r",
+											"};\r",
+											"pm.test(\"Validate schema\", () => {\r",
+											"pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{admin}}{{randomUserName}}{{postFixUrl}}\",\r\n    \"password\": \"wHm6eGCL7uFOArs=\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/login",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": "### Endpoint for admin login and issues the token\n\n**Request payload must contain the following fields:**\n\n*   USERNAME : STRING\n*   PASSWORD : STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "RegisterWithInvalidData",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function randomString(minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') {",
+											"    if (!minValue) {",
+											"        minValue = 10;",
+											"        maxValue = 20;",
+											"    }",
+											"",
+											"    if (!maxValue) {",
+											"        maxValue = minValue;",
+											"    }",
+											"",
+											"    let length = _.random(minValue, maxValue),",
+											"        randomString = \"\";",
+											"",
+											"    for (let i = 0; i < length; i++)",
+											"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));",
+											"    return randomString;",
+											"}",
+											" pm.environment.set('randomUserName', randomString());"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 406\", function () {\r",
+											"    pm.response.to.have.status(406);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Not Acceptable\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"\",\r\n    \"full_name\": \"\",\r\n    \"password\": \"\",\r\n    \"role\": \"\",\r\n    \"team_id\": \"\",\r\n    \"date_of_birth\": \"1989-06-20\",\r\n    \"qualification\": \"bs.c\",\r\n    \"city\": \"hyderabad\",\r\n    \"district\": \"somehthing\",\r\n    \"state\": \"tg\",\r\n    \"country\": \"bs.c\",\r\n    \"created_by\": 1236547899\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/register",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								},
+								"description": "### **Endpoint for registering the Admin:**\n\n**Request payload must contain the following fields:**\n\n*   username: STRING,\n*   password: STRING,\n*   full_name: STRING,\n*   role: STRING,\n*   team_id: STRING,\n*   data_of_birth: STRING ( format: \"yyyy-mm-dd\" ),\n*   organization_name: STRING\n*   qualification: STRING,\n*   created_by: NUMBER ( format: 11 characters ),\n*   city: STRING,\n*   district: STRING,\n*   state: STRING,\n*   country: STRING,"
+							},
+							"response": []
+						},
+						{
+							"name": "Logout",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/auth/logout",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"logout"
+									]
+								},
+								"description": "### Endpoint for clearing the user session"
+							},
+							"response": []
+						},
+						{
+							"name": "ChangePassword",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"12345678910\",\r\n    \"new_password\": \"1234567891011\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/changePassword",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"changePassword"
+									]
+								},
+								"description": "### Endpoint for updating the admin password:\n\n**Request payload must contain the following fields:**\n\n*   user_id : STRING,\n*   old_password: STRING,\n*   new_password: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "ChangePasswordOldPwdNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"password not match\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Password is required, it should not be empty.\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"\",\r\n    \"new_password\": \"1234567891011\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/changePassword",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"changePassword"
+									]
+								},
+								"description": "### Endpoint for updating the admin password:\n\n**Request payload must contain the following fields:**\n\n*   user_id : STRING,\n*   old_password: STRING,\n*   new_password: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "ChangePasswordNewPwdNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"New password null\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Password is required, it should not be empty.\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"12345678910\",\r\n    \"new_password\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/changePassword",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"changePassword"
+									]
+								},
+								"description": "### Endpoint for updating the admin password:\n\n**Request payload must contain the following fields:**\n\n*   user_id : STRING,\n*   old_password: STRING,\n*   new_password: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "ChangePasswordIDNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"When ID Password null\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Qualification is required, it should not be empty.\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": \"\",\r\n    \"old_password\": \"12345678910\",\r\n    \"new_password\": \"1234567891011\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/changePassword",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"changePassword"
+									]
+								},
+								"description": "### Endpoint for updating the admin password:\n\n**Request payload must contain the following fields:**\n\n*   user_id : STRING,\n*   old_password: STRING,\n*   new_password: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "DynamicSignupForm",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"studentName\": true,\r\n    \"phNumber\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/dynamicSignupForm",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"dynamicSignupForm"
+									]
+								},
+								"description": "### Endpoint to generate a dynamic JSON file in the serve with the field requested in the payload.\n\n**Request payload must contain the following fields:**\n\n*   studentName: BOOLEN,\n*   phNumber: BOOLEN,\n*   email: BOOLEN\n*   ect... ( key: BOOLEN )"
+							},
+							"response": []
+						},
+						{
+							"name": "DynamicSignupForm",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/auth/dynamicSignupForm",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"dynamicSignupForm"
+									]
+								},
+								"description": "### Endpoint to get a dynamic JSON file in the server"
+							},
+							"response": []
+						}
+					],
+					"description": "### List of endpoints for user authentication are:\n\n*   Registration API of new member.\n*   Login API generate a JWT token for access the protected routes.\n*   Logout API mark the user status inactive.\n*   Change password take `user_id` along with the old password and new password.\n*   Dynamic setup form create JSON file in the server with the selected fields, we can also retrieve the JSON using the GET."
+				},
+				{
+					"name": "Students",
+					"item": [
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);\r",
+											"    if(pm.response.code == 200 || pm.response.code == 201){\r",
+											"        const response = pm.response.json();\r",
+											"        pm.environment.set('token', response.data[0].token);\r",
+											"        pm.collectionVariables.set(\"token\", response.data[0].token);\r",
+											"    }\r",
+											"});\r",
+											"\r",
+											""
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"student@unisolve.org\",\r\n    \"password\": \"wHm6eGCL7uFOArs=\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/login",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": "### Endpoint for student login and issues the token\n\n**Request payload must contain the following fields:**\n\n*   USERNAME : STRING\n*   PASSWORD : STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "LoginInvalidData",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Signup check\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"User not found\");\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"39usinfesoi@unisolve.org\",\r\n    \"password\": \"wHm6eGCL7uFOArs=\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/login",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": "### Endpoint for student login and issues the token\n\n**Request payload must contain the following fields:**\n\n*   USERNAME : STRING\n*   PASSWORD : STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Register",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function randomString(minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') {",
+											"    if (!minValue) {",
+											"        minValue = 10;",
+											"        maxValue = 20;",
+											"    }",
+											"",
+											"    if (!maxValue) {",
+											"        maxValue = minValue;",
+											"    }",
+											"",
+											"    let length = _.random(minValue, maxValue),",
+											"        randomString = \"\";",
+											"",
+											"    for (let i = 0; i < length; i++)",
+											"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));",
+											"    return randomString;",
+											"}",
+											" pm.environment.set('randomStudentName', randomString());",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Your test name\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql(\"User registered successfully\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{student}}{{randomStudentName}}{{postFixUrl}}\",\r\n    \"full_name\": \"student user\",\r\n    \"password\": \"wHm6eGCL7uFOArs=\",\r\n    \"role\": \"STUDENT\",\r\n    \"team_id\": \"12433\",\r\n    \"date_of_birth\": \"1989-06-20\",\r\n    \"qualification\": \"bs.c\",\r\n    \"city\": \"hyderabad\",\r\n    \"district\": \"somehthing\",\r\n    \"state\": \"tg\",\r\n    \"country\": \"bs.c\",\r\n    \"created_by\": 1236547899\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/register",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								},
+								"description": "### **Endpoint for registering the Student.**\n\n**Request payload must contain the following fields:**\n\n*   username: STRING,\n*   password: STRING,\n*   full_name: STRING,\n*   role: STRING,\n*   team_id: STRING,\n*   data_of_birth: STRING ( format: \"yyyy-mm-dd\" ),\n*   institute_name: STRING,\n*   qualification: STRING,\n*   created_by: NUMBER ( 11 characters ),\n*   city: STRING,\n*   district: STRING,\n*   state: STRING,\n*   country: STRING,"
+							},
+							"response": []
+						},
+						{
+							"name": "LoginAfterRegister",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);\r",
+											"    if(pm.response.code == 200 || pm.response.code == 201){\r",
+											"        const response = pm.response.json();\r",
+											"        pm.environment.set('token', response.data[0].token);\r",
+											"        pm.collectionVariables.set(\"token\", response.data[0].token);\r",
+											"    }\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{student}}{{randomStudentName}}{{postFixUrl}}\",\r\n    \"password\": \"wHm6eGCL7uFOArs=\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/login",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								},
+								"description": "### Endpoint for student login and issues the token\n\n**Request payload must contain the following fields:**\n\n*   USERNAME : STRING\n*   PASSWORD : STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Logout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"Logout from App\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.data).to.eql(\"Logout Successful\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/auth/logout",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"logout"
+									]
+								},
+								"description": "### Endpoint for clearing the user session"
+							},
+							"response": []
+						},
+						{
+							"name": "GetStudentsCrud",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"Logout from App\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.data).to.eql(\"Logout Successful\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/auth/logout",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"logout"
+									]
+								},
+								"description": "### Endpoint for clearing the user session"
+							},
+							"response": []
+						},
+						{
+							"name": "ChangePassword",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"wHm6eGCL7uFOArs=\",\r\n    \"new_password\": \"wHm6eGCL7uFOArs=\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/changePassword",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"changePassword"
+									]
+								},
+								"description": "### Endpoint for updating the student password:\n\n**Request payload must contain the following fields:**\n\n*   user_id: STRING,\n*   old_password: STRING,\n*   new_password: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "ChangePasswordOldPwdNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"password not match\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Password is required, it should not be empty.\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"\",\r\n    \"new_password\": \"1234567891011\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/changePassword",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"changePassword"
+									]
+								},
+								"description": "### Endpoint for updating the admin password:\n\n**Request payload must contain the following fields:**\n\n*   user_id : STRING,\n*   old_password: STRING,\n*   new_password: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "ChangePasswordNewPwdNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"   pm.test(\"New password null\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Password is required, it should not be empty.\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": \"4\",\r\n    \"old_password\": \"12345678910\",\r\n    \"new_password\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/changePassword",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"changePassword"
+									]
+								},
+								"description": "### Endpoint for updating the admin password:\n\n**Request payload must contain the following fields:**\n\n*   user_id : STRING,\n*   old_password: STRING,\n*   new_password: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "ChangePasswordIDNull",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"When ID Password null\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.errors[0]).to.eql(\"Qualification is required, it should not be empty.\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user_id\": \"\",\r\n    \"old_password\": \"12345678910\",\r\n    \"new_password\": \"1234567891011\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/auth/changePassword",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"auth",
+										"changePassword"
+									]
+								},
+								"description": "### Endpoint for updating the admin password:\n\n**Request payload must contain the following fields:**\n\n*   user_id : STRING,\n*   old_password: STRING,\n*   new_password: STRING"
+							},
+							"response": []
+						}
+					],
+					"description": "### List of endpoints for user authentication are:\n\n*   Registration API of new user, the system supports 5 different levels of user role `ADMIN`, `STUDENT`, `EVALUATOR`, `MENTOR`, default role is `ADMIN`, please update the role field accordingly.\n*   Login API generate a JWT token for access the protected routes.\n*   Logout API mark the user status inactive."
+				},
+				{
+					"name": "Crud",
+					"item": [
+						{
+							"name": "Crud",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test.skip('skip test',function(){\r",
+											"\r",
+											"    pm.response.to.have.status(200);\r",
+											"}\r",
+											"\r",
+											")"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "// {\r\n//     \"email\": \"admin@gamil.com\",\r\n//     \"password\": \"12345678910\",\r\n//     \"mobile\": \"1234567890\",\r\n//     \"qualification\": \"b.com\",\r\n//     \"created_by\": 1236547899\r\n// }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/crud/faqs",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"faqs"
+									]
+								},
+								"description": "### Endpoint create record in the database response back with message\n\n**API validation fails if the payload doesn't contain the following fields:**"
+							},
+							"response": []
+						},
+						{
+							"name": "CrudWithFile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test.skip('skip test',function(){\r",
+											"\r",
+											"    pm.response.to.have.status(200);\r",
+											"}\r",
+											"\r",
+											")"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": "harish@inqui-lab.com",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "welcome",
+											"type": "text"
+										},
+										{
+											"key": "full_name",
+											"value": "Harishkumar",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/C:/Users/haris/OneDrive/Pictures/Screenshot 2022-05-31 085332.png"
+										},
+										{
+											"key": "date_of_birth",
+											"value": "1987-09-02",
+											"type": "text"
+										},
+										{
+											"key": "mobile",
+											"value": "+917997156656",
+											"type": "text"
+										},
+										{
+											"key": "team_id",
+											"value": "",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "org_name",
+											"value": "inqui-lab",
+											"type": "text"
+										},
+										{
+											"key": "qualification",
+											"value": "MBA",
+											"type": "text"
+										},
+										{
+											"key": "stream",
+											"value": "ul",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "city",
+											"value": "Hyderabad",
+											"type": "text"
+										},
+										{
+											"key": "district",
+											"value": "ul",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "state",
+											"value": "ul",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "country",
+											"value": "ul",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "ACTIVE",
+											"type": "text"
+										},
+										{
+											"key": "role",
+											"value": "ADMIN",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseurl}}/crud/user/withfile",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"user",
+										"withfile"
+									]
+								},
+								"description": "### Endpoint create record in the database response back with message\n\n**API validation fails if the payload doesn't contain the following fields:**"
+							},
+							"response": []
+						},
+						{
+							"name": "CrudWithBulkupload",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test.skip('skip test',function(){\r",
+											"\r",
+											"    pm.response.to.have.status(200);\r",
+											"}\r",
+											"\r",
+											")"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "data",
+											"type": "file",
+											"src": "/C:/Users/gururaj/Documents/unisolve-be/postman/testData/organizations_data.csv"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseurl}}/crud/organization/bulkupload",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"organization",
+										"bulkupload"
+									]
+								},
+								"description": "### Endpoint to create bulk records for service(organization, videos, courses ect..) with the field requested in the payload.\n\n**Request payload must contain the following fields:**\n\n*   file: form-data\n    \n\n**Request params must contain the following fields:**\n\n*   model name after auth\n*   example : /auth/mentor/bulkUpload\n    \n\n**Note:** this API is tested and used for organization model data as for now, we have to test other services"
+							},
+							"response": []
+						},
+						{
+							"name": "Crud",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/crud/course",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"course"
+									]
+								},
+								"description": "### Endpoint finds list of records"
+							},
+							"response": []
+						},
+						{
+							"name": "Crud/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/crud/user/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"user",
+										"1"
+									]
+								},
+								"description": "### Endpoint finds the single record"
+							},
+							"response": []
+						},
+						{
+							"name": "Crud/?param={data}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/crud/user?page=1&size=3",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"user"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "size",
+											"value": "3"
+										}
+									]
+								},
+								"description": "### Endpoint finds the single or groups records with paginations:"
+							},
+							"response": []
+						},
+						{
+							"name": "Crud/{id}",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"mobile\": \"1234967890\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/crud/user/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"user",
+										"1"
+									]
+								},
+								"description": "### Endpoint update record in the database response back with message\n\n**API validation fails if the payload doesn't contain the following fields:**"
+							},
+							"response": []
+						},
+						{
+							"name": "CrudWithFile/{id}",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/crud/user/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"user",
+										"1"
+									]
+								},
+								"description": "### Endpoint update record in the database response back with message\n\n**API validation fails if the payload doesn't contain the following fields:**"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete crud",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/crud/user/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"user",
+										"1"
+									]
+								},
+								"description": "### Endpoint delete the record in the database response back with message\n\n**API validation fails if the payload doesn't contain the following fields:**"
+							},
+							"response": []
+						}
+					],
+					"description": "#### Crud endpoints are basically CRUD services (CREATE, READ, UPDATE, DELETE) which primary used for the bulk insertion of records.\n\nUsage: we just need to pass the table_name/service_name as the parameter in the URL  \nExample: [http://localhost:3002/api/v1/crud/user](http://localhost:3002/api/v1/crud/user) (user is a service)"
+				},
+				{
+					"name": "Course Modules",
+					"item": [
+						{
+							"name": "CourseModules",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});\r",
+											" saveData=JSON.parse(responseBody)\r",
+											" \r",
+											"pm.environment.set(\"course_module_id\", saveData.data[0].dataValues[0].course_module_id);\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"course_id\": \"{{course_id}}\",\r\n    \"title\":\"CONCLUSION\",\r\n    \"description\": \"a state of complete physical, mental and social well-being and not merely the absence of disease and infirmity\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/courseModules",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courseModules"
+									]
+								},
+								"description": "### Endpoint for creating new module record\n\n**Request payload must contain the following fields:**\n\n*   course_id: STRING,\n*   description: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "CourseModules",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courseModules",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courseModules"
+									]
+								},
+								"description": "### Endpoint for getting list of modules created"
+							},
+							"response": []
+						},
+						{
+							"name": "CourseModules/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courseModules/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courseModules",
+										"1"
+									]
+								},
+								"description": "### Endpoint for getting single module"
+							},
+							"response": []
+						},
+						{
+							"name": "CourseModules/{id}",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"Completed\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/courseModules/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courseModules",
+										"1"
+									]
+								},
+								"description": "### Endpoint for updating the specific module\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "CourseModules/{id}",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courseModules/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courseModules",
+										"1"
+									]
+								},
+								"description": "### Endpoint for removing a single module record"
+							},
+							"response": []
+						},
+						{
+							"name": "CourseWithFile",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "test course1",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "test desc 1",
+											"type": "text"
+										},
+										{
+											"key": "thumbnail",
+											"type": "file",
+											"src": "/home/aman/Pictures/Screenshot from 2021-06-05 14-51-49.png",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseurl}}/courses/withFile",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courses",
+										"withFile"
+									]
+								},
+								"description": "### Endpoint for creating new course record\n\n**Request payload must contain the following fields:**\n\n*   title: STRING,\n*   description: STRING,\n*   thumbnail: FILE"
+							},
+							"response": []
+						}
+					],
+					"description": "### module service is list of endpoints with CREATE, UPDATE, READ, DELETE API's\n\nThese are the protected API's must have JWT token in the Authorizations part."
+				},
+				{
+					"name": "Course Topics",
+					"item": [
+						{
+							"name": "CourseTopics",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"course_module_id\": \"1\",\r\n    \"topic_type_id\": \"1\",\r\n    \"topic_type\":\"VIDEO\",\r\n    \"title\":\"Video 1\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/courseTopics",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courseTopics"
+									]
+								},
+								"description": "### Endpoint for creating new course topic record\n\n**Request payload must contain the following fields:**\n\n*   coures_module_id : STRING,\n*   topic_type_id: STRING,\n*   topic_type: STRING,\n*   title: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "CourseTopics",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courseTopics",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courseTopics"
+									]
+								},
+								"description": "### Endpoint for getting list of topics created"
+							},
+							"response": []
+						},
+						{
+							"name": "CourseTopics/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courseTopics/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courseTopics",
+										"1"
+									]
+								},
+								"description": "### Endpoint for getting single topic"
+							},
+							"response": []
+						},
+						{
+							"name": "CourseTopics/{id}",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"Completed\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/courseTopics/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courseTopics",
+										"1"
+									]
+								},
+								"description": "### Endpoint for updating the specific topic\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "CourseTopics/{id}",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courseTopics/:id",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courseTopics",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								},
+								"description": "### Endpoint for removing a single vide record"
+							},
+							"response": []
+						},
+						{
+							"name": "Update User Progresss",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\":\"1\",\n    \"course_topic_id\":\"1\",\n    \"status\":\"Completed\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/userTopicProgress",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"userTopicProgress"
+									]
+								},
+								"description": "### Endpoint to update the user progress on specific topic\n\n**Request payload must contain the following fields:**\n\n*   user_id: STRING,\n*   course_topic_id: STRING,\n*   status: STRING ( Options : COMPLETED / INCOMPLETE )"
+							},
+							"response": []
+						}
+					],
+					"description": "### Videos service is list of endpoints with CREATE, UPDATE, READ, DELETE API's\n\nThese are the protected API's must have JWT token in the Authorizations part.",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Courses",
+					"item": [
+						{
+							"name": "Coruse",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});\r",
+											"\r",
+											" saveData=JSON.parse(responseBody)\r",
+											" \r",
+											"pm.environment.set(\"course_id\", saveData.data[0].course_id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courses/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courses",
+										""
+									]
+								},
+								"description": "### Endpoint for getting list of courses created"
+							},
+							"response": []
+						},
+						{
+							"name": "Course/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courses/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courses",
+										"1"
+									]
+								},
+								"description": "### Endpoint for getting single course"
+							},
+							"response": []
+						},
+						{
+							"name": "Course/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/courses/{{course_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courses",
+										"{{course_id}}"
+									]
+								},
+								"description": "### Endpoint for updating the specific course\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Course{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"error\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courses/{{course_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courses",
+										"{{course_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single course record"
+							},
+							"response": []
+						}
+					],
+					"description": "### Course service is list of endpoints with CREATE, UPDATE, READ, DELETE API's\n\nThese are the protected API's must have JWT token in the Authorizations part."
+				},
+				{
+					"name": "Videos",
+					"item": [
+						{
+							"name": "Videos",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"module\": \"Health\",\r\n    \"video_stream_id\": \"BWUi6BS9T5Y\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/videos",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"videos"
+									]
+								},
+								"description": "### Endpoint for creating new video record\n\n**Request payload must contain the following fields:**\n\n*   module: STRING,\n*   video_steam_id: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Videos",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/videos",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"videos"
+									]
+								},
+								"description": "### Endpoint for getting list of videos created"
+							},
+							"response": []
+						},
+						{
+							"name": "Videos/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/videos/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"videos",
+										"1"
+									]
+								},
+								"description": "### Endpoint for getting single video"
+							},
+							"response": []
+						},
+						{
+							"name": "Videos/{id}",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/videos/1",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"videos",
+										"1"
+									]
+								},
+								"description": "### Endpoint for updating the specific video\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Videos/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/videos/{{video_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"videos",
+										"{{video_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single vide record"
+							},
+							"response": []
+						}
+					],
+					"description": "### Videos service is list of endpoints with CREATE, UPDATE, READ, DELETE API's\n\nThese are the protected API's must have JWT token in the Authorizations part."
+				},
+				{
+					"name": "Teams",
+					"item": [
+						{
+							"name": "Teams",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"mentor_id\": \"12\",\r\n    \"team_name\": \"fast_five\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/teams",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"teams"
+									]
+								},
+								"description": "### Endpoint for creating new team created\n\n**Request payload must contain the following fields:**\n\n*   mentor_id: STRING\n*   team_name: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Teams",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});\r",
+											"\r",
+											"    var jsonData = pm.response.json();\r",
+											"pm.environment.set(\"team_id\", jsonData.data[0].dataValues[0].team_id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/teams",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"teams"
+									]
+								},
+								"description": "### Endpoint for getting list of teams created"
+							},
+							"response": []
+						},
+						{
+							"name": "Teams{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/teams/{{team_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"teams",
+										"{{team_id}}"
+									]
+								},
+								"description": "### Endpoint for getting single team"
+							},
+							"response": []
+						},
+						{
+							"name": "Teams{id}/membersWrongTeam",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"error\");\r",
+											"    pm.expect(jsonData.message).to.eql(\"Team not found, check the teamID.\");\r",
+											"\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/teams/1/members",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"teams",
+										"1",
+										"members"
+									]
+								},
+								"description": "### Endpoint for getting single team"
+							},
+							"response": []
+						},
+						{
+							"name": "Teams{id}/members",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"error\");\r",
+											"    pm.expect(jsonData.message).to.eql(\"Team not found, check the teamID.\");\r",
+											"\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/teams/1/members",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"teams",
+										"1",
+										"members"
+									]
+								},
+								"description": "### Endpoint for getting single team"
+							},
+							"response": []
+						},
+						{
+							"name": "Teams/{id}",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/teams/:id",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"teams",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								},
+								"description": "### Endpoint for updating the specific team\n\n**Request payload must contain the following fields:**\n\n*   Status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Teams/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/teams/{{team_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"teams",
+										"{{team_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single team record"
+							},
+							"response": []
+						}
+					],
+					"description": "### Team service is list of endpoints with CREATE, UPDATE, READ, DELETE API's\n\nThese are the protected API's must have JWT token in the Authorizations part."
+				},
+				{
+					"name": "Notifications",
+					"item": [
+						{
+							"name": "Notifications sent to current user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/notifications/tome",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"notifications",
+										"tome"
+									]
+								},
+								"description": "### **Endpoint for getting list notifications sent to the current user.**"
+							},
+							"response": []
+						},
+						{
+							"name": "Sent a new Notifications",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"My Notification\",\r\n    \"message\": \"This is a test notification\",\r\n    \"target_audience\": \"ALL\",\r\n    \"notification_type\": \"PUSH\",\r\n    \"status\": \"PUBLISHED\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/notifications/send",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"notifications",
+										"send"
+									]
+								},
+								"description": "### Endpoint for send new notification\n\n**Request payload must contain the following fields:**\n\n*   title: STRING\n*   message: STRING\n*   target_audience: STRING, options:\n*   notification_type: STRING, options:\n*   status: STIRNG, options:"
+							},
+							"response": []
+						},
+						{
+							"name": "Sent a new Notifications with Poster",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "My Notification",
+											"type": "text"
+										},
+										{
+											"key": "message",
+											"value": "This is a test notification",
+											"type": "text"
+										},
+										{
+											"key": "target_audience",
+											"value": "ALL",
+											"type": "text"
+										},
+										{
+											"key": "notification_type",
+											"value": "PUSH",
+											"type": "text"
+										},
+										{
+											"key": "status",
+											"value": "PUBLISHED",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/C:/Users/haris/OneDrive/Pictures/Screenshot 2022-04-05 213415.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseurl}}/notifications/sendwithposter",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"notifications",
+										"sendwithposter"
+									]
+								},
+								"description": "### Endpoint for send new notification with poster\n\n**Request payload must contain the following fields:**\n\n*   title: STRING\n*   message: STRING\n*   target_audience: STRING, options:\n*   notification_type: STRING, options:\n*   status: STIRNG, options:\n*   Image: FILE"
+							},
+							"response": []
+						}
+					],
+					"description": "### Notification service is list of endpoints with POST, GET API's\n\nThese are the protected API's must have JWT token in the Authorizations part."
+				},
+				{
+					"name": "Organization",
+					"item": [
+						{
+							"name": "Organizations",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"organization_name\": \"rk college\",\r\n    \"organization_code\": \"rk223\",\r\n    \"details\": \"rk college intermedite junior\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/organizations",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"organizations"
+									]
+								},
+								"description": "### Endpoint for creating new organization created\n\n**Request payload must contain the following fields:**\n\n*   organization_name: STRING\n*   organiazation_code: STRING\n*   details: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Organization check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"file found\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"organization_code\": \"rk223\",\r\n        \"organization_name\": \"rk college\"\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/organizations/checkOrg",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"organizations",
+										"checkOrg"
+									]
+								},
+								"description": "### Endpoint for check organization is existed.\n\n**Request payload must contain the following fields:**\n\n*   organiazation_code: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "OrganizationInvalidCheck",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Bad Request\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"organization_code\": \"rk223_12312332\",\r\n        \"organization_name\": \"rk college\"\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/organizations/checkOrg",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"organizations",
+										"checkOrg"
+									]
+								},
+								"description": "### Endpoint for check organization is existed.\n\n**Request payload must contain the following fields:**\n\n*   organiazation_code: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Organizations/withFile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"organization_name\": \"rk college\",\r\n    \"organization_code\": \"rk223\",\r\n    \"details\": \"rk college intermedite junior\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/organizations",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"organizations"
+									]
+								},
+								"description": "### Endpoint for creating new organization created\n\n**Request payload must contain the following fields:**\n\n*   organization_name: STRING\n*   organiazation_code: STRING\n*   details: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Organizations",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});\r",
+											" saveData1=JSON.parse(responseBody)\r",
+											"pm.environment.set(\"organization_id\", saveData1.data[0].dataValues[0].organization_id);\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/organizations",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"organizations"
+									]
+								},
+								"description": "### Endpoint for getting list of organization created"
+							},
+							"response": []
+						},
+						{
+							"name": "Organizations/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/organizations/{{organization_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"organizations",
+										"{{organization_id}}"
+									]
+								},
+								"description": "### Endpoint for getting single organization"
+							},
+							"response": []
+						},
+						{
+							"name": "Organizations/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/organizations/{{organization_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"organizations",
+										"{{organization_id}}"
+									]
+								},
+								"description": "### Endpoint for updating the specific organization\n\n**Request payload must contain the following fields:**\n\n*   Status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Organizations/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/organizations/{{organization_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"organizations",
+										"{{organization_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single organization record"
+							},
+							"response": []
+						}
+					],
+					"description": "### Team service is list of endpoints with CREATE, UPDATE, READ, DELETE API's\n\nThese are the protected API's must have JWT token in the Authorizations part."
+				},
+				{
+					"name": "Faqs",
+					"item": [
+						{
+							"name": "Faqs",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"question\": \"Health\",\r\n    \"answer\": \"BWUi6BS9T5Y\",\r\n    \"faq_category_id\":\"1\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/faqs",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs"
+									]
+								},
+								"description": "### Endpoint for creating new video record\n\n**Request payload must contain the following fields:**\n\n*   module: STRING,\n*   video_steam_id: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqsCrud",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Create FAQ\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											" saveData=JSON.parse(responseBody)\r",
+											" \r",
+											"pm.environment.set(\"faq_id\", saveData.data[0].faq_id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"question\": \"Health\",\r\n    \"answer\": \"BWUi6BS9T5Y\",\r\n    \"faq_category_id\":\"1\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/crud/faq",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"faq"
+									]
+								},
+								"description": "### Endpoint for creating new video record\n\n**Request payload must contain the following fields:**\n\n*   module: STRING,\n*   video_steam_id: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"List all FAQ's\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											" saveData=JSON.parse(responseBody)\r",
+											"\r",
+											"pm.environment.set(\"faq_id\", saveData.data[0].dataValues[0].faq_id);\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqs",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs"
+									]
+								},
+								"description": "### Endpoint for getting list of videos created"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Verify Data\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"\r",
+											"    var a =\r",
+											"        pm.environment.get(\"faq_id\");\r",
+											"    pm.expect(jsonData.data[0].faq_id).to.eql(a);\r",
+											"});\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqs/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs",
+										"{{faq_id}}"
+									]
+								},
+								"description": "### Endpoint for getting single video"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/{id} Crud",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Verify Data\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.data[0].faq_id).to.eql(5);\r",
+											"});\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/crud/faq/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"faq",
+										"{{faq_id}}"
+									]
+								},
+								"description": "### Endpoint for getting single video"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/faqs/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs",
+										"{{faq_id}}"
+									]
+								},
+								"description": "### Endpoint for updating the specific video\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/CRUD{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/faqs/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs",
+										"{{faq_id}}"
+									]
+								},
+								"description": "### Endpoint for updating the specific video\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"//postman.setNextRequest(\"FaqsCrud\")\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqs/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs",
+										"{{faq_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single vide record"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/crud/delete",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"//postman.setNextRequest(\"FaqsCrud\")\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/crud/faq/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"faq",
+										"{{faq_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single vide record"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "FaqCategories",
+					"item": [
+						{
+							"name": "FaqCategories",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Faqs\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											" saveData=JSON.parse(responseBody)\r",
+											" \r",
+											"pm.environment.set(\"faq_category_id\", saveData.data[0].faq_category_id);"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"function randomString(minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZwewr') {\r",
+											"    if (!minValue) {\r",
+											"        minValue = 10;\r",
+											"        maxValue = 20;\r",
+											"    }\r",
+											"\r",
+											"    if (!maxValue) {\r",
+											"        maxValue = minValue;\r",
+											"    }\r",
+											"\r",
+											"    let length = _.random(minValue, maxValue),\r",
+											"        randomString = \"\";\r",
+											"\r",
+											"    for (let i = 0; i < length; i++)\r",
+											"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));\r",
+											"    return randomString;\r",
+											"}\r",
+											" \r",
+											" pm.environment.set(\"category_name\", randomString());"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"category_name\": \"{{categoryName}}{{category_name}}\"\r\n\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/faqCategories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategories"
+									]
+								},
+								"description": "### Endpoint for creating new video record\n\n**Request payload must contain the following fields:**\n\n*   module: STRING,\n*   video_steam_id: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqCategories",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqCategories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategories"
+									]
+								},
+								"description": "### Endpoint for getting list of videos created"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqCategoriesCRUD",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqCategories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategories"
+									]
+								},
+								"description": "### Endpoint for getting list of videos created"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqCategoriesCRUDId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test.skip(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/crud/faqCategorie/{{faq_category_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"crud",
+										"faqCategorie",
+										"{{faq_category_id}}"
+									]
+								},
+								"description": "### Endpoint for getting list of videos created"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqCategories/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Verify Data\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"\r",
+											"    var a =\r",
+											"        pm.environment.get(\"faq_category_id\");\r",
+											"    pm.expect(jsonData.data[0].faq_category_id).to.eql(a);\r",
+											"});\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqCategories/{{faq_category_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategories",
+										"{{faq_category_id}}"
+									]
+								},
+								"description": "### Endpoint for getting single video"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqCategories/{id}",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Status\": \"DRAFT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/faqCategories/{{faq_category_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategories",
+										"{{faq_category_id}}"
+									]
+								},
+								"description": "### Endpoint for updating the specific video\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqCategories/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"postman.setNextRequest(\"FaqCategories\")\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqCategories/{{faq_category_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategories",
+										"{{faq_category_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single vide record"
+							},
+							"response": []
+						},
+						{
+							"name": "FaqCategoriesCrud",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqCategorie/{{faq_category_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategorie",
+										"{{faq_category_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single vide record"
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "## **1.0.0**"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseurl",
+			"value": "http://15.207.254.154:3002/api/v1"
+		},
+		{
+			"key": "token",
+			"value": "Login to generate the token"
+		},
+		{
+			"key": "URL",
+			"value": "http://15.207.254.154:3002s",
+			"type": "string"
+		}
+	]
+}
