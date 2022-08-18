@@ -7,17 +7,13 @@ import { Op } from "sequelize";
 import { constents } from "../configs/constents.config";
 import { speeches } from "../configs/speeches.config";
 import validationMiddleware from "../middlewares/validation.middleware";
-import { course_topic } from "../models/course_topic.model";
-import { quiz_question } from "../models/quiz_question.model";
-import { quiz_response } from "../models/quiz_response.model";
 import { quiz_survey_question } from "../models/quiz_survey_question.model";
 import { quiz_survey_response } from "../models/quiz_survey_response.model";
-import { user_topic_progress } from "../models/user_topic_progress.model";
 import dispatcher from "../utils/dispatch.util";
 import {  quizSchema, quizSubmitResponseSchema, quizSubmitResponsesSchema, quizUpdateSchema } from "../validations/quiz_survey.validations";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
-
+import db from "../utils/dbconnection.util"
 export default class QuizSurveyController extends BaseController {
 
     model = "quiz_survey";
@@ -37,7 +33,10 @@ export default class QuizSurveyController extends BaseController {
     }
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            
+            let user_id = res.locals.user_id;
+            if (!user_id) {
+                throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
+            }
             let data: any;
             const { model, id } = req.params;
             const paramStatus: any = req.query.status;
@@ -59,12 +58,41 @@ export default class QuizSurveyController extends BaseController {
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
                 data = await this.crudService.findOne(modelClass, {
+                    attributes:[
+                        "quiz_survey_id",
+                        "no_of_questions",
+                        "role",
+                        "name",
+                        "description",
+                        "status",
+                        "created_at",
+                        "created_by",
+                        "updated_at",
+                        "updated_by",
+                        [
+                            // Note the wrapping parentheses in the call below!
+                            db.literal(`(
+                                SELECT CASE WHEN EXISTS 
+                                    (SELECT status 
+                                    FROM quiz_survey_responses as p 
+                                    WHERE p.user_id = ${user_id} 
+                                    AND p.quiz_survey_id = \`quiz_survey\`.\`quiz_survey_id\`) 
+                                THEN  
+                                    "COMPLETED"
+                                ELSE 
+                                    '${constents.task_status_flags.default}'
+                                END as progress
+                            )`),
+                            'progress'
+                        ],
+                    ],
                     where: {
                         [Op.and]: [
                             whereClauseStatusPart,
                             where,
                         ]
                     },
+                    
                     include:{
                         required:false,
                         model:quiz_survey_question,
@@ -79,6 +107,34 @@ export default class QuizSurveyController extends BaseController {
                                 condition
                             ]
                         },
+                        attributes:[
+                            "quiz_survey_id",
+                            "no_of_questions",
+                            "role",
+                            "name",
+                            "description",
+                            "status",
+                            "created_at",
+                            "created_by",
+                            "updated_at",
+                            "updated_by",
+                            [
+                                // Note the wrapping parentheses in the call below!
+                                db.literal(`(
+                                    SELECT CASE WHEN EXISTS 
+                                        (SELECT status 
+                                        FROM quiz_survey_responses as p 
+                                        WHERE p.user_id = ${user_id} 
+                                        AND p.quiz_survey_id = \`quiz_survey\`.\`quiz_survey_id\`) 
+                                    THEN  
+                                        "COMPLETED"
+                                    ELSE 
+                                        '${constents.task_status_flags.default}'
+                                    END as progress
+                                )`),
+                                'progress'
+                            ]
+                        ],
                         include:{
                             required:false,
                             model:quiz_survey_question,
@@ -158,11 +214,12 @@ export default class QuizSurveyController extends BaseController {
             const noOfQuestionsAnswered = Object.keys(user_response).length
             // console.log(noOfQuestionsAnswered)
             const lastQuestionAnsewered = user_response[questionNosAsweredArray[0]]//we have assumed that this length will always have atleast 1 item ; this could potentially be a source of bug, but is not since this should always be true based on above checks ..
-            if(lastQuestionAnsewered.selected_option == lastQuestionAnsewered.correct_answer){
-                question_no = lastQuestionAnsewered.question_no+1;
+            // if(lastQuestionAnsewered.selected_option == lastQuestionAnsewered.correct_answer){
+            //     question_no = lastQuestionAnsewered.question_no+1;
 
-            }else{
-                question_no = lastQuestionAnsewered.question_no;
+            // }else{
+                // question_no = lastQuestionAnsewered.question_no;
+                question_no = lastQuestionAnsewered.question_no+1;
                 if(lastQuestionAnsewered.level == "HARD"){
                     level = "MEDIUM"
                 }else if(lastQuestionAnsewered.level == "MEDIUM"){
@@ -171,14 +228,14 @@ export default class QuizSurveyController extends BaseController {
                     question_no = lastQuestionAnsewered.question_no+1;
                     level = "HARD"
                 }
-            }
+            // }
         }
         
         const nextQuestionsToChooseFrom = await this.crudService.findOne(quiz_survey_question,{where:{
             [Op.and]:[
                 whereClauseStatusPart,
                 {quiz_survey_id:quiz_survey_id},
-                {level:level},
+                // {level:level},
                 {question_no:question_no},
             ]
             
@@ -275,10 +332,10 @@ export default class QuizSurveyController extends BaseController {
                 quiz_survey_id:quiz_survey_id,
                 selected_option:selected_option,
                 question:questionAnswered.dataValues.question,
-                correct_answer:questionAnswered.dataValues.correct_ans,
-                level:questionAnswered.dataValues.level,
+                // correct_answer:questionAnswered.dataValues.correct_ans,//there is no correct_ans collumn
+                // level:questionAnswered.dataValues.level,//there are no level collumn
                 question_no:questionAnswered.dataValues.question_no,
-                is_correct:selected_option==questionAnswered.correct_ans
+                // is_correct:selected_option==questionAnswered.correct_ans//there is no correct_ans collumn
             }
             
             let user_response:any = {}
@@ -295,13 +352,13 @@ export default class QuizSurveyController extends BaseController {
                 }
                 let result:any = {}
                 result = resultModel.dataValues
-                result["is_correct"] = responseObjToAdd.is_correct;
-                if(responseObjToAdd.is_correct){
-                    result["msg"] = questionAnswered.dataValues.msg_ans_correct;
-                }else{
-                    result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
-                }
-                result["redirect_to"] = questionAnswered.dataValues.redirect_to;
+                // result["is_correct"] = responseObjToAdd.is_correct;
+                // if(responseObjToAdd.is_correct){
+                //     result["msg"] = questionAnswered.dataValues.msg_ans_correct;
+                // }else{
+                //     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
+                // }
+                // result["redirect_to"] = questionAnswered.dataValues.redirect_to;
                 return result;
             }else{
                 
@@ -316,13 +373,13 @@ export default class QuizSurveyController extends BaseController {
                 }
                 let result:any = {}
                 result = resultModel.dataValues
-                result["is_correct"] = responseObjToAdd.is_correct;
-                if(responseObjToAdd.is_correct){
-                    result["msg"] = questionAnswered.dataValues.msg_ans_correct;
-                }else{
-                    result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
-                }
-                result["redirect_to"] = questionAnswered.dataValues.redirect_to;
+                // result["is_correct"] = responseObjToAdd.is_correct;
+                // if(responseObjToAdd.is_correct){
+                //     result["msg"] = questionAnswered.dataValues.msg_ans_correct;
+                // }else{
+                //     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
+                // }
+                // result["redirect_to"] = questionAnswered.dataValues.redirect_to;
                 return result;
             }
 

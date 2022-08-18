@@ -103,7 +103,8 @@ export const constents = {
     list: {
       'VIDEO': 'VIDEO',
       'WORKSHEET': 'WORKSHEET',
-      'QUIZ': 'QUIZ'
+      'QUIZ': 'QUIZ',
+      'ATTACHMENT': 'ATTACHMENT'
     },
     default: 'VIDEO',
   },

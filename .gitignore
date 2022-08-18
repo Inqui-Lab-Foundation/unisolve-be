@@ -9,6 +9,7 @@ logs
 .env.old
 .env.prod
 .env.dev
+.temp
 experiments
 src/migrations/cli/*
 src/scaffolders/*
