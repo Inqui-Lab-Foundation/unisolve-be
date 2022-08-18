@@ -23,6 +23,7 @@ import StudentController from "./controllers/student.controller";
 import AdminController from "./controllers/admin.controller";
 import EvaluaterController from "./controllers/evulator.controller";
 import QuizSurveyController from "./controllers/quiz_survey.controller";
+import MentorCourseController from "./controllers/mentorCourse.controller";
 
 // validating env variables
 validateEnv();
@@ -49,7 +50,8 @@ try {
         new AdminController,
         new StudentController,
         new EvaluaterController,
-        new QuizSurveyController
+        new QuizSurveyController,
+        new MentorCourseController
     ], Number(process.env.APP_PORT));
     // starting app
     app.listen();

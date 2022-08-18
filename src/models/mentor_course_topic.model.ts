@@ -89,5 +89,5 @@ mentor_course_topic.init(
     }
 );
 
-mentor_course_topic.belongsTo(course_module, { foreignKey: 'course_module_id', as: 'course_topics' });
-mentor_course.hasMany(mentor_course_topic, { foreignKey: 'course_module_id' });
+mentor_course_topic.belongsTo(course_module, { foreignKey: 'mentor_course_id', as: 'mentor_course_topic' });
+mentor_course.hasMany(mentor_course_topic, { foreignKey: 'mentor_course_id' });

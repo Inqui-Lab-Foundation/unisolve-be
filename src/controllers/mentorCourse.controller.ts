@@ -43,12 +43,11 @@ export default class MentorCourseController extends BaseController {
             if (model) {
                 this.model = model;
             };
-
             // pagination
             const { page, size, title } = req.query;
             let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
-            const modelClass = await this.loadModel(model)
+            const modelClass = await this.loadModel(this.model)
             
             
             const where: any = {};
@@ -80,7 +79,7 @@ export default class MentorCourseController extends BaseController {
                                 WHERE
                                     ${addWhereClauseStatusPart?"ct."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
                                 AND
-                                    ct.course_id = \`course\`.\`course_id\`
+                                    ct.mentor_course_id = \`mentor_course\`.\`mentor_course_id\`
                                 AND
                                     ct.topic_type = \"VIDEO\"
                             )`),
@@ -138,11 +137,11 @@ export default class MentorCourseController extends BaseController {
                     [// Note the wrapping parentheses in the call below!
                         db.literal(`(
                         SELECT COUNT(*)
-                        FROM course_topics AS ct
+                        FROM mentor_course_topics AS ct
                         WHERE
                             ${addWhereClauseStatusPart?"ct."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
                         AND
-                            ct.course_id = \`course\`.\`course_id\`
+                            ct.mentor_course_id = \`mentor_course\`.\`mentor_course_id\`
                         AND
                             ct.topic_type = \"VIDEO\"
                     )`),
@@ -152,7 +151,6 @@ export default class MentorCourseController extends BaseController {
             },
             include: [{
                 model: mentor_course_topic,
-                as: "mentor_course_topic",
                 required:false,
                 attributes: [
                     "title",

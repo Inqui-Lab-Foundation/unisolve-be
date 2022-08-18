@@ -75,7 +75,7 @@ mentor_course.init(
     },
     {
         sequelize: db,
-        tableName: 'mentor_course',
+        tableName: 'mentor_courses',
         timestamps: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',
