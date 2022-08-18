@@ -24,6 +24,8 @@ import AdminController from "./controllers/admin.controller";
 import EvaluaterController from "./controllers/evulator.controller";
 import QuizSurveyController from "./controllers/quiz_survey.controller";
 import MentorCourseController from "./controllers/mentorCourse.controller";
+import MentorAttachmentController from "./controllers/mentorAttachment.controller";
+import MentorTopicProgressController from "./controllers/mentorTopicProgress.controller";
 
 // validating env variables
 validateEnv();
@@ -51,7 +53,9 @@ try {
         new StudentController,
         new EvaluaterController,
         new QuizSurveyController,
-        new MentorCourseController
+        new MentorCourseController,
+        new MentorAttachmentController,
+        new MentorTopicProgressController
     ], Number(process.env.APP_PORT));
     // starting app
     app.listen();

@@ -12,6 +12,7 @@ import { constents } from "../configs/constents.config";
 import { speeches } from "../configs/speeches.config";
 import { Op } from "sequelize";
 import { mentor_course_topic } from "../models/mentor_course_topic.model";
+import { mentorCourseSchema, mentorCourseUpdateSchema } from "../validations/mentorCourse.validations";
 export default class MentorCourseController extends BaseController {
     model = "mentor_course";
 
@@ -19,7 +20,7 @@ export default class MentorCourseController extends BaseController {
         this.path = '/mentorCourses';
     }
     protected initializeValidations(): void {
-        this.validations = new ValidationsHolder(courseSchema, courseUpdateSchema);
+        this.validations = new ValidationsHolder(mentorCourseSchema, mentorCourseUpdateSchema);
     }
 
     protected initializeRoutes(): void {
