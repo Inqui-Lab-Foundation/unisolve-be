@@ -152,7 +152,7 @@ export default class MentorCourseController extends BaseController {
             },
             include: [{
                 model: mentor_course_topic,
-                as: "course_topics",
+                as: "mentor_course_topic",
                 required:false,
                 attributes: [
                     "title",
@@ -215,8 +215,8 @@ export default class MentorCourseController extends BaseController {
             }],
             order: [
                 // [{model: course_module, as: 'course_modules'},{model: course_topic, as: 'course_topics'},'topic_type_order', 'ASC'],
-                db.literal(`\`course_modules.course_topics.topic_type_order\` ASC`),
-                [course_module,course_topic,'course_topic_id', 'ASC'],
+                db.literal(`\`mentor_course_topics.topic_type_order\` ASC`),
+                [mentor_course_topic,'mentor_course_topic_id', 'ASC'],
             ],
         });
         return data;
