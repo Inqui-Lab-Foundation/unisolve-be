@@ -7,17 +7,13 @@ import { Op } from "sequelize";
 import { constents } from "../configs/constents.config";
 import { speeches } from "../configs/speeches.config";
 import validationMiddleware from "../middlewares/validation.middleware";
-import { course_topic } from "../models/course_topic.model";
-import { quiz_question } from "../models/quiz_question.model";
-import { quiz_response } from "../models/quiz_response.model";
 import { quiz_survey_question } from "../models/quiz_survey_question.model";
 import { quiz_survey_response } from "../models/quiz_survey_response.model";
-import { user_topic_progress } from "../models/user_topic_progress.model";
 import dispatcher from "../utils/dispatch.util";
 import {  quizSchema, quizSubmitResponseSchema, quizSubmitResponsesSchema, quizUpdateSchema } from "../validations/quiz_survey.validations";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
-
+import db from "../utils/dbconnection.util"
 export default class QuizSurveyController extends BaseController {
 
     model = "quiz_survey";
@@ -37,7 +33,10 @@ export default class QuizSurveyController extends BaseController {
     }
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            
+            let user_id = res.locals.user_id;
+            if (!user_id) {
+                throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
+            }
             let data: any;
             const { model, id } = req.params;
             const paramStatus: any = req.query.status;
@@ -59,12 +58,41 @@ export default class QuizSurveyController extends BaseController {
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
                 data = await this.crudService.findOne(modelClass, {
+                    attributes:[
+                        "quiz_survey_id",
+                        "no_of_questions",
+                        "role",
+                        "name",
+                        "description",
+                        "status",
+                        "created_at",
+                        "created_by",
+                        "updated_at",
+                        "updated_by",
+                        [
+                            // Note the wrapping parentheses in the call below!
+                            db.literal(`(
+                                SELECT CASE WHEN EXISTS 
+                                    (SELECT status 
+                                    FROM quiz_survey_responses as p 
+                                    WHERE p.user_id = ${user_id} 
+                                    AND p.quiz_survey_id = \`quiz_survey\`.\`quiz_survey_id\`) 
+                                THEN  
+                                    "COMPLETED"
+                                ELSE 
+                                    '${constents.task_status_flags.default}'
+                                END as progress
+                            )`),
+                            'progress'
+                        ],
+                    ],
                     where: {
                         [Op.and]: [
                             whereClauseStatusPart,
                             where,
                         ]
                     },
+                    
                     include:{
                         required:false,
                         model:quiz_survey_question,
@@ -79,6 +107,34 @@ export default class QuizSurveyController extends BaseController {
                                 condition
                             ]
                         },
+                        attributes:[
+                            "quiz_survey_id",
+                            "no_of_questions",
+                            "role",
+                            "name",
+                            "description",
+                            "status",
+                            "created_at",
+                            "created_by",
+                            "updated_at",
+                            "updated_by",
+                            [
+                                // Note the wrapping parentheses in the call below!
+                                db.literal(`(
+                                    SELECT CASE WHEN EXISTS 
+                                        (SELECT status 
+                                        FROM quiz_survey_responses as p 
+                                        WHERE p.user_id = ${user_id} 
+                                        AND p.quiz_survey_id = \`quiz_survey\`.\`quiz_survey_id\`) 
+                                    THEN  
+                                        "COMPLETED"
+                                    ELSE 
+                                        '${constents.task_status_flags.default}'
+                                    END as progress
+                                )`),
+                                'progress'
+                            ]
+                        ],
                         include:{
                             required:false,
                             model:quiz_survey_question,
