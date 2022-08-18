@@ -75,8 +75,11 @@ export default class authService {
                     profile = await this.crudService.create(evaluater, whereClass);
                     break;
                 }
-                default:
+                case 'ADMIN':
                     profile = await this.crudService.create(admin, whereClass);
+                    break;
+                default:
+                    profile = null;
             }
             response['profile'] = profile;
             return response;

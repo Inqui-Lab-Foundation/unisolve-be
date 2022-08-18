@@ -71,7 +71,7 @@ student.init(
         },
         qualification: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         Age: {
             type: DataTypes.INTEGER,
