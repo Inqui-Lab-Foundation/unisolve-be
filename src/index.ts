@@ -31,7 +31,7 @@ validateEnv();
 try {
     const app = new App([
         new AuthController,
-        new CRUDController,
+        // new CRUDController,
         new NotificationsController,
         new CourseController,
         new CourseModulesController,
