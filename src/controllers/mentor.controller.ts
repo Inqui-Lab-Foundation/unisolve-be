@@ -38,6 +38,9 @@ export default class MentorController extends BaseController {
         if (!org) {
             return res.status(406).send(dispatcher(org, 'error', speeches.ORG_CODE_NOT_EXISTS, 406));
         }
+        if (!req.body.role || req.body.role !== 'MENTOR') {
+            return res.status(406).send(dispatcher(null, 'error', speeches.USER_ROLE_REQUIRED, 406));
+        }
         const otp = Math.random().toFixed(6).substr(-6);
         const generateOtp = (mobile: any, otp: any) => axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
             .then(resp => console.log(resp))
