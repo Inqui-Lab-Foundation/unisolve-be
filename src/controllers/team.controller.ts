@@ -34,8 +34,9 @@ export default class TeamController extends BaseController {
                 this.model = model;
             };
             // pagination
-            const { page, size, title } = req.query;
-            let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+            const { page, size, mentor_id } = req.query;
+            // let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+            let condition = mentor_id ? { "mentor_id": mentor_id } : null;
             const { limit, offset } = this.getPagination(page, size);
             const modelClass = await this.loadModel(model).catch(error => {
                 next(error)
