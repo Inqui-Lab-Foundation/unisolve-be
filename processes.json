@@ -7,6 +7,10 @@
         "env": {
             "NODE_ENV": "production",
             "PORT": "3002"
+        },
+        "env_testing": {
+            "NODE_ENV": "testing",
+            "PORT": "3003"
         }
     }
 ]
