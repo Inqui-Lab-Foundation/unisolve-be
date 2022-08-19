@@ -59,9 +59,6 @@ export default class authService {
             const whereClass = { ...requestBody, user_id: result.dataValues.user_id }
             switch (requestBody.role) {
                 case 'STUDENT': {
-                    if (!whereClass.UUID) {
-                        whereClass.UUID = nanoid(6).toUpperCase()
-                    }
                     profile = await this.crudService.create(student, whereClass);
                     break;
                 }
@@ -232,11 +229,10 @@ export default class authService {
                 result['user_res'] = user_res;
                 return result;
             }
-            const generatedRandomId = nanoid(6).toUpperCase();
             const response = await this.crudService.update(user, {
-                password: await bcrypt.hashSync(generatedRandomId, process.env.SALT || baseConfig.SALT)
+                password: await bcrypt.hashSync(requestBody.generatedPassword, process.env.SALT || baseConfig.SALT)
             }, { where: { user_id: user_res.dataValues.user_id } });
-            result = { data: response, password: generatedRandomId };
+            result = { data: response, password: requestBody.generatedPassword };
             return result;
         } catch (error) {
             result['error'] = error;
