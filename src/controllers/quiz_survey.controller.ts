@@ -13,7 +13,7 @@ import dispatcher from "../utils/dispatch.util";
 import {  quizSchema, quizSubmitResponseSchema, quizSubmitResponsesSchema, quizUpdateSchema } from "../validations/quiz_survey.validations";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
-import db from "../utils/dbconnection.util"
+import db from "../utils/dbconnection.util";
 export default class QuizSurveyController extends BaseController {
 
     model = "quiz_survey";
@@ -37,6 +37,11 @@ export default class QuizSurveyController extends BaseController {
             if (!user_id) {
                 throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
             }
+            let role:any = req.query.role;
+            
+            if(role && !Object.keys(constents.user_role_flags.list).includes(role)){
+                role = "MENTOR"
+            }
             let data: any;
             const { model, id } = req.params;
             const paramStatus: any = req.query.status;
@@ -45,7 +50,13 @@ export default class QuizSurveyController extends BaseController {
             };
             // pagination
             const { page, size, title } = req.query;
-            let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+            let condition:any = {};
+            if(title){
+                condition.title =  { [Op.like]: `%${title}%` } 
+            }
+            if(role){
+                condition.role = role;
+            }
             const { limit, offset } = this.getPagination(page, size);
             const modelClass = await this.loadModel(model).catch(error => {
                 next(error)
@@ -90,6 +101,7 @@ export default class QuizSurveyController extends BaseController {
                         [Op.and]: [
                             whereClauseStatusPart,
                             where,
+                            condition
                         ]
                     },
                     
