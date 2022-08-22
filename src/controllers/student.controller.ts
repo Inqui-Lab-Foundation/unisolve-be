@@ -41,10 +41,9 @@ export default class StudentController extends BaseController {
         if (!req.body.role || req.body.role !== 'STUDENT') {
             return res.status(406).send(dispatcher(null, 'error', speeches.USER_ROLE_REQUIRED, 406));
         }
-        console.log(req.body);
-        // const result = await this.authService.register(req.body);
-        // if (result.user_res) return res.status(406).send(dispatcher(result.user_res.dataValues, 'error', speeches.STUDENT_EXISTS, 406));
-        // return res.status(201).send(dispatcher(result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        const result = await this.authService.register(req.body);
+        if (result.user_res) return res.status(406).send(dispatcher(result.user_res.dataValues, 'error', speeches.STUDENT_EXISTS, 406));
+        return res.status(201).send(dispatcher(result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         let teamDetails: any;
