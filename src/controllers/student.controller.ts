@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { nanoid } from 'nanoid';
+import { customAlphabet } from 'nanoid';
 
 import { speeches } from '../configs/speeches.config';
 import dispatcher from '../utils/dispatch.util';
@@ -13,6 +13,7 @@ export default class StudentController extends BaseController {
     model = "student";
     authService: authService = new authService;
     private password = process.env.GLOBAL_PASSWORD;
+    private nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789', 6);
 
     protected initializePath(): void {
         this.path = '/students';
@@ -31,7 +32,7 @@ export default class StudentController extends BaseController {
         super.initializeRoutes();
     }
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        const generatedUUID = nanoid(6).toUpperCase();
+        const generatedUUID = this.nanoid()
         if (!req.body.username || req.body.username === "") {
             req.body.username = generatedUUID
             req.body['UUID'] = generatedUUID;
@@ -40,9 +41,10 @@ export default class StudentController extends BaseController {
         if (!req.body.role || req.body.role !== 'STUDENT') {
             return res.status(406).send(dispatcher(null, 'error', speeches.USER_ROLE_REQUIRED, 406));
         }
-        const result = await this.authService.register(req.body);
-        if (result.user_res) return res.status(406).send(dispatcher(result.user_res.dataValues, 'error', speeches.STUDENT_EXISTS, 406));
-        return res.status(201).send(dispatcher(result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        console.log(req.body);
+        // const result = await this.authService.register(req.body);
+        // if (result.user_res) return res.status(406).send(dispatcher(result.user_res.dataValues, 'error', speeches.STUDENT_EXISTS, 406));
+        // return res.status(201).send(dispatcher(result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         let teamDetails: any;
@@ -87,7 +89,7 @@ export default class StudentController extends BaseController {
     }
     private async resetPassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         // accept the user_id or user_name from the req.body and update the password in the user table
-        const generatedUUID = nanoid(6).toUpperCase();
+        const generatedUUID = this.nanoid()
         req.body['generatedPassword'] = generatedUUID;
         const result = await this.authService.restPassword(req.body, res);
         if (!result) {
