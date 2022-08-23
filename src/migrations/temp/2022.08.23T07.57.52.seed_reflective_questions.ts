@@ -13,7 +13,9 @@ export const up: Migration = async ({ context: sequelize }) => {
 	//////Question  1
 	await createQuizQuestion(sequelize,
 		1,1,
-		"Finding problems around you and trying to solve them makes you a _________________________.",
+		`Adila says she loves how beautiful her school looks when it rains! 
+		Can you tell us what do you love most about the place you live in?
+		`,
 		"Problem Observer",
 		"Problem Maker",
 		"Problem Solver",
@@ -120,7 +122,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 	await createQuizQuestion(sequelize,
 		1,3,"Which of the following are a result or effect  of global warming?(Tick all that are true)",
 		"Increase in disasters like floods",
-		"Increase in the use of plastic",
+		"Over Production of plastics",
 		"Rise in the earth’s temperature",
 		null,
 		"Increase in disasters like floods{{}}Rise in the earth’s temperature",
@@ -553,7 +555,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 
 async function createQuizQuestion(
 	sequelize:any,
-	arg_quiz_id:number,
+	arg_videe_id:number,
 	arg_question_no:number,
 	arg_q_txt:string,
 	arg_o_txt1:string,arg_o_txt2:string,arg_o_txt3:any,arg_o_txt4:any,
@@ -565,9 +567,9 @@ async function createQuizQuestion(
 	arg_quiz_type:any = "MRQ",
 	arg_question_image:any=null,
 	){
-	const courseQzInsterted = await sequelize.getQueryInterface().bulkInsert('quiz_questions',[
+	const courseQzInsterted = await sequelize.getQueryInterface().bulkInsert('reflective_quiz_questions',[
 		{
-			quiz_id:arg_quiz_id,
+			video_id:arg_videe_id,
 			question_no:arg_question_no,
 			question:arg_q_txt,
 			option_a:arg_o_txt1,
