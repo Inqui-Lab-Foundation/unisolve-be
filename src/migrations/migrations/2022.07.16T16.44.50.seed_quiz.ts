@@ -1,9 +1,10 @@
 import { Migration } from '../umzug';
 import { DataTypes } from 'sequelize';
 import { constents } from '../../configs/constents.config';
+import { Op } from 'sequelize';
 
 // you can put some table-specific imports/code here
-export const tableName = "name_of_your_table";
+export const tableName = "quiz_questions";
 export const up: Migration = async ({ context: sequelize }) => {
 	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql 
 	//or below implementation 
@@ -593,5 +594,5 @@ async function createQuizQuestion(
 export const down: Migration = async ({ context: sequelize }) => {
 	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
 	//or below implementation 
-	await sequelize.getQueryInterface().dropTable(tableName);
+	await sequelize.getQueryInterface().bulkDelete(tableName,{quiz_id: {[Op.in]: [1,2,3,4,5,6]}},{});
 };
