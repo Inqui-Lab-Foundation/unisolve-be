@@ -182,7 +182,10 @@ export default class QuizController extends BaseController {
             let hasQuestionBeenAnsweredCorrectly = false;
             if(questionAnswered.type=="TEXT"||questionAnswered.type=="DRAW"){
                 hasQuestionBeenAnsweredCorrectly = true;
-            }else{
+            }else if (!questionAnswered.correct_ans || questionAnswered.correct_ans=="(())" || questionAnswered.correct_ans==""){
+                hasQuestionBeenAnsweredCorrectly = true;
+            }
+            else{
                 hasQuestionBeenAnsweredCorrectly = selected_option==questionAnswered.correct_ans
             }
 
