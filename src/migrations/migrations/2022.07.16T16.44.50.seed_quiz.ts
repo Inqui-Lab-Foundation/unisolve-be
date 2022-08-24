@@ -23,14 +23,12 @@ export const up: Migration = async ({ context: sequelize }) => {
 		1,
 		"HARD",
 		`“Great! You are a problem solver too!”
-
 		Do you want to know about a few problem solvers of your age? 
-		Click here (link to AR) to read about them.
-		`,
-		`“Oh, you might have got confused. Why don’t you watch ‘Video 2: Solver in Us’  and try a similar question again ”`,
+		Click here to read about them.`,
+		`“Oh, you might have got confused. The correct answer is : C.
+		Why don’t you watch ‘Video 2: Solver in Us’  and try a similar question again`,
 		"MRQ",
-		"/images/quiz_imgs/quiz_1_q1_common_qimg1.png"
-		)
+		"/images/quiz_imgs/quiz_1_q1_common_qimg1.png")
 
 	await createQuizQuestion(sequelize,
 		1,1,`Problem solving means ________________	`,
@@ -42,13 +40,13 @@ export const up: Migration = async ({ context: sequelize }) => {
 		1,
 		"MEDIUM",
 		`“Great! You are a problem solver too!”
-
 		Do you want to know about a few problem solves of your age? 
 		Click here (link to AR) to read about them.`,
 		`“Oh, you might have got confused again. Don’t worry. Let me explain: 
 		Solving always involves a solution. And hence, problem solving involves creating solutions to solve those problems.
-		
-		Come on! Let’s try one more time.`)
+		Come on! Let’s try one more time.`,
+		"MRQ",
+		"/images/quiz_imgs/quiz_1_q1_common_qimg1.png")
 
 	await createQuizQuestion(sequelize,
 		1,1,
@@ -61,13 +59,12 @@ export const up: Migration = async ({ context: sequelize }) => {
 		1,
 		"EASY",
 		`“Great! You are a problem solver too!”
-
-		Do you want to know about a few problem solves of your age? 
-		Click here (link to AR) to read about them`,
-		`“You got the answer wrong. But don’t worry. There’s always a next time. 
-		The right answer is Option A.
-		
-		Click here (link to AR) to read about a few problem solvers who are of your age. You too can be just like them!`)
+		Do you want to know about a few problem solvers of your age? 
+		Click here to read about them.`,
+		`“You got the answer wrong. But don’t worry. There’s always a next time.  The right answer is Option A.
+		Click here to read about a few problem solvers who are of your age. You too can be just like them! `,
+		"MRQ",
+		"/images/quiz_imgs/quiz_1_q1_common_qimg1.png")
 	
 		//////Question  2
 	await createQuizQuestion(sequelize,
@@ -81,11 +78,13 @@ export const up: Migration = async ({ context: sequelize }) => {
 		"HARD",
 		`“Awesome! I am sure you will take steps to reduce Global Warming. It’s One World that we have after all!
 
-		Click here (link to AR)to read about 10 everyday actions you can do to reduce Global Warming`,
-		`“Oh, you might have got confused. Why don’t you read (link to AR) to know more about the actions you can do to reduce Global Warming.
-
+		Click here to read about 10 everyday actions you can do to reduce Global Warming.`,
+		`“Oh, you might have got confused. The correct answer is: A, C. 
+		Click here to know more about the actions you can do to reduce Global Warming.
+		
 		Let’s try another similar question once you are done reading it.`,
-		"MCQ"
+		"MCQ",
+		"/images/quiz_imgs/quiz_1_q2_common_qimg1.png"
 		)
 	await createQuizQuestion(sequelize,
 		1,2,
@@ -97,11 +96,16 @@ export const up: Migration = async ({ context: sequelize }) => {
 		"Resources like coal, oil and petrol are overused in making them.",
 		2,
 		"MEDIUM",
-		`“Awesome! I am sure you will take steps to reduce Global Warming. It’s One World that we have after all!`,
-		`“Oh, you might have got confused again. Don’t worry. Let me explain: 
+		`“Awesome!
+		Single use plastics are thrown after a single use . So more have to be made. This requires electricity and other resources like coal, oil and petrol which cause global warming.
+		`,
+		`“Oh, you might have got confused again. The correct answer is : B. 
+		Don’t worry. Let me explain: 
 		Single use plastics are thrown after a single use . So more have to be made. This requires electricity and other resources like coal, oil and petrol which cause global warming.
 		
-		Come on! Let’s try one more time.`)
+		Come on! Let’s try one more time.`,
+		"MRQ",
+		"/images/quiz_imgs/quiz_1_q2_common_qimg2.png")
 
 	await createQuizQuestion(sequelize,
 		1,2,"Who is responsible for the  increase in global warming?",
@@ -115,9 +119,10 @@ export const up: Migration = async ({ context: sequelize }) => {
 		`“Awesome! I am sure you will take steps to reduce Global Warming. It’s One World that we have after all!`,
 		`“You got the answer wrong. But don’t worry. There’s always a next time. 
 		The right answer is Option C.
-		Please read (Link to AR) before you answer the next question.
-		I am sure you will able to do better
-		`)
+		I am sure you will able to do better.
+		`,
+		"MRQ",
+		"/images/quiz_imgs/quiz_1_q2_common_qimg1.png")
 
 		//////Question  3
 	await createQuizQuestion(sequelize,
@@ -136,21 +141,10 @@ export const up: Migration = async ({ context: sequelize }) => {
 		`“Oh, you might have got confused. 
 		Why don’t you read (link to AR) to understand more about the effects of Global Warming and try a similar question again ”
 		`,
-		"MCQ")
+		"MCQ",
+		"/images/quiz_imgs/quiz_1_q3_common_qimg1.png")
 		
-	await createQuizQuestion(sequelize,
-		1,3,"Which of the following actions will lead to rise in Global Warming?		",
-		"All of the above",
-		"Only 1 and 4",
-		"Only 2 and 3",
-		null,
-		"Only 1 and 4",
-		3,
-		"MEDIUM",
-		``,
-		``,
-		"MRQ",
-		"/images/quiz_imgs/quiz_1_q3_medium_q_image.png")
+	
 
 	await createQuizQuestion(sequelize,
 		1,3,"Amir says Global Warming can lead to shortage of food. Do you agree with him?",
@@ -160,7 +154,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		null,
 		"Yes",
 		3,
-		"EASY",
+		"MEDIUM",
 		`“You are a sharp learner!”
 		Let’s together stop Global Warming.
 		`,
@@ -169,11 +163,48 @@ export const up: Migration = async ({ context: sequelize }) => {
 		When the temperatures warm up, plants die and we will not be able to produce enough food for all.
 		
 		Do your best for the Next Question!
-		`)
+		`,
+		"MRQ",
+		"/images/quiz_imgs/quiz_1_q3_common_qimg1.png")
+
+// await createQuizQuestion(sequelize,
+	// 	1,3,"Which of the following actions will lead to rise in Global Warming?		",
+	// 	"All of the above",
+	// 	"Only 1 and 4",
+	// 	"Only 2 and 3",
+	// 	null,
+	// 	"Only 1 and 4",
+	// 	3,
+	// 	"EASY",
+	// 	``,
+	// 	``,
+	// 	"MRQ",
+	// 	"/images/quiz_imgs/quiz_1_q3_medium_q_image.png")
+
+	await createQuizQuestion(sequelize,
+		1,3,"Which of the following are effects of  Global Warming?",
+		"Shortage of food",
+		"Rise in earth’s temperature",
+		"Both A & B",
+		null,
+		"Both A & B",
+		3,
+		"EASY",
+		`“You are a sharp learner!”
+		Let’s together stop Global Warming.
+		`,
+		`“The correct answer is : C.
+		Let me explain: 
+	   Any activity that generates excess waste will lead to overuse of natural resources and cause  global warming. Always reuse and recycle!
+	   
+	   All the best for the next question
+	   `,
+		"MRQ",
+		"/images/quiz_imgs/quiz_1_q3_common_qimg1.png")
 
 		//////Question  4
 	await createQuizQuestion(sequelize,
-		1,4,"Pick all the statements that are true about Social  Innovation.",
+		1,4,"Pick all the statements that are true about Social Innovation.",
 		"Social Innovation is a new idea to solve a problem faced by a group of  people.",
 		"Social Innovations make the life of people better.",
 		"A device that can provide clean drinking water at a very low cost is an example of Social Innovation.",
@@ -183,10 +214,14 @@ export const up: Migration = async ({ context: sequelize }) => {
 		"HARD",
 		`“Excellent! You will soon be an innovator too!”
 
-		Here (link to AR)  are some excellent examples of a few social innovations. Do give it a read.
+		Click here  to see some excellent examples of a few social innovations. Do give it a read.
 		`,
-		`“Oh, you might be confused. Why don’t you watch ‘Video 3: Innovation for better life’  and try a similar question again ”`,
-		"MCQ")
+		`“Oh, you might be confused. 
+		The correct answer is: A,B,C.
+		Why don’t you watch ‘Video 3: Innovation for better life’  and try a similar question again ”
+		`,
+		"MCQ",
+		"/images/quiz_imgs/quiz_1_q4_common_qimg1.png")
 
 	await createQuizQuestion(sequelize,
 		1,4,"When can an innovation be called a Social Innovation?",
@@ -199,31 +234,72 @@ export const up: Migration = async ({ context: sequelize }) => {
 		"MEDIUM",
 		`“Excellent! You will soon be an innovator too!”
 
-		Here (link to AR)  are some excellent examples of a few social innovations. Do give it a read.
+		Click here to see some excellent examples of a few social innovations. Do give it a read.		
 		`,
-		`“Oh, you might have got confused again. Don’t worry. Let me explain: 
+		`"“Oh, you might have got confused again. Don’t worry. The correct answer is C. 
+		Let me explain: 
 		Any new solution can be an innovation but if that new solution helps solve a problem that many people are facing, then its a social innovation.”
 		
 		Come on! Let’s try one more time.
-		`)
+		"`,
+		"MRQ",
+		"/images/quiz_imgs/quiz_1_q4_common_qimg1.png")
+
+	// await createQuizQuestion(sequelize,
+	// 	1,4,"Which of the following do you think is a social innovation?",
+	// 	"/images/quiz_imgs/quiz_1_q4_easy_o1.png",
+	// 	"/images/quiz_imgs/quiz_1_q4_easy_o2.png",
+	// 	null,
+	// 	null,
+	// 	"/images/quiz_imgs/quiz_1_q4_easy_o1.png",
+	// 	4,
+	// 	"EASY",
+	// 	`“Excellent! You will soon be an innovator too!” Here (link to AR)  are some excellent examples of a few social innovations.`,
+	// 	`“You got the answer wrong. But don’t worry. There’s always a next time. 
+	// 	The right answer is Option A.
+		
+	// 	Here (link to AR)  are some excellent examples of a few social innovations. Do give it a read before answering the next question.
+	// 	`,
+	// 	"MRQ",
+	// 	"/images/quiz_imgs/quiz_1_q4_common_qimg1.png")
 
 	await createQuizQuestion(sequelize,
 		1,4,"Which of the following do you think is a social innovation?",
-		"/images/quiz_imgs/quiz_1_q4_easy_o1.png",
-		"/images/quiz_imgs/quiz_1_q4_easy_o2.png",
+		"A) A bag that makes it easy for the farmers to carry important items needed while working in the field.",
+		"B) A pen that can write in both red and blue colors.",
 		null,
 		null,
-		"/images/quiz_imgs/quiz_1_q4_easy_o1.png",
+		"A) A bag that makes it easy for the farmers to carry important items needed while working in the field.",
 		4,
 		"EASY",
-		`“Excellent! You will soon be an innovator too!” Here (link to AR)  are some excellent examples of a few social innovations.`,
-		`“You got the answer wrong. But don’t worry. There’s always a next time. 
+		`“Excellent! You will soon be an innovator too!”
+
+		Click here to see some excellent examples of a few social innovations.`,
+		`"“You got the answer wrong. 
 		The right answer is Option A.
 		
-		Here (link to AR)  are some excellent examples of a few social innovations. Do give it a read before answering the next question.
-		`)
+		Click here to seeare some excellent examples of a few social innovations. Do give it a read before answering the next question."`,
+		"MRQ",
+		"/images/quiz_imgs/quiz_1_q4_common_qimg1.png"+"{{}}"+"/images/quiz_imgs/quiz_1_q4_easy_qimg1.png")
 		
 		//////Question  5
+	// await createQuizQuestion(sequelize,
+	// 	1,5,"Match each of  the following SDGs in column A with an Action in column B.",
+	// 	"a-2, b-1, c-3",
+	// 	"a-3, b-1, c-2",
+	// 	"a-1, b-2, c-3",
+	// 	null,
+	// 	"a-2, b-1, c-3",
+	// 	5,
+	// 	"HARD",
+	// 	`“Good! You are an SDG Expert!
+
+	// 	Want to learn more about such simple actions you can do. Click Here( link to AR)
+	// 	`,
+	// 	`“Oh, you might be confused. Don’t worry. You will do better soon.Why don’t you read (link to AR) before trying again.`,
+	// 	'MRQ',
+	// 	"/images/quiz_imgs/quiz_1_q5_hard_q_image.png")
+
 	await createQuizQuestion(sequelize,
 		1,5,"Match each of  the following SDGs in column A with an Action in column B.",
 		"a-2, b-1, c-3",
@@ -233,50 +309,51 @@ export const up: Migration = async ({ context: sequelize }) => {
 		"a-2, b-1, c-3",
 		5,
 		"HARD",
-		`“Good! You are an SDG Expert!
-
-		Want to learn more about such simple actions you can do. Click Here( link to AR)
-		`,
-		`“Oh, you might be confused. Don’t worry. You will do better soon.Why don’t you read (link to AR) before trying again.`,
+		`"“Good! You are an SDG Expert!
+		Want to learn more about such simple actions you can do. Click Here
+		"`,
+		`"“Oh, you might be confused. The correct answer is : A
+		Don’t worry. Why don’t you Click here and read before trying again.
+		"`,
 		'MRQ',
-		"/images/quiz_imgs/quiz_1_q5_hard_q_image.png")
+		"/images/quiz_imgs/quiz_1_q5n6_common_qimg1.png"+"{{}}"+"/images/quiz_imgs/quiz_1_q5_hard_qimg1.png")
 
-		await createQuizQuestion(sequelize,
-			1,5,"Match each of  the following SDGs in column A with an Action in column B.",
-			"a-2, b-1, c-3",
-			"a-3, b-1, c-2",
-			"a-1, b-3, c-2",
-			null,
-			"a-1, b-3, c-2",
-			5,
-			"MEDIUM",
-			`“Good! You are an SDG Expert!`,
-			`“Oh, you might have got confused again. But I am here to explain. The right answer here is Option C.
-			Burning waste heats up the earth.
-			Girls should be allowed to do all that boys are allowed to. That’s Gender Equality at school. 
-			And sleep is essential for good health.
-			Let’s try again!
-			`,
-			'MRQ',
-			"/images/quiz_imgs/quiz_1_q5_medium_q_image.png")
+	await createQuizQuestion(sequelize,
+		1,5,"Match each of  the following SDGs in column A with an Action in column B.",
+		"a-2, b-1, c-3",
+		"a-3, b-1, c-2",
+		"a-1, b-3, c-2",
+		null,
+		"a-1, b-3, c-2",
+		5,
+		"MEDIUM",
+		`“Good! You are an SDG Expert!`,
+		`“Oh, you might have got confused again. But I am here to explain. The right answer here is Option C.
+		Burning waste heats up the earth.
+		Girls should be allowed to do all that boys are allowed to. That’s Gender Equality at school. 
+		And sleep is essential for good health.
+		Let’s try again!
+		`,
+		'MRQ',
+		"/images/quiz_imgs/quiz_1_q5n6_common_qimg1.png"+"{{}}"+"/images/quiz_imgs/quiz_1_q5_medium_qimg1.png")
 
-		await createQuizQuestion(sequelize,
-			1,5,"Match each of  the following images to SDGs they can achieve.",
-			"a-2, b-3, c-1",
-			"a-3, b-1, c-2",
-			"a-1, b-2, c-3",
-			null,
-			"a-2, b-3, c-1",
-			5,
-			"EASY",
-			`“Good! You are an SDG Expert!`,
-			`That’s not the right answer. 
-			The correct answer is Option A.
-			
-			I believe you will do great in the next question
-			`,
-			'MRQ',
-			"/images/quiz_imgs/quiz_1_q5_easy_q_image.png")
+	await createQuizQuestion(sequelize,
+		1,5,"Match each of  the following images to SDGs they can achieve.",
+		"a-2, b-3, c-1",
+		"a-3, b-1, c-2",
+		"a-1, b-2, c-3",
+		null,
+		"a-2, b-3, c-1",
+		5,
+		"EASY",
+		`“Good! You are an SDG Expert!`,
+		`That’s not the right answer. 
+		The correct answer is Option A.
+		
+		I believe you will do great in the next question
+		`,
+		'MRQ',
+		"/images/quiz_imgs/quiz_1_q5n6_common_qimg1.png"+"{{}}"+"/images/quiz_imgs/quiz_1_q5_easy_qimg1.png")
 
 	//////Question  6
 		await createQuizQuestion(sequelize,
@@ -288,12 +365,15 @@ export const up: Migration = async ({ context: sequelize }) => {
 			"Achieving them makes the world a better place.",
 			6,
 			"HARD",
-			`“That’s right Bravo!
+			`"“That’s right Bravo!
 			Let’s make the world a better place!”
-			`,
-			`“Oh, you might be confused. Don’t worry. We all get confused sometimes. Why don’t you watch ‘Video 4: Sustainable Development Goals’  and try a similar question again ”`,
+			Click here  to understand more about SDGs
+			"`,
+			`"“Oh, you might be confused.The correct answer is: A. 
+			We all get confused sometimes. Why don’t you watch ‘Video 4: Sustainable Development Goals’  and try a similar question again ”
+			"`,
 			'MRQ',
-			null)
+			"/images/quiz_imgs/quiz_1_q5n6_common_qimg1.png")
 		
 		await createQuizQuestion(sequelize,
 			1,6,"Sustainable Development Goals aim to solve problems faced by people and planet and help build a better world. This is important because:(Tick all that are true)",
@@ -306,15 +386,14 @@ export const up: Migration = async ({ context: sequelize }) => {
 			"MEDIUM",
 			`“That’s right Bravo!
 			Let’s make the world a better place!”
-			`,
-			`“You got the answer wrong. But don’t worry. There’s always a next time. 
-			The right answer is All Options A, B and C.
-			Click here (link to AR) to understand more about SDGs
+			Click here  to understand more about SDGs"`,
+			`“You got the answer wrong. The correct answer is: A, B and C”
+			Click here to understand more about SDGs
 			
 			 Let’s try another question that’s similar.
-			`,
-			'MRQ',
-			null)
+			"`,
+			'MCQ',
+			"/images/quiz_imgs/quiz_1_q5n6_common_qimg1.png")
 
 		await createQuizQuestion(sequelize,
 			1,6,"Which among the following is not an SDG",
@@ -322,7 +401,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 			"Quality Education",
 			"Life Beyond Earth",
 			null,
-			"Stop Climate Change",
+			"Life Beyond Earth",
 			6,
 			"EASY",
 			`“That’s right Bravo!
@@ -335,7 +414,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 			All the best for the next question.
 			`,
 			'MRQ',
-			null)
+			"/images/quiz_imgs/quiz_1_q5n6_common_qimg1.png")
 			//////Question  7
 		await createQuizQuestion(sequelize,
 			1,7,`Which of the following practices would you call as sustainable?
@@ -354,14 +433,13 @@ export const up: Migration = async ({ context: sequelize }) => {
 			"HARD",
 			`“Awesome! Remember to follow such sustainable practices in daily life.
 
-			Here (link to AR) are some simple sustainable practices you can follow at home
-			`,
-			`“Oh, you might be confused. Why don’t you read (link to AR) and understand a few easy sustainable practices you can follow at home.
-
-			Once you are done reading, Let’s try a similar question once again.
-			`,
+			Click here to see some simple sustainable practices you can follow at home
+			"`,
+			`"“Oh, you might be confused. 
+			The correct answer is : A”
+			Before you answer the next question,  Click here to read and understand a few easy sustainable practices you can follow at home."`,
 			"MRQ",
-			null)
+			"/images/quiz_imgs/quiz_1_q7_common_qimg1.png")
 
 		await createQuizQuestion(sequelize,
 			1,7,`Adila says refusing to recycle used products is not a sustainable practice. Do you agree with Adila?`,
@@ -375,12 +453,11 @@ export const up: Migration = async ({ context: sequelize }) => {
 			`“Awesome! You are a quick learner!”`,
 			`“You got the answer wrong. But don’t worry. There’s always a next time. 
 			The right answer is Option C.
-			Please read (link to AR) if you haven’t read it yet.
 			
 			Let’s try again after you finish reading.
-			`,
+			"`,
 			"MRQ",
-			null)
+			"/images/quiz_imgs/quiz_1_q7_common_qimg1.png")
 		
 		
 		await createQuizQuestion(sequelize,
@@ -397,9 +474,70 @@ export const up: Migration = async ({ context: sequelize }) => {
 			Earth has fixed amount of resources. We have to use them carefully and leave enough for the future. That’s sustainability.
 			`,
 			"MRQ",
-			null)
+			"/images/quiz_imgs/quiz_1_q7_common_qimg1.png")
 
 		//////Question  8
+
+		// await createQuizQuestion(sequelize,
+		// 	1,8,`People with lesser opportunities have to be given more support so that they benefit equally. 
+		// 	Which among the following images indicates better support for those who face inequality?
+		// 	`,
+		// 	"/images/quiz_imgs/quiz_1_q8_easy_o1.png",
+		// 	"/images/quiz_imgs/quiz_1_q8_easy_o1.png",
+		// 	null,
+		// 	null,
+		// 	"/images/quiz_imgs/quiz_1_q8_easy_o1.png",
+		// 	8,
+		// 	"HARD",
+		// 	`“Great! Now you know what reducing inequalities means”`,
+		// 	`“The right answer is Option B”.
+		// 	Support must be given as per needs of people. Remember!, Some need to be given more support than others to reduce inequality
+		// 	`,
+		// 	"MRQ",
+		// 	"/images/quiz_imgs/quiz_1_q8_common_qimg1.png"+"{{}}"+"/images/quiz_imgs/quiz_1_q8_hard_qimg1.png")
+		await createQuizQuestion(sequelize,
+			1,8,`People with lesser opportunities have to be given more support so that they benefit equally. 
+			Which among the following images indicates better support for those who face inequality?
+			`,
+			"A) Picture A",
+			"B) Picture B",
+			null,
+			null,
+			"B) Picture B",
+			8,
+			"HARD",
+			`"“Great! Now you know what reducing inequalities means” 
+
+			Click here to learn 5 simple Actions you can do to reduce inequalities in your communities.
+			"`,
+			`"“The correct answer is: B”.
+			Support must be given as per needs of people. Remember!, Some need to be given more support than others to reduce inequality 
+			"`,
+			"MRQ",
+			"/images/quiz_imgs/quiz_1_q8_common_qimg1.png"+"{{}}"+"/images/quiz_imgs/quiz_1_q8_hard_qimg1.png")
+
+		
+		await createQuizQuestion(sequelize,
+			1,8,`Which of the following actions will NOT help in reducing inequalities?`,
+			"A) Give more support to people who are in need / poor.",
+			"B) Stop using Single use plastics",
+			"C) Donate food, clothes and money to the people who don’t have enough.",
+			null,
+			"B) Stop using Single use plastics",
+			8,
+			"MEDIUM",
+			`"“Great! You can start doing these actions to reduce inequalities in your community.”
+			Click here to learn 5 simple Actions you can do to reduce inequalities in your communities."`,
+			`"“You got the answer wrong. But don’t worry. There’s always a next time. 
+			The correct answer is :B”
+			Inequalities is about providing support to the people in need  in your communities.
+			
+			Let’s answer a similar question and try once more  
+			"`,
+			"MRQ",
+			"/images/quiz_imgs/quiz_1_q8_medium_q_image.png")
+		
+
 		await createQuizQuestion(sequelize,
 			1,8,`Basheera’s wheelchair is a solution to a problem faced by many differently abled people.
 
@@ -411,52 +549,17 @@ export const up: Migration = async ({ context: sequelize }) => {
 			null,
 			"Reduced Inequalities",
 			8,
-			"HARD",
-			`“Wow! You too can be a problem solver like Basheera!”
-
-			Here (link to AR)  are 5 simple Actions you can do to reduce inequalities in your communities.
-			`,
-			`“Oh, you might be confused. Here (link to AR) are 5 simple Actions you can do to reduce inequalities in your communities.
-			Let’s try another similar question once you are done reading
-			`,
-			"MRQ",
-			null)
-		await createQuizQuestion(sequelize,
-			1,8,`Which of the following actions help in reducing inequalities?`,
-			"All of the above",
-			"Only 1 and 3",
-			"All except 2",
-			null,
-			"Only 1 and 3",
-			8,
-			"MEDIUM",
-			`“Great! You can start doing these actions to reduce inequalities in your community.”`,
-			`“You got the answer wrong. But don’t worry. There’s always a next time. 
-			The right answer is Option B.
-			Inequalities is about providing support to the people in need  in your communities.
-			
-			Let’s answer a similar question and try once more 
-			`,
-			"MRQ",
-			"/images/quiz_imgs/quiz_1_q8_medium_q_image.png")
-		
-		await createQuizQuestion(sequelize,
-			1,8,`People with lesser opportunities have to be given more support so that they benefit equally. 
-			Which among the following images indicates better support for those who face inequality?
-			`,
-			"/images/quiz_imgs/quiz_1_q8_easy_o1.png",
-			"/images/quiz_imgs/quiz_1_q8_easy_o1.png",
-			null,
-			null,
-			"/images/quiz_imgs/quiz_1_q8_easy_o1.png",
-			8,
 			"EASY",
-			`“Great! Now you know what reducing inequalities means”`,
-			`“The right answer is Option B”.
-			Support must be given as per needs of people. Remember!, Some need to be given more support than others to reduce inequality
-			`,
+			`"“Wow! You too can be a problem solver like Basheera!”
+
+			Click here to learn 5 simple Actions you can do to reduce inequalities in your communities.
+			"`,
+			`"“Oh, you might be confused. Click here to learn 5 simple Actions you can do to reduce inequalities in your communities.
+			Let’s try another similar question once you are done reading
+			"`,
 			"MRQ",
-			null)
+			"/images/quiz_imgs/quiz_1_q8_common_qimg1.png")
+		
 	///QUIZ 3 but quiz_id = 2 because 2nd module doesnt have quiz 
 	//////Question  9
 	await createQuizQuestion(sequelize,
