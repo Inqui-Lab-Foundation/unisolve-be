@@ -167,7 +167,7 @@ async function createSurveyQuiz(
     arg_role:string){
 		const quizSurveyInserted = await sequelize.getQueryInterface().bulkInsert(tableName,[
 			{   
-                id:arg_id,
+                quiz_survey_id:arg_id,
 				no_of_questions:arg_no_od_questions,
 				name:arg_name,
 				role:arg_role,
