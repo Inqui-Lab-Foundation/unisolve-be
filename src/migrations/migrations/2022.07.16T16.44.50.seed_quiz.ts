@@ -28,6 +28,8 @@ export const up: Migration = async ({ context: sequelize }) => {
 		Click here (link to AR) to read about them.
 		`,
 		`“Oh, you might have got confused. Why don’t you watch ‘Video 2: Solver in Us’  and try a similar question again ”`,
+		"MRQ",
+		"/images/quiz_imgs/quiz_1_q1_common_qimg1.png"
 		)
 
 	await createQuizQuestion(sequelize,
@@ -148,7 +150,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		``,
 		``,
 		"MRQ",
-		"/images/quiz_1_q3_medium_q_image.png")
+		"/images/quiz_imgs/quiz_1_q3_medium_q_image.png")
 
 	await createQuizQuestion(sequelize,
 		1,3,"Amir says Global Warming can lead to shortage of food. Do you agree with him?",
@@ -207,11 +209,11 @@ export const up: Migration = async ({ context: sequelize }) => {
 
 	await createQuizQuestion(sequelize,
 		1,4,"Which of the following do you think is a social innovation?",
-		"/images/quiz_1_q4_easy_o1.png",
-		"/images/quiz_1_q4_easy_o2.png",
+		"/images/quiz_imgs/quiz_1_q4_easy_o1.png",
+		"/images/quiz_imgs/quiz_1_q4_easy_o2.png",
 		null,
 		null,
-		"/images/quiz_1_q4_easy_o1.png",
+		"/images/quiz_imgs/quiz_1_q4_easy_o1.png",
 		4,
 		"EASY",
 		`“Excellent! You will soon be an innovator too!” Here (link to AR)  are some excellent examples of a few social innovations.`,
@@ -237,7 +239,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		`,
 		`“Oh, you might be confused. Don’t worry. You will do better soon.Why don’t you read (link to AR) before trying again.`,
 		'MRQ',
-		"/images/quiz_1_q5_hard_q_image.png")
+		"/images/quiz_imgs/quiz_1_q5_hard_q_image.png")
 
 		await createQuizQuestion(sequelize,
 			1,5,"Match each of  the following SDGs in column A with an Action in column B.",
@@ -256,7 +258,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 			Let’s try again!
 			`,
 			'MRQ',
-			"/images/quiz_1_q5_medium_q_image.png")
+			"/images/quiz_imgs/quiz_1_q5_medium_q_image.png")
 
 		await createQuizQuestion(sequelize,
 			1,5,"Match each of  the following images to SDGs they can achieve.",
@@ -274,7 +276,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 			I believe you will do great in the next question
 			`,
 			'MRQ',
-			"/images/quiz_1_q5_easy_q_image.png")
+			"/images/quiz_imgs/quiz_1_q5_easy_q_image.png")
 
 	//////Question  6
 		await createQuizQuestion(sequelize,
@@ -436,17 +438,17 @@ export const up: Migration = async ({ context: sequelize }) => {
 			Let’s answer a similar question and try once more 
 			`,
 			"MRQ",
-			"/images/quiz_1_q8_medium_q_image.png")
+			"/images/quiz_imgs/quiz_1_q8_medium_q_image.png")
 		
 		await createQuizQuestion(sequelize,
 			1,8,`People with lesser opportunities have to be given more support so that they benefit equally. 
 			Which among the following images indicates better support for those who face inequality?
 			`,
-			"/images/quiz_1_q8_easy_o1.png",
-			"/images/quiz_1_q8_easy_o1.png",
+			"/images/quiz_imgs/quiz_1_q8_easy_o1.png",
+			"/images/quiz_imgs/quiz_1_q8_easy_o1.png",
 			null,
 			null,
-			"/images/quiz_1_q8_easy_o1.png",
+			"/images/quiz_imgs/quiz_1_q8_easy_o1.png",
 			8,
 			"EASY",
 			`“Great! Now you know what reducing inequalities means”`,
@@ -486,7 +488,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		`Excellent! How about reading this  (link to AR): “How to conduct interviews and research” before you go ahead to answer the next question!`,
 		`You might have got confused. Why don’t you watch Video 3B: identifying Problems before you go ahead to answer the next question`,
 		"MRQ",
-		"/images/quiz_3_q9_medium_q_image.png")
+		"/images/quiz_imgs/quiz_3_q9_medium_q_image.png")
 	await createQuizQuestion(sequelize,
 		2,9,`Which of the following techniques will help you find problems that you are not aware of`,
 		"Research",

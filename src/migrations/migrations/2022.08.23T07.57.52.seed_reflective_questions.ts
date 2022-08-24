@@ -73,7 +73,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		`There are so many innovative products we use in our daily lives`,
 		`“Oh, you might have got confused. Why don’t you watch Video and try a similar question again ”`,
 		"DRAW",
-		"/images/rfq_m1_v3_q1_qimg1.png"
+		"/images/quiz_imgs/rfq_m1_v3_q1_qimg1.png"
 		)
 	
 		////Video 3
@@ -81,9 +81,9 @@ export const up: Migration = async ({ context: sequelize }) => {
 	await createQuizQuestion(sequelize,
 		3,2,
 		"How did you feel after learning about Basheera, a 12 year old girl, who solved a problem for her father.",
-		"/images/rfq_m1_v3_q2_o1.png",
-		"/images/rfq_m1_v3_q2_o2.png",
-		"/images/rfq_m1_v3_q2_o3.png",
+		"/images/quiz_imgs/rfq_m1_v3_q2_o1.png",
+		"/images/quiz_imgs/rfq_m1_v3_q2_o2.png",
+		"/images/quiz_imgs/rfq_m1_v3_q2_o3.png",
 		null,
 		"",
 		2,
@@ -91,7 +91,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		`There are so many innovative products we use in our daily lives`,
 		`“Oh, you might have got confused. Why don’t you watch Video and try a similar question again ”`,
 		"MRQ",
-		"/images/rfq_m1_v3_q2_qimg1.png")
+		"/images/quiz_imgs/rfq_m1_v3_q2_qimg1.png")
 
 
 	
@@ -100,9 +100,9 @@ export const up: Migration = async ({ context: sequelize }) => {
 		//////Question  1
 	await createQuizQuestion(sequelize,
 		4,1,`According to Adila and team people in every community should have the following things to be called developed: Good food to eat, Clean drinking water, No garbage on streets.`,
-		"/images/rfq_m1_v4_q1_o1.png",
-		"/images/rfq_m1_v4_q1_o2.png",
-		"/images/rfq_m1_v4_q1_o3.png",
+		"/images/quiz_imgs/rfq_m1_v4_q1_o1.png",
+		"/images/quiz_imgs/rfq_m1_v4_q1_o2.png",
+		"/images/quiz_imgs/rfq_m1_v4_q1_o3.png",
 		null,
 		"",
 		2,
@@ -125,7 +125,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		`Earth is the only planet that we can call our own, Let’s take care good care of it.`,
 		`“Oh, you might have got confused. Why don’t you watch Video and try a similar question again ”`,
 		"MRQ",
-		"/images/rfq_m1_v4_q2_qimg1.png")
+		"/images/quiz_imgs/rfq_m1_v4_q2_qimg1.png")
 
 		
 		//module 2
@@ -143,7 +143,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		`You are always special because there is no one like you`,
 		`“Oh, you might have got confused. Why don’t you watch Video and try a similar question again ”`,
 		"TEXT",
-		"/images/rfq_m2_v1_q1_qimg1.png")
+		"/images/quiz_imgs/rfq_m2_v1_q1_qimg1.png")
 
 	//question 2	
 	await createQuizQuestion(sequelize,
@@ -158,7 +158,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 		`You have great friends! May your Friendship always grow stronger`,
 		`“Oh, you might have got confused. Why don’t you watch Video and try a similar question again ”`,
 		"TEXT",
-		"/images/rfq_m2_v1_q2_qimg1.png")
+		"/images/quiz_imgs/rfq_m2_v1_q2_qimg1.png")
 
 		//done uptill here which is question no 5 in sheet 
 		///video 2
