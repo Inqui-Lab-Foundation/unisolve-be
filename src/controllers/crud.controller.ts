@@ -156,14 +156,12 @@ export default class CRUDController implements IController {
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingCollumns(req, res, modelLoaded)
             const data = await this.crudService.create(modelLoaded, payload);
-
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 throw badRequest(data.message)
             }
-
             return res.status(201).send(dispatcher(data, 'created'));
         } catch (error) {
             next(error);
