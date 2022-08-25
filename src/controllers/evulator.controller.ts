@@ -25,6 +25,7 @@ export default class EvaluaterController extends BaseController {
         this.router.post(`${this.path}/login`, this.login.bind(this));
         this.router.get(`${this.path}/logout`, this.logout.bind(this));
         this.router.put(`${this.path}/changePassword`, this.changePassword.bind(this));
+        this.router.put(`${this.path}/updatePassword`, this.updatePassword.bind(this));
         super.initializeRoutes();
     }
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -61,9 +62,26 @@ export default class EvaluaterController extends BaseController {
     private async changePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const result = await this.authService.changePassword(req.body, res);
         if (!result) {
-            return res.status(404).send(dispatcher(result.user_res, 'error', speeches.USER_NOT_FOUND));
-        } else if (result.match) {
-            return res.status(404).send(dispatcher(result.match, 'error', speeches.USER_PASSWORD));
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+        }else if (result.error) {
+            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+        }
+         else if (result.match) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
+        } else {
+            return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+        }
+    }
+
+    private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const result = await this.authService.updatePassword(req.body, res);
+        if (!result) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+        }else if (result.error) {
+            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+        }
+         else if (result.match) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
         } else {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }

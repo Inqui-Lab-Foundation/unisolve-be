@@ -15,6 +15,7 @@ import { user } from "../models/user.model";
 import { team } from '../models/team.model';
 
 export default class authService {
+    
     crudService: CRUDService = new CRUDService;
     private password = process.env.GLOBAL_PASSWORD;
 
@@ -189,8 +190,10 @@ export default class authService {
                     ]
                 }
             });
+            
             if (!user_res) {
                 result['user_res'] = user_res;
+                result['error'] = speeches.USER_NOT_FOUND;
                 return result;
             }
             //comparing the password with hash
@@ -209,6 +212,10 @@ export default class authService {
             result['error'] = error;
             return result;
         }
+    }
+
+    async updatePassword(requestBody: any, responseBody: any) {
+        return await this.changePassword(requestBody,responseBody);
     }
     async restPassword(requestBody: any, responseBody: any) {
         let result: any = {};
