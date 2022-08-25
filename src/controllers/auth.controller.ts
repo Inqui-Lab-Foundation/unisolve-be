@@ -80,6 +80,7 @@ export default class AuthController implements IController {
             } else {
                 // user status checking
                 let stop_procedure: boolean = false;
+                let stop_issuing_token: boolean = false;
                 let error_message: string = '';
                 switch (user_res.status) {
                     case 'DELETED':
@@ -92,8 +93,25 @@ export default class AuthController implements IController {
                         stop_procedure = true;
                         error_message = speeches.USER_INACTIVE
                 }
+                switch (user_res.role) {
+                    case 'STUDENT': {
+                        if (user_res.role !== req.body.role) stop_issuing_token = true;
+                    }
+                    case 'ADMIN': {
+                        if (user_res.role !== req.body.role) stop_issuing_token = true;
+                    }
+                    case 'MENTOR': {
+                        if (user_res.role !== req.body.role) stop_issuing_token = true;
+                    }
+                    case 'EVALUATER': {
+                        if (user_res.role !== req.body.role) stop_issuing_token = true;
+                    }
+                }
                 if (stop_procedure) {
                     return res.status(401).send(dispatcher(error_message, 'error', speeches.USER_RISTRICTED, 401));
+                }
+                if (stop_issuing_token) {
+                    return res.status(401).send(dispatcher(error_message, 'error', speeches.USER_ROLE_CHECK, 401));
                 }
                 await this.crudService.update(user, {
                     is_loggedin: "YES",

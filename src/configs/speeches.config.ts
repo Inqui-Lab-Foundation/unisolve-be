@@ -29,6 +29,7 @@ export const speeches = {
     USER_PASSWORD: "User pasword doesn't match",
     USER_PASSWORD_CHANGE: "User password updated",
     USER_RISTRICTED: "Unauthorized Access!",
+    USER_ROLE_CHECK: "Unauthorized Access, check the role",
     USER_DELETED: "User is ditected as deleted. Kindly contact your administrator.",
     USER_LOCKED: "User is ditected as locked. Kindly contact your administrator.",
     USER_INACTIVE: "User is ditected as inactive. Kindly contact your administrator.",
