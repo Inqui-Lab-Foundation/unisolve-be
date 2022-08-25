@@ -13,7 +13,7 @@ import { organization } from '../models/organization.model';
 import { student } from "../models/student.model";
 import { user } from "../models/user.model";
 import { team } from '../models/team.model';
-
+import axios from 'axios';
 export default class authService {
     
     crudService: CRUDService = new CRUDService;
@@ -208,6 +208,62 @@ export default class authService {
                 result['data'] = response;
                 return result;
             }
+        } catch (error) {
+            result['error'] = error;
+            return result;
+        }
+    }
+    
+    async generateOtp(){
+        return Math.random().toFixed(6).substr(-6);
+    }
+
+    async triggerOtpMsg(mobile: any, otp: any){
+        try{
+            const resp = await axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
+            // console.log(resp)
+            return resp;
+        }catch(err){
+            console.log(err);
+            return err;
+        }
+    }
+    
+    async verifyUser(requestBody: any, responseBody: any) {
+        let result: any = {};
+        try {
+            const user_res: any = await this.crudService.findOne(user, {
+                where: {
+                    [Op.or]: [
+                        // {
+                        //     email: { [Op.eq]: requestBody.email }
+                        // },
+                        {
+                            mobile: { [Op.like]: `%${requestBody.mobile}%` }
+                        }
+                    ]
+                }
+            });
+            
+            if (!user_res) {
+                result['user_res'] = user_res;
+                result['error'] = speeches.USER_NOT_FOUND;
+                return result;
+            }
+            //TODO trigger otp and update user with otp
+            const otp =  await this.generateOtp();
+
+            const smsResponse = await this.triggerOtpMsg(requestBody.mobile,otp);
+            if(smsResponse instanceof Error){
+                throw smsResponse;
+            }
+            
+            const response = await this.crudService.update(user, {
+                password: otp
+            }, { where: { user_id: user_res.dataValues.user_id } });
+            result['data'] = response;
+            return result;
+
         } catch (error) {
             result['error'] = error;
             return result;

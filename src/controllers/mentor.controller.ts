@@ -10,6 +10,7 @@ import dispatcher from '../utils/dispatch.util';
 import authService from '../services/auth.service';
 import BaseController from './base.controller';
 import ValidationsHolder from '../validations/validationHolder';
+import { badRequest } from 'boom';
 
 export default class MentorController extends BaseController {
     model = "mentor";
@@ -31,6 +32,7 @@ export default class MentorController extends BaseController {
         this.router.get(`${this.path}/logout`, this.logout.bind(this));
         this.router.put(`${this.path}/changePassword`, this.changePassword.bind(this));
         this.router.put(`${this.path}/updatePassword`, this.updatePassword.bind(this));
+        this.router.put(`${this.path}/verifyUser`, this.verifyUser.bind(this));
         super.initializeRoutes();
     }
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -42,16 +44,17 @@ export default class MentorController extends BaseController {
         if (!req.body.role || req.body.role !== 'MENTOR') {
             return res.status(406).send(dispatcher(null, 'error', speeches.USER_ROLE_REQUIRED, 406));
         }
-        const otp = Math.random().toFixed(6).substr(-6);
-        const generateOtp = (mobile: any, otp: any) => axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
-            .then(resp => console.log(resp))
-            .catch(error => console.error(error));
+        const otp = await this.authService.generateOtp()
+        // const generateOtp = (mobile: any, otp: any) => axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
+        //     .then(resp => console.log(resp))
+        //     .catch(error => console.error(error));
         req.body.password = otp;
         const result = await this.authService.register(req.body);
         if (result.user_res) {
             return res.status(406).send(dispatcher(result.user_res.dataValues, 'error', speeches.MENTOR_EXISTS, 406));
         }
-        generateOtp(req.body.mobile, otp);
+        // generateOtp(req.body.mobile, otp);
+        this.authService.triggerOtpMsg(req.body.mobile, otp); //async function but no need to await ...since we yet do not care about the outcome of the sms trigger ....!!this may need to change later on ...!!
         const data = result.profile.dataValues;
         data['otp'] = otp;
         return res.status(201).send(dispatcher(data, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
@@ -114,4 +117,26 @@ export default class MentorController extends BaseController {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
+
+    private async verifyUser(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try{
+            const mobile =  req.body.mobile;
+            if(!mobile){
+                throw badRequest(speeches.MOBILE_NUMBER_REQUIRED);
+            }
+            const result = await this.authService.verifyUser(req.body, res);
+            if (!result) {
+                return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+            }else if (result.error) {
+                return res.status(404).send(dispatcher(result.error, 'error', result.error));
+            } else {
+                return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+            }
+        }catch(err){
+            next(err);
+        }
+        
+    }
+
+
 };
