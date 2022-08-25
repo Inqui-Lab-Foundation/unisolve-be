@@ -116,6 +116,15 @@ export const constents = {
     },
     default: 'MALE',
   },
+  res_status: {
+    list: {
+      '0': '0',
+      '1': '1',
+      '2': '2',
+      '3': '3',
+    },
+    default: '0'
+  },
   default_image_path: "/images/default.jpg"
 
 };

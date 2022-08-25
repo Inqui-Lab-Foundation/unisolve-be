@@ -12,6 +12,7 @@ export class mentor extends Model<InferAttributes<mentor>, InferCreationAttribut
     declare mentor_id: CreationOptional<number>;
     declare team_id: string;
     declare user_id: number;
+    declare reg_status: number;
     declare organization_code: string;
     declare full_name: string;
     declare date_of_birth: Date;
@@ -47,6 +48,11 @@ mentor.init(
         user_id: {
             type: DataTypes.INTEGER,
             allowNull: false
+        },
+        reg_status: {
+            type: DataTypes.ENUM(...Object.values(constents.res_status.list)),
+            defaultValue: constents.res_status.default,
+            allowNull: true
         },
         organization_code: {
             type: DataTypes.STRING,
