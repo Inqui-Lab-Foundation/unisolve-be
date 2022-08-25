@@ -3,7 +3,6 @@
 import { badData, badRequest, internal, unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import { invalid } from "joi";
-import { emitWarning } from "process";
 import { Op } from "sequelize";
 import { constents } from "../configs/constents.config";
 import { speeches } from "../configs/speeches.config";
@@ -11,7 +10,6 @@ import validationMiddleware from "../middlewares/validation.middleware";
 import { course_topic } from "../models/course_topic.model";
 import { quiz_question } from "../models/quiz_question.model";
 import { quiz_response } from "../models/quiz_response.model";
-import { user } from "../models/user.model";
 import { user_topic_progress } from "../models/user_topic_progress.model";
 import dispatcher from "../utils/dispatch.util";
 import { quizNextQuestionSchema, quizSchema, quizSubmitResponseSchema, quizUpdateSchema } from "../validations/quiz.validations";
@@ -32,7 +30,6 @@ export default class QuizController extends BaseController {
         //example route to add 
         this.router.get(this.path + "/:id/nextQuestion/", this.getNextQuestion.bind(this));
         this.router.post(this.path + "/:id/response/", validationMiddleware(quizSubmitResponseSchema), this.submitResponse.bind(this));
-        this.router.get(this.path + "/clearUserResponse/:user_id", this.clearUserResponse.bind(this));
         super.initializeRoutes();
     }
 
@@ -171,8 +168,6 @@ export default class QuizController extends BaseController {
                 throw internal(questionAnswered.message)
             }
             if (!questionAnswered) {
-                throw invalid("Invalid Quiz question id")
-            if(!questionAnswered){
                 throw badData("Invalid Quiz question id")
             }
 
@@ -184,6 +179,18 @@ export default class QuizController extends BaseController {
             // console.log(quizRes);
             let dataToUpsert: any = {}
             dataToUpsert = { quiz_id: quiz_id, user_id: user_id, updated_by: user_id }
+
+            //check if question was ansered correctly
+            let hasQuestionBeenAnsweredCorrectly = false;
+            if (questionAnswered.type == "TEXT" || questionAnswered.type == "DRAW") {
+                hasQuestionBeenAnsweredCorrectly = true;
+            } else if (!questionAnswered.correct_ans || questionAnswered.correct_ans == "(())" || questionAnswered.correct_ans == "") {
+                hasQuestionBeenAnsweredCorrectly = true;
+            }
+            else {
+                hasQuestionBeenAnsweredCorrectly = selected_option == questionAnswered.correct_ans
+            }
+
             let responseObjToAdd: any = {}
             responseObjToAdd = {
                 ...req.body,
@@ -191,34 +198,11 @@ export default class QuizController extends BaseController {
                 correct_answer: questionAnswered.dataValues.correct_ans,
                 level: questionAnswered.dataValues.level,
                 question_no: questionAnswered.dataValues.question_no,
-                is_correct: selected_option == questionAnswered.correct_ans
+                is_correct: hasQuestionBeenAnsweredCorrectly
             }
 
             let user_response: any = {}
             if (quizRes) {
-            //check if question was ansered correctly
-            let hasQuestionBeenAnsweredCorrectly = false;
-            if(questionAnswered.type=="TEXT"||questionAnswered.type=="DRAW"){
-                hasQuestionBeenAnsweredCorrectly = true;
-            }else if (!questionAnswered.correct_ans || questionAnswered.correct_ans=="(())" || questionAnswered.correct_ans==""){
-                hasQuestionBeenAnsweredCorrectly = true;
-            }
-            else{
-                hasQuestionBeenAnsweredCorrectly = selected_option==questionAnswered.correct_ans
-            }
-
-            let responseObjToAdd:any = {}
-            responseObjToAdd = {
-                ...req.body,
-                question:questionAnswered.dataValues.question,
-                correct_answer:questionAnswered.dataValues.correct_ans,
-                level:questionAnswered.dataValues.level,
-                question_no:questionAnswered.dataValues.question_no,
-                is_correct:hasQuestionBeenAnsweredCorrectly
-            }
-            
-            let user_response:any = {}
-            if(quizRes){
                 // console.log(quizRes.dataValues.response);
                 user_response = JSON.parse(quizRes.dataValues.response);
                 user_response[questionAnswered.dataValues.question_no] = responseObjToAdd;
@@ -264,7 +248,7 @@ export default class QuizController extends BaseController {
         } catch (err) {
             next(err)
         }
-    };
+    }
     protected async clearUserResponse(req: Request, res: Response, next: NextFunction) {
         // user_id or email_id will be getting from the params then find the
         try {
@@ -277,5 +261,5 @@ export default class QuizController extends BaseController {
         } catch (error) {
             next(error)
         }
-    }
-} 
+    };
+}
