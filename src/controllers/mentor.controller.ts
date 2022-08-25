@@ -11,6 +11,8 @@ import authService from '../services/auth.service';
 import BaseController from './base.controller';
 import ValidationsHolder from '../validations/validationHolder';
 import { badRequest } from 'boom';
+import { mentor } from '../models/mentor.model';
+import { where } from 'sequelize/types';
 
 export default class MentorController extends BaseController {
     model = "mentor";
@@ -46,16 +48,15 @@ export default class MentorController extends BaseController {
         if (!req.body.role || req.body.role !== 'MENTOR') {
             return res.status(406).send(dispatcher(null, 'error', speeches.USER_ROLE_REQUIRED, 406));
         }
-        const otp = await this.authService.generateOtp()
-        // const generateOtp = (mobile: any, otp: any) => axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
-        //     .then(resp => console.log(resp))
-        //     .catch(error => console.error(error));
+        const otp = await this.authService.generateOtp();
         req.body.password = otp;
+        if (req.body.req_status) {
+            req.body['reg_status'] = 1;
+        }
         const result = await this.authService.register(req.body);
         if (result.user_res) {
             return res.status(406).send(dispatcher(result.user_res.dataValues, 'error', speeches.MENTOR_EXISTS, 406));
         }
-        // generateOtp(req.body.mobile, otp);
         this.authService.triggerOtpMsg(req.body.mobile, otp); //async function but no need to await ...since we yet do not care about the outcome of the sms trigger ....!!this may need to change later on ...!!
         const data = result.profile.dataValues;
         data['otp'] = otp;
@@ -64,18 +65,20 @@ export default class MentorController extends BaseController {
 
     // TODO: Update flag reg_status on success validate the OTP
     private async validateOtp(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        const user_res = await this.authService.crudService.findOnePassword(user, { where: { user_id: req.body.user_id } });
-        const match = bcrypt.compareSync(req.body.otp, user_res.dataValues.password);
-        if (!match) {
+        const user_res = await this.authService.validatedOTP(req.body);
+        if (!user_res) {
             res.status(404).send(dispatcher(null, 'error', speeches.OTP_FAIL))
         } else {
-            res.status(200).send(dispatcher(match, 'success', speeches.OTP_FOUND))
+            res.status(200).send(dispatcher(user_res, 'success', speeches.OTP_FOUND))
         }
     }
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const mentorData = await this.authService.crudService.findOne(mentor, { where: { user_id: req.body.user_id } });
+        if (mentorData.reg_statue === '3') {
+            // TODO: Update the logic once confirm
+        }
         const result = await this.authService.login(req.body);
-        console.log(result);
         if (!result) {
             return res.status(404).send(dispatcher(result, 'error', speeches.USER_NOT_FOUND));
         } else if (result.error) {

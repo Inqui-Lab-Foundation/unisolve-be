@@ -50,6 +50,7 @@ export default class authService {
     async register(requestBody: any) {
         let response: any = {};
         let profile: any;
+        let reg_statue: any = requestBody.reg_statue;
         try {
             const user_res = await this.crudService.findOne(user, { where: { username: requestBody.username } });
             if (user_res) {
@@ -57,7 +58,8 @@ export default class authService {
                 return response
             }
             const result = await this.crudService.create(user, requestBody);
-            const whereClass = { ...requestBody, user_id: result.dataValues.user_id }
+            let whereClass = { ...requestBody, user_id: result.dataValues.user_id };
+            console.log(whereClass);
             switch (requestBody.role) {
                 case 'STUDENT': {
                     profile = await this.crudService.create(student, whereClass);
@@ -213,11 +215,9 @@ export default class authService {
             return result;
         }
     }
-
     async generateOtp() {
         return Math.random().toFixed(6).substr(-6);
     }
-
     async triggerOtpMsg(mobile: any, otp: any) {
         try {
             const resp = await axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
@@ -228,7 +228,6 @@ export default class authService {
             return err;
         }
     }
-
     async verifyUser(requestBody: any, responseBody: any) {
         let result: any = {};
         try {
@@ -298,9 +297,19 @@ export default class authService {
             return result;
         }
     }
-
     async updatePassword(requestBody: any, responseBody: any) {
+        if (requestBody.user_res) {
+            await this.crudService.update(mentor, { reg_status: '3' }, { where: { user_id: requestBody.user_id } })
+        };
         return await this.changePassword(requestBody, responseBody);
+    }
+    async validatedOTP(requestBody: any) {
+        if (requestBody.reg_status) {
+            await this.crudService.update(mentor, { reg_status: '2' }, { where: { user_id: requestBody.user_id } })
+        }
+        const user_res: any = await this.crudService.findOnePassword(user, { where: { user_id: requestBody.user_id } })
+        const match = bcrypt.compareSync(requestBody.otp, user_res.dataValues.password);
+        return match;
     }
     async restPassword(requestBody: any, responseBody: any) {
         let result: any = {};
