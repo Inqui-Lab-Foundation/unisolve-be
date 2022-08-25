@@ -33,8 +33,10 @@ export default class MentorController extends BaseController {
         this.router.put(`${this.path}/changePassword`, this.changePassword.bind(this));
         this.router.put(`${this.path}/updatePassword`, this.updatePassword.bind(this));
         this.router.put(`${this.path}/verifyUser`, this.verifyUser.bind(this));
+        this.router.put(`${this.path}/updateMobile`, this.updateMobile.bind(this));
         super.initializeRoutes();
     }
+    // TODO: update the register flow by adding a flag called reg_statue in mentor tables
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         if (!req.body.organization_code || req.body.organization_code === "") return res.status(406).send(dispatcher(speeches.ORG_CODE_REQUIRED, 'error', speeches.NOT_ACCEPTABLE, 406));
         const org = await this.authService.checkOrgDetails(req.body.organization_code);
@@ -60,6 +62,7 @@ export default class MentorController extends BaseController {
         return res.status(201).send(dispatcher(data, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
+    // TODO: Update flag reg_status on success validate the OTP
     private async validateOtp(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const user_res = await this.authService.crudService.findOnePassword(user, { where: { user_id: req.body.user_id } });
         const match = bcrypt.compareSync(req.body.otp, user_res.dataValues.password);
@@ -72,6 +75,7 @@ export default class MentorController extends BaseController {
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const result = await this.authService.login(req.body);
+        console.log(result);
         if (!result) {
             return res.status(404).send(dispatcher(result, 'error', speeches.USER_NOT_FOUND));
         } else if (result.error) {
@@ -94,24 +98,25 @@ export default class MentorController extends BaseController {
         const result = await this.authService.changePassword(req.body, res);
         if (!result) {
             return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
-        }else if (result.error) {
+        } else if (result.error) {
             return res.status(404).send(dispatcher(result.error, 'error', result.error));
         }
-         else if (result.match) {
+        else if (result.match) {
             return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
         } else {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
 
+    //TODO: Update flag reg_status on successful changed password
     private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const result = await this.authService.updatePassword(req.body, res);
         if (!result) {
             return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
-        }else if (result.error) {
+        } else if (result.error) {
             return res.status(404).send(dispatcher(result.error, 'error', result.error));
         }
-         else if (result.match) {
+        else if (result.match) {
             return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
         } else {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
@@ -119,24 +124,40 @@ export default class MentorController extends BaseController {
     }
 
     private async verifyUser(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        try{
-            const mobile =  req.body.mobile;
-            if(!mobile){
+        try {
+            const mobile = req.body.mobile;
+            if (!mobile) {
                 throw badRequest(speeches.MOBILE_NUMBER_REQUIRED);
             }
             const result = await this.authService.verifyUser(req.body, res);
             if (!result) {
                 return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
-            }else if (result.error) {
+            } else if (result.error) {
                 return res.status(404).send(dispatcher(result.error, 'error', result.error));
             } else {
                 return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
             }
-        }catch(err){
+        } catch (err) {
             next(err);
         }
-        
     }
-
-
+    //TODO: ADD API to update the mobile number and trigger OTP,
+    private async updateMobile(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            const { mobile } = req.body;
+            if (!mobile) {
+                throw badRequest(speeches.MOBILE_NUMBER_REQUIRED);
+            }
+            const result = await this.authService.mobileUpdate(req.body);
+            if (!result) {
+                return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+            } else if (result.error) {
+                return res.status(404).send(dispatcher(result.error, 'error', result.error));
+            } else {
+                return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_MOBILE_CHANGE, 202));
+            }
+        } catch (error) {
+            next(error)
+        }
+    }
 };
