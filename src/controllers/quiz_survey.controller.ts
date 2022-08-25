@@ -1,6 +1,6 @@
 
 
-import { badRequest, internal, notFound, unauthorized } from "boom";
+import { badData, badRequest, internal, notFound, unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import { invalid } from "joi";
 import { Op } from "sequelize";
@@ -327,7 +327,7 @@ export default class QuizSurveyController extends BaseController {
                 throw internal(questionAnswered.message)
             }
             if(!questionAnswered){
-                throw invalid("Invalid Quiz question id")
+                throw badData("Invalid Quiz question id")
             }
     
     

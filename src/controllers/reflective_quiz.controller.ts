@@ -1,7 +1,7 @@
 
 
-import { badRequest, internal, notFound, unauthorized } from "boom";
-import { NextFunction, Request, Response } from "express";
+import { badData, badRequest, internal, notFound, unauthorized } from "boom";
+import e, { NextFunction, Request, Response } from "express";
 import { invalid } from "joi";
 import { Op } from "sequelize";
 import { constents } from "../configs/constents.config";
@@ -114,7 +114,7 @@ export default class ReflectiveQuizController extends BaseController {
                 throw internal(questionAnswered.message)
             }
             if(!questionAnswered){
-                throw invalid("Invalid Quiz question id")
+                throw badData("Invalid Quiz question id")
             }
 
 
@@ -131,6 +131,17 @@ export default class ReflectiveQuizController extends BaseController {
             if (attachmentsCopyResult.errors.length>0) {
                 return res.status(406).send(dispatcher(attachmentsCopyResult.errors, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
+            
+            //check if question was ansered correctly
+            let hasQuestionBeenAnsweredCorrectly = false;
+            if(questionAnswered.type=="TEXT"||questionAnswered.type=="DRAW"){
+                hasQuestionBeenAnsweredCorrectly = true;
+            }else if (!questionAnswered.correct_ans || questionAnswered.correct_ans=="(())" || questionAnswered.correct_ans==""){
+                hasQuestionBeenAnsweredCorrectly = true;
+            }
+            else {
+                hasQuestionBeenAnsweredCorrectly = selected_option==questionAnswered.correct_ans
+            }
 
             let responseObjToAdd:any = {}
             responseObjToAdd = {
@@ -140,7 +151,7 @@ export default class ReflectiveQuizController extends BaseController {
                 level:questionAnswered.dataValues.level,
                 question_no:questionAnswered.dataValues.question_no,
                 attachments:attachmentsCopyResult.attachments,
-                is_correct:selected_option==questionAnswered.correct_ans,      
+                is_correct:hasQuestionBeenAnsweredCorrectly,      
             }
             
             let user_response:any = {}

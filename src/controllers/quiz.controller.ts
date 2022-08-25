@@ -1,6 +1,6 @@
 
 
-import { badRequest, internal, unauthorized } from "boom";
+import { badData, badRequest, internal, unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import { invalid } from "joi";
 import { emitWarning } from "process";
@@ -172,6 +172,8 @@ export default class QuizController extends BaseController {
             }
             if (!questionAnswered) {
                 throw invalid("Invalid Quiz question id")
+            if(!questionAnswered){
+                throw badData("Invalid Quiz question id")
             }
 
 
@@ -182,7 +184,6 @@ export default class QuizController extends BaseController {
             // console.log(quizRes);
             let dataToUpsert: any = {}
             dataToUpsert = { quiz_id: quiz_id, user_id: user_id, updated_by: user_id }
-
             let responseObjToAdd: any = {}
             responseObjToAdd = {
                 ...req.body,
@@ -195,6 +196,29 @@ export default class QuizController extends BaseController {
 
             let user_response: any = {}
             if (quizRes) {
+            //check if question was ansered correctly
+            let hasQuestionBeenAnsweredCorrectly = false;
+            if(questionAnswered.type=="TEXT"||questionAnswered.type=="DRAW"){
+                hasQuestionBeenAnsweredCorrectly = true;
+            }else if (!questionAnswered.correct_ans || questionAnswered.correct_ans=="(())" || questionAnswered.correct_ans==""){
+                hasQuestionBeenAnsweredCorrectly = true;
+            }
+            else{
+                hasQuestionBeenAnsweredCorrectly = selected_option==questionAnswered.correct_ans
+            }
+
+            let responseObjToAdd:any = {}
+            responseObjToAdd = {
+                ...req.body,
+                question:questionAnswered.dataValues.question,
+                correct_answer:questionAnswered.dataValues.correct_ans,
+                level:questionAnswered.dataValues.level,
+                question_no:questionAnswered.dataValues.question_no,
+                is_correct:hasQuestionBeenAnsweredCorrectly
+            }
+            
+            let user_response:any = {}
+            if(quizRes){
                 // console.log(quizRes.dataValues.response);
                 user_response = JSON.parse(quizRes.dataValues.response);
                 user_response[questionAnswered.dataValues.question_no] = responseObjToAdd;
