@@ -28,6 +28,7 @@ export default class StudentController extends BaseController {
         this.router.post(`${this.path}/login`, validationMiddleware(studentLoginSchema), this.login.bind(this));
         this.router.get(`${this.path}/logout`, this.logout.bind(this));
         this.router.put(`${this.path}/changePassword`, validationMiddleware(studentChangePasswordSchema), this.changePassword.bind(this));
+        this.router.put(`${this.path}/updatePassword`, validationMiddleware(studentChangePasswordSchema), this.updatePassword.bind(this));
         this.router.post(`${this.path}/resetPassword`, validationMiddleware(studentResetPasswordSchema), this.resetPassword.bind(this));
         super.initializeRoutes();
     }
@@ -79,13 +80,32 @@ export default class StudentController extends BaseController {
     private async changePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const result = await this.authService.changePassword(req.body, res);
         if (!result) {
-            return res.status(404).send(dispatcher(result.user_res, 'error', speeches.USER_NOT_FOUND));
-        } else if (result.match) {
-            return res.status(404).send(dispatcher(result.match, 'error', speeches.USER_PASSWORD));
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+        }else if (result.error) {
+            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+        }
+         else if (result.match) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
         } else {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
+
+    private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const result = await this.authService.updatePassword(req.body, res);
+        if (!result) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+        }else if (result.error) {
+            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+        }
+         else if (result.match) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
+        } else {
+            return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+        }
+    }
+
+
     private async resetPassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         // accept the user_id or user_name from the req.body and update the password in the user table
         const generatedUUID = this.nanoid()
@@ -99,4 +119,6 @@ export default class StudentController extends BaseController {
             return res.status(202).send(dispatcher(result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
+
+    
 };

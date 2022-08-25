@@ -23,6 +23,7 @@ import { student } from '../models/student.model';
 import { evaluater } from '../models/evaluater.model';
 import { badRequest } from 'boom';
 import { nanoid } from 'nanoid'
+import authService from '../services/auth.service';
 
 export default class AuthController implements IController {
     public path: string;
@@ -30,7 +31,7 @@ export default class AuthController implements IController {
     crudService: CRUDService = new CRUDService;
     public userModel: any = new user();
     private password = process.env.GLOBAL_PASSWORD;
-
+    authService: authService = new authService;
     constructor() {
         this.path = '/auth';
         this.router = Router();
@@ -40,7 +41,8 @@ export default class AuthController implements IController {
         this.router.post(`${this.path}/login`, this.login);
         this.router.get(`${this.path}/logout`, this.logout);
         this.router.post(`${this.path}/register`, this.register);
-        this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword);
+        this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword.bind(this));
+        this.router.put(`${this.path}/updatePassword`, validationMiddleware(authValidations.changePassword), this.updatePassword.bind(this));
         this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm), this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
         this.router.post(`${this.path}/:model/bulkUpload`, this.bulkUpload.bind(this))
@@ -186,37 +188,37 @@ export default class AuthController implements IController {
         }
     }
 
-    private changePassword = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-        try {
-            const user_res: any = await this.crudService.findOnePassword(user, {
-                where: {
-                    [Op.or]: [
-                        {
-                            username: { [Op.eq]: req.body.username }
-                        },
-                        {
-                            user_id: { [Op.like]: `%${req.body.user_id}%` }
-                        }
-                    ]
-                }
-            });
-            if (!user_res) {
-                return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
-            }
-            //comparing the password with hash
-            const match = bcrypt.compareSync(req.body.old_password, user_res.dataValues.password);
-            if (match === false) {
-                return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_PASSWORD));
-            } else {
-                const result = await this.crudService.update(user, {
-                    password: await bcrypt.hashSync(req.body.new_password, process.env.SALT || baseConfig.SALT)
-                }, { where: { user_id: user_res.dataValues.user_id } });
-                return res.status(202).send(dispatcher(result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
-            }
-        } catch (error) {
-            next(error);
-        }
-    }
+    // private changePassword = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    //     try {
+    //         const user_res: any = await this.crudService.findOnePassword(user, {
+    //             where: {
+    //                 [Op.or]: [
+    //                     {
+    //                         username: { [Op.eq]: req.body.username }
+    //                     },
+    //                     {
+    //                         user_id: { [Op.like]: `%${req.body.user_id}%` }
+    //                     }
+    //                 ]
+    //             }
+    //         });
+    //         if (!user_res) {
+    //             return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
+    //         }
+    //         //comparing the password with hash
+    //         const match = bcrypt.compareSync(req.body.old_password, user_res.dataValues.password);
+    //         if (match === false) {
+    //             return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_PASSWORD));
+    //         } else {
+    //             const result = await this.crudService.update(user, {
+    //                 password: await bcrypt.hashSync(req.body.new_password, process.env.SALT || baseConfig.SALT)
+    //             }, { where: { user_id: user_res.dataValues.user_id } });
+    //             return res.status(202).send(dispatcher(result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+    //         }
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // }
 
     private dynamicSignupForm = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
@@ -329,5 +331,33 @@ export default class AuthController implements IController {
                 return res.status(400).send(dispatcher({ createdEntities: counter, existedEntities }, 'error', speeches.CSV_DATA_EXIST, 400));
             }
         });
+    }
+
+    private async changePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const result = await this.authService.changePassword(req.body, res);
+        if (!result) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+        }else if (result.error) {
+            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+        }
+         else if (result.match) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
+        } else {
+            return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+        }
+    }
+
+    private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const result = await this.authService.updatePassword(req.body, res);
+        if (!result) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+        }else if (result.error) {
+            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+        }
+         else if (result.match) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
+        } else {
+            return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+        }
     }
 }   
