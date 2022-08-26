@@ -50,9 +50,7 @@ export default class MentorController extends BaseController {
         }
         const otp = await this.authService.generateOtp();
         req.body.password = otp;
-        if (req.body.req_status) {
-            req.body['reg_status'] = 1;
-        }
+        req.body['reg_status'] = 1;
         const result = await this.authService.register(req.body);
         if (result.user_res) {
             return res.status(406).send(dispatcher(result.user_res.dataValues, 'error', speeches.MENTOR_EXISTS, 406));
@@ -74,16 +72,18 @@ export default class MentorController extends BaseController {
     }
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        const mentorData = await this.authService.crudService.findOne(mentor, { where: { user_id: req.body.user_id } });
-        if (mentorData.reg_statue === '3') {
-            // TODO: Update the logic once confirm
-        }
+        req.body['role'] = 'MENTOR'
         const result = await this.authService.login(req.body);
+        // console.log(result);
         if (!result) {
             return res.status(404).send(dispatcher(result, 'error', speeches.USER_NOT_FOUND));
         } else if (result.error) {
             return res.status(401).send(dispatcher(result.error, 'error', speeches.USER_RISTRICTED, 401));
         } else {
+            const mentorData = await this.authService.crudService.findOne(mentor, { where: { user_id: result.data.user_id } });
+            if (mentorData.dataValues.reg_status !== '3') {
+                return res.status(404).send(dispatcher(null, 'error', speeches.USER_REG_STATUS));
+            }
             return res.status(200).send(dispatcher(result.data, 'success', speeches.USER_LOGIN_SUCCESS));
         }
     }

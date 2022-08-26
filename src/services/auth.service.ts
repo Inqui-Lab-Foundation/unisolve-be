@@ -94,7 +94,8 @@ export default class authService {
             const user_res: any = await this.crudService.findOne(user, {
                 where: {
                     username: requestBody.username,
-                    password: await bcrypt.hashSync(requestBody.password, process.env.SALT || baseConfig.SALT)
+                    password: await bcrypt.hashSync(requestBody.password, process.env.SALT || baseConfig.SALT),
+                    role: requestBody.role
                 }
             });
             if (!user_res) {
@@ -298,18 +299,20 @@ export default class authService {
         }
     }
     async updatePassword(requestBody: any, responseBody: any) {
-        if (requestBody.user_res) {
-            await this.crudService.update(mentor, { reg_status: '3' }, { where: { user_id: requestBody.user_id } })
-        };
-        return await this.changePassword(requestBody, responseBody);
+        const res = await this.changePassword(requestBody, responseBody);
+        console.log(res);
+        if (res.data) {
+            await this.crudService.update(mentor, { reg_status: '3' }, { where: { user_id: requestBody.user_id } });
+        } return res;
     }
     async validatedOTP(requestBody: any) {
-        if (requestBody.reg_status) {
-            await this.crudService.update(mentor, { reg_status: '2' }, { where: { user_id: requestBody.user_id } })
-        }
         const user_res: any = await this.crudService.findOnePassword(user, { where: { user_id: requestBody.user_id } })
-        const match = bcrypt.compareSync(requestBody.otp, user_res.dataValues.password);
-        return match;
+        const res = bcrypt.compareSync(requestBody.otp, user_res.dataValues.password);
+        console.log(res);
+        if (res) {
+            await this.crudService.update(mentor, { reg_status: '2' }, { where: { user_id: requestBody.user_id } })
+            return res;
+        } return res;
     }
     async restPassword(requestBody: any, responseBody: any) {
         let result: any = {};

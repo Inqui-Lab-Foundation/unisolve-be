@@ -37,6 +37,8 @@ export default class AuthController implements IController {
         this.router = Router();
         this.initializeRoutes();
     }
+    // we are disabling this controller, using individual login controllers students/login, mentors/login, evaluters/login, admins/login
+    
     private initializeRoutes(): void {
         this.router.post(`${this.path}/login`, this.login);
         this.router.get(`${this.path}/logout`, this.logout);
@@ -355,10 +357,10 @@ export default class AuthController implements IController {
         const result = await this.authService.changePassword(req.body, res);
         if (!result) {
             return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
-        }else if (result.error) {
+        } else if (result.error) {
             return res.status(404).send(dispatcher(result.error, 'error', result.error));
         }
-         else if (result.match) {
+        else if (result.match) {
             return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
         } else {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
@@ -369,10 +371,10 @@ export default class AuthController implements IController {
         const result = await this.authService.updatePassword(req.body, res);
         if (!result) {
             return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
-        }else if (result.error) {
+        } else if (result.error) {
             return res.status(404).send(dispatcher(result.error, 'error', result.error));
         }
-         else if (result.match) {
+        else if (result.match) {
             return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
         } else {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));

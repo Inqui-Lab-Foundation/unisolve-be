@@ -40,6 +40,7 @@ export default class EvaluaterController extends BaseController {
     }
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        req.body['role'] = 'EVALUATER'
         const result = await this.authService.login(req.body);
         if (!result) {
             return res.status(404).send(dispatcher(result, 'error', speeches.USER_NOT_FOUND));
