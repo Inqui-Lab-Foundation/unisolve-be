@@ -15,7 +15,7 @@ import { user } from "../models/user.model";
 import { team } from '../models/team.model';
 import axios from 'axios';
 export default class authService {
-    
+
     crudService: CRUDService = new CRUDService;
     private password = process.env.GLOBAL_PASSWORD;
 
@@ -50,6 +50,7 @@ export default class authService {
     async register(requestBody: any) {
         let response: any = {};
         let profile: any;
+        let reg_statue: any = requestBody.reg_statue;
         try {
             const user_res = await this.crudService.findOne(user, { where: { username: requestBody.username } });
             if (user_res) {
@@ -57,7 +58,8 @@ export default class authService {
                 return response
             }
             const result = await this.crudService.create(user, requestBody);
-            const whereClass = { ...requestBody, user_id: result.dataValues.user_id }
+            let whereClass = { ...requestBody, user_id: result.dataValues.user_id };
+            console.log(whereClass);
             switch (requestBody.role) {
                 case 'STUDENT': {
                     profile = await this.crudService.create(student, whereClass);
@@ -66,6 +68,7 @@ export default class authService {
                 case 'MENTOR': {
                     if (requestBody.organization_code) {
                         profile = await this.crudService.create(mentor, whereClass);
+                        profile.dataValues['username'] = result.dataValues.username
                         break;
                     } else return false;
                 }
@@ -92,7 +95,8 @@ export default class authService {
             const user_res: any = await this.crudService.findOne(user, {
                 where: {
                     username: requestBody.username,
-                    password: await bcrypt.hashSync(requestBody.password, process.env.SALT || baseConfig.SALT)
+                    password: await bcrypt.hashSync(requestBody.password, process.env.SALT || baseConfig.SALT),
+                    role: requestBody.role
                 }
             });
             if (!user_res) {
@@ -190,7 +194,7 @@ export default class authService {
                     ]
                 }
             });
-            
+
             if (!user_res) {
                 result['user_res'] = user_res;
                 result['error'] = speeches.USER_NOT_FOUND;
@@ -213,26 +217,23 @@ export default class authService {
             return result;
         }
     }
-    
-    async generateOtp(){
+    async generateOtp() {
         return Math.random().toFixed(6).substr(-6);
     }
-
-    async triggerOtpMsg(mobile: any, otp: any){
-        try{
+    async triggerOtpMsg(mobile: any, otp: any) {
+        try {
             const resp = await axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
             // console.log(resp)
             return resp;
-        }catch(err){
+        } catch (err) {
             console.log(err);
             return err;
         }
     }
-    
     async verifyUser(requestBody: any, responseBody: any) {
         let result: any = {};
         try {
-            const user_res: any = await this.crudService.findOne(user, {
+            const user_res: any = await this.crudService.findOne(mentor, {
                 where: {
                     [Op.or]: [
                         // {
@@ -244,20 +245,20 @@ export default class authService {
                     ]
                 }
             });
-            
+
             if (!user_res) {
                 result['user_res'] = user_res;
                 result['error'] = speeches.USER_NOT_FOUND;
                 return result;
             }
             //TODO trigger otp and update user with otp
-            const otp =  await this.generateOtp();
+            const otp = await this.generateOtp();
 
-            const smsResponse = await this.triggerOtpMsg(requestBody.mobile,otp);
-            if(smsResponse instanceof Error){
+            const smsResponse = await this.triggerOtpMsg(requestBody.mobile, otp);
+            if (smsResponse instanceof Error) {
                 throw smsResponse;
             }
-            
+
             const response = await this.crudService.update(user, {
                 password: otp
             }, { where: { user_id: user_res.dataValues.user_id } });
@@ -269,9 +270,50 @@ export default class authService {
             return result;
         }
     }
-
+    async mobileUpdate(requestBody: any) {
+        let result: any = {};
+        try {
+            const user_res: any = await this.crudService.findOne(mentor, {
+                where: { user_id: requestBody.user_id }
+            });
+            if (!user_res) {
+                // result['user_res'] = user_res;
+                result['error'] = speeches.USER_NOT_FOUND;
+                return result;
+            }
+            const otp = await this.generateOtp();
+            const smsResponse = this.triggerOtpMsg(requestBody.mobile, otp);
+            if (smsResponse instanceof Error) {
+                throw smsResponse;
+            }
+            const passwordUpdate = await this.crudService.update(user, {
+                password: otp,
+            }, { where: { user_id: user_res.dataValues.user_id } });
+            const mobileNumberUpdate = await this.crudService.update(mentor, {
+                mobile: requestBody.mobile
+            }, { where: { user_id: user_res.dataValues.user_id } });
+            result['data'] = mobileNumberUpdate, passwordUpdate;
+            return result;
+        } catch (error) {
+            result['error'] = error;
+            return result;
+        }
+    }
     async updatePassword(requestBody: any, responseBody: any) {
-        return await this.changePassword(requestBody,responseBody);
+        const res = await this.changePassword(requestBody, responseBody);
+        console.log(res);
+        if (res.data) {
+            await this.crudService.update(mentor, { reg_status: '3' }, { where: { user_id: requestBody.user_id } });
+        } return res;
+    }
+    async validatedOTP(requestBody: any) {
+        const user_res: any = await this.crudService.findOnePassword(user, { where: { user_id: requestBody.user_id } })
+        const res = bcrypt.compareSync(requestBody.otp, user_res.dataValues.password);
+        console.log(res);
+        if (res) {
+            await this.crudService.update(mentor, { reg_status: '2' }, { where: { user_id: requestBody.user_id } })
+            return res;
+        } return res;
     }
     async restPassword(requestBody: any, responseBody: any) {
         let result: any = {};
