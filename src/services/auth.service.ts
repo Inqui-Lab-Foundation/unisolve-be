@@ -273,11 +273,10 @@ export default class authService {
     async mobileUpdate(requestBody: any) {
         let result: any = {};
         try {
-            const user_res: any = await this.crudService.findOne(mentor, {
+            const mentor_res: any = await this.crudService.updateAndFind(mentor, { mobile: requestBody.mobile }, {
                 where: { user_id: requestBody.user_id }
             });
-            if (!user_res) {
-                // result['user_res'] = user_res;
+            if (!mentor_res) {
                 result['error'] = speeches.USER_NOT_FOUND;
                 return result;
             }
@@ -286,13 +285,16 @@ export default class authService {
             if (smsResponse instanceof Error) {
                 throw smsResponse;
             }
-            const passwordUpdate = await this.crudService.update(user, {
-                password: otp,
-            }, { where: { user_id: user_res.dataValues.user_id } });
-            const mobileNumberUpdate = await this.crudService.update(mentor, {
-                mobile: requestBody.mobile
-            }, { where: { user_id: user_res.dataValues.user_id } });
-            result['data'] = mobileNumberUpdate, passwordUpdate;
+            const user_res: any = await this.crudService.updateAndFind(user, { password: otp }, { where: { user_id: requestBody.user_id } })
+            // await this.crudService.update(user, { password: otp }, { where: { user_id: user_res.dataValues.user_id } });
+            // await this.crudService.update(mentor, { mobile: requestBody.mobile }, { where: { user_id: user_res.dataValues.user_id } });
+            result['data'] = {
+                username: user_res.dataValues.username,
+                user_id: user_res.dataValues.user_id,
+                mobile: mentor_res.dataValues.mobile,
+                reg_status: mentor_res.dataValues.reg_status,
+                otp
+            };
             return result;
         } catch (error) {
             result['error'] = error;
