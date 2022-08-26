@@ -68,6 +68,7 @@ export default class authService {
                 case 'MENTOR': {
                     if (requestBody.organization_code) {
                         profile = await this.crudService.create(mentor, whereClass);
+                        profile.dataValues['username'] = result.dataValues.username
                         break;
                     } else return false;
                 }
