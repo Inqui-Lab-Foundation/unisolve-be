@@ -53,7 +53,7 @@ export default class CRUDService {
     async findAndCountAll(model: any, input: object) {
         try {
             const data = await model.findAndCountAll(input);
-            if(data==null)return false;
+            if (data == null) return false;
             return data;
         } catch (error: any) {
             return error;
@@ -75,9 +75,27 @@ export default class CRUDService {
         }
     };
 
+    async updateAndFind(model: any, update: object, query: object) {
+        try {
+            await this.update(model, update, query);
+            const data = await this.findOne(model, query);
+            if (data) {
+                delete data.dataValues.password;
+                delete data.dataValues.created_at;
+                delete data.dataValues.updated_at;
+                delete data.dataValues.created_by;
+                delete data.dataValues.updated_by;
+            }
+            if (data === null) return false;
+            return data;
+        } catch (error: any) {
+            return error;
+        }
+    }
+
     async update(model: any, update: object, query: object) {
         try {
-            
+
             const data = await model.update(update, query);
             // console.log(data)
             // if (data) {
