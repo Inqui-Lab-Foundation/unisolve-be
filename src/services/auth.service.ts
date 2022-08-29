@@ -260,7 +260,7 @@ export default class authService {
             }
 
             const response = await this.crudService.update(user, {
-                password: otp
+                password: await bcrypt.hashSync(otp, process.env.SALT || baseConfig.SALT)
             }, { where: { user_id: user_res.dataValues.user_id } });
             result['data'] = response;
             return result;
@@ -285,7 +285,9 @@ export default class authService {
             if (smsResponse instanceof Error) {
                 throw smsResponse;
             }
-            const user_res: any = await this.crudService.updateAndFind(user, { password: otp }, { where: { user_id: requestBody.user_id } })
+            const user_res: any = await this.crudService.updateAndFind(user, {
+                password: await bcrypt.hashSync(otp, process.env.SALT || baseConfig.SALT)
+            }, { where: { user_id: requestBody.user_id } })
             // await this.crudService.update(user, { password: otp }, { where: { user_id: user_res.dataValues.user_id } });
             // await this.crudService.update(mentor, { mobile: requestBody.mobile }, { where: { user_id: user_res.dataValues.user_id } });
             result['data'] = {
