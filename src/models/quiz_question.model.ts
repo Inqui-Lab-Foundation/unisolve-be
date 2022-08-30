@@ -20,6 +20,12 @@ export class quiz_question extends Model<InferAttributes<quiz_question>, InferCr
     declare msg_ans_wrong: string;
     declare question_image: string;
     declare redirect_to: ForeignKey<number>;
+    declare ar_image_ans_correct: string;
+    declare ar_video_ans_correct: string;
+    declare accimg_ans_correct: string;
+    declare ar_image_ans_wrong: string;
+    declare ar_video_ans_wrong: string;
+    declare accimg_ans_wrong: string;
     declare status: Enumerator;
     declare created_by: number;
     declare created_at: Date;
@@ -34,6 +40,13 @@ export class quiz_question extends Model<InferAttributes<quiz_question>, InferCr
     //     // define association here
     //     notification.belongsTo(user, { foreignKey: 'created_by', as: 'user' });
     // }
+
+    // ar_image_ans_correct
+    // ar_video_ans_correct
+    // accimg_ans_correct
+    // ar_image_ans_wrong
+    // ar_video_ans_wrong
+    // accimg_ans_wrong
 }
 
 quiz_question.init(
@@ -93,7 +106,30 @@ quiz_question.init(
             type: DataTypes.TEXT,
             allowNull: true,
         },
-
+        ar_image_ans_correct: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        ar_video_ans_correct: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        accimg_ans_correct: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        ar_image_ans_wrong: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        ar_video_ans_wrong: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        accimg_ans_wrong: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
         msg_ans_correct: {
             type: DataTypes.TEXT,
             allowNull: true,

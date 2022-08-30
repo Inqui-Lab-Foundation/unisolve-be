@@ -239,6 +239,9 @@ export default class QuizController extends BaseController {
                 result["is_correct"] = responseObjToAdd.is_correct;
                 if (responseObjToAdd.is_correct) {
                     result["msg"] = questionAnswered.dataValues.msg_ans_correct;
+                    result["ar_image"]
+                    result["ar_video"]
+                    result["accimg"]
                 } else {
                     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
                 }
