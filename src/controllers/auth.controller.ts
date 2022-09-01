@@ -38,7 +38,7 @@ export default class AuthController implements IController {
         this.initializeRoutes();
     }
     // we are disabling this controller, using individual login controllers students/login, mentors/login, evaluters/login, admins/login
-    
+
     private initializeRoutes(): void {
         this.router.post(`${this.path}/login`, this.login);
         this.router.get(`${this.path}/logout`, this.logout);
@@ -48,6 +48,7 @@ export default class AuthController implements IController {
         this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm), this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
         this.router.post(`${this.path}/:model/bulkUpload`, this.bulkUpload.bind(this))
+        this.router.get(`${this.path}/clearUserResponse/:user_id`, this.clearUserResponse.bind(this))
     }
 
     private loadModel = async (model: string): Promise<Response | void | any> => {
@@ -380,4 +381,17 @@ export default class AuthController implements IController {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
+
+    private async clearUserResponse(req: Request, res: Response, next: NextFunction) {
+        // user_id or email_id will be getting from the params then find the
+        try {
+            const data = await this.authService.bulkDeleteUserResponse(req.params.user_id)
+            if (!data || data instanceof Error) {
+                throw badRequest(data.message)
+            }
+            return res.status(200).send(dispatcher(data, 'deleted'));
+        } catch (error) {
+            next(error)
+        }
+    };
 }   
