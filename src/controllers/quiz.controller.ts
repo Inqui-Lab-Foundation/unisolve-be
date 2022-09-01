@@ -1,5 +1,3 @@
-
-
 import { badData, badRequest, internal, unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import { invalid } from "joi";
@@ -171,7 +169,6 @@ export default class QuizController extends BaseController {
                 throw badData("Invalid Quiz question id")
             }
 
-
             const quizRes = await this.crudService.findOne(quiz_response, { where: { quiz_id: quiz_id, user_id: user_id } });
             if (quizRes instanceof Error) {
                 throw internal(quizRes.message)
@@ -252,17 +249,5 @@ export default class QuizController extends BaseController {
             next(err)
         }
     }
-    protected async clearUserResponse(req: Request, res: Response, next: NextFunction) {
-        // user_id or email_id will be getting from the params then find the
-        try {
-            const user_id = req.params.user_id;
-            const data = await this.crudService.delete(quiz_response, { where: { user_id: user_id } });
-            if (!data || data instanceof Error) {
-                throw badRequest(data.message)
-            }
-            return res.status(200).send(dispatcher(data, 'deleted'));
-        } catch (error) {
-            next(error)
-        }
-    };
+    //TODO: 
 }
