@@ -13,6 +13,11 @@ import { organization } from '../models/organization.model';
 import { student } from "../models/student.model";
 import { user } from "../models/user.model";
 import { team } from '../models/team.model';
+import { quiz_response } from "../models/quiz_response.model";
+import { quiz_survey_response } from "../models/quiz_survey_response.model";
+import { reflective_quiz_response } from "../models/reflective_quiz_response.model";
+import { user_topic_progress } from "../models/user_topic_progress.model";
+import { worksheet_response } from "../models/worksheet_response.model";
 import axios from 'axios';
 export default class authService {
 
@@ -288,8 +293,6 @@ export default class authService {
             const user_res: any = await this.crudService.updateAndFind(user, {
                 password: await bcrypt.hashSync(otp, process.env.SALT || baseConfig.SALT)
             }, { where: { user_id: requestBody.user_id } })
-            // await this.crudService.update(user, { password: otp }, { where: { user_id: user_res.dataValues.user_id } });
-            // await this.crudService.update(mentor, { mobile: requestBody.mobile }, { where: { user_id: user_res.dataValues.user_id } });
             result['data'] = {
                 username: user_res.dataValues.username,
                 user_id: user_res.dataValues.user_id,
@@ -346,6 +349,16 @@ export default class authService {
         } catch (error) {
             result['error'] = error;
             return result;
+        }
+    }
+    async bulkDeleteUserResponse(user_id: any) {
+        try {
+            let result: any;
+            let models = [quiz_response, quiz_survey_response, reflective_quiz_response, user_topic_progress, worksheet_response];
+            models.forEach(model => result = this.crudService.delete(model, { where: { user_id: user_id } }))
+            return result;
+        } catch (error) {
+            return error;
         }
     }
 }
