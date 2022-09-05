@@ -231,7 +231,7 @@ export default class VideoController extends BaseController {
             //db intensive operation especially for a loop 
             //optimise it going forward 
             const nextQuestionsToChooseFrom =  await this.reflectiveQuizService.fetchNextQuestion(user_id,dataModified.video_id,null)
-            console.log(nextQuestionsToChooseFrom);
+            // console.log(nextQuestionsToChooseFrom);
             if(nextQuestionsToChooseFrom){
                 newVideoRow.reflective_quiz_status ="INCOMPLETE"
             }else{
