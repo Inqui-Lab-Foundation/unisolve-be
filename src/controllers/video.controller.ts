@@ -1,9 +1,10 @@
-import { notFound } from "boom";
+import { notFound, unauthorized } from "boom";
 import { Request, Response, NextFunction } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
 import { Op } from "sequelize";
 import { constents } from "../configs/constents.config";
+import { speeches } from "../configs/speeches.config";
 import { reflective_quiz_question } from "../models/reflective_quiz_question.model";
 import ReflectiveQuizService from "../services/reflective_quiz_.service";
 import database from "../utils/dbconnection.util";
@@ -104,7 +105,7 @@ export default class VideoController extends BaseController {
                         },
                     },
                 });
-                data = await this.formatOneRowProperly(data)
+                data = await this.formatOneRowProperly(req,res,data)
             } else {
                 try{
                     const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, {
@@ -163,7 +164,7 @@ export default class VideoController extends BaseController {
                         })
                     let result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     
-                    result  = await this.formatAllRowsProperly(result);
+                    result  = await this.formatAllRowsProperly(req,res,result);
                     // console.log(result)
                     data = result;
                 } catch(error:any){
@@ -188,14 +189,18 @@ export default class VideoController extends BaseController {
         }
     }
 
-    protected async formatOneRowProperly(data:any){
+    protected async formatOneRowProperly(req:Request,res:Response,data:any){
         let dataModified = JSON.parse(JSON.stringify(data));
         const newVideoRow =   dataModified
-                
+        let user_id = res.locals.user_id;
+        if (!user_id) {
+            throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
+        }
         const newQuestionsFomratted =  dataModified.reflective_quiz_questions.map((questionRaw:any)=>{
             
             let resultQuestion:any = {}
             let optionsArr = []
+            
             if(questionRaw.option_a){
                 optionsArr.push(questionRaw.option_a)
             }
@@ -225,21 +230,27 @@ export default class VideoController extends BaseController {
             //TODO:
             //db intensive operation especially for a loop 
             //optimise it going forward 
-            const nextQuestionsToChooseFrom =  await this.reflectiveQuizService.fetchNextQuestion(1,dataModified.video_id,null)
-            newVideoRow.reflective_quiz_status = (nextQuestionsToChooseFrom)?"INCOMPLETE":"COMPLETED";
+            const nextQuestionsToChooseFrom =  await this.reflectiveQuizService.fetchNextQuestion(user_id,dataModified.video_id,null)
+            console.log(nextQuestionsToChooseFrom);
+            if(nextQuestionsToChooseFrom){
+                newVideoRow.reflective_quiz_status ="INCOMPLETE"
+            }else{
+                newVideoRow.reflective_quiz_status ="COMPLETED"
+            }
+            // newVideoRow.reflective_quiz_status = (nextQuestionsToChooseFrom)?"INCOMPLETE":"COMPLETED";
         }else{
             newVideoRow.reflective_quiz_status = "COMPLETED";
         }
         
         return newVideoRow;
     }
-    protected async formatAllRowsProperly(data:any){
+    protected async formatAllRowsProperly(req:Request,res:Response,data:any){
         let result:any={}
         let dataModified = JSON.parse(JSON.stringify(data));
 
         result = await Promise.all(
             dataModified.dataValues.map(async (videoRow:any)=>{
-                return await this.formatOneRowProperly(videoRow)
+                return await this.formatOneRowProperly(req,res,videoRow)
             })
         )
         return result;
