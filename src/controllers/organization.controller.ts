@@ -25,6 +25,7 @@ export default class OrganizationController extends BaseController {
         this.validations = new ValidationsHolder(organizationSchema, organizationUpdateSchema);
     }
     protected initializeRoutes(): void {
+        this.router.post(`${this.path}/bulkUpload`, this.bulkUpload.bind(this));
         this.router.post(`${this.path}/checkOrg`, validationMiddleware(organizationCheckSchema), this.checkOrgDetails.bind(this));
         super.initializeRoutes();
     };

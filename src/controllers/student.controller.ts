@@ -8,6 +8,9 @@ import authService from '../services/auth.service';
 import BaseController from './base.controller';
 import ValidationsHolder from '../validations/validationHolder';
 import validationMiddleware from '../middlewares/validation.middleware';
+import { constents } from '../configs/constents.config';
+import { Op } from 'sequelize';
+import { notFound } from 'boom';
 
 export default class StudentController extends BaseController {
     model = "student";
@@ -91,7 +94,6 @@ export default class StudentController extends BaseController {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
-
     private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const result = await this.authService.updatePassword(req.body, res);
         if (!result) {
@@ -105,8 +107,6 @@ export default class StudentController extends BaseController {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
-
-
     private async resetPassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         // accept the user_id or user_name from the req.body and update the password in the user table
         const generatedUUID = this.nanoid()
@@ -120,6 +120,85 @@ export default class StudentController extends BaseController {
             return res.status(202).send(dispatcher(result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
+    protected getPagination(page: any, size: any) {
+        const limit = size ? +size : 10;
+        const offset = page ? page * limit : 0;
+        return { limit, offset };
+    };
+    protected getPagingData(data: any, page: any, limit: any) {
+        const { count: totalItems, rows: dataValues } = data;
+        const currentPage = page ? +page : 0;
+        const totalPages = Math.ceil(totalItems / limit);
+        return { totalItems, dataValues, totalPages, currentPage };
+    };
+    protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            let data: any;
+            const { model, id } = req.params;
+            const paramStatus: any = req.query;
+            if (model) {
+                this.model = model;
+            };
+            // pagination
+            const { page, size, adult } = req.query;
+            let condition = adult ? { UUID: null } : { UUID: { [Op.like]: `%%` } };
+            const { limit, offset } = this.getPagination(page, size);
+            const modelClass = await this.loadModel(model).catch(error => {
+                next(error)
+            });
+            const where: any = {};
+            let whereClauseStatusPart: any = {};
+            if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
+                whereClauseStatusPart = { "status": paramStatus }
+            }
+            if (id) {
+                where[`${this.model}_id`] = req.params.id;
+                data = await this.crudService.findOne(modelClass, {
+                    where: {
+                        [Op.and]: [
+                            whereClauseStatusPart,
+                            where,
+                        ]
+                    }
+                });
+            } else {
+                try {
+                    const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, {
+                        where: {
+                            [Op.and]: [
+                                whereClauseStatusPart,
+                                condition
+                            ]
+                        }, limit, offset
+                    })
+                    const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
+                    data = result;
+                } catch (error: any) {
+                    return res.status(500).send(dispatcher(data, 'error'))
+                }
 
+            }
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(data, 'error'));
+            // }
+            if (!data || data instanceof Error) {
+                if (data != null) {
+                    throw notFound(data.message)
+                } else {
+                    throw notFound()
+                }
+                res.status(200).send(dispatcher(null, "error", speeches.DATA_NOT_FOUND));
+                // if(data!=null){
+                //     throw 
+                (data.message)
+                // }else{
+                //     throw notFound()
+                // }
+            }
 
-};
+            return res.status(200).send(dispatcher(data, 'success'));
+        } catch (error) {
+            next(error);
+        }
+    }
+}
