@@ -23,6 +23,7 @@ export default class authService {
 
     crudService: CRUDService = new CRUDService;
     private password = process.env.GLOBAL_PASSWORD;
+    private otp = '112233';
 
     async checkOrgDetails(organization_code: any) {
         try {
@@ -223,7 +224,9 @@ export default class authService {
         }
     }
     async generateOtp() {
-        return Math.random().toFixed(6).substr(-6);
+        // changing random OTP to static OTP as per Sreeni request.
+        // return Math.random().toFixed(6).substr(-6);
+        return this.otp;
     }
     async triggerOtpMsg(mobile: any, otp: any) {
         try {
