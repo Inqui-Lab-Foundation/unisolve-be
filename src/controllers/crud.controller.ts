@@ -47,7 +47,7 @@ export default class CRUDController implements IController {
     };
 
     protected getPagination(page: any, size: any) {
-        const limit = size ? +size : 10;
+        const limit = size ? +size : 1000000;
         const offset = page ? page * limit : 0;
         return { limit, offset };
     };
