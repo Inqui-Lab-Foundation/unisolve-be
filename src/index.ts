@@ -34,7 +34,7 @@ validateEnv();
 try {
     const app = new App([
         new AuthController,
-        // new CRUDController,
+        // new CRUDController (Disabling CRUD API's for directly use)
         new NotificationsController,
         new CourseController,
         new CourseModulesController,
