@@ -120,17 +120,6 @@ export default class StudentController extends BaseController {
             return res.status(202).send(dispatcher(result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
-    protected getPagination(page: any, size: any) {
-        const limit = size ? +size : 10;
-        const offset = page ? page * limit : 0;
-        return { limit, offset };
-    };
-    protected getPagingData(data: any, page: any, limit: any) {
-        const { count: totalItems, rows: dataValues } = data;
-        const currentPage = page ? +page : 0;
-        const totalPages = Math.ceil(totalItems / limit);
-        return { totalItems, dataValues, totalPages, currentPage };
-    };
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             let data: any;
