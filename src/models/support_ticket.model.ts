@@ -59,7 +59,7 @@ supportTicket.init(
     },
     {
         sequelize: db,
-        tableName: 'supportTickets',
+        tableName: 'support_tickets',
         timestamps: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',
