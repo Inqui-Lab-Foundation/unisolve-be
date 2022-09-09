@@ -1,31 +1,24 @@
-import express, {
-    Application,
-    NextFunction,
-    Request,
-    Response
-} from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import swaggerUi from 'swagger-ui-express';
 import path from "path";
-import bodyParser from "body-parser";
 import formData from "express-form-data";
 import os from "os";
+
+import logIt from "./utils/logit.util";
+import database from "./utils/dbconnection.util";
 import IController from "./interfaces/controller.interface";
 import routeProtectionMiddleware from "./middlewares/routeProtection.middleware";
 import healthCheckMiddleware from "./middlewares/healthCheck.middleware";
-import logger from "./utils/logger";
-import logIt from "./utils/logit.util";
-import database from "./utils/dbconnection.util";
 import { options } from "./docs/options";
-import { speeches } from "./configs/speeches.config";
 import * as errorHandler from "./middlewares/errorHandler.middleware";
 import { constents } from "./configs/constents.config";
-import fs from 'fs';
-import BadgesJob from "./jobs/badges.jobs";
 import { CronManager } from "./jobs/cronManager";
-import https from 'https'
+// import fs from 'fs';
+// import BadgesJob from "./jobs/badges.jobs";
+// import https from 'https'
 
 export default class App {
     public app: Application;
@@ -52,7 +45,7 @@ export default class App {
     }
     private doLogIt(flag: string) {
         this.app.use(async (req: Request, res: Response, next: NextFunction) => {
-            await logIt(flag, ((flag == constents.log_levels.list.INBOUND) ? "Inbound request" : "Outbound responce"), req, res);
+            await logIt(flag, ((flag == constents.log_levels.list.INBOUND) ? "Inbound request" : "Outbound response"), req, res);
             next();
         });
     }
@@ -60,7 +53,6 @@ export default class App {
     private initializeDatabase(): void {
         console.log('name', process.env.DB_NAME, 'user', process.env.DB_USER)
         database.sync()
-            // .then(() => logger.info("Connected to the Database successfully"))
             .then(async () => {
                 await logIt(constents.log_levels.list.INFO, "Connected to the Database successfully");
             })
@@ -78,19 +70,19 @@ export default class App {
     }
 
     private initializeMiddlewares(): void {
+        // helmet for secure headers
         this.app.use(helmet({
             crossOriginResourcePolicy: false,
-        }));   // helmet for secure headers
+        }));  
         this.app.use(cors());
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
-        // this.app.use(bodyParser.json()); 
-        // this.app.use(bodyParser.urlencoded({ extended: true })); 
         this.app.use(formData.parse({
             uploadDir: os.tmpdir(),
             autoClean: true
         }));
-        this.app.use(compression()); // compression for gzip
+         // compression for gzip
+        this.app.use(compression());
     }
 
     private initializeHomeRoute(): void {
@@ -211,19 +203,8 @@ Available Routes:
     }
 
     public listen(): void {
-        // let options = {
-        //     key: fs.readFileSync(path.join(process.cwd(), 'resources', 'ssl', 'key.pem')),
-        //     cert: fs.readFileSync(path.join(process.cwd(), 'resources', 'ssl', 'cert.pem'))
-        // };
-        // https.createServer(options, this.app).listen(this.port, async () => {
-        //     await logIt(constents.log_levels.list.INFO, `App is running at https://${process.env.APP_HOST_NAME}:${this.port}`);
-        //     if (process.env.SHOW_ROUTES === "true") {
-        //         this.showRoutes();
-        //     }
-        // });
         this.app.listen(this.port, async () => {
             await logIt(constents.log_levels.list.INFO, `App is running at http://${process.env.APP_HOST_NAME}:${this.port}`);
-
             if (process.env.SHOW_ROUTES === "true") {
                 this.showRoutes();
             }

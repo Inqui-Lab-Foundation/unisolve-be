@@ -215,8 +215,14 @@ export default class QuizController extends BaseController {
                 result["is_correct"] = responseObjToAdd.is_correct;
                 if (responseObjToAdd.is_correct) {
                     result["msg"] = questionAnswered.dataValues.msg_ans_correct;
+                    result["ar_image"] = questionAnswered.dataValues.ar_image_ans_correct;
+                    result["ar_video"]= questionAnswered.dataValues.ar_video_ans_correct;
+                    result["accimg"] = questionAnswered.dataValues.accimg_ans_correct;
                 } else {
                     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
+                    result["ar_image"] = questionAnswered.dataValues.ar_image_ans_wrong;
+                    result["ar_video"]= questionAnswered.dataValues.ar_video_ans_wrong;
+                    result["accimg"] = questionAnswered.dataValues.accimg_ans_wrong;
                 }
                 result["redirect_to"] = questionAnswered.dataValues.redirect_to;
                 res.status(200).send(dispatcher(result));
@@ -236,11 +242,14 @@ export default class QuizController extends BaseController {
                 result["is_correct"] = responseObjToAdd.is_correct;
                 if (responseObjToAdd.is_correct) {
                     result["msg"] = questionAnswered.dataValues.msg_ans_correct;
-                    result["ar_image"]
-                    result["ar_video"]
-                    result["accimg"]
+                    result["ar_image"] = questionAnswered.dataValues.ar_image_ans_correct;
+                    result["ar_video"]= questionAnswered.dataValues.ar_video_ans_correct;
+                    result["accimg"] = questionAnswered.dataValues.accimg_ans_correct;
                 } else {
                     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
+                    result["ar_image"] = questionAnswered.dataValues.ar_image_ans_wrong;
+                    result["ar_video"]= questionAnswered.dataValues.ar_video_ans_wrong;
+                    result["accimg"] = questionAnswered.dataValues.accimg_ans_wrong;
                 }
                 result["redirect_to"] = questionAnswered.dataValues.redirect_to;
                 res.status(200).send(dispatcher(result));

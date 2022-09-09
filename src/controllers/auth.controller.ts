@@ -1,29 +1,30 @@
-import e, { Router, Request, Response, NextFunction } from 'express';
-import { Op } from 'sequelize';
-import * as csv from "fast-csv";
+import { Router, Request, Response, NextFunction } from 'express';
 import fs from 'fs';
+import * as csv from "fast-csv";
 import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import bcrypt from 'bcrypt';
+
 import IController from '../interfaces/controller.interface';
 import validationMiddleware from '../middlewares/validation.middleware';
 import authValidations from '../validations/auth.validations';
 import dynamicForm from '../configs/dynamicForm';
 import CRUDService from '../services/crud.service';
 import jwtUtil from '../utils/jwt.util';
-import { user } from '../models/user.model';
 import dispatcher from '../utils/dispatch.util';
+import authService from '../services/auth.service';
+// import sendNotification from '../utils/notification.util';
+
+import { user } from '../models/user.model';
 import { speeches } from '../configs/speeches.config';
 import { baseConfig } from '../configs/base.config';
-import sendNotification from '../utils/notification.util';
-import { constents } from '../configs/constents.config';
 import { admin } from '../models/admin.model';
 import { mentor } from '../models/mentor.model';
 import { student } from '../models/student.model';
 import { evaluater } from '../models/evaluater.model';
 import { badRequest } from 'boom';
 import { nanoid } from 'nanoid'
-import authService from '../services/auth.service';
+// import { constents } from '../configs/constents.config';
 
 export default class AuthController implements IController {
     public path: string;
@@ -37,7 +38,7 @@ export default class AuthController implements IController {
         this.router = Router();
         this.initializeRoutes();
     }
-    // we are disabling this controller, using individual login controllers students/login, mentors/login, evaluters/login, admins/login
+    // we are disabling this controller, using individual login controllers students/login, mentors/login, evaluater/login, admins/login
 
     private initializeRoutes(): void {
         this.router.post(`${this.path}/login`, this.login);

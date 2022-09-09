@@ -1,10 +1,10 @@
 import "dotenv/config";
-import validateEnv from '../../utils/validate_env';
+import validateEnv from '../../validate_env';
 import request from 'supertest';
 
-import App from '../../app';
-import CRUDService from '../../services/crud.service';
-import CRUDController from "../../controllers/crud.controller";
+import App from '../../../app';
+import CRUDService from '../../../services/crud.service';
+import CRUDController from "../../../controllers/crud.controller";
 
 // validating env variables
 validateEnv();

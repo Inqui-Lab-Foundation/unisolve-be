@@ -16,7 +16,5 @@ export default class FaqController extends BaseController {
         //example route to add 
         //this.router.get(`${this.path}/`, this.getData);
         super.initializeRoutes();
-        
-        
     }
 }

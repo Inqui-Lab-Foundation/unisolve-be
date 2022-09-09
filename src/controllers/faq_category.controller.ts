@@ -23,13 +23,10 @@ export default class FaqCategoryController extends BaseController {
         //example route to add 
         //this.router.get(`${this.path}/`, this.getData);
         super.initializeRoutes();
-
-
     }
 
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-
             let data: any;
             const { model, id } = req.params;
             const paramStatus: any = req.query.status;
@@ -54,20 +51,16 @@ export default class FaqCategoryController extends BaseController {
                 whereClauseStatusPart = { "status": paramStatus }
                 whereClauseStatusPartLiteral = `status = "${paramStatus}"`
                 addWhereClauseStatusPart = true;
-            }
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
                 data = await this.crudService.findOne(modelClass, {
                     where: {
                         [Op.and]: [
                             whereClauseStatusPart,
-                            where,
+                            where
                         ]
                     },
-                    include: {
-                        model: faq,
-                        required: false
-                    }
+                    include: { model: faq, required: false }
                 });
             } else {
                 try {

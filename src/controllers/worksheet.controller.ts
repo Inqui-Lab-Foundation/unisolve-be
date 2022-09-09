@@ -213,7 +213,7 @@ export default class WorksheetController extends BaseController {
             dataToBeUploaded["worksheet_id"]= worksheet_id
             dataToBeUploaded["user_id"] = user_id
             dataToBeUploaded["attachments"]= attachments
-            const payload = this.autoFillTrackingCollumns(req, res, modelLoaded, dataToBeUploaded)
+            const payload = this.autoFillTrackingColumns(req, res, modelLoaded, dataToBeUploaded)
             const data = await this.crudService.create(modelLoaded, payload);
 
             //update worksheet topic progress for this user to completed..!!
