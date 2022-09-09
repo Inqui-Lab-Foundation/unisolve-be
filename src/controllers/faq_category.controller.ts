@@ -7,6 +7,7 @@ import dispatcher from "../utils/dispatch.util";
 import { faqCategorySchema, faqCategorySchemaUpdateSchema } from "../validations/faq_category.validations";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
+import db from "../utils/dbconnection.util"
 
 export default class FaqCategoryController extends BaseController {
 
@@ -41,9 +42,15 @@ export default class FaqCategoryController extends BaseController {
             });
             const where: any = {};
             let whereClauseStatusPart: any = {};
+            // if(paramStatus && (paramStatus in constents.common_status_flags.list)){
+            //     whereClauseStatusPart = {"status":paramStatus}
+            // }
+            let whereClauseStatusPartLiteral = "1=1";
+            let addWhereClauseStatusPart = false
             if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
                 whereClauseStatusPart = { "status": paramStatus }
-            }
+                whereClauseStatusPartLiteral = `status = "${paramStatus}"`
+                addWhereClauseStatusPart = true;
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
                 data = await this.crudService.findOne(modelClass, {
@@ -58,16 +65,30 @@ export default class FaqCategoryController extends BaseController {
             } else {
                 try {
                     const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, {
+                        attributes: [
+                            'category_name',
+                            'faq_category_id',
+                            'status',
+                            'created_at',
+                            'created_by',
+                            'updated_at',
+                            'updated_by',
+                            [
+                                db.literal(`( SELECT COUNT(*) FROM faqs AS s WHERE
+                                ${addWhereClauseStatusPart ? "s." + whereClauseStatusPartLiteral : whereClauseStatusPartLiteral}
+                                AND s.faq_category_id = \`faq_category\`.\`faq_category_id\`)`), 'faq_count'
+                            ]
+                        ],
                         where: {
                             [Op.and]: [
                                 whereClauseStatusPart,
                                 condition
                             ]
                         },
-                        include: {
-                            model: faq,
-                            required: false
-                        },
+                        // include: {
+                        //     model: faq,
+                        //     required: false
+                        // },
                         limit,
                         offset
                     })
