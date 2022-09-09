@@ -38,6 +38,15 @@ export const constents = {
     },
     default: 'ACTIVE'
   },
+  support_tickets_status_flags: {
+    list: {
+      'OPEN': 'OPEN',
+      'INPROGRESS': 'INPROGRESS',
+      'RESOLVED': 'RESOLVED',
+      'BLOCKED': 'BLOCKED'
+    },
+    default: 'OPEN'
+  },
   quiz_question_level_flags: {
     list: {
       'HARD': 'HARD',
