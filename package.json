@@ -5,8 +5,9 @@
   "license": "MIT",
   "scripts": {
     "start": "npm run start:dev",
-    "startapitest": "npx newman run ./postman/Unisolve-API-DocsQANEWReg.postman_collection.json -e ./postman/QAUnisolve.postman_environment.json –-reporters=cli,htmlextra",
+    "apitest:reg": "newman run ./postman/Unisolve-API-DocsQANEWReg.postman_collection.json -e ./postman/QAUnisolve.postman_environment.json -r allure",
     "start:dev": "nodemon",
+    "generate:allurereport":"allure serve",
     "start:prod": "pm2 start  processes.json --env production",
     "start:QA": "pm2 start  processes.json --env testing",
     "build": "tsc -p tsconfig.prod.json",
@@ -23,6 +24,7 @@
   "dependencies": {
     "@supercharge/request-ip": "^1.2.0",
     "@types/cron": "^2.0.0",
+    "allure-commandline": "^2.18.1",
     "amqplib": "^0.10.0",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
