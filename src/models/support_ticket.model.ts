@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
-import { supportTicketReply } from './support_ticket_replies.model';
+import { support_ticket_reply } from './support_ticket_reply.model';
 
 export interface supportTicketAttributes {
     query_id: number;
@@ -14,9 +14,9 @@ export interface supportTicketAttributes {
     updated_at: Date;
 }
 
-export class supportTicket extends Model<supportTicketAttributes> { }
+export class support_ticket extends Model<supportTicketAttributes> { }
 
-supportTicket.init(
+support_ticket.init(
     {
         query_id: {
             type: DataTypes.INTEGER,
@@ -66,5 +66,5 @@ supportTicket.init(
     }
 );
 
-supportTicket.belongsTo(supportTicketReply, { foreignKey: 'query_id' });
-supportTicketReply.hasMany(supportTicket, { foreignKey: 'query_id' });
+// support_ticket.belongsTo(support_ticket_reply, { foreignKey: 'query_id' });
+// support_ticket_reply.hasMany(support_ticket, { foreignKey: 'query_id' });
