@@ -51,6 +51,7 @@ export default class FaqCategoryController extends BaseController {
                 whereClauseStatusPart = { "status": paramStatus }
                 whereClauseStatusPartLiteral = `status = "${paramStatus}"`
                 addWhereClauseStatusPart = true;
+            }
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
                 data = await this.crudService.findOne(modelClass, {
@@ -97,7 +98,6 @@ export default class FaqCategoryController extends BaseController {
                 } catch (error: any) {
                     return res.status(500).send(dispatcher(data, 'error'))
                 }
-
             }
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));
@@ -110,7 +110,6 @@ export default class FaqCategoryController extends BaseController {
                 //     throw notFound()
                 // }
             }
-
             return res.status(200).send(dispatcher(data, 'success'));
         } catch (error) {
             next(error);
