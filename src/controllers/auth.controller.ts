@@ -387,9 +387,9 @@ export default class AuthController implements IController {
         // user_id or email_id will be getting from the params then find the
         try {
             const data = await this.authService.bulkDeleteUserResponse(req.params.user_id)
-            if (!data || data instanceof Error) {
-                throw badRequest(data.message)
-            }
+            // if (!data || data instanceof Error) {
+            //     throw badRequest(data.message)
+            // }
             return res.status(200).send(dispatcher(data, 'deleted'));
         } catch (error) {
             next(error)
