@@ -95,5 +95,7 @@ export const speeches = {
     ORG_CODE_REQUIRED: "Organization code is required.",
     ORG_CODE_NOT_EXISTS: "Organization code does not exists.",
     OTP_FAIL: "Wrong OTP Detected.",
-    OTP_FOUND: "OTP matched."
+    OTP_FOUND: "OTP matched.",
+    QUERY_CATEGORY: "Category is required",
+    QUERY_DETAILS: "Query cannot be null"
 }
