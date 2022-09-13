@@ -6,12 +6,12 @@ import { constents } from '../../../configs/constents.config';
 export const tableName = "support_tickets_replies";
 export const up: Migration = async ({ context: sequelize }) => {
 	await sequelize.getQueryInterface().createTable(tableName, {
-		reply_id: {
+		support_tickets_reply_id: {
 			type: DataTypes.INTEGER,
 			autoIncrement: true,
 			primaryKey: true
 		},
-		query_id: {
+		support_ticket_id: {
 			type: DataTypes.STRING,
 			allowNull: false
 		},

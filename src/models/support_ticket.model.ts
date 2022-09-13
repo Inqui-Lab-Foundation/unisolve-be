@@ -4,7 +4,7 @@ import db from '../utils/dbconnection.util';
 import { support_ticket_reply } from './support_ticket_reply.model';
 
 export interface supportTicketAttributes {
-    query_id: number;
+    support_ticket_id: number;
     query_category: string;
     query_details: string;
     status: Enumerator;
@@ -18,7 +18,7 @@ export class support_ticket extends Model<supportTicketAttributes> { }
 
 support_ticket.init(
     {
-        query_id: {
+        support_ticket_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -65,6 +65,3 @@ support_ticket.init(
         createdAt: 'created_at',
     }
 );
-
-// support_ticket.belongsTo(support_ticket_reply, { foreignKey: 'query_id' });
-// support_ticket_reply.hasMany(support_ticket, { foreignKey: 'query_id' });
