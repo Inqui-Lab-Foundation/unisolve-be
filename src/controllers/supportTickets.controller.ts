@@ -29,35 +29,35 @@ export default class SupportTicketController extends BaseController {
     }
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            console.log('came here..>! 31')
+            // console.log('came here..>! 31')
             let data: any;
             const { model, id } = req.params;
-            const paramStatus: any = req.query.status;
+            // const paramStatus: any = req.query.status;
             if (model) {
                 this.model = model;
             };
             // pagination
-            const { page, size, title } = req.query;
-            let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+            const { page, size, status } = req.query;
+            let condition = status ? { status: { [Op.like]: `%${status}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
             const modelClass = await this.loadModel(model).catch(error => {
                 next(error)
             });
             const where: any = {};
-            let whereClauseStatusPart: any = {};
-            let whereClauseStatusPartLiteral = "1=1";
-            let addWhereClauseStatusPart = false
-            if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
-                whereClauseStatusPart = { "status": paramStatus }
-                whereClauseStatusPartLiteral = `status = "${paramStatus}"`
-                addWhereClauseStatusPart = true;
-            }
+            // let whereClauseStatusPart: any = {};
+            // let whereClauseStatusPartLiteral = "1=1";
+            // let addWhereClauseStatusPart = false
+            // if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
+            //     whereClauseStatusPart = { "status": paramStatus }
+            //     whereClauseStatusPartLiteral = `status = "${paramStatus}"`
+            //     addWhereClauseStatusPart = true;
+            // }
             if (id) {
-                where[`query_id`] = req.params.id;
+                where[`${this.model}_id`] = req.params.id;
                 data = await this.crudService.findOne(modelClass, {
                     where: {
                         [Op.and]: [
-                            whereClauseStatusPart,
+                            // whereClauseStatusPart,
                             where
                         ]
                     },
@@ -67,7 +67,7 @@ export default class SupportTicketController extends BaseController {
                 try {
                     const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, {
                         attributes: [
-                            'query_id',
+                            'support_ticket_id',
                             'query_category',
                             'query_details',
                             'status',
@@ -76,12 +76,13 @@ export default class SupportTicketController extends BaseController {
                             'updated_at',
                             'updated_by',
                             [
-                                db.literal(`( SELECT COUNT(*) FROM support_tickets_replies AS s WHERE ${addWhereClauseStatusPart ? "s." + whereClauseStatusPartLiteral : whereClauseStatusPartLiteral} AND s.query_id = \`support_ticket\`.\`query_id\`)`), 'replies_count'
+                                db.literal(`( SELECT COUNT(*) FROM support_tickets_replies AS s WHERE s.support_ticket_id = \`support_ticket\`.\`support_ticket_id\`)`), 'replies_count'
                             ]
+                            //  ${ addWhereClauseStatusPart? "s." + whereClauseStatusPartLiteral : whereClauseStatusPartLiteral } AND
                         ],
                         where: {
                             [Op.and]: [
-                                whereClauseStatusPart,
+                                // whereClauseStatusPart,
                                 condition
                             ]
                         },
@@ -111,13 +112,10 @@ export default class SupportTicketController extends BaseController {
             };
             const user_id = res.locals.user_id
             const where: any = {};
-            where[`query_id`] = req.params.id;
+            where[`${this.model}_id`] = req.params.id;
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
-            // }
             if (!data || data instanceof Error) {
                 throw badRequest(data.message)
             }
