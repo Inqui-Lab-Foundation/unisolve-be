@@ -3,7 +3,7 @@ import { constents } from '../configs/constents.config';
 import { speeches } from '../configs/speeches.config';
 
 export const supportTicketsReplies = Joi.object().keys({
-    query_id: Joi.number().required().messages({
+    support_ticket_id: Joi.number().required().messages({
         'string.empty': speeches.ID_REQUIRED
     }),
     reply_details: Joi.string().required().messages({
