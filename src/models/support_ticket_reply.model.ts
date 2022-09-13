@@ -4,8 +4,8 @@ import db from '../utils/dbconnection.util';
 import { support_ticket } from './support_ticket.model';
 
 export interface supportTicketRepliesAttributes {
-    reply_id: number;
-    query_id: string;
+    support_tickets_reply_id: number;
+    support_ticket_id: string;
     reply_details: string;
     status: Enumerator;
     created_by: number;
@@ -18,12 +18,12 @@ export class support_ticket_reply extends Model<supportTicketRepliesAttributes> 
 
 support_ticket_reply.init(
     {
-        reply_id: {
+        support_tickets_reply_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        query_id: {
+        support_ticket_id: {
             type: DataTypes.STRING,
             allowNull: false
         },
