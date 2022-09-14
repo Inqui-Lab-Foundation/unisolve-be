@@ -59,7 +59,7 @@ export default class BaseController extends CRUDController {
             let filename = file.path.split(path.sep).pop();
             filename = ""+Date.now()+"_"+filename
             if(arg_filename_prefix!=null){
-                filename = arg_filename_prefix+filename
+                filename = arg_filename_prefix+"_"+file.fieldName+"_"+filename
             }
             const targetResourcePath = path.join( ...argUploadFilePathRelative);
             const targetPath = path.join(process.cwd(), 'resources', 'static', 'uploads', targetResourcePath,filename);
