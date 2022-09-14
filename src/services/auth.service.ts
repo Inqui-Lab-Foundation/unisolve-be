@@ -356,9 +356,13 @@ export default class authService {
     }
     async bulkDeleteUserResponse(user_id: any) {
         try {
-            let result: any;
+            let result: any = {};
             let models = [quiz_response, quiz_survey_response, reflective_quiz_response, user_topic_progress, worksheet_response];
-            models.forEach(model => result = this.crudService.delete(model, { where: { user_id: user_id } }))
+            for (let i = 0; i < models.length; i++) {
+                let deleted = await this.crudService.delete(models[i], { where: { user_id } });
+                let data = models[i].tableName;
+                result[`${data}`] = deleted
+            }
             return result;
         } catch (error) {
             return error;
