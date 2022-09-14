@@ -37,33 +37,33 @@ export const quizQuestionSchema = Joi.object().keys({
     redirect_to: Joi.string().required().messages({
         'string.empty': speeches.NAME_REQUIRED
     }),
-    question_image: Joi.string().required().messages({
+    // question_image: Joi.string().required().messages({
+    //     'string.empty': speeches.NAME_REQUIRED
+    // }),
+    msg_ans_correct: Joi.string().required().messages({
         'string.empty': speeches.NAME_REQUIRED
     }),
-    msg_correct: Joi.string().required().messages({
+    msg_ans_wrong: Joi.string().required().messages({
         'string.empty': speeches.NAME_REQUIRED
     }),
-    msg_wrong: Joi.string().required().messages({
-        'string.empty': speeches.NAME_REQUIRED
-    }),
-    ar_image_ans_correct: Joi.string().required().messages({
-        'string.empty': speeches.NAME_REQUIRED
-    }),
+    // ar_image_ans_correct: Joi.string().required().messages({
+    //     'string.empty': speeches.NAME_REQUIRED
+    // }),
     ar_video_ans_correct: Joi.string().required().messages({
         'string.empty': speeches.NAME_REQUIRED
     }),
-    accimg_ans_correct: Joi.string().required().messages({
-        'string.empty': speeches.NAME_REQUIRED
-    }),
-    ar_image_ans_wrong: Joi.string().required().messages({
-        'string.empty': speeches.NAME_REQUIRED
-    }),
+    // accimg_ans_correct: Joi.string().required().messages({
+    //     'string.empty': speeches.NAME_REQUIRED
+    // }),
+    // ar_image_ans_wrong: Joi.string().required().messages({
+    //     'string.empty': speeches.NAME_REQUIRED
+    // }),
     ar_video_ans_wrong: Joi.string().required().messages({
         'string.empty': speeches.NAME_REQUIRED
     }),
-    accimg_ans_wrong: Joi.string().required().messages({
-        'string.empty': speeches.NAME_REQUIRED
-    }),
+    // accimg_ans_wrong: Joi.string().required().messages({
+    //     'string.empty': speeches.NAME_REQUIRED
+    // }),
 
 
 });
