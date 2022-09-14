@@ -30,10 +30,12 @@ export default class QuizQuestionsController extends BaseController {
     }
 
     protected async createData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        await this.copyAllFiles(req,"quiz_questions","images","quiz_imgs");
+        const {quiz_id,question_no,level} = req.body;
+        const filenamePrefix = `quiz_${quiz_id}_q${question_no}_${level}`;
+        await this.copyAllFiles(req,filenamePrefix,"images","quiz_imgs");
         return super.createData(req,res,next)
     }
-    
+
     // protected async createDataWithFile(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     //     try {
     //         const { model } = req.params;
