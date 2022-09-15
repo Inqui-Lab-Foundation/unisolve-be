@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "npm run start:dev",
-    "apitest:reg": "node ./postman/removeFiles.js && newman run ./postman/Unisolve-API-DocsQANEWReg.postman_collection.json -e ./postman/QAUnisolve.postman_environment.json -r allure && npm run generate:allurereport",
+    "apitest:reg": "node ./postman/removeFiles.js && newman run ./postman/Unisolve-API-DocsQANEWReg.postman_collection.json -e ./postman/QAUnisolve.postman_environment.json -r allure & npm run generate:allurereport",
     "start:dev": "nodemon",
     "generate:allurereport": "allure serve",
     "start:prod": "pm2 start  processes.json",
