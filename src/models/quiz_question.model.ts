@@ -19,6 +19,7 @@ export class quiz_question extends Model<InferAttributes<quiz_question>, InferCr
     declare msg_ans_correct: string;
     declare msg_ans_wrong: string;
     declare question_image: string;
+    declare question_icon: string;
     declare redirect_to: ForeignKey<number>;
     declare ar_image_ans_correct: string;
     declare ar_video_ans_correct: string;
@@ -103,6 +104,10 @@ quiz_question.init(
             allowNull: true
         },
         question_image: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
+        question_icon: {
             type: DataTypes.TEXT,
             allowNull: true,
         },
