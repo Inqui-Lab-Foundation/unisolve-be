@@ -5,7 +5,7 @@ import { speeches } from '../configs/speeches.config';
 export const videoSchema = Joi.object().keys({
     video_stream_id: Joi.string().required().messages({
         'string.empty': speeches.ID_REQUIRED
-    }),
+    })
 });
 
 export const videoUpdateSchema = Joi.object().keys({

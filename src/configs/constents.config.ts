@@ -38,6 +38,15 @@ export const constents = {
     },
     default: 'ACTIVE'
   },
+  support_tickets_status_flags: {
+    list: {
+      'OPEN': 'OPEN',
+      'INPROGRESS': 'INPROGRESS',
+      'RESOLVED': 'RESOLVED',
+      'BLOCKED': 'BLOCKED'
+    },
+    default: 'OPEN'
+  },
   quiz_question_level_flags: {
     list: {
       'HARD': 'HARD',
@@ -103,7 +112,8 @@ export const constents = {
     list: {
       'VIDEO': 'VIDEO',
       'WORKSHEET': 'WORKSHEET',
-      'QUIZ': 'QUIZ'
+      'QUIZ': 'QUIZ',
+      'ATTACHMENT': 'ATTACHMENT'
     },
     default: 'VIDEO',
   },
@@ -114,6 +124,15 @@ export const constents = {
       'OTHERS': 'OTHERS'
     },
     default: 'MALE',
+  },
+  res_status: {
+    list: {
+      '0': '0',
+      '1': '1',
+      '2': '2',
+      '3': '3',
+    },
+    default: '0'
   },
   default_image_path: "/images/default.jpg"
 

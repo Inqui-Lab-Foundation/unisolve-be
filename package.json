@@ -8,7 +8,7 @@
     "apitest:reg": "node ./postman/removeFiles.js && newman run ./postman/Unisolve-API-DocsQANEWReg.postman_collection.json -e ./postman/QAUnisolve.postman_environment.json -r allure && npm run generate:allurereport",
     "start:dev": "nodemon",
     "generate:allurereport": "allure serve",
-    "start:prod": "pm2 start  processes.json --env production",
+    "start:prod": "pm2 start  processes.json",
     "start:QA": "pm2 start  processes.json --env testing",
     "build": "tsc -p tsconfig.prod.json",
     "copy:assets": "cp 'config/singUp.json' 'dist/config/singUp.json'",
@@ -18,7 +18,8 @@
     "test:coverage": "npm run set-node-env && jest --coverage --verbose --silent",
     "dbsync": "node migrate.js",
     "dbsync:force": "rm -rf dist && npm run build && node migrate.js",
-    "migrate": "node src/migrations/migrate.js",
+    "migrate": "node src/database/migrations/migrate.js",
+    "seed": "node src/database/seeders/seed.js",
     "scaffold:entity": "node -e 'require(\"./src/scaffolders/generate.js\").g()'"
   },
   "dependencies": {
@@ -82,7 +83,7 @@
     "@types/jsonwebtoken": "^8.5.7",
     "@types/lodash": "^4.14.178",
     "@types/multer": "^1.4.7",
-    "@types/nanoid": "3.0.0",
+    "@types/nanoid": "^3.0.0",
     "@types/node": "^17.0.8",
     "@types/nodemailer": "^6.4.4",
     "@types/sequelize": "^4.28.11",

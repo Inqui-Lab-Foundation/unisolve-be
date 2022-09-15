@@ -47,7 +47,7 @@ export default class CRUDController implements IController {
     };
 
     protected getPagination(page: any, size: any) {
-        const limit = size ? +size : 10;
+        const limit = size ? +size : 1000000;
         const offset = page ? page * limit : 0;
         return { limit, offset };
     };
@@ -59,7 +59,7 @@ export default class CRUDController implements IController {
         return { totalItems, dataValues, totalPages, currentPage };
     };
 
-    protected autoFillTrackingCollumns(req: Request, res: Response, modelLoaded: any, reqData: any = null) {
+    protected autoFillTrackingColumns(req: Request, res: Response, modelLoaded: any, reqData: any = null) {
         // console.log(res.locals);
         let payload = req.body;
         if (reqData != null) {
@@ -77,7 +77,6 @@ export default class CRUDController implements IController {
 
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
-            
             let data: any;
             const { model, id } = req.params;
             const paramStatus: any = req.query.status;
@@ -132,7 +131,7 @@ export default class CRUDController implements IController {
                 } else {
                     throw notFound()
                 }
-                res.status(200).send(dispatcher(null,"error",speeches.DATA_NOT_FOUND));
+                res.status(200).send(dispatcher(null, "error", speeches.DATA_NOT_FOUND));
                 // if(data!=null){
                 //     throw 
                 (data.message)
@@ -140,7 +139,6 @@ export default class CRUDController implements IController {
                 //     throw notFound()
                 // }
             }
-
             return res.status(200).send(dispatcher(data, 'success'));
         } catch (error) {
             next(error);
@@ -154,16 +152,14 @@ export default class CRUDController implements IController {
                 this.model = model;
             };
             const modelLoaded = await this.loadModel(model);
-            const payload = this.autoFillTrackingCollumns(req, res, modelLoaded)
+            const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
             const data = await this.crudService.create(modelLoaded, payload);
-
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 throw badRequest(data.message)
             }
-
             return res.status(201).send(dispatcher(data, 'created'));
         } catch (error) {
             next(error);
@@ -176,16 +172,12 @@ export default class CRUDController implements IController {
             if (model) {
                 this.model = model;
             };
-
-            const rawfiles: any = req.files;
-            const files: any = Object.values(rawfiles);
-            const file_key: any = Object.keys(rawfiles);
-            console.log(file_key);
+            const rawFiles: any = req.files;
+            const files: any = Object.values(rawFiles);
             const reqData: any = req.body;
             const errs: any = [];
             for (const file_name of Object.keys(files)) {
                 const file = files[file_name];
-                console.log(file);
                 const filename = file.path.split(path.sep).pop();
                 const targetPath = path.join(process.cwd(), 'resources', 'static', 'uploads', 'images', filename);
                 await fs.rename(file.path, targetPath, async (err) => {
@@ -200,7 +192,7 @@ export default class CRUDController implements IController {
                 return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
             const modelLoaded = await this.loadModel(model);
-            const payload = this.autoFillTrackingCollumns(req, res, modelLoaded, reqData)
+            const payload = this.autoFillTrackingColumns(req, res, modelLoaded, reqData)
             const data = await this.crudService.create(modelLoaded, payload);
 
             // if (!data) {
@@ -222,12 +214,10 @@ export default class CRUDController implements IController {
                 this.model = model;
             };
             const user_id = res.locals.user_id
-            // console.log(user_id);
-
             const where: any = {};
             where[`${this.model}_id`] = req.params.id;
             const modelLoaded = await this.loadModel(model);
-            const payload = this.autoFillTrackingCollumns(req, res, modelLoaded)
+            const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));
@@ -252,10 +242,10 @@ export default class CRUDController implements IController {
 
             const where: any = {};
             where[`${this.model}_id`] = req.params.id;
-            const rawfiles: any = req.files;
-            const files: any = Object.values(rawfiles);
-            const file_key: any = Object.keys(rawfiles);
-            console.log(rawfiles);
+            const rawFiles: any = req.files;
+            const files: any = Object.values(rawFiles);
+            const file_key: any = Object.keys(rawFiles);
+            console.log(rawFiles);
             console.log(files);
             console.log(file_key);
             const reqData: any = req.body;
@@ -276,7 +266,7 @@ export default class CRUDController implements IController {
                 return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
             const modelLoaded = await this.loadModel(model);
-            const payload = this.autoFillTrackingCollumns(req, res, modelLoaded, reqData)
+            const payload = this.autoFillTrackingColumns(req, res, modelLoaded, reqData)
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
             // if (!data) {
             //     return res.status(404).send(dispatcher(data, 'error'));
@@ -326,11 +316,8 @@ export default class CRUDController implements IController {
 
         if (file === undefined) return res.status(400).send(dispatcher(null, 'error', speeches.FILE_REQUIRED, 400));
         if (file.type !== 'text/csv') return res.status(400).send(dispatcher(null, 'error', speeches.FILE_REQUIRED, 400));
-
         const modelLoaded = await this.loadModel(model);
-
         const stream = fs.createReadStream(file.path).pipe(csv.parse({ headers: true }));
-
         stream.on('error', (error) => res.status(400).send(dispatcher(error, 'error', speeches.CSV_SEND_ERROR, 400)));
         stream.on('data', async (data: any) => {
             dataLength = Object.entries(data).length;
@@ -344,7 +331,7 @@ export default class CRUDController implements IController {
         stream.on('end', async () => {
             if (Errors.length > 0) next(badRequest(Errors.message));
             for (let data = 0; data < bulkData.length; data++) {
-                const payload = this.autoFillTrackingCollumns(req, res, modelLoaded, bulkData[data]);
+                const payload = this.autoFillTrackingColumns(req, res, modelLoaded, bulkData[data]);
                 const match = await this.crudService.findOne(modelLoaded, { where: bulkData[data] });
                 if (match) {
                     existedEntities++;

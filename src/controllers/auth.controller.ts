@@ -1,28 +1,30 @@
-import e, { Router, Request, Response, NextFunction } from 'express';
-import { Op } from 'sequelize';
-import * as csv from "fast-csv";
+import { Router, Request, Response, NextFunction } from 'express';
 import fs from 'fs';
+import * as csv from "fast-csv";
 import { readFileSync, writeFileSync } from 'fs';
 import path from 'path';
 import bcrypt from 'bcrypt';
+
 import IController from '../interfaces/controller.interface';
 import validationMiddleware from '../middlewares/validation.middleware';
 import authValidations from '../validations/auth.validations';
 import dynamicForm from '../configs/dynamicForm';
 import CRUDService from '../services/crud.service';
 import jwtUtil from '../utils/jwt.util';
-import { user } from '../models/user.model';
 import dispatcher from '../utils/dispatch.util';
+import authService from '../services/auth.service';
+// import sendNotification from '../utils/notification.util';
+
+import { user } from '../models/user.model';
 import { speeches } from '../configs/speeches.config';
 import { baseConfig } from '../configs/base.config';
-import sendNotification from '../utils/notification.util';
-import { constents } from '../configs/constents.config';
 import { admin } from '../models/admin.model';
 import { mentor } from '../models/mentor.model';
 import { student } from '../models/student.model';
 import { evaluater } from '../models/evaluater.model';
 import { badRequest } from 'boom';
 import { nanoid } from 'nanoid'
+// import { constents } from '../configs/constents.config';
 
 export default class AuthController implements IController {
     public path: string;
@@ -30,20 +32,24 @@ export default class AuthController implements IController {
     crudService: CRUDService = new CRUDService;
     public userModel: any = new user();
     private password = process.env.GLOBAL_PASSWORD;
-
+    authService: authService = new authService;
     constructor() {
         this.path = '/auth';
         this.router = Router();
         this.initializeRoutes();
     }
+    // we are disabling this controller, using individual login controllers students/login, mentors/login, evaluater/login, admins/login
+
     private initializeRoutes(): void {
         this.router.post(`${this.path}/login`, this.login);
         this.router.get(`${this.path}/logout`, this.logout);
         this.router.post(`${this.path}/register`, this.register);
-        this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword);
+        this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword.bind(this));
+        this.router.put(`${this.path}/updatePassword`, validationMiddleware(authValidations.changePassword), this.updatePassword.bind(this));
         this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm), this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
         this.router.post(`${this.path}/:model/bulkUpload`, this.bulkUpload.bind(this))
+        this.router.get(`${this.path}/clearUserResponse/:user_id`, this.clearUserResponse.bind(this))
     }
 
     private loadModel = async (model: string): Promise<Response | void | any> => {
@@ -78,6 +84,7 @@ export default class AuthController implements IController {
             } else {
                 // user status checking
                 let stop_procedure: boolean = false;
+                let stop_issuing_token: boolean = false;
                 let error_message: string = '';
                 switch (user_res.status) {
                     case 'DELETED':
@@ -90,8 +97,25 @@ export default class AuthController implements IController {
                         stop_procedure = true;
                         error_message = speeches.USER_INACTIVE
                 }
+                switch (user_res.role) {
+                    case 'STUDENT': {
+                        if (user_res.role !== req.body.role) stop_issuing_token = true;
+                    }
+                    case 'ADMIN': {
+                        if (user_res.role !== req.body.role) stop_issuing_token = true;
+                    }
+                    case 'MENTOR': {
+                        if (user_res.role !== req.body.role) stop_issuing_token = true;
+                    }
+                    case 'EVALUATER': {
+                        if (user_res.role !== req.body.role) stop_issuing_token = true;
+                    }
+                }
                 if (stop_procedure) {
                     return res.status(401).send(dispatcher(error_message, 'error', speeches.USER_RISTRICTED, 401));
+                }
+                if (stop_issuing_token) {
+                    return res.status(401).send(dispatcher(error_message, 'error', speeches.USER_ROLE_CHECK, 401));
                 }
                 await this.crudService.update(user, {
                     is_loggedin: "YES",
@@ -186,37 +210,37 @@ export default class AuthController implements IController {
         }
     }
 
-    private changePassword = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
-        try {
-            const user_res: any = await this.crudService.findOnePassword(user, {
-                where: {
-                    [Op.or]: [
-                        {
-                            username: { [Op.eq]: req.body.username }
-                        },
-                        {
-                            user_id: { [Op.like]: `%${req.body.user_id}%` }
-                        }
-                    ]
-                }
-            });
-            if (!user_res) {
-                return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
-            }
-            //comparing the password with hash
-            const match = bcrypt.compareSync(req.body.old_password, user_res.dataValues.password);
-            if (match === false) {
-                return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_PASSWORD));
-            } else {
-                const result = await this.crudService.update(user, {
-                    password: await bcrypt.hashSync(req.body.new_password, process.env.SALT || baseConfig.SALT)
-                }, { where: { user_id: user_res.dataValues.user_id } });
-                return res.status(202).send(dispatcher(result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
-            }
-        } catch (error) {
-            next(error);
-        }
-    }
+    // private changePassword = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    //     try {
+    //         const user_res: any = await this.crudService.findOnePassword(user, {
+    //             where: {
+    //                 [Op.or]: [
+    //                     {
+    //                         username: { [Op.eq]: req.body.username }
+    //                     },
+    //                     {
+    //                         user_id: { [Op.like]: `%${req.body.user_id}%` }
+    //                     }
+    //                 ]
+    //             }
+    //         });
+    //         if (!user_res) {
+    //             return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
+    //         }
+    //         //comparing the password with hash
+    //         const match = bcrypt.compareSync(req.body.old_password, user_res.dataValues.password);
+    //         if (match === false) {
+    //             return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_PASSWORD));
+    //         } else {
+    //             const result = await this.crudService.update(user, {
+    //                 password: await bcrypt.hashSync(req.body.new_password, process.env.SALT || baseConfig.SALT)
+    //             }, { where: { user_id: user_res.dataValues.user_id } });
+    //             return res.status(202).send(dispatcher(result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+    //         }
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // }
 
     private dynamicSignupForm = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
@@ -330,4 +354,45 @@ export default class AuthController implements IController {
             }
         });
     }
+
+    private async changePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const result = await this.authService.changePassword(req.body, res);
+        if (!result) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+        } else if (result.error) {
+            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+        }
+        else if (result.match) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
+        } else {
+            return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+        }
+    }
+
+    private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const result = await this.authService.updatePassword(req.body, res);
+        if (!result) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+        } else if (result.error) {
+            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+        }
+        else if (result.match) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
+        } else {
+            return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+        }
+    }
+
+    private async clearUserResponse(req: Request, res: Response, next: NextFunction) {
+        // user_id or email_id will be getting from the params then find the
+        try {
+            const data = await this.authService.bulkDeleteUserResponse(req.params.user_id)
+            // if (!data || data instanceof Error) {
+            //     throw badRequest(data.message)
+            // }
+            return res.status(200).send(dispatcher(data, 'deleted'));
+        } catch (error) {
+            next(error)
+        }
+    };
 }   

@@ -124,6 +124,8 @@ once you have generated migration file you can call
 
 ```npm run migrate up``` command will execute all pending migrations.
 
+```npm run down -- --name=name_of_migration_file_you_wish_to_revert.ts``` command will revert particular migration mentioned in --name 
+
 ## Database rules
 
 - Use underscore_names instead of CamelCase

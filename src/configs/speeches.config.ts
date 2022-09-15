@@ -26,9 +26,12 @@ export const speeches = {
     ADMIN_EXISTS: "Not Acceptable, Admin already exists",
     EVALUATER_EXISTS: "Not Acceptable, Evaluater already exists",
     USER_NOT_FOUND: "User not found",
+    USER_REG_STATUS: "User blocked",
     USER_PASSWORD: "User pasword doesn't match",
     USER_PASSWORD_CHANGE: "User password updated",
+    USER_MOBILE_CHANGE: "User mobile number updated",
     USER_RISTRICTED: "Unauthorized Access!",
+    USER_ROLE_CHECK: "Unauthorized Access, check the role",
     USER_DELETED: "User is ditected as deleted. Kindly contact your administrator.",
     USER_LOCKED: "User is ditected as locked. Kindly contact your administrator.",
     USER_INACTIVE: "User is ditected as inactive. Kindly contact your administrator.",
@@ -92,5 +95,7 @@ export const speeches = {
     ORG_CODE_REQUIRED: "Organization code is required.",
     ORG_CODE_NOT_EXISTS: "Organization code does not exists.",
     OTP_FAIL: "Wrong OTP Detected.",
-    OTP_FOUND: "OTP matched."
+    OTP_FOUND: "OTP matched.",
+    QUERY_CATEGORY: "Category is required",
+    QUERY_DETAILS: "Query cannot be null"
 }

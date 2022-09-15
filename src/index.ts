@@ -3,7 +3,7 @@ import validateEnv from "./utils/validate_env";
 import App from "./app";
 
 import AuthController from "./controllers/auth.controller";
-import CRUDController from "./controllers/crud.controller";
+// import CRUDController from "./controllers/crud.controller"; // (Disabling CRUD API's for directly use)
 import NotificationsController from "./controllers/notifications.controller";
 import CourseController from "./controllers/course.controller";
 import VideoController from "./controllers/video.controller";
@@ -23,6 +23,12 @@ import StudentController from "./controllers/student.controller";
 import AdminController from "./controllers/admin.controller";
 import EvaluaterController from "./controllers/evulator.controller";
 import QuizSurveyController from "./controllers/quiz_survey.controller";
+import MentorCourseController from "./controllers/mentorCourse.controller";
+import MentorAttachmentController from "./controllers/mentorAttachment.controller";
+import MentorTopicProgressController from "./controllers/mentorTopicProgress.controller";
+import SupportTicketController from "./controllers/supportTickets.controller";
+import SupportTicketRepliesController from "./controllers/supportTicketsReplies.controller";
+import QuizQuestionsController from "./controllers/quiz_questions.controller";
 
 // validating env variables
 validateEnv();
@@ -30,8 +36,8 @@ validateEnv();
 // initializing app
 try {
     const app = new App([
+        // new CRUDController (Disabling CRUD API's for directly use)
         new AuthController,
-        new CRUDController,
         new NotificationsController,
         new CourseController,
         new CourseModulesController,
@@ -49,7 +55,13 @@ try {
         new AdminController,
         new StudentController,
         new EvaluaterController,
-        new QuizSurveyController
+        new QuizSurveyController,
+        new MentorCourseController,
+        new MentorAttachmentController,
+        new MentorTopicProgressController,
+        new SupportTicketController,
+        new SupportTicketRepliesController,
+        new QuizQuestionsController
     ], Number(process.env.APP_PORT));
     // starting app
     app.listen();

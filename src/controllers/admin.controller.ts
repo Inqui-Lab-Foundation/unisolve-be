@@ -24,17 +24,22 @@ export default class AdminController extends BaseController {
         this.router.post(`${this.path}/login`, this.login.bind(this));
         this.router.get(`${this.path}/logout`, this.logout.bind(this));
         this.router.put(`${this.path}/changePassword`, this.changePassword.bind(this));
+        this.router.put(`${this.path}/updatePassword`, this.updatePassword.bind(this));
         super.initializeRoutes();
     }
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        if (!req.body.username || req.body.username === "") req.body.username = req.body.full_name.replace('s / +/ /g', "");
+        if (!req.body.username || req.body.username === "") req.body.username = req.body.full_name.replace(/\s/g, '');
         if (!req.body.password || req.body.password === "") req.body.password = this.password;
+        if (!req.body.role || req.body.role !== 'ADMIN') {
+            return res.status(406).send(dispatcher(null, 'error', speeches.USER_ROLE_REQUIRED, 406));
+        }
         const result = await this.authService.register(req.body);
         if (result.user_res) return res.status(406).send(dispatcher(result.user_res.dataValues, 'error', speeches.EVALUATER_EXISTS, 406));
         return res.status(201).send(dispatcher(result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        req.body['role'] = 'ADMIN'
         const result = await this.authService.login(req.body);
         if (!result) {
             return res.status(404).send(dispatcher(result, 'error', speeches.USER_NOT_FOUND));
@@ -57,9 +62,26 @@ export default class AdminController extends BaseController {
     private async changePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const result = await this.authService.changePassword(req.body, res);
         if (!result) {
-            return res.status(404).send(dispatcher(result.user_res, 'error', speeches.USER_NOT_FOUND));
-        } else if (result.match) {
-            return res.status(404).send(dispatcher(result.match, 'error', speeches.USER_PASSWORD));
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+        } else if (result.error) {
+            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+        }
+        else if (result.match) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
+        } else {
+            return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+        }
+    }
+
+    private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        const result = await this.authService.updatePassword(req.body, res);
+        if (!result) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+        } else if (result.error) {
+            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+        }
+        else if (result.match) {
+            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
         } else {
             return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
