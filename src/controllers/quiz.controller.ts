@@ -1,6 +1,7 @@
 import { badData, badRequest, internal, unauthorized } from "boom";
 import { NextFunction, Request, Response } from "express";
 import { invalid } from "joi";
+import { includes } from "lodash";
 import { Op } from "sequelize";
 import { constents } from "../configs/constents.config";
 import { speeches } from "../configs/speeches.config";
@@ -9,7 +10,9 @@ import { course_topic } from "../models/course_topic.model";
 import { quiz_question } from "../models/quiz_question.model";
 import { quiz_response } from "../models/quiz_response.model";
 import { user_topic_progress } from "../models/user_topic_progress.model";
+import { video } from "../models/video.model";
 import dispatcher from "../utils/dispatch.util";
+import logger from "../utils/logger";
 import { quizNextQuestionSchema, quizSchema, quizSubmitResponseSchema, quizUpdateSchema } from "../validations/quiz.validations";
 import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
@@ -126,6 +129,7 @@ export default class QuizController extends BaseController {
             resultQuestion["question_no"] = nextQuestionsToChooseFrom.dataValues.question_no;
             resultQuestion["question"] = nextQuestionsToChooseFrom.dataValues.question;
             resultQuestion["question_image"] = nextQuestionsToChooseFrom.dataValues.question_image;
+            resultQuestion["question_icon"] = nextQuestionsToChooseFrom.dataValues.question_icon;
             resultQuestion["options"] = optionsArr;
             resultQuestion["level"] = nextQuestionsToChooseFrom.dataValues.level;
             resultQuestion["type"] = nextQuestionsToChooseFrom.dataValues.type;
@@ -167,6 +171,24 @@ export default class QuizController extends BaseController {
             }
             if (!questionAnswered) {
                 throw badData("Invalid Quiz question id")
+            }
+
+            let topic_to_redirect_to = null;
+            if(questionAnswered.dataValues.redirect_to){
+                topic_to_redirect_to = await this.crudService.findOne(course_topic,{
+                    where:{
+                        course_topic_id:questionAnswered.dataValues.redirect_to
+                    },
+                    include: [{
+                        model: video,
+                        as: 'video',
+                        required:false
+                    }]
+                })
+            }
+            if(topic_to_redirect_to instanceof Error){
+                console.log(topic_to_redirect_to);
+                topic_to_redirect_to = null
             }
 
             const quizRes = await this.crudService.findOne(quiz_response, { where: { quiz_id: quiz_id, user_id: user_id } });
@@ -221,10 +243,11 @@ export default class QuizController extends BaseController {
                 } else {
                     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
                     result["ar_image"] = questionAnswered.dataValues.ar_image_ans_wrong;
-                    result["ar_video"]= questionAnswered.dataValues.ar_video_ans_wrong;
+                    // result["ar_video"]= questionAnswered.dataValues.ar_video_ans_wrong;
+                    result["ar_video"]= topic_to_redirect_to
                     result["accimg"] = questionAnswered.dataValues.accimg_ans_wrong;
                 }
-                result["redirect_to"] = questionAnswered.dataValues.redirect_to;
+                result["redirect_to"] = topic_to_redirect_to;
                 res.status(200).send(dispatcher(result));
             } else {
 
@@ -248,10 +271,11 @@ export default class QuizController extends BaseController {
                 } else {
                     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
                     result["ar_image"] = questionAnswered.dataValues.ar_image_ans_wrong;
-                    result["ar_video"]= questionAnswered.dataValues.ar_video_ans_wrong;
+                    // result["ar_video"]= questionAnswered.dataValues.ar_video_ans_wrong;
+                    result["ar_video"]= topic_to_redirect_to
                     result["accimg"] = questionAnswered.dataValues.accimg_ans_wrong;
                 }
-                result["redirect_to"] = questionAnswered.dataValues.redirect_to;
+                result["redirect_to"] = topic_to_redirect_to;
                 res.status(200).send(dispatcher(result));
             }
         } catch (err) {
