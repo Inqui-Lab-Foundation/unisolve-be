@@ -2090,6 +2090,155 @@
 					"description": "### List of endpoints for user authentication are:\n\n*   Registration API of new user, the system supports 5 different levels of user role `ADMIN`, `STUDENT`, `EVALUATOR`, `MENTOR`, default role is `ADMIN`, please update the role field accordingly.\n*   Login API generate a JWT token for access the protected routes.\n*   Logout API mark the user status inactive."
 				},
 				{
+					"name": "Courses",
+					"item": [
+						{
+							"name": "Coruse",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});\r",
+											"\r",
+											" saveData=JSON.parse(responseBody)\r",
+											" \r",
+											"pm.environment.set(\"course_id\", saveData.data[0].course_id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courses/",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courses",
+										""
+									]
+								},
+								"description": "### Endpoint for getting list of courses created"
+							},
+							"response": []
+						},
+						{
+							"name": "Course/{id}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courses/{{course_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courses",
+										"{{course_id}}"
+									]
+								},
+								"description": "### Endpoint for getting single course"
+							},
+							"response": []
+						},
+						{
+							"name": "Course/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/courses/{{course_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courses",
+										"{{course_id}}"
+									]
+								},
+								"description": "### Endpoint for updating the specific course\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Course{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verify success message\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"error\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/courses/{{course_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"courses",
+										"{{course_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single course record"
+							},
+							"response": []
+						}
+					],
+					"description": "### Course service is list of endpoints with CREATE, UPDATE, READ, DELETE API's\n\nThese are the protected API's must have JWT token in the Authorizations part."
+				},
+				{
 					"name": "Course Modules",
 					"item": [
 						{
@@ -2605,155 +2754,6 @@
 							}
 						}
 					]
-				},
-				{
-					"name": "Courses",
-					"item": [
-						{
-							"name": "Coruse",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"Verify success message\", function () {\r",
-											"    var jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
-											"});\r",
-											"\r",
-											" saveData=JSON.parse(responseBody)\r",
-											" \r",
-											"pm.environment.set(\"course_id\", saveData.data[0].course_id);"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseurl}}/courses/",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"courses",
-										""
-									]
-								},
-								"description": "### Endpoint for getting list of courses created"
-							},
-							"response": []
-						},
-						{
-							"name": "Course/{id}",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseurl}}/courses/{{course_id}}",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"courses",
-										"{{course_id}}"
-									]
-								},
-								"description": "### Endpoint for getting single course"
-							},
-							"response": []
-						},
-						{
-							"name": "Course/{id}",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"Verify success message\", function () {\r",
-											"    var jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseurl}}/courses/{{course_id}}",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"courses",
-										"{{course_id}}"
-									]
-								},
-								"description": "### Endpoint for updating the specific course\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
-							},
-							"response": []
-						},
-						{
-							"name": "Course{id}",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(400);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"Verify success message\", function () {\r",
-											"    var jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData.status_type).to.eql(\"error\");\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseurl}}/courses/{{course_id}}",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"courses",
-										"{{course_id}}"
-									]
-								},
-								"description": "### Endpoint for removing a single course record"
-							},
-							"response": []
-						}
-					],
-					"description": "### Course service is list of endpoints with CREATE, UPDATE, READ, DELETE API's\n\nThese are the protected API's must have JWT token in the Authorizations part."
 				},
 				{
 					"name": "MentorCourses",
@@ -3947,223 +3947,6 @@
 					"description": "### Team service is list of endpoints with CREATE, UPDATE, READ, DELETE API's\n\nThese are the protected API's must have JWT token in the Authorizations part."
 				},
 				{
-					"name": "Faqs",
-					"item": [
-						{
-							"name": "Faqs",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 201\", function () {\r",
-											"    pm.response.to.have.status(201);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"Test status check\", function () {\r",
-											"    var jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"question\": \"Health\",\r\n    \"answer\": \"BWUi6BS9T5Y\",\r\n    \"faq_category_id\":{{faq_category_id}}\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseurl}}/faqs",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"faqs"
-									]
-								},
-								"description": "### Endpoint for creating new video record\n\n**Request payload must contain the following fields:**\n\n*   module: STRING,\n*   video_steam_id: STRING"
-							},
-							"response": []
-						},
-						{
-							"name": "Faqs",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"List all FAQ's\", function () {\r",
-											"    var jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
-											"});\r",
-											"\r",
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											" saveData=JSON.parse(responseBody)\r",
-											"\r",
-											"pm.environment.set(\"faq_id\", saveData.data[0].dataValues[0].faq_id);\r",
-											""
-										],
-										"type": "text/javascript"
-									}
-								},
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseurl}}/faqs",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"faqs"
-									]
-								},
-								"description": "### Endpoint for getting list of videos created"
-							},
-							"response": []
-						},
-						{
-							"name": "Faqs/{id}",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Verify Data\", function () {\r",
-											"    var jsonData = pm.response.json();\r",
-											"\r",
-											"    var a =\r",
-											"        pm.environment.get(\"faq_id\");\r",
-											"    pm.expect(jsonData.data[0].faq_id).to.eql(a);\r",
-											"});\r",
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseurl}}/faqs/{{faq_id}}",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"faqs",
-										"{{faq_id}}"
-									]
-								},
-								"description": "### Endpoint for getting single video"
-							},
-							"response": []
-						},
-						{
-							"name": "Faqs/{id}",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"Your test name\", function () {\r",
-											"    var jsonData = pm.response.json();\r",
-											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseurl}}/faqs/{{faq_id}}",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"faqs",
-										"{{faq_id}}"
-									]
-								},
-								"description": "### Endpoint for updating the specific video\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
-							},
-							"response": []
-						},
-						{
-							"name": "Faqs/{id}",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Status code is 200\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											""
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseurl}}/faqs/{{faq_id}}",
-									"host": [
-										"{{baseurl}}"
-									],
-									"path": [
-										"faqs",
-										"{{faq_id}}"
-									]
-								},
-								"description": "### Endpoint for removing a single vide record"
-							},
-							"response": []
-						}
-					]
-				},
-				{
 					"name": "FaqCategories",
 					"item": [
 						{
@@ -4363,6 +4146,225 @@
 									"path": [
 										"faqCategories",
 										"{{faq_category_id}}"
+									]
+								},
+								"description": "### Endpoint for removing a single vide record"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Faqs",
+					"item": [
+						{
+							"name": "Faqs",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"setTimeout(()=>{},5000)\r",
+											"\r",
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Test status check\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"question\": \"Health\",\r\n    \"answer\": \"BWUi6BS9T5Y\",\r\n    \"faq_category_id\":{{faq_category_id}}\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/faqs",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs"
+									]
+								},
+								"description": "### Endpoint for creating new video record\n\n**Request payload must contain the following fields:**\n\n*   module: STRING,\n*   video_steam_id: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"List all FAQ's\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											" saveData=JSON.parse(responseBody)\r",
+											"\r",
+											"pm.environment.set(\"faq_id\", saveData.data[0].dataValues[0].faq_id);\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqs",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs"
+									]
+								},
+								"description": "### Endpoint for getting list of videos created"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Verify Data\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"\r",
+											"    var a =\r",
+											"        pm.environment.get(\"faq_id\");\r",
+											"    pm.expect(jsonData.data[0].faq_id).to.eql(a);\r",
+											"});\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqs/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs",
+										"{{faq_id}}"
+									]
+								},
+								"description": "### Endpoint for getting single video"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"ACTIVE\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/faqs/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs",
+										"{{faq_id}}"
+									]
+								},
+								"description": "### Endpoint for updating the specific video\n\n**Request payload must contain the following fields:**\n\n*   status: STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Faqs/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqs/{{faq_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs",
+										"{{faq_id}}"
 									]
 								},
 								"description": "### Endpoint for removing a single vide record"
