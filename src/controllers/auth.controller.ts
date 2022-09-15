@@ -41,11 +41,11 @@ export default class AuthController implements IController {
     // we are disabling this controller, using individual login controllers students/login, mentors/login, evaluater/login, admins/login
 
     private initializeRoutes(): void {
-        this.router.post(`${this.path}/login`, this.login);
-        this.router.get(`${this.path}/logout`, this.logout);
-        this.router.post(`${this.path}/register`, this.register);
-        this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword.bind(this));
-        this.router.put(`${this.path}/updatePassword`, validationMiddleware(authValidations.changePassword), this.updatePassword.bind(this));
+        // this.router.post(`${this.path}/login`, this.login);
+        // this.router.get(`${this.path}/logout`, this.logout);
+        // this.router.post(`${this.path}/register`, this.register);
+        // this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword.bind(this));
+        // this.router.put(`${this.path}/updatePassword`, validationMiddleware(authValidations.changePassword), this.updatePassword.bind(this));
         this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm), this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
         this.router.post(`${this.path}/:model/bulkUpload`, this.bulkUpload.bind(this))
