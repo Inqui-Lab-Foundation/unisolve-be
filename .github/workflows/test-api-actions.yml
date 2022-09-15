@@ -30,7 +30,7 @@ jobs:
     # Run the POSTMAN collection
     - name: Run POSTMAN collection
       run: |
-       newman run ./postman/Unisolve-API-DocsQANEWReg.postman_collection.json -e ./postman/QAUnisolve.postman_environment.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html
+       newman run ./postman/Unisolve-API-DocsQANEWReg.postman_collection.json -e ./postman/QAUnisolve.postman_environment.json
 
     # Upload the contents of Test Results directory to workspace
     - name: Output the run Details
