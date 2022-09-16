@@ -11,6 +11,7 @@ import db from "../utils/dbconnection.util"
 import { constents } from "../configs/constents.config";
 import { speeches } from "../configs/speeches.config";
 import { Op } from "sequelize";
+import translation from "resources/static/uploads/te/translation";
 export default class CourseController extends BaseController {
     model = "course";
 
@@ -37,31 +38,40 @@ export default class CourseController extends BaseController {
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             let data: any;
+            let course_modules: any;
+            let course_topics: any;
+            let courses: any;
             const { model, id } = req.params;
-            const paramStatus:any = req.query.status
+            const paramStatus: any = req.query.status
             if (model) {
                 this.model = model;
             };
 
             // pagination
-            const { page, size, title } = req.query;
+            const { page, size, title, locale } = req.query;
             let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
             const { limit, offset } = this.getPagination(page, size);
-            const modelClass = await this.loadModel(model)
-            
-            
-            const where: any = {};
-           
-            let whereClauseStatusPart:any = {};
-            let whereClauseStatusPartLiteral = "1=1";
-            let addWhereClauseStatusPart = false
-            if(paramStatus && (paramStatus in constents.common_status_flags.list)){
-                whereClauseStatusPart = {"status":paramStatus}
-                whereClauseStatusPartLiteral = `status = "${paramStatus}"`
-                addWhereClauseStatusPart =true;
+            const modelClass = await this.loadModel(model);
+            modelClass.locale = locale ? locale : 'en';
+            if (locale) {
+                console.log("modelClass: ", modelClass.tableName, "locale: ", locale);
+                course_modules = translation[`${locale}`].COURSE_MODULES
+                course_topics = translation[`${locale}`].COURSE_TOPICS
+                courses = translation[`${locale}`].COURSES
             }
 
-            
+            const where: any = {};
+
+            let whereClauseStatusPart: any = {};
+            let whereClauseStatusPartLiteral = "1=1";
+            let addWhereClauseStatusPart = false
+            if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
+                whereClauseStatusPart = { "status": paramStatus }
+                whereClauseStatusPartLiteral = `status = "${paramStatus}"`
+                addWhereClauseStatusPart = true;
+            }
+
+
             if (id) {
                 // where[`${this.model}_id`] = req.params.id;
                 data = await this.getDetailsData(req, res, modelClass)
@@ -74,23 +84,23 @@ export default class CourseController extends BaseController {
                             [// Note the wrapping parentheses in the call below!
                                 db.literal(`(
                                     SELECT COUNT(*)
-                                    FROM course_modules AS cm
+                                    FROM ${course_modules} AS cm
                                     WHERE
-                                        ${addWhereClauseStatusPart?"cm."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
+                                        ${addWhereClauseStatusPart ? "cm." + whereClauseStatusPartLiteral : whereClauseStatusPartLiteral}
                                     AND
-                                        cm.course_id = \`course\`.\`course_id\`
+                                        cm.course_id = \`${courses}\`.\`course_id\`
                                 )`),
                                 'course_modules_count'
                             ],
                             [// Note the wrapping parentheses in the call below!
                                 db.literal(`(
                                 SELECT COUNT(*)
-                                FROM course_topics AS ct
-                                JOIN course_modules as cm on cm.course_module_id = ct.course_module_id
+                                FROM ${course_topics} AS ct
+                                JOIN ${course_modules} as cm on cm.course_module_id = ct.course_module_id
                                 WHERE
-                                    ${addWhereClauseStatusPart?"ct."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
+                                    ${addWhereClauseStatusPart ? "ct." + whereClauseStatusPartLiteral : whereClauseStatusPartLiteral}
                                 AND
-                                    cm.course_id = \`course\`.\`course_id\`
+                                    cm.course_id = \`${courses}\`.\`course_id\`
                                 AND
                                     ct.topic_type = \"VIDEO\"
                             )`),
@@ -98,11 +108,11 @@ export default class CourseController extends BaseController {
                             ]
                         ]
                     },
-                    where:{
+                    where: {
                         [Op.and]: [
                             whereClauseStatusPart,
                             condition,
-                            ]
+                        ]
                     }
                 });
                 data.filter(function (rec: any) {
@@ -122,17 +132,27 @@ export default class CourseController extends BaseController {
 
     async getDetailsData(req: Request, res: Response, modelClass: any) {
         let whereClause: any = {};
+        let course_modules: any;
+        let course_topics: any;
+        let courses: any;
 
         whereClause[`${this.model}_id`] = req.params.id;
-        
-        const paramStatus:any = req.query.status;
-        let whereClauseStatusPart:any = {};
+
+        const paramStatus: any = req.query.status;
+        let whereClauseStatusPart: any = {};
         let whereClauseStatusPartLiteral = "1=1";
         let addWhereClauseStatusPart = false
-        if(paramStatus && (paramStatus in constents.common_status_flags.list)){
-            whereClauseStatusPart = {"status":paramStatus}
+        if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
+            whereClauseStatusPart = { "status": paramStatus }
             whereClauseStatusPartLiteral = `status = "${paramStatus}"`
-            addWhereClauseStatusPart =true;
+            addWhereClauseStatusPart = true;
+        }
+        const { page, size, title, locale } = req.query;
+        if (locale) {
+            console.log("modelClass: ", modelClass.tableName, "locale: ", locale);
+            course_modules = translation[`${locale}`].COURSE_MODULES
+            course_topics = translation[`${locale}`].COURSE_TOPICS
+            courses = translation[`${locale}`].COURSES
         }
 
         let user_id = res.locals.user_id;
@@ -140,16 +160,16 @@ export default class CourseController extends BaseController {
             throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
         }
         let data = await this.crudService.findOne(modelClass, {
-            where:whereClause,
-             
+            where: whereClause,
+
             attributes: {
                 include: [
                     [// Note the wrapping parentheses in the call below!
                         db.literal(`(
                             SELECT COUNT(*)
-                            FROM course_modules AS cm
+                            FROM ${course_modules} AS cm
                             WHERE
-                                ${addWhereClauseStatusPart?"cm."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
+                                ${addWhereClauseStatusPart ? "cm." + whereClauseStatusPartLiteral : whereClauseStatusPartLiteral}
                             AND
                                 cm.course_id = \`course\`.\`course_id\`
                         )`),
@@ -158,10 +178,10 @@ export default class CourseController extends BaseController {
                     [// Note the wrapping parentheses in the call below!
                         db.literal(`(
                         SELECT COUNT(*)
-                        FROM course_topics AS ct
-                        JOIN course_modules as cm on cm.course_module_id = ct.course_module_id
+                        FROM ${course_topics} AS ct
+                        JOIN ${course_modules} as cm on cm.course_module_id = ct.course_module_id
                         WHERE
-                            ${addWhereClauseStatusPart?"ct."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
+                            ${addWhereClauseStatusPart ? "ct." + whereClauseStatusPartLiteral : whereClauseStatusPartLiteral}
                         AND
                             cm.course_id = \`course\`.\`course_id\`
                         AND
@@ -174,7 +194,7 @@ export default class CourseController extends BaseController {
             include: [{
                 model: course_module,
                 as: 'course_modules',
-                required:false,
+                required: false,
                 attributes: [
                     "title",
                     "description",
@@ -183,9 +203,9 @@ export default class CourseController extends BaseController {
                     [
                         db.literal(`(
                             SELECT COUNT(*)
-                            FROM course_topics AS ct
+                            FROM ${course_topics} AS ct
                             WHERE
-                                ${addWhereClauseStatusPart?"ct."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
+                                ${addWhereClauseStatusPart ? "ct." + whereClauseStatusPartLiteral : whereClauseStatusPartLiteral}
                             AND
                                 ct.course_module_id = \`course_modules\`.\`course_module_id\`
                             AND
@@ -194,15 +214,15 @@ export default class CourseController extends BaseController {
                         'videos_count'
                     ]
                 ],
-                where:{
-                    [Op.and]:[
+                where: {
+                    [Op.and]: [
                         whereClauseStatusPart
                     ]
                 },
                 include: [{
                     model: course_topic,
                     as: "course_topics",
-                    required:false,
+                    required: false,
                     attributes: [
                         "title",
                         "course_module_id",
@@ -249,14 +269,14 @@ export default class CourseController extends BaseController {
                                     WHEN ct.topic_type = "QUIZ" THEN 2
                                     WHEN ct.topic_type = "WORKSHEET" THEN 3
                                 END AS topic_type_order
-                                FROM course_topics as ct
+                                FROM ${course_topics} as ct
                                 WHERE ct.course_topic_id = \`course_modules->course_topics\`.\`course_topic_id\`
                             )`),
                             'topic_type_order'
                         ]
                     ],
-                    where:{
-                        [Op.and]:[
+                    where: {
+                        [Op.and]: [
                             whereClauseStatusPart
                         ]
                     },
@@ -266,7 +286,7 @@ export default class CourseController extends BaseController {
             order: [
                 // [{model: course_module, as: 'course_modules'},{model: course_topic, as: 'course_topics'},'topic_type_order', 'ASC'],
                 db.literal(`\`course_modules.course_topics.topic_type_order\` ASC`),
-                [course_module,course_topic,'course_topic_id', 'ASC'],
+                [course_module, course_topic, 'course_topic_id', 'ASC'],
             ],
         });
         return data;

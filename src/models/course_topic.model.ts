@@ -6,7 +6,8 @@ import db from '../utils/dbconnection.util';
 import { course_module } from './course_module.model';
 import { user } from './user.model';
 import { video } from './video.model';
-const uppercaseFirst = (str:any) => `${str[0].toUpperCase()}${str.substr(1)}`;
+const uppercaseFirst = (str: any) => `${str[0].toUpperCase()}${str.substr(1)}`;
+import translation from '../../resources/static/uploads/te/translation'
 
 export class course_topic extends Model<courseTopicsAttribute> {
     /**
@@ -14,6 +15,7 @@ export class course_topic extends Model<courseTopicsAttribute> {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
+    static locale = 'tn';
     static associate(models: any) {
         // define association here
         course_topic.belongsTo(course_module, { foreignKey: 'course_module_id', as: 'course_topics' });
@@ -54,7 +56,7 @@ course_topic.init(
         created_by: {
             type: DataTypes.INTEGER,
             allowNull: true,
-            defaultValue:null
+            defaultValue: null
         },
         created_at: {
             type: DataTypes.DATE,
@@ -75,7 +77,7 @@ course_topic.init(
     },
     {
         sequelize: db,
-        tableName: 'course_topics',
+        tableName: translation[course_topic.locale].COURSE_TOPICS,
         timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'
@@ -85,12 +87,14 @@ course_topic.init(
 course_topic.belongsTo(course_module, { foreignKey: 'course_module_id', as: 'course_topics' });
 course_module.hasMany(course_topic, { foreignKey: 'course_module_id' });
 
-course_topic.belongsTo(video,{ 
+course_topic.belongsTo(video, {
     foreignKey: 'topic_type_id',
-    constraints: false})
-video.hasMany(course_topic,{ 
+    constraints: false
+})
+video.hasMany(course_topic, {
     foreignKey: 'topic_type_id',
     constraints: false,
-    scope:{
-        topic_type:"VIDEO"
-    } })
+    scope: {
+        topic_type: "VIDEO"
+    }
+})

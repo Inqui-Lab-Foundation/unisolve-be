@@ -3,6 +3,7 @@ import db from '../utils/dbconnection.util';
 import { course } from './course.model';
 import { courseModuleAttributes } from '../interfaces/model.interface';
 import { constents } from '../configs/constents.config';
+import translation from '../../resources/static/uploads/te/translation'
 
 
 
@@ -16,6 +17,7 @@ export class course_module extends Model<courseModuleAttributes> {
     //     // define association here
     //     course_module.belongsTo(models.courses, { foreignKey: 'course_id',targetKey: 'course_id' });
     // }
+    static locale = 'tn';
 }
 
 const courseModuleSequelize = course_module.init(
@@ -64,7 +66,7 @@ const courseModuleSequelize = course_module.init(
     },
     {
         sequelize: db,
-        tableName: 'course_modules',
+        tableName: translation[course_module.locale].COURSE_MODULES,
         timestamps: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',
