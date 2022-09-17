@@ -11,7 +11,7 @@ import db from "../utils/dbconnection.util"
 import { constents } from "../configs/constents.config";
 import { speeches } from "../configs/speeches.config";
 import { Op } from "sequelize";
-import translation from "resources/static/uploads/te/translation";
+import translation from "../configs/languageTranslation";
 export default class CourseController extends BaseController {
     model = "course";
 
@@ -54,7 +54,7 @@ export default class CourseController extends BaseController {
             const modelClass = await this.loadModel(model);
             modelClass.locale = locale ? locale : 'en';
             if (locale) {
-                console.log("modelClass: ", modelClass.tableName, "locale: ", locale);
+                // console.log("modelClass: ", modelClass.tableName, "locale: ", locale);
                 course_modules = translation[`${locale}`].COURSE_MODULES
                 course_topics = translation[`${locale}`].COURSE_TOPICS
                 courses = translation[`${locale}`].COURSES
@@ -149,7 +149,7 @@ export default class CourseController extends BaseController {
         }
         const { page, size, title, locale } = req.query;
         if (locale) {
-            console.log("modelClass: ", modelClass.tableName, "locale: ", locale);
+            // console.log("modelClass: ", modelClass.tableName, "locale: ", locale);
             course_modules = translation[`${locale}`].COURSE_MODULES
             course_topics = translation[`${locale}`].COURSE_TOPICS
             courses = translation[`${locale}`].COURSES

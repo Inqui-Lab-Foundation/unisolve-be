@@ -3,7 +3,7 @@ import db from '../utils/dbconnection.util';
 import { course } from './course.model';
 import { courseModuleAttributes } from '../interfaces/model.interface';
 import { constents } from '../configs/constents.config';
-import translation from '../../resources/static/uploads/te/translation'
+import translation from '../configs/languageTranslation'
 
 
 

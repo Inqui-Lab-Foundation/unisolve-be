@@ -2,7 +2,7 @@ import { Association, DataTypes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
 import { course_module } from './course_module.model';
-import translation from '../../resources/static/uploads/te/translation'
+import translation from '../configs/languageTranslation'
 
 
 export interface courseAttributes {

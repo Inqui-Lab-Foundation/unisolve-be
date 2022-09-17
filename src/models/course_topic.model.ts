@@ -7,7 +7,7 @@ import { course_module } from './course_module.model';
 import { user } from './user.model';
 import { video } from './video.model';
 const uppercaseFirst = (str: any) => `${str[0].toUpperCase()}${str.substr(1)}`;
-import translation from '../../resources/static/uploads/te/translation'
+import translation from '../configs/languageTranslation'
 
 export class course_topic extends Model<courseTopicsAttribute> {
     /**
