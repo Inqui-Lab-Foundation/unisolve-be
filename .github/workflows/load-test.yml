@@ -1,11 +1,12 @@
-k6_load_test:
-  name: k6 Load Test
-  on:
+name: Test-Build
+on:
   push:
     branches:
       - postman_tests
-  runs-on: ubuntu-latest
 
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
   steps:
     - name: Checkout
       uses: actions/checkout@v1
