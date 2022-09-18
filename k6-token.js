@@ -5,7 +5,7 @@ import { describe } from 'https://jslib.k6.io/expect/0.0.4/index.js';
  
 export const options = {  
   stages: [
-    { target: 10, duration: '10s' },
+    { target: 2, duration: '10s' },
     // { target: 20, duration: '1m' },
     // { target: 30, duration: '1m' },
 ],
