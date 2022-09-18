@@ -6,6 +6,7 @@
   "scripts": {
     "start": "npm run start:dev",
     "apitest:reg": "node ./postman/removeFiles.js && newman run ./postman/Unisolve-API-DocsQANEWReg.postman_collection.json -e ./postman/QAUnisolve.postman_environment.json -r allure & npm run generate:allurereport",
+    "apitest:reg:local": "node ./postman/removeFiles.js && newman run ./postman/Unisolve-API-DocsQANEWReg.postman_collection.json -e ./postman/QAUnisolve.postman_environment.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html",
     "start:dev": "nodemon",
     "generate:allurereport": "allure serve",
     "start:prod": "pm2 start  processes.json",
@@ -23,6 +24,7 @@
     "scaffold:entity": "node -e 'require(\"./src/scaffolders/generate.js\").g()'"
   },
   "dependencies": {
+    "@apideck/postman-to-k6": "^1.8.5",
     "@supercharge/request-ip": "^1.2.0",
     "@types/cron": "^2.0.0",
     "allure-commandline": "^2.18.1",

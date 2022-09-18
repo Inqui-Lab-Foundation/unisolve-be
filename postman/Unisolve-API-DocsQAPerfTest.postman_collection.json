@@ -1,0 +1,217 @@
+{
+	"info": {
+		"_postman_id": "228243ac-5f4e-4c07-875e-9e9f9aee4dce",
+		"name": "Unisolve-API-DocsQAPerfTest",
+		"description": "### **Unisolve backend applications api backup documentation with in details endpoints description**\n\n*   Server: `http://localhost:3002`\n*   Scheme supported: **HTTP**\n*   Security for Authentication: **JWT**",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "329058"
+	},
+	"item": [
+		{
+			"name": "V1",
+			"item": [
+				{
+					"name": "Admins",
+					"item": [
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200,201,202]);\r",
+											"    if(pm.response.code == 200 || pm.response.code == 201){\r",
+											"        const response = pm.response.json();\r",
+											"        pm.environment.set('token', response.data[0].token);\r",
+											"        pm.collectionVariables.set(\"token\", response.data[0].token);\r",
+											"    }\r",
+											"    pm.test(\"Login check and status type\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"Login Successful\");\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\")\r",
+											"});\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"admin2e82KwsamoAUkG@unisolve.org\",\r\n    \"password\": \"wHm6eGCL7uFOArs=\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/admins/login",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"admins",
+										"login"
+									]
+								},
+								"description": "### Endpoint for admin login and issues the token\n\n**Request payload must contain the following fields:**\n\n*   USERNAME : STRING\n*   PASSWORD : STRING"
+							},
+							"response": []
+						},
+						{
+							"name": "Logout",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/admins/logout",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"admins",
+										"logout"
+									]
+								},
+								"description": "### Endpoint for clearing the user session"
+							},
+							"response": []
+						}
+					],
+					"description": "### List of endpoints for user authentication are:\n\n*   Registration API of new member.\n*   Login API generate a JWT token for access the protected routes.\n*   Logout API mark the user status inactive.\n*   Change password take `user_id` along with the old password and new password.\n*   Dynamic setup form create JSON file in the server with the selected fields, we can also retrieve the JSON using the GET."
+				},
+				{
+					"name": "FaqCategories",
+					"item": [
+						{
+							"name": "FaqCategories",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqCategories",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqCategories"
+									]
+								},
+								"description": "### Endpoint for getting list of videos created"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Faqs",
+					"item": [
+						{
+							"name": "Faqs",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"List all FAQ's\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.message).to.eql(\"OK\");\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											" saveData=JSON.parse(responseBody)\r",
+											"\r",
+											"pm.environment.set(\"faq_id\", saveData.data[0].dataValues[0].faq_id);\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/faqs",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"faqs"
+									]
+								},
+								"description": "### Endpoint for getting list of videos created"
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"description": "## **1.0.0**"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseurl",
+			"value": "http://15.207.254.154:3002/api/v1"
+		},
+		{
+			"key": "token",
+			"value": "Login to generate the token"
+		},
+		{
+			"key": "URL",
+			"value": "http://15.207.254.154:3002s",
+			"type": "string"
+		}
+	]
+}
