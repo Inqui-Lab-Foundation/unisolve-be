@@ -1,5 +1,9 @@
 k6_load_test:
   name: k6 Load Test
+  on:
+  push:
+    branches:
+      - postman_tests
   runs-on: ubuntu-latest
 
   steps:
