@@ -54,7 +54,9 @@ export const speeches = {
 
     //quiz submit response keys
     QUIZ_ID_REQUIRED: "Quiz ID is required, it should not be empty.",
+    CHALLENGE_ID_REQUIRED: "Challenge ID is required, it should not be empty.",
     QUIZ_QUESTION_ID_REQUIRED: "QUIZ QUESTION ID is required, it should not be empty.",
+    CHALLENGE_QUESTION_ID_REQUIRED: "CHALLENGE QUESTION ID is required, it should not be empty.",
     QUESTION_REQUIRED: "QUESTION is required, it should not be empty.",
     SELCTED_OPTION_REQUIRED: "Selected option is required, it should not be empty.",
     CORRECT_ANSWER_REQUIRED: "Correct answer is required, it should not be empty.",
