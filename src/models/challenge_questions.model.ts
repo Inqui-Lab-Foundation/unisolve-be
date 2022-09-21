@@ -179,5 +179,5 @@ challenge_question.init(
     }
 );
 
-challenge_question.belongsTo(challenge, { foreignKey: 'quiz_id' })
-challenge.hasMany(challenge_question, { foreignKey: 'quiz_id' })
+challenge_question.belongsTo(challenge, { foreignKey: 'challenge_id' })
+challenge.hasMany(challenge_question, { foreignKey: 'challenge_id' })
