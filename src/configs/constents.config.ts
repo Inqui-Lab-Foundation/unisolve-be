@@ -134,6 +134,16 @@ export const constents = {
     },
     default: '0'
   },
+  challenges_flags: {
+    list: {
+      "DRAFT": "DRAFT",
+      "SUBMITTED": "SUBMITTED",
+      "EVALUATION": "EVALUATION",
+      "SELECTEDROUND1": "SELECTEDROUND1",
+      "REJECTEDROUND1": "REJECTEDROUND1"
+    },
+    default: "DRAFT"
+  },
   default_image_path: "/images/default.jpg"
 
 };

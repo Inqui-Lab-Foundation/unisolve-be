@@ -29,6 +29,9 @@ import MentorTopicProgressController from "./controllers/mentorTopicProgress.con
 import SupportTicketController from "./controllers/supportTickets.controller";
 import SupportTicketRepliesController from "./controllers/supportTicketsReplies.controller";
 import QuizQuestionsController from "./controllers/quiz_questions.controller";
+import { challenge } from "./models/challenge.model";
+import { challenge_response } from "./models/challenge_response.model";
+import ChallengeController from "./controllers/challenges.controller";
 
 // validating env variables
 validateEnv();
@@ -61,7 +64,8 @@ try {
         new MentorTopicProgressController,
         new SupportTicketController,
         new SupportTicketRepliesController,
-        new QuizQuestionsController
+        new QuizQuestionsController,
+        new ChallengeController,
     ], Number(process.env.APP_PORT));
     // starting app
     app.listen();
