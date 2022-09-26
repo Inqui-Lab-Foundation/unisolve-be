@@ -42,6 +42,12 @@ export default class authService {
             case 'team':
                 model = team;
                 break;
+            case 'mentor':
+                model = mentor;
+                break;
+            case 'admin':
+                model = admin;
+                break;
             default: model = null;
         }
         try {

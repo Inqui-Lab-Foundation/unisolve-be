@@ -80,10 +80,13 @@ export default class MentorController extends BaseController {
         } else if (result.error) {
             return res.status(401).send(dispatcher(result.error, 'error', speeches.USER_RISTRICTED, 401));
         } else {
+            // mentorDetails = await this.authService.getServiceDetails('mentor', { user_id: result.data.user_id });
+            // result.data['mentor_id'] = mentorDetails.dataValues.mentor_id
             const mentorData = await this.authService.crudService.findOne(mentor, { where: { user_id: result.data.user_id } });
             if (mentorData.dataValues.reg_status !== '3') {
                 return res.status(404).send(dispatcher(null, 'error', speeches.USER_REG_STATUS));
             }
+            result.data['mentor_id'] = mentorData.dataValues.mentor_id;
             return res.status(200).send(dispatcher(result.data, 'success', speeches.USER_LOGIN_SUCCESS));
         }
     }
