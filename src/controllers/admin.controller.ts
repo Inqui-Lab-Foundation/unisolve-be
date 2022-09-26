@@ -39,6 +39,7 @@ export default class AdminController extends BaseController {
     }
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        let adminDetails: any;
         req.body['role'] = 'ADMIN'
         const result = await this.authService.login(req.body);
         if (!result) {
@@ -46,6 +47,12 @@ export default class AdminController extends BaseController {
         } else if (result.error) {
             return res.status(401).send(dispatcher(result.error, 'error', speeches.USER_RISTRICTED, 401));
         } else {
+            adminDetails = await this.authService.getServiceDetails('admin', { user_id: result.data.user_id });
+            if (!adminDetails) {
+                result.data['admin_id'] = null;
+            } else {
+                result.data['admin_id'] = adminDetails.dataValues.admin_id;
+            }
             return res.status(200).send(dispatcher(result.data, 'success', speeches.USER_LOGIN_SUCCESS));
         }
     }
