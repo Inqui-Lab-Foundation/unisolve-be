@@ -27,7 +27,7 @@ export default class ChallengeController extends BaseController {
     protected initializeRoutes(): void {
         //example route to add 
         this.router.post(this.path + "/:id/responses/", validationMiddleware(challengeSubmitResponsesSchema), this.submitResponses.bind(this));
-        this.router.get(this.path + '/submittedDetails', this.getResponse.bind(this))
+        this.router.get(this.path + '/submittedDetails', this.getResponse.bind(this));
         super.initializeRoutes();
     }
 
@@ -111,7 +111,7 @@ export default class ChallengeController extends BaseController {
                     }
                 });
             } else {
-                console.log("came here +++> ")
+                // console.log("came here +++> ")
                 try {
                     const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, {
                         where: {
@@ -190,7 +190,7 @@ export default class ChallengeController extends BaseController {
             if (!questionAnswered) {
                 throw badData("Invalid Quiz question id")
             }
-            const challengeRes = await this.crudService.findOne(challenge_response, { where: { challenge_id, team_id } });
+            const challengeRes = await this.crudService.findOne(challenge_response, { where: { challenge_id } });
             if (challengeRes instanceof Error) {
                 throw internal(challengeRes.message)
             }
@@ -212,20 +212,27 @@ export default class ChallengeController extends BaseController {
                 // console.log(quizRes.dataValues.response);
                 user_response = JSON.parse(challengeRes.dataValues.response);
                 user_response[questionAnswered.dataValues.question_no] = responseObjToAdd;
-
                 dataToUpsert["response"] = JSON.stringify(user_response);
-
-                const resultModel = await this.crudService.update(challengeRes, dataToUpsert, { where: { challenge_id, team_id } })
-                if (resultModel instanceof Error) {
-                    throw internal(resultModel.message)
-                }
-                let result: any = {}
-                result = resultModel.dataValues
-                return result;
+                // const resultModel = await this.crudService.update(challengeRes, dataToUpsert, { where: { challenge_id, team_id } })
+                // if (resultModel instanceof Error) {
+                //     throw internal(resultModel.message)
+                // }
+                // let result: any = {}
+                // result = resultModel.dataValues
+                return user_response;
             } else {
-
                 user_response[questionAnswered.dataValues.question_no] = responseObjToAdd;
+                // team_id  1, challenge_id = 1, responses = {
+                //     q_1: {
+                //         question:
+                //             selected_pption:
+                //     },
+                //     q_2: {
+                //         question:
+                //             selected_options:
+                //     }
 
+                // }
                 dataToUpsert["response"] = JSON.stringify(user_response);
                 dataToUpsert = { ...dataToUpsert, created_by: user_id }
 
@@ -250,7 +257,6 @@ export default class ChallengeController extends BaseController {
         }
 
     }
-
     protected async submitResponses(req: Request, res: Response, next: NextFunction) {
         try {
             const challenge_id = req.params.id;
@@ -289,8 +295,129 @@ export default class ChallengeController extends BaseController {
         }
     }
     //TODO: GET submitted response API.
-    //TODO: POST submit response CHECK: Not update exciting data instead create new entity
-    protected async getResponse(req: Request, res: Response, next: NextFunction): Promise<Response | void> { }
+    //TODO: POST submit response CHECK: Not update exciting data instead create new entity.
+    protected async getResponse(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            let user_id = res.locals.user_id;
+            let { team_id } = req.query;
+            if (!user_id) {
+                throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
+            }
+            if (!team_id) {
+                throw unauthorized(speeches.USER_TEAMID_REQUIRED)
+            }
+            let data: any;
+            const { model, id } = req.params;
+            const paramStatus: any = req.query.status;
+            if (model) {
+                this.model = model;
+            };
+            // pagination
+            const { page, size, title } = req.query;
+            let condition: any = {};
+            if (title) {
+                condition.title = { [Op.like]: `%${title}%` }
+            }
+            // if (role) {
+            //     condition.role = role;
+            // }
+            const { limit, offset } = this.getPagination(page, size);
+            const modelClass = await this.loadModel(model).catch(error => {
+                next(error)
+            });
+            const where: any = {};
+            let whereClauseStatusPart: any = {};
+            if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
+                whereClauseStatusPart = { "status": paramStatus }
+            }
+            if (id) {
+                where[`${this.model}_id`] = req.params.id;
+                console.log(where)
+                data = await this.crudService.findOne(challenge_response, {
+                    where: {
+                        [Op.and]: [
+                            whereClauseStatusPart,
+                            where,
+                            condition
+                        ]
+                    },
+                    // include: {
+                    //     required: false,
+                    //     model: challenge_question,
+                    // }
+                });
+            } else {
+                // console.log("came here +++> ")
+                try {
+                    const responseOfFindAndCountAll = await this.crudService.findAndCountAll(challenge_response, {
+                        where: {
+                            [Op.and]: [
+                                whereClauseStatusPart,
+                                condition
+                            ]
+                        },
+                        attributes: [
+                            "challenge_id",
+                            "idea_name",
+                            "team_id",
+                            "response",
+                            "initiated_by",
+                            "response",
+                            "status"
+                            // [
+                            //     // Note the wrapping parentheses in the call below!
+                            //     db.literal(`(
+                            //         SELECT CASE WHEN EXISTS 
+                            //             (SELECT status 
+                            //             FROM quiz_survey_responses as p 
+                            //             WHERE p.user_id = ${user_id} 
+                            //             AND p.quiz_survey_id = \`quiz_survey\`.\`quiz_survey_id\`) 
+                            //         THEN  
+                            //             "COMPLETED"
+                            //         ELSE 
+                            //             '${constents.task_status_flags.default}'
+                            //         END as progress
+                            //     )`),
+                            //     'progress'
+                            // ]
+                        ],
+                        // include: {
+                        //     required: false,
+                        //     model: challenge_question,
+                        // },
+                        limit, offset
+                    })
+                    const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
+                    data = result;
+                } catch (error: any) {
+                    return res.status(500).send(dispatcher(data, 'error'))
+                }
+
+            }
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(data, 'error'));
+            // }
+            if (!data || data instanceof Error) {
+                if (data != null) {
+                    throw notFound(data.message)
+                } else {
+                    throw notFound()
+                }
+                res.status(200).send(dispatcher(null, "error", speeches.DATA_NOT_FOUND));
+                // if(data!=null){
+                //     throw 
+                (data.message)
+                // }else{
+                //     throw notFound()
+                // }
+            }
+            data.dataValues.forEach((element: any) => { element.dataValues.response = JSON.parse(element.dataValues.response) })
+            return res.status(200).send(dispatcher(data, 'success'));
+        } catch (error) {
+            next(error);
+        }
+    }
+
     // protected async getNextQuestion(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     //     const { challenge_id, team_id } = req.params
     //     const paramStatus: any = req.query.status;
