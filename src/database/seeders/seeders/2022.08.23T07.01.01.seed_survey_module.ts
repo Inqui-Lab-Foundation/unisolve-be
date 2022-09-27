@@ -12,10 +12,11 @@ export const up: Migration = async ({ context: sequelize }) => {
 	// await sequelize.query(`raise fail('up migration not implemented')`); //call direct sql
 	//or below implementation
 	
-
+    
     const quiz_survey_id = await createSurveyQuiz(sequelize,1,5,"Pre Survey for teachers","MENTOR")
     
-    dataTeacherPreSurvey.forEach(async (value, index) => {
+    const allpromises1 = dataTeacherPreSurvey.forEach(async (value, index) => {
+        
         await createQuizQuestion(sequelize,quiz_survey_id,index+1,
             value.question,
             value.option_a,
@@ -25,9 +26,13 @@ export const up: Migration = async ({ context: sequelize }) => {
             value.option_e,"MRQ")
     });
 
+    // await Promise.all(allpromises1)
+
+
     const quiz_survey_id_student_pre_survey = await createSurveyQuiz(sequelize,2,5,"Pre Survey for students","STUDENT")
     
-    dataStudentPreSurvey.forEach(async (value, index) => {
+    const allpromises2 = dataStudentPreSurvey.forEach(async (value, index) => {
+        
         await createQuizQuestion(sequelize,quiz_survey_id_student_pre_survey,index+1,
             value.question,
             value.option_a,
@@ -37,9 +42,12 @@ export const up: Migration = async ({ context: sequelize }) => {
             value.option_e,"MRQ")
     });
 
+    // await Promise.all(allpromises2)
+
     const quiz_survey_id_teacher_post_survey = await createSurveyQuiz(sequelize,3,5,"Post Survey for teacher","MENTOR")
     
-    dataStudentPostSurvey.forEach(async (value, index) => {
+    const allpromises3 = dataStudentPostSurvey.forEach(async (value, index) => {
+        
         await createQuizQuestion(sequelize,quiz_survey_id_teacher_post_survey,index+1,
             value.question,
             value.option_a,
@@ -49,17 +57,7 @@ export const up: Migration = async ({ context: sequelize }) => {
             value.option_e,"MRQ")
     });
 
-    const quiz_survey_id_student_post_survey = await createSurveyQuiz(sequelize,4,5,"Post Survey for students","STUDENT")
-    
-    dataTeacherPostSurvey.forEach(async (value, index) => {
-        await createQuizQuestion(sequelize,quiz_survey_id_student_post_survey,index+1,
-            value.question,
-            value.option_a,
-            value.option_b,
-            value.option_c,
-            value.option_d,
-            value.option_e,"MRQ")
-    });
+    // await Promise.all(allpromises3)
 
     // await createQuizQuestion(sequelize,
     //     quiz_survey_id,1,
@@ -70,8 +68,19 @@ export const up: Migration = async ({ context: sequelize }) => {
     //     "Pretium viverra suspendisse",
     //     "MCQ")
     
+    const quiz_survey_id_student_post_survey = await createSurveyQuiz(sequelize,4,5,"Post Survey for students","STUDENT")
     
-
+    dataTeacherPostSurvey.forEach(async (value, index) => {
+        
+        await createQuizQuestion(sequelize,quiz_survey_id_student_post_survey,index+1,
+            value.question,
+            value.option_a,
+            value.option_b,
+            value.option_c,
+            value.option_d,
+            value.option_e,"MRQ")
+    });
+    // await Promise.all(allpromises4)
 };
 
 
@@ -149,8 +158,8 @@ async function deleteSurveyQuiz(
 export const down: Migration = async ({ context: sequelize }) => {
 	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql
 	//or below implementation
-	await sequelize.getQueryInterface().bulkDelete(tableName,{quiz_survey_id: {[Op.in]: [1]}},{});
-    await sequelize.getQueryInterface().bulkDelete(tableNameSurveyQuestions,{quiz_survey_id: {[Op.in]: [1]}},{});
-    await sequelize.getQueryInterface().bulkDelete(tableNameSurveyResponses,{quiz_survey_id: {[Op.in]: [1]}},{});
+    await sequelize.getQueryInterface().bulkDelete(tableNameSurveyResponses,{quiz_survey_id: {[Op.in]: [1,2,3,4,5]}},{});
+    await sequelize.getQueryInterface().bulkDelete(tableNameSurveyQuestions,{quiz_survey_id: {[Op.in]: [1,2,3,4,5]}},{});
+    await sequelize.getQueryInterface().bulkDelete(tableName,{quiz_survey_id: {[Op.in]: [1,2,3,4,5]}},{});
     
 };
