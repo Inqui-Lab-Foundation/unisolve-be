@@ -16,7 +16,7 @@ export const up: Migration = async ({ context: sequelize }) => {
     const quiz_survey_id = await createSurveyQuiz(sequelize,1,5,"Pre Survey for teachers","MENTOR")
     
     dataTeacherPreSurvey.forEach(async (value, index) => {
-        await createQuizQuestion(sequelize,quiz_survey_id,index,
+        await createQuizQuestion(sequelize,quiz_survey_id,index+1,
             value.question,
             value.option_a,
             value.option_b,
@@ -28,7 +28,7 @@ export const up: Migration = async ({ context: sequelize }) => {
     const quiz_survey_id_student_pre_survey = await createSurveyQuiz(sequelize,2,5,"Pre Survey for students","STUDENT")
     
     dataStudentPreSurvey.forEach(async (value, index) => {
-        await createQuizQuestion(sequelize,quiz_survey_id_student_pre_survey,index,
+        await createQuizQuestion(sequelize,quiz_survey_id_student_pre_survey,index+1,
             value.question,
             value.option_a,
             value.option_b,
@@ -40,7 +40,7 @@ export const up: Migration = async ({ context: sequelize }) => {
     const quiz_survey_id_teacher_post_survey = await createSurveyQuiz(sequelize,3,5,"Post Survey for teacher","MENTOR")
     
     dataStudentPostSurvey.forEach(async (value, index) => {
-        await createQuizQuestion(sequelize,quiz_survey_id_teacher_post_survey,index,
+        await createQuizQuestion(sequelize,quiz_survey_id_teacher_post_survey,index+1,
             value.question,
             value.option_a,
             value.option_b,
@@ -52,7 +52,7 @@ export const up: Migration = async ({ context: sequelize }) => {
     const quiz_survey_id_student_post_survey = await createSurveyQuiz(sequelize,4,5,"Post Survey for students","STUDENT")
     
     dataTeacherPostSurvey.forEach(async (value, index) => {
-        await createQuizQuestion(sequelize,quiz_survey_id_student_post_survey,index,
+        await createQuizQuestion(sequelize,quiz_survey_id_student_post_survey,index+1,
             value.question,
             value.option_a,
             value.option_b,
