@@ -2,7 +2,7 @@ import { Migration } from '../umzug';
 import { DataTypes } from 'sequelize';
 import { constents } from '../../../configs/constents.config';
 import { Op } from 'sequelize';
-import { dataCourseQuizModule1 } from '../data/course_quiz_data';
+import { dataCourseQuizModule1, dataCourseQuizModule3 } from '../data/course_quiz_data';
 
 // you can put some table-specific imports/code here
 export const tableName = "quiz_questions";
@@ -17,6 +17,33 @@ export const up: Migration = async ({ context: sequelize }) => {
 		//////Question  1
 		await createQuizQuestion(sequelize,
 			1, Number(question.question_no),
+			question.question,
+			question.option_a!,
+			question.option_b,
+			question.option_c,
+			question.option_d,
+			question.correct_ans,
+			Number(question.ar_video_ans_wrong),
+			question.level,
+			question.msg_ans_correct,
+			question.msg_ans_wrong,
+			question.type,
+			question.question_image,
+			question.ar_image_ans_correct,
+			question.ar_video_ans_correct,
+			question.accimg_ans_correct,
+			question.ar_image_ans_wrong,
+			question.ar_video_ans_wrong,
+			question.accimg_ans_wrong,
+			question.question_icon,
+			)
+	});
+
+	dataCourseQuizModule3.forEach(async(question,index)=>{
+		// console.log(question)
+		//////Question  1
+		await createQuizQuestion(sequelize,
+			2, Number(question.question_no),
 			question.question,
 			question.option_a!,
 			question.option_b,
