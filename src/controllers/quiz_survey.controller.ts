@@ -271,6 +271,9 @@ export default class QuizSurveyController extends BaseController {
             if(nextQuestionsToChooseFrom.dataValues.option_d){
                 optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_d)
             }
+            if(nextQuestionsToChooseFrom.dataValues.option_e){
+                optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_e)
+            }
             
             
             resultQuestion["quiz_id"] = nextQuestionsToChooseFrom.dataValues.quiz_id;
