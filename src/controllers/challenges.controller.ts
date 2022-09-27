@@ -13,6 +13,7 @@ import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
 import { quizSubmitResponsesSchema } from "../validations/quiz_survey.validations";
 import { challengeSchema, challengeSubmitResponsesSchema, challengeUpdateSchema } from "../validations/challenge.validations copy";
+import { orderBy } from "lodash";
 
 export default class ChallengeController extends BaseController {
 
@@ -71,7 +72,7 @@ export default class ChallengeController extends BaseController {
             }
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
-                console.log(where)
+                // console.log(where)
                 data = await this.crudService.findOne(modelClass, {
                     // attributes: [
                     //     "challenge_id",
@@ -111,7 +112,7 @@ export default class ChallengeController extends BaseController {
                     }
                 });
             } else {
-                console.log("came here +++> ")
+                // console.log("came here +++> ")
                 try {
                     const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, {
                         where: {
@@ -147,9 +148,12 @@ export default class ChallengeController extends BaseController {
                         // ],
                         include: {
                             required: false,
-                            model: challenge_question,
+                            model: challenge_question
                         },
-                        limit, offset
+                        limit, offset,
+                        order: [
+                            [challenge_question, 'question_no', 'ASC']
+                        ]
                     })
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
