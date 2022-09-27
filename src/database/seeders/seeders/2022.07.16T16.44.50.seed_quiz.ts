@@ -13,7 +13,7 @@ export const up: Migration = async ({ context: sequelize }) => {
 	///QUIZ 1
 
 	dataCourseQuizModule1.forEach(async(question,index)=>{
-		console.log(question)
+		// console.log(question)
 		//////Question  1
 		await createQuizQuestion(sequelize,
 			1, Number(question.question_no),
