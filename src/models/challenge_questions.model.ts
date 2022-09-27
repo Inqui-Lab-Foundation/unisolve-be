@@ -8,6 +8,7 @@ export class challenge_question extends Model<InferAttributes<challenge_question
     declare challenge_id: ForeignKey<number>;
     declare question_no: number;
     declare question: string;
+    declare description: string;
     declare option_a: string;
     declare option_b: string;
     declare option_c: string;
@@ -64,6 +65,10 @@ challenge_question.init(
             allowNull: true
         },
         question: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
+        description: {
             type: DataTypes.TEXT,
             allowNull: false
         },
