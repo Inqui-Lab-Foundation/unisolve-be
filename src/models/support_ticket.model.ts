@@ -65,3 +65,7 @@ support_ticket.init(
         createdAt: 'created_at',
     }
 );
+
+// support_ticket.belongsTo(support_ticket_reply, { foreignKey: 'query_id' });
+// support_ticket_reply.hasMany(support_ticket, { foreignKey: 'query_id' });
+// supportTicket.hasMany(supportTicketReply, { foreignKey: 'query_id' });
