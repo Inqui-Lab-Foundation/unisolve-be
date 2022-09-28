@@ -637,7 +637,7 @@ export const dataCourseQuizModule1 = [
     "ar_video_ans_correct": "",
     "accimg_ans_correct": "/images/quiz_imgs/quiz_accimg_motivation.png",
     "msg_ans_wrong": "“You got the answer wrong. But don’t worry. There’s always a next time.  The right answer is Option A.\nClick here to read about a few problem solvers who are of your age. You too can be just like them! \n",
-    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_1_ar_image_ans_correct.png",
+    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_1_q1_common_ar_image_ans_correct.png",
     "accimg_ans_wrong": "/images/quiz_imgs/quiz_accimg_thumb-up.png",
     "ar_video_ans_wrong": null,
     "type": "MRQ"
@@ -659,7 +659,7 @@ export const dataCourseQuizModule1 = [
     "ar_video_ans_correct": "",
     "accimg_ans_correct": " /images/quiz_imgs/quiz_accimg_businessman.png",
     "msg_ans_wrong": "“Oh, you might have got confused. The correct answer is: A, C. \nClick here to know more about the actions you can do to reduce Global Warming.\n\nLet’s try another similar question once you are done reading it.\n\n",
-    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_2_ar_image_ans_correct.png",
+    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_1_q2_common_ar_image_ans_correct.png",
     "accimg_ans_wrong": "/images/quiz_imgs/quiz_accimg_teacher.png",
     "ar_video_ans_wrong": null,
     "type": "MCQ"
@@ -725,7 +725,7 @@ export const dataCourseQuizModule1 = [
     "ar_video_ans_correct": "",
     "accimg_ans_correct": " /images/quiz_imgs/quiz_accimg_businessman.png",
     "msg_ans_wrong": "“Oh, you might have got confused. \nThe correct answer is: A, C\nClick here to understand more about the effects of Global Warming and try a similar question again ”\n",
-    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_3_ar_image_ans_correct.png",
+    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_1_q3_common_ar_image_ans_correct.png",
     "accimg_ans_wrong": "/images/quiz_imgs/quiz_accimg_teacher.png",
     "ar_video_ans_wrong": null,
     "type": "MCQ"
@@ -835,7 +835,7 @@ export const dataCourseQuizModule1 = [
     "ar_video_ans_correct": "",
     "accimg_ans_correct": "/images/quiz_imgs/quiz_accimg_motivation.png",
     "msg_ans_wrong": "“You got the answer wrong. \nThe right answer is Option A.\n\nClick here to seeare some excellent examples of a few social innovations. Do give it a read before answering the next question.\n\n",
-    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_4_ar_image_ans_correct.png",
+    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_1_q4_common_ar_image_ans_correct.png",
     "accimg_ans_wrong": "/images/quiz_imgs/quiz_accimg_thumb-up.png",
     "ar_video_ans_wrong": null,
     "type": "MRQ"
@@ -857,7 +857,7 @@ export const dataCourseQuizModule1 = [
     "ar_video_ans_correct": "",
     "accimg_ans_correct": " /images/quiz_imgs/quiz_accimg_businessman.png",
     "msg_ans_wrong": "“Oh, you might be confused. The correct answer is : A\nDon’t worry. Why don’t you Click here and read before trying again.\n",
-    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_5_ar_image_ans_correct.png",
+    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_1_q5_common_ar_image_ans_correct.png",
     "accimg_ans_wrong": "/images/quiz_imgs/quiz_accimg_teacher.png",
     "ar_video_ans_wrong": null,
     "type": "MRQ"
@@ -945,7 +945,7 @@ export const dataCourseQuizModule1 = [
     "ar_video_ans_correct": "",
     "accimg_ans_correct": "/images/quiz_imgs/quiz_accimg_on-fire.png",
     "msg_ans_wrong": "“You got the answer wrong. The correct answer is: A, B and C”\nClick here to understand more about SDGs\n\n Let’s try another question that’s similar.\n",
-    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_6_ar_image_ans_correct.png",
+    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_1_q6_common_ar_image_ans_correct.png",
     "accimg_ans_wrong": "/images/quiz_imgs/quiz_accimg_question.png",
     "ar_video_ans_wrong": null,
     "type": "MCQ"
@@ -989,7 +989,7 @@ export const dataCourseQuizModule1 = [
     "ar_video_ans_correct": "",
     "accimg_ans_correct": " /images/quiz_imgs/quiz_accimg_businessman.png",
     "msg_ans_wrong": "“Oh, you might be confused. \nThe correct answer is : A”\nBefore you answer the next question,  Click here to read and understand a few easy sustainable practices you can follow at home.",
-    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_7_ar_image_ans_correct.png",
+    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_1_q7_common_ar_image_ans_correct.png",
     "accimg_ans_wrong": "/images/quiz_imgs/quiz_accimg_teacher.png",
     "ar_video_ans_wrong": null,
     "type": "MRQ"
@@ -1099,9 +1099,9 @@ export const dataCourseQuizModule1 = [
     "ar_video_ans_correct": "",
     "accimg_ans_correct": "/images/quiz_imgs/quiz_accimg_motivation.png",
     "msg_ans_wrong": "“Oh, you might be confused. THhe correct answer in B. Click here to learn 5 simple Actions you can do to reduce inequalities in your communities.\nLet’s try another similar question once you are done reading",
-    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_8_ar_image_ans_correct.png",
+    "ar_image_ans_wrong": "/images/quiz_imgs/quiz_1_q8_common_ar_image_ans_correct.png",
     "accimg_ans_wrong": "/images/quiz_imgs/quiz_accimg_thumb-up.png",
     "ar_video_ans_wrong": null,
     "type": "MRQ"
   }
-];
+]
