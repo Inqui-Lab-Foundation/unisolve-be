@@ -10,31 +10,31 @@ export const up: Migration = async ({ context: sequelize }) => {
 	await createChallengeQuestion(sequelize,
 		1, 1,
 		"Write down your problem statement ? Remember that your problem statement should have the current State, cause and effect of the problem and a desired state (goal) clearly mentioned",
-		null, null, null, null,
+		'null', 'null', null, null,
 		"Problem Solver",
-		'MRQ'
+		'TEXT'
 	)
 	//Question 2
 	await createChallengeQuestion(sequelize,
 		1, 2,
 		"Describe your solution to the problem you identified in your own words. Give as much detail as possible and explain your solution clearly",
-		null, null, null, null,
+		'null', 'null', null, null,
 		"Optimistic",
-		'MRQ'
+		'TEXT'
 	)
 	await createChallengeQuestion(sequelize,
 		1, 3,
 		"Which Sustainable development Goal (SDG) are you targeting with your solution ? (You can refer to the SDGs sheet from FIND Module and pick the right option  )",
-		null, null, null, null,
+		'null', 'null', null, null,
 		"SDG 2: End Hunger",
-		'MRQ'
+		'TEXT'
 	)
 	await createChallengeQuestion(sequelize,
 		1, 4,
 		"If you picked the option ‘others’ in the above question, write down which SDG or theme is your solution targeting",
-		null, null, null, null,
+		'null', 'null', null, null,
 		"dream",
-		'MRQ'
+		'TEXT'
 	)
 	await createChallengeQuestion(sequelize,
 		1, 5,
@@ -71,9 +71,9 @@ export const up: Migration = async ({ context: sequelize }) => {
 	await createChallengeQuestion(sequelize,
 		1, 9,
 		"Mention at least one feedback that your team found to be most     helpful in creating the final solution to your problem.",
-		null, null, null, null,
+		'null', 'null', null, null,
 		"the stakeholders after Prototype",
-		'MRQ'
+		'TEXT'
 	)
 	await createChallengeQuestion(sequelize,
 		1, 10,
