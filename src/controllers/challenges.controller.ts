@@ -194,7 +194,7 @@ export default class ChallengeController extends BaseController {
             if (!questionAnswered) {
                 throw badData("Invalid Quiz question id")
             }
-            const challengeRes = await this.crudService.findOne(challenge_response, { where: { challenge_id } });
+            const challengeRes = await this.crudService.findOne(challenge_response, { where: { challenge_id, team_id } });
             if (challengeRes instanceof Error) {
                 throw internal(challengeRes.message)
             }
@@ -215,17 +215,20 @@ export default class ChallengeController extends BaseController {
             if (challengeRes) {
                 // console.log(quizRes.dataValues.response);
                 user_response = JSON.parse(challengeRes.dataValues.response);
-                user_response[questionAnswered.dataValues.question_no] = responseObjToAdd;
+                user_response[questionAnswered.dataValues.challenge_question_id] = responseObjToAdd;
                 dataToUpsert["response"] = JSON.stringify(user_response);
-                // const resultModel = await this.crudService.update(challengeRes, dataToUpsert, { where: { challenge_id, team_id } })
-                // if (resultModel instanceof Error) {
-                //     throw internal(resultModel.message)
+                // if (user_id === ) {
+                //     one type need to be check if its student then fetch student details and then allow updating based on team_id if same case for teacher
+                const resultModel = await this.crudService.update(challengeRes, dataToUpsert, { where: { challenge_id, team_id } })
+                if (resultModel instanceof Error) {
+                    throw internal(resultModel.message)
+                }
+                let result: any = {}
+                result = resultModel.dataValues
                 // }
-                // let result: any = {}
-                // result = resultModel.dataValues
                 return user_response;
             } else {
-                user_response[questionAnswered.dataValues.question_no] = responseObjToAdd;
+                user_response[questionAnswered.dataValues.challenge_question_id] = responseObjToAdd;
                 // team_id  1, challenge_id = 1, responses = {
                 //     q_1: {
                 //         question:
@@ -281,18 +284,29 @@ export default class ChallengeController extends BaseController {
             }
             const results: any = []
             let result: any = {}
-            await Promise.all(
-                responses.map(async (element: any) => {
-                    // console.log(element)
-                    result = await this.insertSingleResponse(team_id, user_id, challenge_id, element.challenge_question_id, element.selected_option)
-                    if (!result || result instanceof Error) {
-                        throw badRequest();
-                    } else {
-                        results.push(result);
-                    }
+            for (const element of responses) {
+                // console.log(element);
+                result = await this.insertSingleResponse(team_id, user_id, challenge_id, element.challenge_question_id, element.selected_option)
+                if (!result || result instanceof Error) {
+                    throw badRequest();
+                } else {
+                    results.push(result);
                 }
-                )
-            );
+            }
+            // await Promise.all(
+            //     // for (let i = 0; i < responses.length; i++) {
+            //     // }
+            //     responses.map(async (element: any) => {
+            //         console.log(element)
+            //         result = await this.insertSingleResponse(team_id, user_id, challenge_id, element.challenge_question_id, element.selected_option)
+            //         if (!result || result instanceof Error) {
+            //             throw badRequest();
+            //         } else {
+            //             results.push(result);
+            //         }
+            //     }
+            //     )
+            // );
             res.status(200).send(dispatcher(result))
         } catch (err) {
             next(err)
