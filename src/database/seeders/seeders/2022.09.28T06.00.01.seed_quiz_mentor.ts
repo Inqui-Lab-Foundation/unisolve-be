@@ -16,12 +16,14 @@ export const up: Migration = async ({ context: sequelize }) => {
 	for(const module of dataMentorCourseQuizModuleArray){
 		const course_topic_of_topic_type_quiz:any = await mentor_course_topic.findOne({
 			where:{
-			topic_type:"QUIZ",
-			mentor_course_id:module.mentor_course_id,
-		}})
+				mentor_course_id:module.mentor_course_id,
+				topic_type:"QUIZ"
+			}
+		})
+		// console.log("module",module);
 		// console.log(course_topic_of_topic_type_quiz);
 		if(!course_topic_of_topic_type_quiz || course_topic_of_topic_type_quiz instanceof Error){
-			console.log("quiz_id_module_1",course_topic_of_topic_type_quiz);
+			console.log("course_topic_of_topic_type_quiz",course_topic_of_topic_type_quiz);
 		}else{
 			// 	//////Question  1
 			module.data;
@@ -112,7 +114,24 @@ async function createQuizQuestion(
 
 
 export const down: Migration = async ({ context: sequelize }) => {
+	const arrOfQuizIds: number[] = [];
+
+	for(const module of dataMentorCourseQuizModuleArray){
+		const course_topic_of_topic_type_quiz:any = await mentor_course_topic.findOne({
+			where:{
+			topic_type:"QUIZ",
+			mentor_course_id:module.mentor_course_id,
+		}})
+		// console.log("module",module);
+		// console.log(course_topic_of_topic_type_quiz);
+		if(!course_topic_of_topic_type_quiz || course_topic_of_topic_type_quiz instanceof Error){
+			console.log("course_topic_of_topic_type_quiz",course_topic_of_topic_type_quiz);
+		}else{
+			arrOfQuizIds.push(course_topic_of_topic_type_quiz.dataValues.topic_type_id)
+		}
+	}
+	console.log("arrOfQuizIds",arrOfQuizIds);
 	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
 	//or below implementation 
-	await sequelize.getQueryInterface().bulkDelete(tableName, { quiz_id: { [Op.in]: [7] } }, {});
+	await sequelize.getQueryInterface().bulkDelete(tableName, { quiz_id: { [Op.in]: arrOfQuizIds } }, {});
 };
