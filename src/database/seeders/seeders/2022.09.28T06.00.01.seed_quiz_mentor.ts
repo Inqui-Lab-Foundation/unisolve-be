@@ -124,5 +124,5 @@ async function createQuizQuestion(
 export const down: Migration = async ({ context: sequelize }) => {
 	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
 	//or below implementation 
-	await sequelize.getQueryInterface().bulkDelete(tableName, { quiz_id: { [Op.in]: [1, 2, 3, 4, 5, 6] } }, {});
+	await sequelize.getQueryInterface().bulkDelete(tableName, { quiz_id: { [Op.in]: [7] } }, {});
 };
