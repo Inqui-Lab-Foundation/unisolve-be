@@ -423,7 +423,7 @@ export default class QuizSurveyController extends BaseController {
             const results:any = []
             let result:any={}
             for(const element of responses){
-                console.log(element);
+                // console.log(element);
                 result =   await this.insertSingleResponse(user_id,quiz_survey_id,element.quiz_survey_question_id,element.selected_option)    
                 if(!result|| result instanceof Error){
                     throw badRequest();
