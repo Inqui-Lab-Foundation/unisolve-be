@@ -2,8 +2,10 @@ import { Migration } from '../umzug';
 import { DataTypes } from 'sequelize';
 import { constents } from '../../../configs/constents.config';
 import { Op } from 'sequelize';
-import { dataCourseQuizModule1, dataCourseQuizModule3 } from '../data/course_quiz_data';
+import {  dataMentorCourseQuizModuleArray } from '../data/course_quiz_data';
 import { sanitizeForDb } from '../../../utils/utils';
+import { course_topic } from '../../../models/course_topic.model';
+import { mentor_course_topic } from '../../../models/mentor_course_topic.model';
 // you can put some table-specific imports/code here
 export const tableName = "quiz_questions";
 export const up: Migration = async ({ context: sequelize }) => {
@@ -11,61 +13,47 @@ export const up: Migration = async ({ context: sequelize }) => {
 	//or below implementation 
 
 	///QUIZ 1
-
-	dataCourseQuizModule1.forEach(async(question,index)=>{
-		// console.log(question)
-		//////Question  1
-		await createQuizQuestion(sequelize,
-			7, Number(question.question_no),
-			sanitizeForDb(question.question),
-			sanitizeForDb(question.option_a!),
-			sanitizeForDb(question.option_b),
-			sanitizeForDb(question.option_c),
-			sanitizeForDb(question.option_d),
-			sanitizeForDb(question.correct_ans),
-			Number(question.ar_video_ans_wrong),
-			sanitizeForDb(question.level),
-			sanitizeForDb(question.msg_ans_correct),
-			sanitizeForDb(question.msg_ans_wrong),
-			sanitizeForDb(question.type),
-			sanitizeForDb(question.question_image),
-			sanitizeForDb(question.ar_image_ans_correct),
-			sanitizeForDb(question.ar_video_ans_correct),
-			sanitizeForDb(question.accimg_ans_correct),
-			sanitizeForDb(question.ar_image_ans_wrong),
-			sanitizeForDb(question.ar_video_ans_wrong),
-			sanitizeForDb(question.accimg_ans_wrong),
-			sanitizeForDb(question.question_icon),
-		)
-	});
-
-	// dataCourseQuizModule3.forEach(async(question,index)=>{
-	// 	// console.log(question)
-	// 	//////Question  1
-	// 	await createQuizQuestion(sequelize,
-	// 		2, Number(question.question_no),
-	// 		question.question,
-	// 		question.option_a!,
-	// 		question.option_b,
-	// 		question.option_c,
-	// 		question.option_d,
-	// 		question.correct_ans,
-	// 		Number(question.ar_video_ans_wrong),
-	// 		question.level,
-	// 		question.msg_ans_correct,
-	// 		question.msg_ans_wrong,
-	// 		question.type,
-	// 		question.question_image,
-	// 		question.ar_image_ans_correct,
-	// 		question.ar_video_ans_correct,
-	// 		question.accimg_ans_correct,
-	// 		question.ar_image_ans_wrong,
-	// 		question.ar_video_ans_wrong,
-	// 		question.accimg_ans_wrong,
-	// 		question.question_icon,
-	// 		)
-	// });
+	for(const module of dataMentorCourseQuizModuleArray){
+		const course_topic_of_topic_type_quiz:any = await mentor_course_topic.findOne({
+			where:{
+			topic_type:"QUIZ",
+			mentor_course_id:module.mentor_course_id,
+		}})
+		// console.log(course_topic_of_topic_type_quiz);
+		if(!course_topic_of_topic_type_quiz || course_topic_of_topic_type_quiz instanceof Error){
+			console.log("quiz_id_module_1",course_topic_of_topic_type_quiz);
+		}else{
+			// 	//////Question  1
+			module.data;
+			for(const question of module.data){
+			// 	// console.log(question)
+				await createQuizQuestion(sequelize,
+					course_topic_of_topic_type_quiz.dataValues.topic_type_id,
+					Number(question.question_no),
+					sanitizeForDb(question.question),
+					sanitizeForDb(question.option_a!),
+					sanitizeForDb(question.option_b),
+					sanitizeForDb(question.option_c),
+					sanitizeForDb(question.option_d),
+					sanitizeForDb(question.correct_ans),
+					Number(question.ar_video_ans_wrong),
+					sanitizeForDb(question.level),
+					sanitizeForDb(question.msg_ans_correct),
+					sanitizeForDb(question.msg_ans_wrong),
+					sanitizeForDb(question.type),
+					sanitizeForDb(question.question_image),
+					sanitizeForDb(question.ar_image_ans_correct),
+					sanitizeForDb(question.ar_video_ans_correct),
+					sanitizeForDb(question.accimg_ans_correct),
+					sanitizeForDb(question.ar_image_ans_wrong),
+					sanitizeForDb(question.ar_video_ans_wrong),
+					sanitizeForDb(question.accimg_ans_wrong),
+					sanitizeForDb(question.question_icon))
+			}
+		}
+	}
 };
+
 
 async function createQuizQuestion(
 	sequelize: any,
@@ -120,6 +108,8 @@ async function createQuizQuestion(
 	return courseQzInsterted
 
 }
+
+
 
 export const down: Migration = async ({ context: sequelize }) => {
 	// 	await sequelize.query(`raise fail('down migration not implemented')`); //call direct sql 
