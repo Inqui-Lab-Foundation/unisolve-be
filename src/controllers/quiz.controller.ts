@@ -7,6 +7,7 @@ import { constents } from "../configs/constents.config";
 import { speeches } from "../configs/speeches.config";
 import validationMiddleware from "../middlewares/validation.middleware";
 import { course_topic } from "../models/course_topic.model";
+import { mentor_course_topic } from "../models/mentor_course_topic.model";
 import { quiz_question } from "../models/quiz_question.model";
 import { quiz_response } from "../models/quiz_response.model";
 import { user_topic_progress } from "../models/user_topic_progress.model";
@@ -34,22 +35,37 @@ export default class QuizController extends BaseController {
         super.initializeRoutes();
     }
 
+    /**
+     * 
+     * Note this api gets used by two journeys .. student as well mentor and both have diff logics and so a fw assumptions have been made do read all comments in the function below 
+     * @param req 
+     * @param res 
+     * @param next 
+     */
     protected async getNextQuestion(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try{
             const quiz_id = req.params.id;
             const paramStatus: any = req.query.status;
             const user_id = res.locals.user_id;
+            let isMentorCourse = false;
             if (!quiz_id) {
                 throw badRequest(speeches.QUIZ_ID_REQUIRED);
             }
             if (!user_id) {
                 throw unauthorized(speeches.UNAUTHORIZED_ACCESS);
             }
-            // //check if the given quiz is a valid topic
-            // const curr_topic = await this.crudService.findOne(course_topic, { where: { "topic_type_id": quiz_id, "topic_type": "QUIZ" } })
-            // if (!curr_topic || curr_topic instanceof Error) {
-            //     throw badRequest("INVALID TOPIC");
-            // }
+            //check if the given quiz is a valid topic
+            const curr_topic = await this.crudService.findOne(course_topic, { where: { "topic_type_id": quiz_id, "topic_type": "QUIZ" } })
+            if (!curr_topic || curr_topic instanceof Error) {
+
+                //here we have made a mjor assumption that mentor quiz_id and student quiz ids will be diff and that one quiz_id cannot be added in both student and mentor course_topic tables(these are two diff tables) , if u do so it will be considered as student course api
+                const curr_topic = await this.crudService.findOne(mentor_course_topic, { where: { "topic_type_id": quiz_id, "topic_type": "QUIZ" } })
+                if (!curr_topic || curr_topic instanceof Error) {
+                    throw badRequest("INVALID TOPIC");
+                }
+                isMentorCourse = true;
+                // console.log("isMentorCourse",isMentorCourse)
+            }
     
             const quizRes = await this.crudService.findOne(quiz_response, { where: { quiz_id: quiz_id, user_id: user_id } });
             if (quizRes instanceof Error) {
@@ -65,7 +81,8 @@ export default class QuizController extends BaseController {
             let level = "HARD"
             let question_no = 1
             let nextQuestion: any = null;
-            // console.log(quizRes)
+            // console.log("user_id",user_id);
+            // console.log("quizRes",quizRes);
             if (quizRes) {
                 //TOOO :: implement checking response and based on that change the 
                 let user_response: any = {}
@@ -76,10 +93,13 @@ export default class QuizController extends BaseController {
                 const noOfQuestionsAnswered = Object.keys(user_response).length
                 // console.log(noOfQuestionsAnswered)
                 const lastQuestionAnsewered = user_response[questionNosAsweredArray[0]]//we have assumed that this length will always have atleast 1 item ; this could potentially be a source of bug, but is not since this should always be true based on above checks ..
-                if (lastQuestionAnsewered.selected_option == lastQuestionAnsewered.correct_answer) {
+                if (lastQuestionAnsewered.selected_option == lastQuestionAnsewered.correct_answer ) {
                     question_no = lastQuestionAnsewered.question_no + 1;
-    
-                } else {
+                    // console.log("came here1");
+
+                } else if(!isMentorCourse){// converted to else if from else to take into account diff behaviour of mentor course which is it doesnt have hard medium easy instead it will have only one question per question no which is hard
+                    // console.log("came here2");
+
                     question_no = lastQuestionAnsewered.question_no;
                     if (lastQuestionAnsewered.level == "HARD") {
                         level = "MEDIUM"
@@ -89,6 +109,12 @@ export default class QuizController extends BaseController {
                         question_no = lastQuestionAnsewered.question_no + 1;
                         level = "HARD"
                     }
+                }else{
+                    // console.log("came here3");
+                    //since this is mentor quiz id hence next question will not advance to easy medium instead will remain on same question untill answered correctly
+                    question_no = lastQuestionAnsewered.question_no;
+                    level = "HARD"
+
                 }
             }
     
