@@ -66,7 +66,7 @@ try {
         new QuizQuestionsController,
         new ChallengeController,
         new SupportTicketRepliesController,
-        new UserController
+        new UserController 
     ], Number(process.env.APP_PORT));
     // starting app
     app.listen();
