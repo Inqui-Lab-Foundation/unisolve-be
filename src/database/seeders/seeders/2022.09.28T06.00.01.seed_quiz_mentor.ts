@@ -3,7 +3,7 @@ import { DataTypes } from 'sequelize';
 import { constents } from '../../../configs/constents.config';
 import { Op } from 'sequelize';
 import { dataCourseQuizModule1, dataCourseQuizModule3 } from '../data/course_quiz_data';
-
+import { sanitizeForDb } from '../../../utils/utils';
 // you can put some table-specific imports/code here
 export const tableName = "quiz_questions";
 export const up: Migration = async ({ context: sequelize }) => {
@@ -17,26 +17,26 @@ export const up: Migration = async ({ context: sequelize }) => {
 		//////Question  1
 		await createQuizQuestion(sequelize,
 			7, Number(question.question_no),
-			question.question,
-			question.option_a!,
-			question.option_b,
-			question.option_c,
-			question.option_d,
-			question.correct_ans,
+			sanitizeForDb(question.question),
+			sanitizeForDb(question.option_a!),
+			sanitizeForDb(question.option_b),
+			sanitizeForDb(question.option_c),
+			sanitizeForDb(question.option_d),
+			sanitizeForDb(question.correct_ans),
 			Number(question.ar_video_ans_wrong),
-			question.level,
-			question.msg_ans_correct,
-			question.msg_ans_wrong,
-			question.type,
-			question.question_image,
-			question.ar_image_ans_correct,
-			question.ar_video_ans_correct,
-			question.accimg_ans_correct,
-			question.ar_image_ans_wrong,
-			question.ar_video_ans_wrong,
-			question.accimg_ans_wrong,
-			question.question_icon,
-			)
+			sanitizeForDb(question.level),
+			sanitizeForDb(question.msg_ans_correct),
+			sanitizeForDb(question.msg_ans_wrong),
+			sanitizeForDb(question.type),
+			sanitizeForDb(question.question_image),
+			sanitizeForDb(question.ar_image_ans_correct),
+			sanitizeForDb(question.ar_video_ans_correct),
+			sanitizeForDb(question.accimg_ans_correct),
+			sanitizeForDb(question.ar_image_ans_wrong),
+			sanitizeForDb(question.ar_video_ans_wrong),
+			sanitizeForDb(question.accimg_ans_wrong),
+			sanitizeForDb(question.question_icon),
+		)
 	});
 
 	// dataCourseQuizModule3.forEach(async(question,index)=>{
