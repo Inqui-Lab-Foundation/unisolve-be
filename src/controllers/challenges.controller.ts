@@ -14,6 +14,7 @@ import BaseController from "./base.controller";
 import { quizSubmitResponsesSchema } from "../validations/quiz_survey.validations";
 import { challengeSchema, challengeSubmitResponsesSchema, challengeUpdateSchema } from "../validations/challenge.validations copy";
 import { orderBy } from "lodash";
+import { student } from "../models/student.model";
 
 export default class ChallengeController extends BaseController {
 
@@ -39,13 +40,6 @@ export default class ChallengeController extends BaseController {
             if (!user_id) {
                 throw unauthorized(speeches.UNAUTHORIZED_ACCESS)
             }
-            // if (!team_id) {
-            //     throw unauthorized(speeches.USER_TEAMID_REQUIRED)
-            // }
-            // let role: any = req.query.role;
-            // if (role && !Object.keys(constents.user_role_flags.list).includes(role)) {
-            //     role = "MENTOR"
-            // }
             let data: any;
             const { model, id } = req.params;
             const paramStatus: any = req.query.status;
@@ -58,9 +52,6 @@ export default class ChallengeController extends BaseController {
             if (title) {
                 condition.title = { [Op.like]: `%${title}%` }
             }
-            // if (role) {
-            //     condition.role = role;
-            // }
             const { limit, offset } = this.getPagination(page, size);
             const modelClass = await this.loadModel(model).catch(error => {
                 next(error)
@@ -74,31 +65,6 @@ export default class ChallengeController extends BaseController {
                 where[`${this.model}_id`] = req.params.id;
                 // console.log(where)
                 data = await this.crudService.findOne(modelClass, {
-                    // attributes: [
-                    //     "challenge_id",
-                    //     "name",
-                    //     "status",
-                    //     "created_at",
-                    //     "created_by",
-                    //     "updated_at",
-                    //     "updated_by",
-                    // [
-                    //     // Note the wrapping parentheses in the call below!
-                    //     db.literal(`(
-                    //         SELECT CASE WHEN EXISTS 
-                    //             (SELECT status 
-                    //             FROM quiz_survey_responses as p 
-                    //             WHERE p.user_id = ${user_id} 
-                    //             AND p.quiz_survey_id = \`quiz_survey\`.\`quiz_survey_id\`) 
-                    //         THEN  
-                    //             "COMPLETED"
-                    //         ELSE 
-                    //             '${constents.common_status_flags.default}'
-                    //         END as progress
-                    //     )`),
-                    //     'progress'
-                    // ],
-                    // ],
                     where: {
                         [Op.and]: [
                             whereClauseStatusPart,
@@ -112,7 +78,6 @@ export default class ChallengeController extends BaseController {
                     }
                 });
             } else {
-                // console.log("came here +++> ")
                 try {
                     const responseOfFindAndCountAll = await this.crudService.findAndCountAll(modelClass, {
                         where: {
@@ -121,31 +86,6 @@ export default class ChallengeController extends BaseController {
                                 condition
                             ]
                         },
-                        // attributes: [
-                        //     "challenge_id",
-                        //     "name",
-                        //     "status",
-                        //     "created_at",
-                        //     "created_by",
-                        //     "updated_at",
-                        //     "updated_by",
-                        // [
-                        //     // Note the wrapping parentheses in the call below!
-                        //     db.literal(`(
-                        //         SELECT CASE WHEN EXISTS 
-                        //             (SELECT status 
-                        //             FROM quiz_survey_responses as p 
-                        //             WHERE p.user_id = ${user_id} 
-                        //             AND p.quiz_survey_id = \`quiz_survey\`.\`quiz_survey_id\`) 
-                        //         THEN  
-                        //             "COMPLETED"
-                        //         ELSE 
-                        //             '${constents.task_status_flags.default}'
-                        //         END as progress
-                        //     )`),
-                        //     'progress'
-                        // ]
-                        // ],
                         include: {
                             required: false,
                             model: challenge_question
@@ -162,9 +102,6 @@ export default class ChallengeController extends BaseController {
                 }
 
             }
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
-            // }
             if (!data || data instanceof Error) {
                 if (data != null) {
                     throw notFound(data.message)
@@ -172,12 +109,7 @@ export default class ChallengeController extends BaseController {
                     throw notFound()
                 }
                 res.status(200).send(dispatcher(null, "error", speeches.DATA_NOT_FOUND));
-                // if(data!=null){
-                //     throw 
                 (data.message)
-                // }else{
-                //     throw notFound()
-                // }
             }
 
             return res.status(200).send(dispatcher(data, 'success'));
@@ -198,6 +130,11 @@ export default class ChallengeController extends BaseController {
             if (challengeRes instanceof Error) {
                 throw internal(challengeRes.message)
             }
+            const studentDetailsBasedOnTeam = await this.crudService.findAll(student, { where: { team_id } });
+            if (studentDetailsBasedOnTeam instanceof Error) {
+                throw internal(studentDetailsBasedOnTeam.message)
+            };
+            // console.log(studentDetailsBasedOnTeam.length);
             let dataToUpsert: any = {}
             dataToUpsert = { challenge_id, team_id, updated_by: user_id, initiated_by: team_id, submitted_by: user_id }
             let responseObjToAdd: any = {}
@@ -205,15 +142,11 @@ export default class ChallengeController extends BaseController {
                 challenge_question_id: challenge_id,
                 selected_option: selected_option,
                 question: questionAnswered.dataValues.question,
-                // correct_answer:questionAnswered.dataValues.correct_ans,//there is no correct_ans collumn
-                // level:questionAnswered.dataValues.level,//there are no level collumn
-                question_no: questionAnswered.dataValues.question_no,
-                // is_correct:selected_option==questionAnswered.correct_ans//there is no correct_ans collumn
+                question_no: questionAnswered.dataValues.question_no
             }
 
             let user_response: any = {}
             if (challengeRes) {
-                // console.log(quizRes.dataValues.response);
                 user_response = JSON.parse(challengeRes.dataValues.response);
                 user_response[questionAnswered.dataValues.challenge_question_id] = responseObjToAdd;
                 dataToUpsert["response"] = JSON.stringify(user_response);
@@ -293,27 +226,11 @@ export default class ChallengeController extends BaseController {
                     results.push(result);
                 }
             }
-            // await Promise.all(
-            //     // for (let i = 0; i < responses.length; i++) {
-            //     // }
-            //     responses.map(async (element: any) => {
-            //         console.log(element)
-            //         result = await this.insertSingleResponse(team_id, user_id, challenge_id, element.challenge_question_id, element.selected_option)
-            //         if (!result || result instanceof Error) {
-            //             throw badRequest();
-            //         } else {
-            //             results.push(result);
-            //         }
-            //     }
-            //     )
-            // );
             res.status(200).send(dispatcher(result))
         } catch (err) {
             next(err)
         }
     }
-    //TODO: GET submitted response API.
-    //TODO: POST submit response CHECK: Not update exciting data instead create new entity.
     protected async getResponse(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
             let user_id = res.locals.user_id;
@@ -331,10 +248,10 @@ export default class ChallengeController extends BaseController {
                 this.model = model;
             };
             // pagination
-            const { page, size, title } = req.query;
+            const { page, size } = req.query;
             let condition: any = {};
-            if (title) {
-                condition.title = { [Op.like]: `%${title}%` }
+            if (team_id) {
+                condition.team_id = { [Op.like]: `%${team_id}%` }
             }
             // if (role) {
             //     condition.role = role;
