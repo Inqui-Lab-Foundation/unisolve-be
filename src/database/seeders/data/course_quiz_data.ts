@@ -1105,3 +1105,21 @@ export const dataCourseQuizModule1 = [
     "type": "MRQ"
   }
 ]
+
+export const dataCourseQuizModuleArray = [
+  {
+    module_id:1,
+    data:dataCourseQuizModule1
+  },
+  {
+    module_id:3,
+    data:dataCourseQuizModule3
+  },
+]
+
+export const dataMentorCourseQuizModuleArray = [
+  {
+    mentor_course_id:1,
+    data:dataCourseQuizModule1
+  }
+]
