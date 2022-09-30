@@ -19,6 +19,7 @@ import { reflective_quiz_response } from "../models/reflective_quiz_response.mod
 import { user_topic_progress } from "../models/user_topic_progress.model";
 import { worksheet_response } from "../models/worksheet_response.model";
 import axios from 'axios';
+import { includes } from 'lodash';
 export default class authService {
 
     crudService: CRUDService = new CRUDService;
@@ -27,7 +28,18 @@ export default class authService {
 
     async checkOrgDetails(organization_code: any) {
         try {
-            const org = await this.crudService.findOne(organization, { where: { organization_code } })
+            const org = await this.crudService.findOne(organization, {
+                 where: { 
+                    organization_code:organization_code ,
+                    status:'ACTIVE'
+                } ,
+                 include:{
+                    model:mentor,
+                    attributes:[
+                        'full_name'
+                    ]
+                 }
+                })
             return org;
         } catch (error) {
             return error;
