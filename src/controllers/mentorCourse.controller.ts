@@ -214,7 +214,7 @@ export default class MentorCourseController extends BaseController {
             }],
             order: [
                 // [{model: course_module, as: 'course_modules'},{model: course_topic, as: 'course_topics'},'topic_type_order', 'ASC'],
-                db.literal(`\`mentor_course_topics.topic_type_order\` ASC`),
+                // db.literal(`\`mentor_course_topics.topic_type_order\` ASC`),
                 [mentor_course_topic,'mentor_course_topic_id', 'ASC'],
             ],
         });

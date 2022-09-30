@@ -96,6 +96,16 @@ export const speeches = {
     FAQ_ANSWER: "Answer is required.",
     ORG_CODE_REQUIRED: "Organization code is required.",
     ORG_CODE_NOT_EXISTS: "Organization code does not exists.",
+    ORG_NAME_REQUIRED: "Organization name is required.",
+    
+    PRINCIPAL_NAME_REQ: "principal name  is required.",
+    PRINCIPAL_EMAIL_REQ: "principal email  is required.",
+    PRINCIPAL_MOBILE_REQ: "principal mobile  is required.",
+    CITY_REQ: "city is required.",
+    STATE_REQ: "state is required.",
+    DISTRICT_REQ: "district is required.",
+    COUNTRY_REQ: "country  is required.",
+
     OTP_FAIL: "Wrong OTP Detected.",
     OTP_FOUND: "OTP matched.",
     QUERY_CATEGORY: "Category is required",

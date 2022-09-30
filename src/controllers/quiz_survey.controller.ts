@@ -422,18 +422,27 @@ export default class QuizSurveyController extends BaseController {
             }
             const results:any = []
             let result:any={}
-            await Promise.all(
-                responses.map( async (element:any) => {
-                    // console.log(element)
-                    result =   await this.insertSingleResponse(user_id,quiz_survey_id,element.quiz_survey_question_id,element.selected_option)    
-                    if(!result|| result instanceof Error){
-                      throw badRequest();
-                    }else{
-                      results.push(result);
-                    }
-                  }
-                )
-            );
+            for(const element of responses){
+                // console.log(element);
+                result =   await this.insertSingleResponse(user_id,quiz_survey_id,element.quiz_survey_question_id,element.selected_option)    
+                if(!result|| result instanceof Error){
+                    throw badRequest();
+                }else{
+                    results.push(result);
+                }
+            }
+            // await Promise.all(
+            //     responses.map( async (element:any) => {
+            //         // console.log(element)
+            //         result =   await this.insertSingleResponse(user_id,quiz_survey_id,element.quiz_survey_question_id,element.selected_option)    
+            //         if(!result|| result instanceof Error){
+            //           throw badRequest();
+            //         }else{
+            //           results.push(result);
+            //         }
+            //       }
+            //     )
+            // );
             res.status(200).send(dispatcher(result))
 
         }catch(err){

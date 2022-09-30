@@ -113,7 +113,8 @@ export const constents = {
       'VIDEO': 'VIDEO',
       'WORKSHEET': 'WORKSHEET',
       'QUIZ': 'QUIZ',
-      'ATTACHMENT': 'ATTACHMENT'
+      'ATTACHMENT': 'ATTACHMENT',
+      'CERTIFICATE': 'CERTIFICATE'
     },
     default: 'VIDEO',
   },
