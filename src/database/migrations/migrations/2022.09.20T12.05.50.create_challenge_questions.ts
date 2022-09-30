@@ -15,6 +15,10 @@ export const up: Migration = async ({ context: sequelize }) => {
 			type: DataTypes.INTEGER,
 			allowNull: false
 		},
+		description: {
+			type: DataTypes.TEXT,
+			allowNull: false
+		},
 		question_no: {
 			type: DataTypes.INTEGER,
 			allowNull: true
