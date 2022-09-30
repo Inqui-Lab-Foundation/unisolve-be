@@ -9,7 +9,7 @@ import dispatcher from "../utils/dispatch.util";
 import ValidationsHolder from "../validations/validationHolder";
 import { videoSchema, videoUpdateSchema } from "../validations/video.validations";
 import BaseController from "./base.controller";
-import { organizationCheckSchema, organizationSchema, organizationUpdateSchema } from "../validations/organization.validations";
+import { organizationCheckSchema, organizationRawSchema, organizationSchema, organizationUpdateSchema } from "../validations/organization.validations";
 import authService from "../services/auth.service";
 import validationMiddleware from "../middlewares/validation.middleware";
 
@@ -27,6 +27,7 @@ export default class OrganizationController extends BaseController {
     protected initializeRoutes(): void {
         this.router.post(`${this.path}/bulkUpload`, this.bulkUpload.bind(this));
         this.router.post(`${this.path}/checkOrg`, validationMiddleware(organizationCheckSchema), this.checkOrgDetails.bind(this));
+        this.router.post(`${this.path}/createOrg`, validationMiddleware(organizationRawSchema), this.createOrg.bind(this));
         super.initializeRoutes();
     };
     private async checkOrgDetails(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -36,5 +37,10 @@ export default class OrganizationController extends BaseController {
         } else {
             res.status(200).send(dispatcher(org, 'success', speeches.FETCH_FILE));
         }
+    }
+
+    private async createOrg(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        console.log(req.body);
+        return this.createData(req,res,next);
     }
 }
