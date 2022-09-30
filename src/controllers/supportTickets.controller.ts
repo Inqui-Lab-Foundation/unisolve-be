@@ -44,14 +44,6 @@ export default class SupportTicketController extends BaseController {
                 next(error)
             });
             const where: any = {};
-            // let whereClauseStatusPart: any = {};
-            // let whereClauseStatusPartLiteral = "1=1";
-            // let addWhereClauseStatusPart = false
-            // if (paramStatus && (paramStatus in constents.common_status_flags.list)) {
-            //     whereClauseStatusPart = { "status": paramStatus }
-            //     whereClauseStatusPartLiteral = `status = "${paramStatus}"`
-            //     addWhereClauseStatusPart = true;
-            // }
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
                 data = await this.crudService.findOne(modelClass, {
@@ -72,13 +64,18 @@ export default class SupportTicketController extends BaseController {
                             'query_details',
                             'status',
                             'created_at',
-                            'created_by',
                             'updated_at',
-                            'updated_by',
+                            // 'created_by',
+                            // 'updated_by',
+                            [
+                                db.literal(`(SELECT full_name FROM students As s WHERE s.user_id = \`support_ticket\`.\`created_by\` )`), 'created_by'
+                            ],
+                            [
+                                db.literal(`(SELECT full_name FROM students As s WHERE s.user_id = \`support_ticket\`.\`updated_by\` )`), 'updated_by'
+                            ],
                             [
                                 db.literal(`( SELECT COUNT(*) FROM support_tickets_replies AS s WHERE s.support_ticket_id = \`support_ticket\`.\`support_ticket_id\`)`), 'replies_count'
                             ]
-                            //  ${ addWhereClauseStatusPart? "s." + whereClauseStatusPartLiteral : whereClauseStatusPartLiteral } AND
                         ],
                         where: {
                             [Op.and]: [
