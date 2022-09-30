@@ -16,6 +16,8 @@ import { options } from "./docs/options";
 import * as errorHandler from "./middlewares/errorHandler.middleware";
 import { constents } from "./configs/constents.config";
 import { CronManager } from "./jobs/cronManager";
+import DashboardMapStats from "./jobs/bashboard_map_stats.jobs";
+import BadgesJob from "./jobs/badges.jobs";
 // import fs from 'fs';
 // import BadgesJob from "./jobs/badges.jobs";
 // import https from 'https'
@@ -65,8 +67,10 @@ export default class App {
 
     private initializeJobs(): void {
         const cronManager = CronManager.getInstance()
-        // cronManager.addJob(new BadgesJob());
-        // cronManager.startAll();
+        cronManager.addJob(new BadgesJob());
+        cronManager.addJob(new DashboardMapStats())
+        // new DashboardMapStats().executeJob()
+        cronManager.startAll();
     }
 
     private initializeMiddlewares(): void {
