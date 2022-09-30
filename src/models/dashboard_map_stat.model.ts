@@ -2,8 +2,8 @@ import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, 
 import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
 
-export class dashboardMapStats extends Model<InferAttributes<dashboardMapStats>, InferCreationAttributes<dashboardMapStats>> {
-    declare dashboardMapStats_id: CreationOptional<number>;
+export class dashboard_map_stat extends Model<InferAttributes<dashboard_map_stat>, InferCreationAttributes<dashboard_map_stat>> {
+    declare dashboard_map_stat_id: CreationOptional<number>;
     declare district_name: string;
     declare overall_schools: string;
     declare reg_schools: string;
@@ -16,9 +16,9 @@ export class dashboardMapStats extends Model<InferAttributes<dashboardMapStats>,
     declare updated_at: Date;
 }
 
-dashboardMapStats.init(
+dashboard_map_stat.init(
     {
-        dashboardMapStats_id: {
+        dashboard_map_stat_id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true
@@ -72,7 +72,7 @@ dashboardMapStats.init(
     },
     {
         sequelize: db,
-        tableName: 'dashboardMapStats',
+        tableName: 'dashboard_map_stats',
         timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'

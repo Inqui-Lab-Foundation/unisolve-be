@@ -83,7 +83,7 @@ export default class authService {
             }
             const result = await this.crudService.create(user, requestBody);
             let whereClass = { ...requestBody, user_id: result.dataValues.user_id };
-            console.log(whereClass);
+            // console.log(whereClass);
             switch (requestBody.role) {
                 case 'STUDENT': {
                     profile = await this.crudService.create(student, whereClass);

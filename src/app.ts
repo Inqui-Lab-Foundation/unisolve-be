@@ -16,7 +16,7 @@ import { options } from "./docs/options";
 import * as errorHandler from "./middlewares/errorHandler.middleware";
 import { constents } from "./configs/constents.config";
 import { CronManager } from "./jobs/cronManager";
-import DashboardMapStats from "./jobs/bashboard_map_stats.jobs";
+import DashboardMapStatsJob from "./jobs/dashboardMapStats.jobs";
 import BadgesJob from "./jobs/badges.jobs";
 // import fs from 'fs';
 // import BadgesJob from "./jobs/badges.jobs";
@@ -67,8 +67,8 @@ export default class App {
 
     private initializeJobs(): void {
         const cronManager = CronManager.getInstance()
-        cronManager.addJob(new BadgesJob());
-        cronManager.addJob(new DashboardMapStats())
+        // cronManager.addJob(new BadgesJob());
+        cronManager.addJob(new DashboardMapStatsJob())
         // new DashboardMapStats().executeJob()
         cronManager.startAll();
     }
