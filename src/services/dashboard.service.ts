@@ -1,23 +1,13 @@
-import { CronJob } from "cron";
 import { challenge_response } from "../models/challenge_response.model";
-import { dashboardMapStats } from "../models/dashboardMapStats.model";
+import { dashboard_map_stat } from "../models/dashboard_map_stat.model";
 import { mentor } from "../models/mentor.model";
 import { organization } from "../models/organization.model";
 import { team } from "../models/team.model";
-import CRUDService from "../services/crud.service";
-import BaseJobs from "./base.job";
+import BaseService from "./base.service";
 
-export default class DashboardMapStats extends BaseJobs {
+export default class DashboardService extends BaseService{
 
-    crudService: CRUDService = new CRUDService;
-    protected init() {
-        this.name = 'dashboard_map_stats';
-        this.period = "0 0 * * *"
-    };
-
-    public async executeJob() {
-        super.executeJob();
-        //TODO: write the logic to execute to badges Job...!!
+    async getMapStats(){
         let uniqueDistricts: any;
         let bulkCreateArray: any = [];
         uniqueDistricts = await this.crudService.findAll(organization, { group: ["district"] });
@@ -58,8 +48,10 @@ export default class DashboardMapStats extends BaseJobs {
                 district_name: district.district
             })
         }
-        await this.crudService.delete(dashboardMapStats, { where: {}, truncate: true });
-        const result = await this.crudService.bulkCreate(dashboardMapStats, bulkCreateArray);
+        await this.crudService.delete(dashboard_map_stat, { where: {}, truncate: true });
+        const result = await this.crudService.bulkCreate(dashboard_map_stat, bulkCreateArray);
+        // console.log(result)
         return result;
     }
+
 }
