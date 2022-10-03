@@ -7,7 +7,7 @@ import BaseService from "./base.service";
 
 export default class DashboardService extends BaseService{
 
-    async getMapStats(){
+    async resetMapStats(){
         let uniqueDistricts: any;
         let bulkCreateArray: any = [];
         uniqueDistricts = await this.crudService.findAll(organization, { group: ["district"] });
