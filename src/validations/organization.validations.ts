@@ -47,7 +47,7 @@ export const organizationRawSchema = Joi.object().keys({
 });
 
 export const organizationUpdateSchema = Joi.object().keys({
-    status: Joi.string().valid(...Object.values(constents.common_status_flags.list)).required().messages({
+    status: Joi.string().valid(...Object.values(constents.organization_status_flags.list)).required().messages({
         'any.only': speeches.COMMON_STATUS_INVALID,
         'string.empty': speeches.COMMON_STATUS_REQUIRED
     }),
