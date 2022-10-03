@@ -47,6 +47,23 @@ export default class SupportTicketController extends BaseController {
             if (id) {
                 where[`${this.model}_id`] = req.params.id;
                 data = await this.crudService.findOne(modelClass, {
+                    attributes: [
+                        'support_ticket_id',
+                        'query_category',
+                        'query_details',
+                        'status',
+                        'created_at',
+                        'updated_at',
+                        [
+                            db.literal(`(SELECT full_name FROM users As s WHERE s.user_id = \`support_ticket\`.\`created_by\` )`), 'created_by'
+                        ],
+                        [
+                            db.literal(`(SELECT full_name FROM users As s WHERE s.user_id = \`support_ticket\`.\`updated_by\` )`), 'updated_by'
+                        ],
+                        [
+                            db.literal(`( SELECT COUNT(*) FROM support_tickets_replies AS s WHERE s.support_ticket_id = \`support_ticket\`.\`support_ticket_id\`)`), 'replies_count'
+                        ]
+                    ],
                     where: {
                         [Op.and]: [
                             // whereClauseStatusPart,
@@ -65,13 +82,11 @@ export default class SupportTicketController extends BaseController {
                             'status',
                             'created_at',
                             'updated_at',
-                            // 'created_by',
-                            // 'updated_by',
                             [
-                                db.literal(`(SELECT full_name FROM students As s WHERE s.user_id = \`support_ticket\`.\`created_by\` )`), 'created_by'
+                                db.literal(`(SELECT full_name FROM users As s WHERE s.user_id = \`support_ticket\`.\`created_by\` )`), 'created_by'
                             ],
                             [
-                                db.literal(`(SELECT full_name FROM students As s WHERE s.user_id = \`support_ticket\`.\`updated_by\` )`), 'updated_by'
+                                db.literal(`(SELECT full_name FROM users As s WHERE s.user_id = \`support_ticket\`.\`updated_by\` )`), 'updated_by'
                             ],
                             [
                                 db.literal(`( SELECT COUNT(*) FROM support_tickets_replies AS s WHERE s.support_ticket_id = \`support_ticket\`.\`support_ticket_id\`)`), 'replies_count'

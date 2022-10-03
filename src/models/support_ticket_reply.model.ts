@@ -1,8 +1,8 @@
 import { DataTypes, Model } from 'sequelize';
 import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
-import { student } from './student.model';
 import { support_ticket } from './support_ticket.model';
+import { user } from './user.model';
 
 export interface supportTicketRepliesAttributes {
     support_tickets_reply_id: number;
@@ -68,6 +68,6 @@ support_ticket_reply.init(
 );
 
 support_ticket_reply.belongsTo(support_ticket, { foreignKey: 'support_ticket_id' });
-support_ticket_reply.belongsTo(student, { foreignKey: 'created_by'})
-support_ticket_reply.belongsTo(student, { foreignKey: 'updated_by'})
+support_ticket_reply.belongsTo(user, { foreignKey: 'created_by'})
+support_ticket_reply.belongsTo(user, { foreignKey: 'updated_by'})
 support_ticket.hasMany(support_ticket_reply, { foreignKey: 'support_ticket_id' });
