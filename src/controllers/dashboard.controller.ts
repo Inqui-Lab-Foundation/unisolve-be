@@ -9,6 +9,7 @@ import db from "../utils/dbconnection.util";
 import { Op } from 'sequelize';
 import DashboardMapStatsJob from '../jobs/dashboardMapStats.jobs';
 import { dashboard_map_stat } from '../models/dashboard_map_stat.model';
+import DashboardService from '../services/dashboard.service';
 
 export default class DashboardController extends BaseController {
     model = ""; ///this u will override in every function in this controller ...!!!
@@ -22,8 +23,10 @@ export default class DashboardController extends BaseController {
     protected initializeRoutes(): void {
         //example route to add
         //this.router.get(`${this.path}/`, this.getData);
+        this.router.get(`${this.path}/refreshMapStatsLive`, this.getMapStatsLive.bind(this))
         this.router.get(`${this.path}/mapStats`, this.getMapStats.bind(this))
         this.router.get(`${this.path}/refreshMapStats`, this.refreshMapStats.bind(this))
+        
         super.initializeRoutes();
     }
 
@@ -38,6 +41,17 @@ export default class DashboardController extends BaseController {
     }
     private async getMapStats(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
+            this.model = dashboard_map_stat.name
+            return await this.getData(req,res,next)
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    private async getMapStatsLive(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            const service = new DashboardService()
+            await service.resetMapStats()
             this.model = dashboard_map_stat.name
             return await this.getData(req,res,next)
         } catch (error) {
