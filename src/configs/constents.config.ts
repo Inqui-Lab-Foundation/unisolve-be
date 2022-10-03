@@ -38,6 +38,16 @@ export const constents = {
     },
     default: 'ACTIVE'
   },
+  organization_status_flags: {
+    list: {
+      'NEW': 'NEW',
+      'ACTIVE': 'ACTIVE',
+      'INACTIVE': 'INACTIVE',
+      'DELETED': 'DELETED',
+      'LOCKED': 'LOCKED'
+    },
+    default: 'ACTIVE'
+  },
   support_tickets_status_flags: {
     list: {
       'OPEN': 'OPEN',
