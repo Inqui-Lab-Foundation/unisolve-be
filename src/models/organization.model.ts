@@ -57,8 +57,8 @@ organization.init({
         type: DataTypes.STRING
     },
     status: {
-        type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
-        defaultValue: constents.common_status_flags.default
+        type: DataTypes.ENUM(...Object.values(constents.organization_status_flags.list)),
+        defaultValue: constents.organization_status_flags.default
     },
     created_by: {
         type: DataTypes.INTEGER,
