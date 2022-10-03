@@ -221,6 +221,7 @@ export default class ChallengeController extends BaseController {
                 // console.log(element);
                 result = await this.insertSingleResponse(team_id, user_id, challenge_id, element.challenge_question_id, element.selected_option)
                 if (!result || result instanceof Error) {
+                    
                     throw badRequest();
                 } else {
                     results.push(result);
