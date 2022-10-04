@@ -12,7 +12,7 @@ export const organizationSchema = Joi.object().keys({
     organization_name: Joi.string().required().messages({
         'string.empty': speeches.ID_REQUIRED
     }),
-    
+
 });
 
 export const organizationRawSchema = Joi.object().keys({
@@ -43,7 +43,7 @@ export const organizationRawSchema = Joi.object().keys({
     country: Joi.string().messages({
         'string.empty': speeches.CITY_REQ
     }),
-    status: Joi.string().valid('ACTIVE','INACTIVE')
+    status: Joi.string().valid('NEW', 'ACTIVE', 'INACTIVE')
 });
 
 export const organizationUpdateSchema = Joi.object().keys({
