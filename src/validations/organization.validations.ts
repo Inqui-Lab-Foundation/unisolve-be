@@ -43,7 +43,7 @@ export const organizationRawSchema = Joi.object().keys({
     country: Joi.string().messages({
         'string.empty': speeches.CITY_REQ
     }),
-    status: Joi.string().valid('ACTIVE','INACTIVE')
+    status: Joi.string().valid(...Object.values(constents.organization_status_flags.list))
 });
 
 export const organizationUpdateSchema = Joi.object().keys({
