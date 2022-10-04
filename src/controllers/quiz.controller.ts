@@ -89,7 +89,8 @@ export default class QuizController extends BaseController {
                 user_response = JSON.parse(quizRes.dataValues.response);
                 // console.log(user_response);
                 let questionNosAsweredArray = Object.keys(user_response);
-                questionNosAsweredArray = questionNosAsweredArray.sort((a, b) => (a > b ? -1 : 1));
+                questionNosAsweredArray = questionNosAsweredArray.sort((a, b) => (Number(a) > Number(b) ? -1 : 1));
+                // console.log(questionNosAsweredArray)
                 const noOfQuestionsAnswered = Object.keys(user_response).length
                 // console.log(noOfQuestionsAnswered)
                 const lastQuestionAnsewered = user_response[questionNosAsweredArray[0]]//we have assumed that this length will always have atleast 1 item ; this could potentially be a source of bug, but is not since this should always be true based on above checks ..
@@ -113,6 +114,7 @@ export default class QuizController extends BaseController {
                     // console.log("came here3");
                     //since this is mentor quiz id hence next question will not advance to easy medium instead will remain on same question untill answered correctly
                     question_no = lastQuestionAnsewered.question_no+1;
+                    // console.log(lastQuestionAnsewered.question_no);
                     level = "HARD"
 
                 }

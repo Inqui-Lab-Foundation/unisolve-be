@@ -222,7 +222,7 @@ export default class QuizSurveyController extends BaseController {
             user_response =  JSON.parse(quizRes.dataValues.response);
             // console.log(user_response);
             let questionNosAsweredArray = Object.keys(user_response);
-            questionNosAsweredArray = questionNosAsweredArray.sort((a,b) => (a > b ? -1 : 1));
+            questionNosAsweredArray = questionNosAsweredArray.sort((a,b) => (Number(a) > Number(b) ? -1 : 1));
             const noOfQuestionsAnswered = Object.keys(user_response).length
             // console.log(noOfQuestionsAnswered)
             const lastQuestionAnsewered = user_response[questionNosAsweredArray[0]]//we have assumed that this length will always have atleast 1 item ; this could potentially be a source of bug, but is not since this should always be true based on above checks ..

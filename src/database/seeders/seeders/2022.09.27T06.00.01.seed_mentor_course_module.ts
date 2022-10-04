@@ -16,31 +16,13 @@ export const up: Migration = async ({ context: sequelize }) => {
 		title: 'UNISOLVE For Teachers',
 		description: `
 Description 
-	1. Training
 		Welcome to the First step in your Problem Solving Journey.
 		Do you want to make a difference in the world around you but are not sure how?
 		The watch the story of our Problem Solvers: Adila, Aryn, Shama, and Amir.
 		What inspired them to be Problem Solvers? Let us see and get inspired too!
-	2. Handbook
 		Congratulation on the start of your Journey.
 		Do you know what makes a great team?
 		Let's find out what Aryn's teacher has to say about it.
-	3. Quiz
-		Phew! Just like Amir and his team, you too have a strong team of Problem Solvers.
-		But you know, Amir and his team are confused about how to Find problems in their community.
-		I am sure you too must be wondering.
-		Farah and their teacher helped them out. But who is Farah?
-		Let's find out! 
-	4. Instructions
-		Are you ready with your chosen Problem?
-		Remember? Shama and the team too have chosen a problem to solve.
-		But do they know enough about the problem they identified?
-		Let us see how they Explored the problem deeper to understand it better!
-	5. Certificate
-		Give yourself a pat on your back for completing more than half of the Problem Solving Journey.
-		You are a Star. The Journey ahead is full of Fun and Learning.
-		Ideas! Ideas! Ideas!
-		Let's see how Aryn and the team came up with them and learn from them how to Give Ideas!
 		`,
         created_by: 1,
 		updated_by: 1,
