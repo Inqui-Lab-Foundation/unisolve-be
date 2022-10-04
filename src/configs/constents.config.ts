@@ -155,6 +155,9 @@ export const constents = {
     },
     default: "DRAFT"
   },
+  translations_flags:{
+    default_locale: "en"
+  },
   default_image_path: "/images/default.jpg"
 
 };
