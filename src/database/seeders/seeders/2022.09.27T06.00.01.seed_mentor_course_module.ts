@@ -56,8 +56,8 @@ Description
 	await createCourseTopicAlongWithAssociations(sequelize,courseInserted[0].mentor_course_id,"VIDEO","Training","",18)
 	await createCourseTopicAlongWithAssociations(sequelize,courseInserted[0].mentor_course_id,"ATTACHMENT","Handbook","/assets/defaults/default_worksheet.pdf")
 	await createCourseTopicAlongWithAssociations(sequelize,courseInserted[0].mentor_course_id,"QUIZ","Quiz")
-	await createCourseTopicAlongWithAssociations(sequelize,courseInserted[0].mentor_course_id,"ATTACHMENT","INSTRUCTIONS","/assets/mentor_courses/instructions/module_1_ar.pdf{{}}/assets/mentor_courses/instructions/module_3_ar.pdf{{}}/assets/mentor_courses/instructions/module_4_ar.pdf{{}}/assets/mentor_courses/instructions/module_5_ar.pdf{{}}/assets/mentor_courses/instructions/module_6_ar.pdf")
-	await createCourseTopicAlongWithAssociations(sequelize,courseInserted[0].mentor_course_id,"CERTIFICATE","Certificate","/assets/mentor_courses/certificates/default_certificate.jpg")
+	await createCourseTopicAlongWithAssociations(sequelize, courseInserted[0].mentor_course_id, "ATTACHMENT", "INSTRUCTIONS","/assets/mentor_courses/files/Worksheet English.pdf{{}}/assets/mentor_courses/files/Resources English.pdf")
+	await createCourseTopicAlongWithAssociations(sequelize,courseInserted[0].mentor_course_id,"CERTIFICATE","Certificate","/assets/mentor_courses/files/default_certificate.jpg")
 
 };
 
