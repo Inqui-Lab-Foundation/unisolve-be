@@ -31,7 +31,9 @@ export default class authService {
             const org = await this.crudService.findOne(organization, {
                  where: { 
                     organization_code:organization_code ,
-                    status:'ACTIVE'
+                    status:{
+                        [Op.or]: ['ACTIVE', 'NEW']
+                      }
                 } ,
                  include:{
                     model:mentor,

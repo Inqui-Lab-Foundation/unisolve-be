@@ -40,7 +40,7 @@ export default class OrganizationController extends BaseController {
     }
 
     private async createOrg(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        console.log(req.body);
+        // console.log(req.body);
         return this.createData(req,res,next);
     }
 }
