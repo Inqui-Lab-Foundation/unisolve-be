@@ -112,7 +112,7 @@ export default class QuizController extends BaseController {
                 }else{
                     // console.log("came here3");
                     //since this is mentor quiz id hence next question will not advance to easy medium instead will remain on same question untill answered correctly
-                    question_no = lastQuestionAnsewered.question_no;
+                    question_no = lastQuestionAnsewered.question_no+1;
                     level = "HARD"
 
                 }
