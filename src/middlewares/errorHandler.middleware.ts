@@ -70,5 +70,5 @@ export const bodyParser: ErrorRequestHandler = async (err: any, req: Request, re
 export const genericErrorHandler: ErrorRequestHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
   await logIt(constents.log_levels.list.ERROR, `${err.message}: ${err}`, req, res);
   const error = buildError(err);
-  res.status(error.code).send(dispatcher(null, 'error',error.message,error.code))
+  res.status(error.code).send(dispatcher(res,null, 'error',error.message,error.code))
 }

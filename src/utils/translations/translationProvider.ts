@@ -38,16 +38,29 @@ export default class TranslationsProvider {
         if(argFromLocale==argToLocale){
             return argKey
         }
-
+        
         const result = this.translationsFromDbArr.filter(
-                        translation=>translation.from_locale==argFromLocale &&
-                        translation.to_locale==argToLocale &&
-                        translation.key==argKey)
-
-        if(result.length > 0 ){
+                            (translation:any)=>{
+                                // console.log("argFromLocale",argFromLocale);
+                                // console.log("argToLocale",argToLocale);
+                                // console.log("argKey",argKey);
+                                if(translation.dataValues.from_locale==argFromLocale &&
+                                    translation.dataValues.to_locale==argToLocale &&
+                                    translation.dataValues.key==argKey){
+                                        
+                                        return translation
+                                    }
+                            }
+                        )
+        
+        if(result.length > 0 &&  result[0]){
             return result[0].value
         }
         return argKey
+    }
+
+    static match(argFromLocale:string,argToLocale:string,argKey:string){
+
     }
 
     static getSpeechesFor(arglocale:string=this.defaultLocale){

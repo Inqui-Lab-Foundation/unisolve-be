@@ -98,7 +98,7 @@ export default class ChallengeController extends BaseController {
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
                 } catch (error: any) {
-                    return res.status(500).send(dispatcher(data, 'error'))
+                    return res.status(500).send(dispatcher(res,data, 'error'))
                 }
 
             }
@@ -108,11 +108,11 @@ export default class ChallengeController extends BaseController {
                 } else {
                     throw notFound()
                 }
-                res.status(200).send(dispatcher(null, "error", speeches.DATA_NOT_FOUND));
+                res.status(200).send(dispatcher(res,null, "error", speeches.DATA_NOT_FOUND));
                 (data.message)
             }
 
-            return res.status(200).send(dispatcher(data, 'success'));
+            return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
             next(error);
         }
@@ -227,7 +227,7 @@ export default class ChallengeController extends BaseController {
                     results.push(result);
                 }
             }
-            res.status(200).send(dispatcher(result))
+            res.status(200).send(dispatcher(res,result))
         } catch (err) {
             next(err)
         }
@@ -326,12 +326,12 @@ export default class ChallengeController extends BaseController {
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
                 } catch (error: any) {
-                    return res.status(500).send(dispatcher(data, 'error'))
+                    return res.status(500).send(dispatcher(res,data, 'error'))
                 }
 
             }
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 if (data != null) {
@@ -339,7 +339,7 @@ export default class ChallengeController extends BaseController {
                 } else {
                     throw notFound()
                 }
-                res.status(200).send(dispatcher(null, "error", speeches.DATA_NOT_FOUND));
+                res.status(200).send(dispatcher(res,null, "error", speeches.DATA_NOT_FOUND));
                 // if(data!=null){
                 //     throw 
                 (data.message)
@@ -348,7 +348,7 @@ export default class ChallengeController extends BaseController {
                 // }
             }
             data.dataValues.forEach((element: any) => { element.dataValues.response = JSON.parse(element.dataValues.response) })
-            return res.status(200).send(dispatcher(data, 'success'));
+            return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
             next(error);
         }
@@ -440,7 +440,7 @@ export default class ChallengeController extends BaseController {
     //         // resultQuestion["options"] = optionsArr;
     //         // resultQuestion["level"] = nextQuestionsToChooseFrom.dataValues.level;
     //         // resultQuestion["type"] = nextQuestionsToChooseFrom.dataValues.type;
-    //         res.status(200).send(dispatcher(resultQuestion))
+    //         res.status(200).send(dispatcher(res,resultQuestion))
     //     } else {
     //         //update worksheet topic progress for this user to completed..!!
     //         // if (!boolStatusWhereClauseRequired ||
@@ -448,7 +448,7 @@ export default class ChallengeController extends BaseController {
     //         //     const updateProgress = await this.crudService.create(user_topic_progress, { "user_id": user_id, "course_topic_id": curr_topic.course_topic_id, "status": "COMPLETED" })
     //         // }
     //         //send response that quiz is completed..!!
-    //         res.status(200).send(dispatcher("Quiz has been completed no more questions to display"))
+    //         res.status(200).send(dispatcher(res,"Quiz has been completed no more questions to display"))
     //     }
     // }
 }

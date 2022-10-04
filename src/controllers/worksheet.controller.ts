@@ -137,12 +137,12 @@ export default class WorksheetController extends BaseController {
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
                 } catch(error:any){
-                    return res.status(500).send(dispatcher(data, 'error'))
+                    return res.status(500).send(dispatcher(res,data, 'error'))
                 }
                 
             }
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 if(data!=null){
@@ -152,7 +152,7 @@ export default class WorksheetController extends BaseController {
                 }
             }
 
-            return res.status(200).send(dispatcher(data, 'success'));
+            return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
             next(error);
         }
@@ -204,7 +204,7 @@ export default class WorksheetController extends BaseController {
                 }
             }
             if (errs.length) {
-                return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
+                return res.status(406).send(dispatcher(res,errs, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
 
             const modelLoaded = await this.loadModel("worksheet_response");
@@ -218,7 +218,7 @@ export default class WorksheetController extends BaseController {
 
             //update worksheet topic progress for this user to completed..!!
             const updateProgress =  await this.crudService.create(user_topic_progress,{"user_id":user_id,"course_topic_id":curr_workshet_topic.course_topic_id,"status":"COMPLETED"})
-            res.status(200).send(dispatcher(data,"success"));
+            res.status(200).send(dispatcher(res,data,"success"));
             
 
         }catch(err){

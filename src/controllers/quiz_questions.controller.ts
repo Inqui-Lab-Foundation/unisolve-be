@@ -59,19 +59,19 @@ export default class QuizQuestionsController extends BaseController {
     //             });
     //         }
     //         if (errs.length) {
-    //             return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
+    //             return res.status(406).send(dispatcher(res,errs, 'error', speeches.NOT_ACCEPTABLE, 406));
     //         }
     //         const modelLoaded = await this.loadModel(model);
     //         const payload = this.autoFillTrackingColumns(req, res, modelLoaded, reqData)
     //         const data = await this.crudService.create(modelLoaded, payload);
 
     //         // if (!data) {
-    //         //     return res.status(404).send(dispatcher(data, 'error'));
+    //         //     return res.status(404).send(dispatcher(res,data, 'error'));
     //         // }
     //         if (!data || data instanceof Error) {
     //             throw badRequest(data.message)
     //         }
-    //         return res.status(201).send(dispatcher(data, 'created'));
+    //         return res.status(201).send(dispatcher(res,data, 'created'));
     //     } catch (error) {
     //         next(error);
     //     }

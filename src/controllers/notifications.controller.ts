@@ -111,7 +111,7 @@ export default class NotificationsController {
 
         });
 
-        return res.status(200).send(dispatcher(final_notifications, 'success'));
+        return res.status(200).send(dispatcher(res,final_notifications, 'success'));
     }
 
     public getAll = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
@@ -157,7 +157,7 @@ export default class NotificationsController {
 
         });
 
-        return res.status(200).send(dispatcher(final_notifications, 'success'));
+        return res.status(200).send(dispatcher(res,final_notifications, 'success'));
     }
 
     private sendNotification = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
@@ -165,9 +165,9 @@ export default class NotificationsController {
         data['created_by'] = res.locals.user_id;
         const result = await this.crudService.create(notification, data);
         if (!result) {
-            return res.status(406).send(dispatcher(null, 'error', speeches.NOT_ACCEPTABLE, 406));
+            return res.status(406).send(dispatcher(res,null, 'error', speeches.NOT_ACCEPTABLE, 406));
         }
-        return res.status(200).send(dispatcher(result, 'success'));
+        return res.status(200).send(dispatcher(res,result, 'success'));
     }
 
     private sendNotificationWithPoster = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
@@ -180,22 +180,22 @@ export default class NotificationsController {
             const targetPath = path.join(process.cwd(), 'resources', 'static', 'uploads', 'posters', filename);
             fs.rename(files.image.path, targetPath, async (err) => {
                 if (err) {
-                    return res.status(406).send(dispatcher(speeches.UPLOAD_FAILD, 'error', speeches.NOT_ACCEPTABLE, 406));
+                    return res.status(406).send(dispatcher(res,speeches.UPLOAD_FAILD, 'error', speeches.NOT_ACCEPTABLE, 406));
                 } else {
                     data['image'] = `/posters/${filename}`;
                     const result = await this.crudService.create(notification, data);
                     if (!result) {
-                        return res.status(406).send(dispatcher(null, 'error', speeches.NOT_ACCEPTABLE, 406));
+                        return res.status(406).send(dispatcher(res,null, 'error', speeches.NOT_ACCEPTABLE, 406));
                     }
-                    return res.status(200).send(dispatcher(result, 'success'));
+                    return res.status(200).send(dispatcher(res,result, 'success'));
                 }
             });
         } else {
             const result = await this.crudService.create(notification, data);
             if (!result) {
-                return res.status(406).send(dispatcher(null, 'error', speeches.NOT_ACCEPTABLE, 406));
+                return res.status(406).send(dispatcher(res,null, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
-            return res.status(200).send(dispatcher(result, 'success'));
+            return res.status(200).send(dispatcher(res,result, 'success'));
         }
     }
 
@@ -206,7 +206,7 @@ export default class NotificationsController {
         else {
             const result = await this.crudService.findByPk(notification, req.params.id);
             if (!result) {
-                return res.status(404).send(dispatcher(null, 'error', speeches.DATA_NOT_FOUND, 404));
+                return res.status(404).send(dispatcher(res,null, 'error', speeches.DATA_NOT_FOUND, 404));
             }
 
             const read_by_list = (result.read_by) ? result.read_by.split(",") : [];
@@ -224,7 +224,7 @@ export default class NotificationsController {
                 } 
             });
 
-            return res.status(200).send(dispatcher(result, 'success'));
+            return res.status(200).send(dispatcher(res,result, 'success'));
         }
     }
 
@@ -298,6 +298,6 @@ export default class NotificationsController {
             }
         });
 
-        return res.status(200).send(dispatcher(updated_res, 'success'));
+        return res.status(200).send(dispatcher(res,updated_res, 'success'));
     }
 }

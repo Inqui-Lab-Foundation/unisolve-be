@@ -118,12 +118,12 @@ export default class CRUDController implements IController {
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
                 } catch (error: any) {
-                    return res.status(500).send(dispatcher(data, 'error'))
+                    return res.status(500).send(dispatcher(res,data, 'error'))
                 }
 
             }
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 if (data != null) {
@@ -131,7 +131,7 @@ export default class CRUDController implements IController {
                 } else {
                     throw notFound()
                 }
-                res.status(200).send(dispatcher(null, "error", speeches.DATA_NOT_FOUND));
+                res.status(200).send(dispatcher(res,null, "error", speeches.DATA_NOT_FOUND));
                 // if(data!=null){
                 //     throw 
                 (data.message)
@@ -139,7 +139,7 @@ export default class CRUDController implements IController {
                 //     throw notFound()
                 // }
             }
-            return res.status(200).send(dispatcher(data, 'success'));
+            return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
             next(error);
         }
@@ -155,12 +155,12 @@ export default class CRUDController implements IController {
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
             const data = await this.crudService.create(modelLoaded, payload);
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 throw badRequest(data.message)
             }
-            return res.status(201).send(dispatcher(data, 'created'));
+            return res.status(201).send(dispatcher(res,data, 'created'));
         } catch (error) {
             next(error);
         }
@@ -189,19 +189,19 @@ export default class CRUDController implements IController {
                 });
             }
             if (errs.length) {
-                return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
+                return res.status(406).send(dispatcher(res,errs, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded, reqData)
             const data = await this.crudService.create(modelLoaded, payload);
 
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 throw badRequest(data.message)
             }
-            return res.status(201).send(dispatcher(data, 'created'));
+            return res.status(201).send(dispatcher(res,data, 'created'));
         } catch (error) {
             next(error);
         }
@@ -220,12 +220,12 @@ export default class CRUDController implements IController {
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 throw badRequest(data.message)
             }
-            return res.status(200).send(dispatcher(data, 'updated'));
+            return res.status(200).send(dispatcher(res,data, 'updated'));
         } catch (error) {
             next(error);
         }
@@ -263,18 +263,18 @@ export default class CRUDController implements IController {
                 });
             }
             if (errs.length) {
-                return res.status(406).send(dispatcher(errs, 'error', speeches.NOT_ACCEPTABLE, 406));
+                return res.status(406).send(dispatcher(res,errs, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded, reqData)
             const data = await this.crudService.update(modelLoaded, payload, { where: where });
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 throw badRequest(data.message)
             }
-            return res.status(200).send(dispatcher(data, 'updated'));
+            return res.status(200).send(dispatcher(res,data, 'updated'));
         } catch (error) {
             next(error);
         }
@@ -290,12 +290,12 @@ export default class CRUDController implements IController {
             where[`${this.model}_id`] = req.params.id;
             const data = await this.crudService.delete(await this.loadModel(model), { where: where });
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 throw badRequest(data.message)
             }
-            return res.status(200).send(dispatcher(data, 'deleted'));
+            return res.status(200).send(dispatcher(res,data, 'deleted'));
         } catch (error) {
             next(error);
         }
@@ -314,11 +314,11 @@ export default class CRUDController implements IController {
         let existedEntities: number = 0;
         let dataLength: number;
 
-        if (file === undefined) return res.status(400).send(dispatcher(null, 'error', speeches.FILE_REQUIRED, 400));
-        if (file.type !== 'text/csv') return res.status(400).send(dispatcher(null, 'error', speeches.FILE_REQUIRED, 400));
+        if (file === undefined) return res.status(400).send(dispatcher(res,null, 'error', speeches.FILE_REQUIRED, 400));
+        if (file.type !== 'text/csv') return res.status(400).send(dispatcher(res,null, 'error', speeches.FILE_REQUIRED, 400));
         const modelLoaded = await this.loadModel(model);
         const stream = fs.createReadStream(file.path).pipe(csv.parse({ headers: true }));
-        stream.on('error', (error) => res.status(400).send(dispatcher(error, 'error', speeches.CSV_SEND_ERROR, 400)));
+        stream.on('error', (error) => res.status(400).send(dispatcher(res,error, 'error', speeches.CSV_SEND_ERROR, 400)));
         stream.on('data', async (data: any) => {
             dataLength = Object.entries(data).length;
             for (let i = 0; i < dataLength; i++) {
@@ -343,12 +343,12 @@ export default class CRUDController implements IController {
             if (counter > 0) {
                 await this.crudService.bulkCreate(modelLoaded, bulkData)
                     .then((result) => {
-                        return res.send(dispatcher({ data: result, createdEntities: counter, existedEntities }, 'success', speeches.CREATED_FILE, 200));
+                        return res.send(dispatcher(res,{ data: result, createdEntities: counter, existedEntities }, 'success', speeches.CREATED_FILE, 200));
                     }).catch((error: any) => {
-                        return res.status(500).send(dispatcher(error, 'error', speeches.CSV_SEND_INTERNAL_ERROR, 500));
+                        return res.status(500).send(dispatcher(res,error, 'error', speeches.CSV_SEND_INTERNAL_ERROR, 500));
                     })
             } else if (existedEntities > 0) {
-                return res.status(400).send(dispatcher({ createdEntities: counter, existedEntities }, 'error', speeches.CSV_DATA_EXIST, 400));
+                return res.status(400).send(dispatcher(res,{ createdEntities: counter, existedEntities }, 'error', speeches.CSV_DATA_EXIST, 400));
             }
         });
     }

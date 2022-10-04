@@ -20,9 +20,9 @@ export const resSendInterceptor = (res:Response, send:any) => (content:any) => {
 
 };
 
-export const translationMiddleware:RequestHandler  = (req:Request,res:Response,next:NextFunction)=>{
-
-    var {locale} = req.body
+export const translationMiddleware = (req:Request,res:Response,next:NextFunction)=>{
+    var locale:any = req.query.locale
+    
     const trasnlationService = new TranslationService()
     if(!locale || !trasnlationService.getSupportedLocales().includes(locale)){
         locale  = trasnlationService.getDefaultLocale()

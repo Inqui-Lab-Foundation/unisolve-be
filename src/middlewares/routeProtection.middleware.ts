@@ -60,7 +60,7 @@ export default async function routeProtectionMiddleware(
                     path: req.path
                 };
                 await logIt(constents.log_levels.list.ERROR, `${data.message}`, req, res);
-                res.status(401).json(dispatcher(data, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
+                res.status(401).json(dispatcher(res,data, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
                 // throw unauthorized(data.message);
             } else {
                 const token = req.headers.authorization.replace("Bearer ", "");
@@ -72,7 +72,7 @@ export default async function routeProtectionMiddleware(
                             message: speeches.INVALID_TOKEN,
                         };
                         await logIt(constents.log_levels.list.ERROR, `${errData.message}`, req, res);
-                        res.status(401).json(dispatcher(errData, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
+                        res.status(401).json(dispatcher(res,errData, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
                         // throw new HttpException(errData.status, errData.message, errData);
                         // throw unauthorized(errData.message);
                     }else if(data.message != undefined && data.message == "jwt expired"){
@@ -82,7 +82,7 @@ export default async function routeProtectionMiddleware(
                             message: speeches.TOKEN_EXPIRED,
                         };
                         await logIt(constents.log_levels.list.ERROR, `${errData.message}`, req, res);
-                        res.status(401).json(dispatcher(errData, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
+                        res.status(401).json(dispatcher(res,errData, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
                         // throw new HttpException(errData.status, errData.message, errData);
                         // throw unauthorized(errData.message);
                     }else{
@@ -96,7 +96,7 @@ export default async function routeProtectionMiddleware(
                         message: speeches.UNAUTHORIZED_ACCESS,
                     };
                     await logIt(constents.log_levels.list.ERROR, `${data.message}`, req, res);
-                    res.status(401).json(dispatcher(data, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
+                    res.status(401).json(dispatcher(res,data, 'error', speeches.UNAUTHORIZED_ACCESS, 401)).end();
                     // throw new HttpException(errData.status, errData.message, errData);
                     // next(unauthorized(data.message));
                 });            
