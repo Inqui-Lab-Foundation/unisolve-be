@@ -81,7 +81,7 @@ mentor_topic_progress.init(
 );
 
 //TODO:call associate method is any association is defined
-mentor_topic_progress.belongsTo(mentor_course_topic, { foreignKey: 'course_topic_id' })
+mentor_topic_progress.belongsTo(mentor_course_topic, { foreignKey: 'mentor_course_topic_id' })
 mentor_topic_progress.belongsTo(user, { foreignKey: 'user_id' })
 user.hasMany(mentor_topic_progress, { foreignKey: 'user_id' })
 mentor_course_topic.hasMany(mentor_topic_progress, { foreignKey: 'user_id', as: 'progress' })
