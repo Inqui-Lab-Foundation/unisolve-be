@@ -19,8 +19,13 @@ export default class TranslationsProvider {
     static getSupportedLocales(){
         return this.supportedLocales
     }
-
+    
     static async init(){
+       await this.initSupportedLanguages()
+
+       await this.initTranslationsFromDb()
+    }
+    static async initSupportedLanguages(){
         ///initialising supported languages first 
         const data = await supported_language.findAll({
             attributes:[
@@ -31,7 +36,8 @@ export default class TranslationsProvider {
         // console.log(data);
         this.supportedLocales =  data.map((u) => u.locale) 
         // console.log(this.supportedLocales);
-
+    }
+    static async initTranslationsFromDb(){
         ///initialising translations for all supported languages  
         for(var i=0;i<this.supportedLocales.length;i++){
             const locale = this.supportedLocales[i];
@@ -59,10 +65,9 @@ export default class TranslationsProvider {
                
         }
         // console.log(this.translationsFromDbArr)
-
     }
-    
     static getTranslationTo(argToLocale:string,argKey:string){
+        // console.log(argKey);
         if(this.translationsFromDbArr[argToLocale]){
             const translationsForToLocale = this.translationsFromDbArr[argToLocale]
             if(translationsForToLocale[argKey]){
