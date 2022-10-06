@@ -24,6 +24,7 @@ import { student } from '../models/student.model';
 import { evaluater } from '../models/evaluater.model';
 import { badRequest } from 'boom';
 import { nanoid } from 'nanoid'
+import roadMapMasterObject from '../configs/roadMapConfig';
 // import { constents } from '../configs/constents.config';
 
 export default class AuthController implements IController {
@@ -48,6 +49,8 @@ export default class AuthController implements IController {
         // this.router.put(`${this.path}/updatePassword`, validationMiddleware(authValidations.changePassword), this.updatePassword.bind(this));
         this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm), this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
+        this.router.post(`${this.path}/roadMap`, validationMiddleware(authValidations.roadMap), this.roadMap);
+        this.router.get(`${this.path}/roadMap`, this.getRoadMap);
         this.router.post(`${this.path}/:model/bulkUpload`, this.bulkUpload.bind(this))
         this.router.get(`${this.path}/clearUserResponse/:user_id`, this.clearUserResponse.bind(this))
     }
@@ -259,6 +262,41 @@ export default class AuthController implements IController {
         }
     }
 
+    private roadMap  = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const result: any = roadMapMasterObject.getFormObject(req.body);
+            if (result.length <= 0) {
+                return res.status(406).send(dispatcher(res,speeches.FILE_EMPTY, 'error', speeches.NOT_ACCEPTABLE, 406));
+            }
+            writeFileSync(path.join(process.cwd(), 'resources', 'configs', 'roadMap.json'), JSON.stringify(result), {
+                encoding: "utf8",
+                flag: "w",
+                mode: 0o666
+            });
+            return res.status(200).send(dispatcher(res,result, 'success', speeches.CREATED_FILE));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private getRoadMap = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        const options = {
+            root: path.join(process.cwd(), 'resources', 'configs'),
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+            }
+        };
+        const filePath = path.join(process.cwd(), 'resources', 'configs', 'roadMap.json');
+        if (filePath === 'Error') {
+            return res.status(404).send(dispatcher(res,speeches.FILE_EMPTY, 'error', speeches.DATA_NOT_FOUND));
+        }
+        const file: any = readFileSync(path.join(process.cwd(), 'resources', 'configs', 'roadMap.json'), {
+            encoding: 'utf8',
+            flag: 'r'
+        })
+        return res.status(200).send(dispatcher(res,JSON.parse(file), 'success', speeches.FETCH_FILE))
+    }
     private getSignUpConfig = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         const options = {
             root: path.join(process.cwd(), 'resources', 'configs'),

@@ -60,5 +60,14 @@ const dynamicForm = Joi.object().keys({
     })
 });
 
+const roadMap = Joi.object().keys({
+    teacher: Joi.object().required().messages({
+        'string.empty': speeches.NAME_REQUIRED
+    }),
+    student: Joi.object().required().messages({
+        'string.empty': speeches.MOBILE_NUMBER_REQUIRED
+    })
+});
 
-export default { login, register, changePassword, dynamicForm };
+
+export default { login, register, changePassword, dynamicForm, roadMap };
