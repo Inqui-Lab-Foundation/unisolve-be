@@ -168,12 +168,12 @@ export default class VideoController extends BaseController {
                     // console.log(result)
                     data = result;
                 } catch(error:any){
-                    return res.status(500).send(dispatcher(data, 'error'))
+                    return res.status(500).send(dispatcher(res,data, 'error'))
                 }
                 
             }
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 if(data!=null){
@@ -183,7 +183,7 @@ export default class VideoController extends BaseController {
                 }
             }
 
-            return res.status(200).send(dispatcher(data, 'success'));
+            return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
             next(error);
         }

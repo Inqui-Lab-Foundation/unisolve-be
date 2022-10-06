@@ -63,7 +63,7 @@ export default class UserTopicProgress extends BaseController {
                 data = await this.crudService.create(modelLoaded, payload);    
             }
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if ( data instanceof Error) {
                 throw badRequest(data.message)
@@ -71,7 +71,7 @@ export default class UserTopicProgress extends BaseController {
             if (!data) {
                 throw badRequest("sorry return data is empty.")
             }
-            return res.status(201).send(dispatcher(data, 'created'));
+            return res.status(201).send(dispatcher(res,data, 'created'));
         } catch (error) {
             next(error);
         }

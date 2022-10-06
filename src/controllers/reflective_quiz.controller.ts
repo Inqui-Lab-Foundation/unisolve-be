@@ -73,7 +73,7 @@ export default class ReflectiveQuizController extends BaseController {
                 resultQuestion["level"] = nextQuestionsToChooseFrom.dataValues.level;
                 resultQuestion["type"] = nextQuestionsToChooseFrom.dataValues.type;
 
-                res.status(200).send(dispatcher(resultQuestion))
+                res.status(200).send(dispatcher(res,resultQuestion))
             }else{
                 //update worksheet topic progress for this user to completed..!!
                 // if(!boolStatusWhereClauseRequired || 
@@ -82,7 +82,7 @@ export default class ReflectiveQuizController extends BaseController {
                 // }
                 
                 //send response that quiz is completed..!!
-                res.status(200).send(dispatcher("Quiz has been completed no more questions to display"))
+                res.status(200).send(dispatcher(res,"Quiz has been completed no more questions to display"))
             }
         }catch(err){
             next(err)
@@ -129,7 +129,7 @@ export default class ReflectiveQuizController extends BaseController {
             //copy all attachments....
             const attachmentsCopyResult = await this.copyAllFiles(req,null,"reflective_quiz","responses");
             if (attachmentsCopyResult.errors.length>0) {
-                return res.status(406).send(dispatcher(attachmentsCopyResult.errors, 'error', speeches.NOT_ACCEPTABLE, 406));
+                return res.status(406).send(dispatcher(res,attachmentsCopyResult.errors, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
             
             //check if question was ansered correctly
@@ -175,7 +175,7 @@ export default class ReflectiveQuizController extends BaseController {
                     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
                 }
                 result["redirect_to"] = questionAnswered.dataValues.redirect_to;
-                res.status(200).send(dispatcher(result));
+                res.status(200).send(dispatcher(res,result));
             }else{
                 
                 user_response[questionAnswered.dataValues.question_no]=responseObjToAdd;
@@ -196,7 +196,7 @@ export default class ReflectiveQuizController extends BaseController {
                     result["msg"] = questionAnswered.dataValues.msg_ans_wrong;
                 }
                 result["redirect_to"] = questionAnswered.dataValues.redirect_to;
-                res.status(200).send(dispatcher(result));
+                res.status(200).send(dispatcher(res,result));
             }
         }catch(err){
             console.log(err)

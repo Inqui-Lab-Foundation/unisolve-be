@@ -18,6 +18,8 @@ import { constents } from "./configs/constents.config";
 import { CronManager } from "./jobs/cronManager";
 import DashboardMapStatsJob from "./jobs/dashboardMapStats.jobs";
 import BadgesJob from "./jobs/badges.jobs";
+import { translationMiddleware } from "./middlewares/translation.middleware";
+import TranslationService from "./services/translation.service";
 // import fs from 'fs';
 // import BadgesJob from "./jobs/badges.jobs";
 // import https from 'https'
@@ -39,6 +41,9 @@ export default class App {
         // this.initializeRabitMqBroker();
         this.doLogIt(constents.log_levels.list.INBOUND);
         this.initializeRouteProtectionMiddleware();
+        ///make sure translation middleware is called after route protection middleware because
+        // translation middleware adds data to res.locals which is overidden in route protection middleware
+        this.initializeTranslations();
         this.initializeControllers(controllers, "/api", "v1");
         this.doLogIt(constents.log_levels.list.OUTBOUND);
         this.initializeErrorHandling();//make sure this is the last thing in here 
@@ -89,6 +94,8 @@ export default class App {
         }));
          // compression for gzip
         this.app.use(compression());
+
+        this.app.use(translationMiddleware)
     }
 
     private initializeHomeRoute(): void {
@@ -154,6 +161,11 @@ export default class App {
 
     private initializeRouteProtectionMiddleware(): void {
         this.app.use(routeProtectionMiddleware);
+    }
+    
+    private initializeTranslations(){
+        const translationService = new TranslationService(constents.translations_flags.default_locale,true)
+        this.app.use(translationMiddleware)
     }
 
     private initializeControllers(controllers: IController[], prefix: string = "/api", version: string = "v1"): void {

@@ -34,7 +34,7 @@ export default class DashboardController extends BaseController {
         try{
             const job = new DashboardMapStatsJob()
             const result = await job.executeJob();
-            res.status(200).json(dispatcher(result,"success"))
+            res.status(200).json(dispatcher(res,result,"success"))
         }catch(err){
             next(err);
         }

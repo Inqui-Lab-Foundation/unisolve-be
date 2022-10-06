@@ -162,7 +162,7 @@ export default class QuizController extends BaseController {
                 resultQuestion["level"] = nextQuestionsToChooseFrom.dataValues.level;
                 resultQuestion["type"] = nextQuestionsToChooseFrom.dataValues.type;
     
-                res.status(200).send(dispatcher(resultQuestion))
+                res.status(200).send(dispatcher(res,resultQuestion))
             } else {
                 //update worksheet topic progress for this user to completed..!!
                 // if (!boolStatusWhereClauseRequired ||
@@ -171,7 +171,7 @@ export default class QuizController extends BaseController {
                 // }
     
                 //send response that quiz is completed..!!
-                res.status(200).send(dispatcher("Quiz has been completed no more questions to display"))
+                res.status(200).send(dispatcher(res,"Quiz has been completed no more questions to display"))
             }
         }catch(err){
             next(err)
@@ -280,7 +280,7 @@ export default class QuizController extends BaseController {
                     result["accimg"] = questionAnswered.dataValues.accimg_ans_wrong;
                 }
                 result["redirect_to"] = topic_to_redirect_to;
-                res.status(200).send(dispatcher(result));
+                res.status(200).send(dispatcher(res,result));
             } else {
 
                 user_response[questionAnswered.dataValues.question_no] = responseObjToAdd;
@@ -308,7 +308,7 @@ export default class QuizController extends BaseController {
                     result["accimg"] = questionAnswered.dataValues.accimg_ans_wrong;
                 }
                 result["redirect_to"] = topic_to_redirect_to;
-                res.status(200).send(dispatcher(result));
+                res.status(200).send(dispatcher(res,result));
             }
         } catch (err) {
             next(err)

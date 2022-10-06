@@ -96,21 +96,21 @@ export default class FaqCategoryController extends BaseController {
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
                 } catch (error: any) {
-                    return res.status(500).send(dispatcher(data, 'error'))
+                    return res.status(500).send(dispatcher(res,data, 'error'))
                 }
             }
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if (!data || data instanceof Error) {
-                res.status(200).send(dispatcher(null, "error", speeches.DATA_NOT_FOUND));
+                res.status(200).send(dispatcher(res,null, "error", speeches.DATA_NOT_FOUND));
                 // if(data!=null){
                 //     throw notFound(data.message)
                 // }else{
                 //     throw notFound()
                 // }
             }
-            return res.status(200).send(dispatcher(data, 'success'));
+            return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
             next(error);
         }

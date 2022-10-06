@@ -104,13 +104,13 @@ export default class SupportTicketController extends BaseController {
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
                 } catch (error: any) {
-                    return res.status(500).send(dispatcher(data, 'error'))
+                    return res.status(500).send(dispatcher(res,data, 'error'))
                 }
             }
             if (!data || data instanceof Error) {
-                res.status(200).send(dispatcher(null, "error", speeches.DATA_NOT_FOUND));
+                res.status(200).send(dispatcher(res,null, "error", speeches.DATA_NOT_FOUND));
             }
-            return res.status(200).send(dispatcher(data, 'success'));
+            return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
             next(error);
         }
@@ -131,7 +131,7 @@ export default class SupportTicketController extends BaseController {
             if (!data || data instanceof Error) {
                 throw badRequest(data.message)
             }
-            return res.status(200).send(dispatcher(data, 'updated'));
+            return res.status(200).send(dispatcher(res,data, 'updated'));
         } catch (error) {
             next(error);
         }

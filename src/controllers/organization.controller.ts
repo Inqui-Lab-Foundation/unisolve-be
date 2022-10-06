@@ -33,9 +33,9 @@ export default class OrganizationController extends BaseController {
     private async checkOrgDetails(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const org = await this.authService.checkOrgDetails(req.body.organization_code);
         if (!org) {
-            res.status(400).send(dispatcher(null, 'error', speeches.BAD_REQUEST))
+            res.status(400).send(dispatcher(res,null, 'error', speeches.BAD_REQUEST))
         } else {
-            res.status(200).send(dispatcher(org, 'success', speeches.FETCH_FILE));
+            res.status(200).send(dispatcher(res,org, 'success', speeches.FETCH_FILE));
         }
     }
 
