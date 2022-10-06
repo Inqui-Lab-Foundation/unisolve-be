@@ -38,6 +38,7 @@ export default class TranslationService {
             
             //make sure sequelize model is objectified first before proessing further
             if(argObj instanceof Model){
+                // sequelize doesnt have types for dataValues hence we need to bypaas dataValues type check
                 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
                 // @ts-ignore
                 argObj = argObj.dataValues;
@@ -47,14 +48,8 @@ export default class TranslationService {
                 const key = Object.keys(argObj)[i];
                 let value = argObj[key]///remember value can be 3 things, either obj or arr or others
                 if(typeof value == 'object'||Array.isArray(value)){
-                    // for(var j=0 ;j<value.length;j++){
-                    //     value[j] = this.translateEntireObj(value[j]);
-                    // }
                     argObj[key] = this.translateEntireObj(value);
                 }
-                // else if(value instanceof Object){
-                //     argObj[key] = this.translateEntireObj(value);
-                // }
                 else{
                     argObj[key] = this.translateTo(this.currentLocale,value)
                 }
