@@ -5,9 +5,9 @@ import TranslationsProvider from "../utils/translations/translationProvider";
 export default class TranslationService {
 
     
-    private currentLocale=TranslationsProvider.defaultLocale
+    private currentLocale=TranslationsProvider.getDefaultLocale()
 
-    constructor(argCurrentLocale:string=TranslationsProvider.defaultLocale,initProviderAsWell=false){
+    constructor(argCurrentLocale:string=TranslationsProvider.getDefaultLocale(),initProviderAsWell=false){
         this.setCurrentLocale(argCurrentLocale)
         if(initProviderAsWell){
             TranslationsProvider.init()
@@ -15,11 +15,11 @@ export default class TranslationService {
     }
 
     getSupportedLocales(){
-        return TranslationsProvider.supportedLocales;
+        return TranslationsProvider.getSupportedLocales();
     }
 
     getDefaultLocale(){
-        return TranslationsProvider.defaultLocale
+        return TranslationsProvider.getDefaultLocale
     }
 
     getCurrentLocale(){

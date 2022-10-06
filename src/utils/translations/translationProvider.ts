@@ -6,16 +6,22 @@ import { speeches_tn } from "./locales/tn";
 
 export default class TranslationsProvider {
     
-    static translationsFromDbArr:translation[] = []
+    private static translationsFromDbArr:translation[] = []
     
-    static translationsFromCodeArr:any = []
+    private static translationsFromCodeArr:any = []
 
-    static defaultLocale = constents.translations_flags.default_locale
+    private static defaultLocale = constents.translations_flags.default_locale
+    static getDefaultLocale(){
+        return this.defaultLocale
+    }
 
-    static supportedLocales = [
+    private static supportedLocales = [
         'en',
         'tn'
     ]
+    static getSupportedLocales(){
+        return this.supportedLocales
+    }
 
     static async init(){
         this.translationsFromDbArr = await translation.findAll();
