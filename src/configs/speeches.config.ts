@@ -109,5 +109,8 @@ export const speeches = {
     OTP_FAIL: "Wrong OTP Detected.",
     OTP_FOUND: "OTP matched.",
     QUERY_CATEGORY: "Category is required",
-    QUERY_DETAILS: "Query cannot be null"
+    QUERY_DETAILS: "Query cannot be null",
+
+    TEACHER_OBJECT: "Teacher object required",
+    STUDENT_OBJECT: "Student object required",
 }
