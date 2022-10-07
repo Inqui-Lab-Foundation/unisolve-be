@@ -30,5 +30,6 @@ export const wildcardRoutes = [
     "/images/*",
     "/assets/defaults/*",
     "/assets/courses/*",
-    "/assets/reflectiveQuiz/*"
+    "/assets/reflectiveQuiz/*",
+    "/api/v1/auth/roadMap"
 ];
