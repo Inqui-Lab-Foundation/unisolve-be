@@ -264,7 +264,7 @@ export default class AuthController implements IController {
 
     private roadMap  = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const result: any = roadMapMasterObject.getFormObject(req.body);
+            const result: any = req.body;
             if (result.length <= 0) {
                 return res.status(406).send(dispatcher(res,speeches.FILE_EMPTY, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
