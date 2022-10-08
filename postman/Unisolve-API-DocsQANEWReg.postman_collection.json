@@ -4888,6 +4888,291 @@
 						}
 					],
 					"description": "### Videos service is list of endpoints with CREATE, UPDATE, READ, DELETE API's\n\nThese are the protected API's must have JWT token in the Authorizations part."
+				},
+				{
+					"name": "Support Tickets",
+					"item": [
+						{
+							"name": "SupportTickets",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Your test name\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.status_type).to.eql(\"success\");\r",
+											"});\r",
+											"\r",
+											" saveData=JSON.parse(responseBody)\r",
+											"\r",
+											"\r",
+											"pm.environment.set(\"support_ticket_id\", saveData.data[0].support_ticket_id);\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"query_category\": \"Tech\",\r\n    \"query_details\": \"Hi Team I have able to craete the user UUID not found please help\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/supportTickets",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"supportTickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SupportTickets",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseurl}}/supportTickets",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"supportTickets"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SupportTickets/{id}",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"query_category\": \"General\",\r\n    \"query_details\": \"Hi Team I have not able to login to the mentor dashboard\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/supportTickets/{{support_ticket_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"supportTickets",
+										"{{support_ticket_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SupportTickets/{id}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\" : \"RESOLVED\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/supportTickets/{{support_ticket_id}}",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"supportTickets",
+										"{{support_ticket_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Support Tickets Replies",
+					"item": [
+						{
+							"name": "SupportTickets",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"support_ticket_id\": \"{{support_ticket_id}}\",\r\n    \"reply_details\": \"Hi Greeting from unisolve, please try the following stpes 1.check the credenitals and login again 2.try rest your password 3. please your username before login\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/supportTicketsReply",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"supportTicketsReply"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "SupportTickets",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"query_category\": \"General\",\r\n    \"query_details\": \"Hi Team I have not able to login to the mentor dashboard\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}/supportTicketsReply",
+									"host": [
+										"{{baseurl}}"
+									],
+									"path": [
+										"supportTicketsReply"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			],
 			"description": "## **1.0.0**"
