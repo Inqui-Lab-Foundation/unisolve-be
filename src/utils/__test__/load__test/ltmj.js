@@ -15,6 +15,7 @@ const options = {
 const SLEEP_DURATION = 15;
 
 export default function () {
+  let user_id;
   let bodyRegister = {
     username: 'prefUser' + __ITER + '@unisolve.org',
     "full_name": "mentor user",
@@ -34,7 +35,15 @@ export default function () {
     username: 'prefUser' + __ITER + '@unisolve.org',
     password: '112233'
   });
-
+  let bodyVerify = JSON.stringify({
+    user_id: user_id,
+    otp: '112233'
+  });
+  let bodyPassword = JSON.stringify({
+    user_id: user_id,
+    old_password: '112233',
+    new_password: 'wHm6eGCL7uFOArs='
+  });
   const params = {
     headers: {
       'Content-Type': 'application/json'
@@ -43,22 +52,23 @@ export default function () {
       name: 'register' // first request
     }
   };
-  
 
   group('simple mentor journey', (_) => {
     // mentor register
     const register_response = http.post('http://localhost:3002/api/v1/mentors/register', bodyRegister, params);
+    user_id = register_response.data.user_id;
     check(register_response, {
       'is status 200': (r) => r.status === 200
     });
     //updating the flag
-     mentor.update(
+    mentor.update(
       { reg_status: 3 },
       { mentor_id: register_response.data.user_id }
     );
     //sleeping for sometime
     sleep(SLEEP_DURATION);
     // mentor login
+    params.tags.name = 'login';
     const login_response = http.post('http://localhost:3002/api/v1/mentors/login', bodyLogin, params);
     check(login_response, {
       'is status 200': (r) => r.status === 200,
@@ -67,28 +77,37 @@ export default function () {
     params.headers['Authorization'] = 'Bearer ' + login_response.json()['token'];
     sleep(SLEEP_DURATION);
     // mentor verify 
-    // mentor update password
-    params.tags.name = 'login';
-    const user_profile_response = http.get(
-      'http://api.yourplatform.com/v2/users/user_' + __ITER + '/profile',
-      params
-    );
-    sleep(SLEEP_DURATION);
-    // Update user profile request
-    body = JSON.stringify({
-      first_name: 'user_' + __ITER,
+    params.tags.name = 'verifyUser';
+    const verify_response = http.post('http://localhost:3002/api/v1/mentors/verify', bodyVerify, params);
+    check(verify_response, {
+      'is status 200': (r) => r.status === 200
     });
-    params.tags.name = 'update-user-profile';
-    const update_profile_response = http.post(
-      'http://api.yourplatform.com/v2/users/user_' + __ITER + '/profile',
-      body,
-      params
-    );
-    sleep(SLEEP_DURATION);
-
+    // mentor update password
+    params.tags.name = 'passwordUpdate';
+    const password_update_response = http.post('http://localhost:3002/api/v1/mentors/updatePassword', bodyPassword, params);
+    check(password_update_response, {
+      'is status 200': (r) => r.status === 200
+    });
+    //mentor list 
+    // const user_profile_response = http.get(
+    //   'http://api.yourplatform.com/v2/users/user_' + __ITER + '/profile',
+    //   params
+    // );
+    // sleep(SLEEP_DURATION);
+    // // Update user profile request
+    // body = JSON.stringify({
+    //   first_name: 'user_' + __ITER,
+    // });
+    // params.tags.name = 'update-user-profile';
+    // const update_profile_response = http.post(
+    //   'http://api.yourplatform.com/v2/users/user_' + __ITER + '/profile',
+    //   body,
+    //   params
+    // );
+    // sleep(SLEEP_DURATION);
     // Logout request
     params.tags.name = 'logout';
-    const logout_response = http.get('http://api.yourplatform.com/v2/logout', params);
+    const logout_response = http.get('http://api.yourplatform.com/mentors/logout', params);
     sleep(SLEEP_DURATION);
   });
 }
