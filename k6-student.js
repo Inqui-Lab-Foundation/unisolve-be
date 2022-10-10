@@ -7,11 +7,11 @@ import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 
 let baseURL="https://apiprod.inquitech.in/api/v1"
 // https://apiqa.inquitech.in/api/v1/quiz/1/response
-let token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6IkFkbWluQHVuaXNvbHZlLm9yZyIsImZ1bGxfbmFtZSI6IkFkbWluIE5hbWUiLCJzdGF0dXMiOiJBQ1RJVkUiLCJyb2xlIjoiQURNSU4iLCJpc19sb2dnZWRpbiI6IllFUyIsImxhc3RfbG9naW4iOiIyMDIyLTA5LTIzVDA5OjUyOjExLjAwMFoiLCJjcmVhdGVkX2J5IjoxLCJjcmVhdGVkX2F0IjpudWxsLCJ1cGRhdGVkX2J5IjoxLCJ1cGRhdGVkX2F0IjoiMjAyMi0wOS0yM1QwOTo1MjoxMS4wMDBaIiwiaWF0IjoxNjY0OTY2NDU2LCJleHAiOjE2NjUyMjU2NTZ9.YaAx4GkdFAiCZ-ROxTwRqBnm4KisgwdGv1TwDBYGwmw';
+let token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6IkFkbWluQHVuaXNvbHZlLm9yZyIsImZ1bGxfbmFtZSI6IkFkbWluIE5hbWUiLCJzdGF0dXMiOiJBQ1RJVkUiLCJyb2xlIjoiQURNSU4iLCJpc19sb2dnZWRpbiI6IllFUyIsImxhc3RfbG9naW4iOiIyMDIyLTEwLTA4VDEzOjEzOjMzLjAwMFoiLCJjcmVhdGVkX2J5IjoxLCJjcmVhdGVkX2F0IjpudWxsLCJ1cGRhdGVkX2J5IjoxLCJ1cGRhdGVkX2F0IjoiMjAyMi0xMC0wOFQxMzoxMzozMy4wMDBaIiwiaWF0IjoxNjY1Mjk5OTc5LCJleHAiOjE2NjU1NTkxNzl9.ZjhYQ5IS7lqlRYkSejJgp2y1pRWMAMBL0ppqvjGASw4';
  export const options = {  
   stages: [
     { duration: '30m', target: 5000 }, // below normal load
-  
+
   ],
   thresholds: {
    http_req_failed: ["rate<0.10"], // http errors should be less than 1%
@@ -45,7 +45,7 @@ sleep(1);
 
 export function handleSummary(data) {
     return {
-      "result30m5K.html": htmlReport(data),
+      "resultStudent1.html": htmlReport(data),
       stdout: textSummary(data, { indent: " ", enableColors: true }),
     };
   }
