@@ -1,60 +1,77 @@
+import "dotenv/config";
 import http from 'k6/http';
 import { check, group, sleep } from 'k6';
+import sequelize from 'sequelize';
+import database from '../../dbconnection.util'
+import { mentor } from '../../../models/mentor.model';
 
 const options = {
   vus: 1000,
   duration: '600s',
 };
-const SLEEP_DURATION = 0.1;
+
+// database.sync();
+
+const SLEEP_DURATION = 15;
 
 export default function () {
-  let bodyRegister= {
-    "username": "mw6wementor@unisolve.org",
+  let bodyRegister = {
+    username: 'prefUser' + __ITER + '@unisolve.org',
     "full_name": "mentor user",
-    "password": "wHm6eGCL7uFOArs=",
+    "password": "112233",
     "mobile": "7989892334",
     "role": "MENTOR",
-    "team_id": "12433",
+    "team_id": __ITER,
     "date_of_birth": "1989-06-20",
-    "organization_code" : "CHIREC1",
-    "qualification": "bs.c",
-    "city": "hyderabad",
-    "district": "somehthing",
-    "state": "tg",
-    "country": "bs.c",
-    "created_by": 1236547899
+    "organization_code": "33320100606",
+    "qualification": "Degree",
+    "city": "testingCity",
+    "district": "testingDistrict",
+    "state": "testState",
+    "country": "testCountry"
   }
-  let body = JSON.stringify({
-    username: 'user_' + __ITER,
-    password: 'PASSWORD',
+  let bodyLogin = JSON.stringify({
+    username: 'prefUser' + __ITER + '@unisolve.org',
+    password: '112233',
   });
   const params = {
     headers: {
       'Content-Type': 'application/json',
     },
     tags: {
-      name: 'login', // first request
+      name: 'register', // first request
     },
   };
 
-  group('simple mentor journey', (_) => {
-    // Login request
-    const login_response = http.post('http://api.yourplatform.com/v2/login', body, params);
+  group('simple mentor journey', async (_) => {
+    // mentor register
+    const register_response = http.post('http://localhost:3002/api/v1/mentors/register', bodyRegister, params);
+    check(register_response, {
+      'is status 200': (r) => r.status === 200
+    });
+    //updating the flag
+    await mentor.update(
+      { reg_status: 3 },
+      { mentor_id: register_response.data.user_id }
+    );
+    //sleeping for sometime
+    sleep(SLEEP_DURATION);
+    // mentor login
+    const login_response = http.post('http://localhost:3002/api/v1/mentors/login', bodyLogin, params);
     check(login_response, {
       'is status 200': (r) => r.status === 200,
-      'is api key present': (r) => r.json().hasOwnProperty('api_key'),
+      'is api key present': (r) => r.data.json().hasOwnProperty('token'),
     });
-    params.headers['api-key'] = login_response.json()['api_key'];
+    params.headers['Authorization'] = 'Bearer ' + login_response.json()['token'];
     sleep(SLEEP_DURATION);
-
-    // Get user profile request
-    params.tags.name = 'get-user-profile';
+    // mentor verify 
+    // mentor update password
+    params.tags.name = 'login';
     const user_profile_response = http.get(
       'http://api.yourplatform.com/v2/users/user_' + __ITER + '/profile',
       params
     );
     sleep(SLEEP_DURATION);
-
     // Update user profile request
     body = JSON.stringify({
       first_name: 'user_' + __ITER,
