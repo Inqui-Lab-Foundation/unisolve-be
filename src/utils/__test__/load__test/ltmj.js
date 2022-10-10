@@ -1,9 +1,9 @@
-import "dotenv/config";
+// import "dotenv/config";
 import http from 'k6/http';
 import { check, group, sleep } from 'k6';
-import sequelize from 'sequelize';
-import database from '../../dbconnection.util'
-import { mentor } from '../../../models/mentor.model';
+// import sequelize from 'sequelize';
+// import database from './src/utils/dbconnection.util';
+// import { mentor } from '../../../models/mentor.model';
 
 const options = {
   vus: 1000,
@@ -32,25 +32,27 @@ export default function () {
   }
   let bodyLogin = JSON.stringify({
     username: 'prefUser' + __ITER + '@unisolve.org',
-    password: '112233',
+    password: '112233'
   });
+
   const params = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     tags: {
-      name: 'register', // first request
-    },
+      name: 'register' // first request
+    }
   };
+  
 
-  group('simple mentor journey', async (_) => {
+  group('simple mentor journey', (_) => {
     // mentor register
     const register_response = http.post('http://localhost:3002/api/v1/mentors/register', bodyRegister, params);
     check(register_response, {
       'is status 200': (r) => r.status === 200
     });
     //updating the flag
-    await mentor.update(
+     mentor.update(
       { reg_status: 3 },
       { mentor_id: register_response.data.user_id }
     );
