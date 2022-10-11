@@ -72,4 +72,8 @@ export default class TranslationService {
     getSpeeches(){
         return TranslationsProvider.getSpeechesFor(this.currentLocale);
     }
+
+    async refreshDataFromDb(){
+       await  TranslationsProvider.init()
+    }
 }

@@ -32,6 +32,7 @@ import QuizQuestionsController from "./controllers/quiz_questions.controller";
 import ChallengeController from "./controllers/challenges.controller";
 import UserController from "./controllers/user.controler";
 import DashboardController from "./controllers/dashboard.controller";
+import TranslationController from "./controllers/translation.controller";
 
 // validating env variables
 validateEnv();
@@ -68,7 +69,8 @@ try {
         new ChallengeController,
         new SupportTicketRepliesController,
         new UserController,
-        new DashboardController
+        new DashboardController,
+        new TranslationController
     ], Number(process.env.APP_PORT));
     // starting app
     app.listen();
