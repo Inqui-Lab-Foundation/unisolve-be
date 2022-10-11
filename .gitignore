@@ -9,6 +9,7 @@ logs
 .env.old
 .env.prod
 .env.dev
+.env.qa
 .temp
 experiments
 src/migrations/cli/*

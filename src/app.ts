@@ -20,6 +20,7 @@ import DashboardMapStatsJob from "./jobs/dashboardMapStats.jobs";
 import BadgesJob from "./jobs/badges.jobs";
 import { translationMiddleware } from "./middlewares/translation.middleware";
 import TranslationService from "./services/translation.service";
+import http from "http";
 // import fs from 'fs';
 // import BadgesJob from "./jobs/badges.jobs";
 // import https from 'https'
@@ -32,7 +33,7 @@ export default class App {
     constructor(controllers: IController[], port: number) {
         this.app = express();
         this.port = port;
-
+        this.increaseSimulatenousHttpSockets();
         this.initializeMiddlewares();
         this.initializeHomeRoute();
         this.serveStaticFiles();
@@ -49,6 +50,12 @@ export default class App {
         this.initializeErrorHandling();//make sure this is the last thing in here 
         this.initializeDatabase();
         this.initializeJobs();
+    }
+
+    private increaseSimulatenousHttpSockets(){
+        // http.globalAgent.maxSockets = 100;
+        // You could also set it to unlimited (Node v0.12 does by default):
+        http.globalAgent.maxSockets = Infinity;
     }
     private doLogIt(flag: string) {
         this.app.use(async (req: Request, res: Response, next: NextFunction) => {

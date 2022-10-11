@@ -76,41 +76,6 @@ export default class TranslationsProvider {
         }
         return argKey;
     }
-    // static getTranslationFormTo(argFromLocale:string,argToLocale:string,argKey:string){
-    //     //sanitation checks below ...!!!!
-    //     if(!this.supportedLocales.includes(argFromLocale)){
-    //         argFromLocale = this.defaultLocale;
-    //     }
-    //     if(!this.supportedLocales.includes(argToLocale)){
-    //         argToLocale = this.defaultLocale;
-    //     }
-    //     if(argToLocale==this.defaultLocale){
-    //         return argKey
-    //     }
-    //     if(argFromLocale==argToLocale){
-    //         return argKey
-    //     }
-        
-    //     const result = this.translationsFromDbArr.filter(
-    //                         (translation:any)=>{
-    //                             // console.log("argFromLocale",argFromLocale);
-    //                             // console.log("argToLocale",argToLocale);
-    //                             // console.log("argKey",argKey);
-    //                             if(translation.dataValues.from_locale==argFromLocale &&
-    //                                 translation.dataValues.to_locale==argToLocale &&
-    //                                 translation.dataValues.key==argKey){
-                                        
-    //                                     return translation
-    //                                 }
-    //                         }
-    //                     )
-        
-    //     if(result.length > 0 &&  result[0]){
-    //         return result[0].value
-    //     }
-    //     return argKey
-    // }
-
     
 
     static getSpeechesFor(arglocale:string=this.defaultLocale){

@@ -11,8 +11,8 @@ const database = new Sequelize(
         // logQueryParameters: true,
         logging: false,
         pool: {
-            max: 5,
-            min: 1,
+            max: 32,
+            min: 10,
             acquire: 30000,
             idle: 10000
         }
