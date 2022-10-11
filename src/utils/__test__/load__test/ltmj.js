@@ -27,7 +27,8 @@ export const options = {
 const SLEEP_DURATION = 5;
 
 // let baseUrl = "http://127.0.0.1:3002/api/v1"
-let baseUrl = "https://apidev.inquitech.in/api/v1"
+// let baseUrl = "https://apidev.inquitech.in/api/v1"
+let baseUrl = "https://apiprod.inquitech.in/api/v1"
 
 
 export default function () {
@@ -69,7 +70,7 @@ export default function () {
     console.log(bodyRegister)
     const register_response = http.post(baseUrl+'/mentors/register', bodyRegister, params);
     check(register_response, {
-      'is status register 200': (r) => r.status === 201
+      'is status register 201': (r) => r.status === 201
     });
     console.log("register_response",register_response.json())
     const user_id = register_response.json()["data"][0]['user_id'];
@@ -108,7 +109,7 @@ export default function () {
     });
     const password_update_response = http.put(baseUrl+'/mentors/updatePassword', bodyPassword, params);
     check(password_update_response, {
-      'is status password 200': (r) => r.status === 201
+      'is status password 202': (r) => r.status === 202
     });
     // console.log("password_update_response",password_update_response.json())
     sleep(SLEEP_DURATION);
