@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction, Router } from 'express'
 import { http } from 'winston';
+import { constents } from '../configs/constents.config';
 import { speeches } from '../configs/speeches.config';
 
 export default function dispatcher(res:Response,data: any, status:string="success", message:string = "OK", status_code:number=200): any{
@@ -47,7 +48,12 @@ export default function dispatcher(res:Response,data: any, status:string="succes
                 break;
         }
         // console.log(resObj)
-        resObj = res.locals.translationService.translateEntireObj(resObj);
+        if(res && res.locals && res.locals.translationService){
+            if(res.locals.translationService.currentLocale != constents.translations_flags.default_locale){
+                resObj = res.locals.translationService.translateEntireObj(resObj);
+            }
+        }
+        
         // await logIt(flag, ((flag==constents.log_levels.list.INBOUND)? "Inbound request" : "Outbound responce"), req, res);
 
         return resObj;
