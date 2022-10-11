@@ -272,21 +272,29 @@ export default class authService {
         };
         // try {
         const resp: any = await new AWS.SNS({
-            apiVersion: 'v1',
+            apiVersion: '2010-03-31',
             accessKeyId: this.aws_access_key,
             secretAccessKey: this.aws_secret_key,
             region: 'ap-south-1'
-        }).publish(resObj).promise();
-        resp.then(
-            function (data: any) {
-                console.log(data);
-                return { MessageID: data.MessageId, OTP: otp }
-            }
-        ).catch(
-            function (error: any) {
-                // console.log(error);
+        }).publish(resObj, function (error: any, data: any) {
+            if (error) {
+                console.log(error);
                 return error;
-            });
+            }
+            console.log(data);
+            return { MessageID: data.MessageId, OTP: otp }
+        })
+        //.promise();
+        // resp.then(
+        //     function (data: any) {
+        //         console.log(data);
+        //         return { MessageID: data.MessageId, OTP: otp }
+        //     }
+        // ).catch(
+        //     function (error: any) {
+        //         // console.log(error);
+        //         return error;
+        //     });
         // const resp = await axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
         // } catch (err) {
         //     console.log(err);
