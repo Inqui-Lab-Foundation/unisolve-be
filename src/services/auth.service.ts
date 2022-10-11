@@ -275,7 +275,7 @@ export default class authService {
             apiVersion: 'v1',
             accessKeyId: this.aws_access_key,
             secretAccessKey: this.aws_secret_key,
-            region: this.aws_region
+            region: 'ap-south-1'
         }).publish(resObj).promise();
         resp.then(
             function (data: any) {
