@@ -18,30 +18,35 @@ import { quiz_survey_response } from "../models/quiz_survey_response.model";
 import { reflective_quiz_response } from "../models/reflective_quiz_response.model";
 import { user_topic_progress } from "../models/user_topic_progress.model";
 import { worksheet_response } from "../models/worksheet_response.model";
+import AWS from 'aws-sdk';
 import axios from 'axios';
 import { includes } from 'lodash';
+import { func } from 'joi';
 export default class authService {
 
     crudService: CRUDService = new CRUDService;
     private password = process.env.GLOBAL_PASSWORD;
+    private aws_access_key = process.env.AWS_ACCESS_KEY_ID;
+    private aws_secret_key = process.env.AWS_SECRET_ACCESS_KEY;
+    private aws_region = process.env.AWS_REGION;
     private otp = '112233';
 
     async checkOrgDetails(organization_code: any) {
         try {
             const org = await this.crudService.findOne(organization, {
-                 where: { 
-                    organization_code:organization_code ,
-                    status:{
+                where: {
+                    organization_code: organization_code,
+                    status: {
                         [Op.or]: ['ACTIVE', 'NEW']
-                      }
-                } ,
-                 include:{
-                    model:mentor,
-                    attributes:[
+                    }
+                },
+                include: {
+                    model: mentor,
+                    attributes: [
                         'full_name'
                     ]
-                 }
-                })
+                }
+            })
             return org;
         } catch (error) {
             return error;
@@ -246,17 +251,55 @@ export default class authService {
     async generateOtp() {
         // changing random OTP to static OTP as per Sreeni request.
         // return Math.random().toFixed(6).substr(-6);
+        // return Math.floor(1000 + Math.random() * 9000)
         return this.otp;
     }
+
     async triggerOtpMsg(mobile: any, otp: any) {
-        try {
-            const resp = await axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
-            // console.log(resp)
-            return resp;
-        } catch (err) {
-            console.log(err);
-            return err;
-        }
+        const resObj = {
+            Message: `Your verification code is ${otp}`,
+            PhoneNumber: '+' + mobile,
+            MessageAttributes: {
+                'AWS.SNS.SMS.SenderID': {
+                    'DataType': 'String',
+                    'StringValue': 'Unisolve'
+                },
+                'AWS.SNS.SMS.SMSType': {
+                    'DataType': 'String',
+                    'StringValue': "Transactional"
+                }
+            }
+        };
+        // try {
+        const resp: any = await new AWS.SNS({
+            apiVersion: '2010-03-31',
+            accessKeyId: this.aws_access_key,
+            secretAccessKey: this.aws_secret_key,
+            region: 'ap-south-1'
+        }).publish(resObj, function (error: any, data: any) {
+            if (error) {
+                console.log(error);
+                return error;
+            }
+            console.log(data);
+            return { MessageID: data.MessageId, OTP: otp }
+        })
+        //.promise();
+        // resp.then(
+        //     function (data: any) {
+        //         console.log(data);
+        //         return { MessageID: data.MessageId, OTP: otp }
+        //     }
+        // ).catch(
+        //     function (error: any) {
+        //         // console.log(error);
+        //         return error;
+        //     });
+        // const resp = await axios.get(`https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=${mobile}&text=Dear Student, A request for password reset had been generated. Your OTP for the same is ${otp} -Team Youth for Social Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522`)
+        // } catch (err) {
+        //     console.log(err);
+        //     return err;
+        // }
     }
     async verifyUser(requestBody: any, responseBody: any) {
         let result: any = {};
@@ -281,8 +324,7 @@ export default class authService {
             }
             //TODO trigger otp and update user with otp
             const otp = await this.generateOtp();
-
-            const smsResponse = await this.triggerOtpMsg(requestBody.mobile, otp);
+            const smsResponse: any = await this.triggerOtpMsg(requestBody.mobile, otp);
             if (smsResponse instanceof Error) {
                 throw smsResponse;
             }
