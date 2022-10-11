@@ -1,18 +1,20 @@
 // import * as envComfig from "./../../../../node_modules/dotenv/config";
 import http from 'k6/http';
+import exec from 'k6/execution'
 import { check, group, sleep } from 'k6';
 // import sequelize from './../../../../node_modules/';
 // import database from './../../dbconnection.util';
 // import { mentor } from '../../../models/mentor.model';
 
 // const options = {
-//   vus: 1000,
-//   duration: '600s',
+//   vus: 5,
+//   duration: '600ms',
 // };
 
 export const options = {  
   stages: [
     { duration: '60s', target: 5 }, // below normal load
+    // { duration: '60s', target: 5 },
 ],
   thresholds: {
    http_req_failed: ["rate<0.10"], // http errors should be less than 1%
@@ -22,27 +24,34 @@ export const options = {
   //userAgent: "K6GreetingsDemo/1.0",
 }
 
-const SLEEP_DURATION = 15;
+const SLEEP_DURATION = 5;
+
+// let baseUrl = "http://127.0.0.1:3002/api/v1"
+let baseUrl = "https://apidev.inquitech.in/api/v1"
+
 
 export default function () {
-  let bodyRegister = {
-    username: 'prefUser' + __ITER + '@unisolve.org',
+  group('simple mentor journey', (_) => {
+
+    const id = new Date().getTime();
+    let bodyRegister = JSON.stringify({
+    username: 'prefUser' + id  + '@unisolve.org',
     "full_name": "mentor user",
     "password": "112233",
     "mobile": "7989892334",
     "role": "MENTOR",
-    "team_id": __ITER,
+    "team_id": 1,
     "date_of_birth": "1989-06-20",
-    "organization_code": "33320100606",
+    "organization_code": "33320501503",
     "qualification": "Degree",
     "city": "testingCity",
     "district": "testingDistrict",
     "state": "testState",
     "country": "testCountry"
-  }
+  });
   
   let bodyLogin = JSON.stringify({
-    username: 'prefUser' + __ITER + '@unisolve.org',
+    username: 'prefUser' + id + '@unisolve.org',
     password: 'wHm6eGCL7uFOArs='
   });
 
@@ -55,18 +64,16 @@ export default function () {
     }
   };
 
-  group('simple mentor journey', (_) => {
-    // let baseUrl = "http://127.0.0.1:3002/api/v1"
-    let baseUrl = "https://apidev.inquitech.in/api/v1"
+    
     // mentor register
-    // console.log(bodyRegister)
+    console.log(bodyRegister)
     const register_response = http.post(baseUrl+'/mentors/register', bodyRegister, params);
     check(register_response, {
-      'is status 200': (r) => r.status === 200
+      'is status register 200': (r) => r.status === 201
     });
-    // console.log(register_response)
-    const user_id = register_response.data.json()['user_id'];
-
+    console.log("register_response",register_response.json())
+    const user_id = register_response.json()["data"][0]['user_id'];
+    console.log("user_id",user_id)
     sleep(SLEEP_DURATION);
 
     //updating the flag /// not working ...!!
@@ -78,16 +85,18 @@ export default function () {
     
     // mentor verify 
     
-    params.tags.name = 'verifyUser';
-    let bodyVerify = JSON.stringify({
+    params.tags.name = 'validateOtp';
+    let bodyValidateOtp = JSON.stringify({
       user_id: user_id,
       otp: '112233'
     });
-    const verify_response = http.post(baseUrl+'/mentors/verify', bodyVerify, params);
+    console.log("bodyValidateOtp",bodyValidateOtp);
+    const verify_response = http.post(baseUrl+'/mentors/validateOtp', bodyValidateOtp, params);
     check(verify_response, {
-      'is status 200': (r) => r.status === 200,
-      'is user_id key preset': (r) => r.data.json().hasOwnProperty('user_id'),
+      'is status otp 200': (r) => r.status === 200,
+      // 'is user_id key preset': (r) => r.json().hasOwnProperty('data'),
     });
+    console.log("verify_response",verify_response.json())
     sleep(SLEEP_DURATION);
 
     // mentor update password
@@ -97,28 +106,45 @@ export default function () {
       old_password: '112233',
       new_password: 'wHm6eGCL7uFOArs='
     });
-    const password_update_response = http.post(baseUrl+'/mentors/updatePassword', bodyPassword, params);
+    const password_update_response = http.put(baseUrl+'/mentors/updatePassword', bodyPassword, params);
     check(password_update_response, {
-      'is status 200': (r) => r.status === 200
+      'is status password 200': (r) => r.status === 201
     });
+    // console.log("password_update_response",password_update_response.json())
     sleep(SLEEP_DURATION);
 
     // mentor login
     params.tags.name = 'login';
     const login_response = http.post(baseUrl+'/mentors/login', bodyLogin, params);
+    console.log("bodyLogin",bodyLogin)
     check(login_response, {
-      'is status 200': (r) => r.status === 200,
-      'is api key present': (r) => r.data.json().hasOwnProperty('token'),
+      'is status login 200': (r) => r.status === 200,
+      // 'is api key present': (r) => r.json().hasOwnProperty('data'),
     });
-    params.headers['Authorization'] = 'Bearer ' + login_response.data.json()['token'];
-    sleep(SLEEP_DURATION);
+    console.log("login_response",login_response.json())
+    if(login_response && 
+       login_response.json()&&
+       login_response.json()['data'] && 
+       login_response.json()['data'][0]&& 
+       login_response.json()['data'][0]['token']){
 
-    //quiz_survey
-    params.tags.name = 'quizSurvey';
-    const get_quiz_survey_response = http.post(baseUrl+'/mentors/quizSurvey/1', bodyPassword, params);
-    check(get_quiz_survey_response, {
-      'is status 200': (r) => r.status === 200
-    });
-    // sleep(SLEEP_DURATION);
+      
+      params.headers['Authorization'] = 'Bearer ' + login_response.json()['data'][0]['token'];
+      // console.log("Authorization",params.headers['Authorization'] )
+      sleep(SLEEP_DURATION);
+      //quiz_survey
+      params.tags.name = 'quizSurvey';
+      const get_quiz_survey_response = http.get(baseUrl+'/quizSurveys/1', params);
+      check(get_quiz_survey_response, {
+        'is status quizSurvey 200': (r) => r.status === 200
+      });
+      // console.log("get_quiz_survey_response",get_quiz_survey_response.json())
+      // sleep(SLEEP_DURATION);
+    }else{
+      comsole.log("login failed : response ==",login_response);
+    }
+    
+
+    
   });
 }
