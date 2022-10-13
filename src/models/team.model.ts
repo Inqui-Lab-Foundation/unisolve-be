@@ -14,8 +14,7 @@ team.init(
         },
         team_name: {
             type: DataTypes.STRING,
-            allowNull: false,
-            unique:true,
+            allowNull: false
         },
         mentor_id: {
             type: DataTypes.INTEGER,

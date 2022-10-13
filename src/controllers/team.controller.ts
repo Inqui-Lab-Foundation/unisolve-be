@@ -6,7 +6,7 @@ import ValidationsHolder from "../validations/validationHolder";
 import BaseController from "./base.controller";
 import db from "../utils/dbconnection.util"
 import dispatcher from "../utils/dispatch.util";
-import { notFound } from "boom";
+import { badRequest, notFound } from "boom";
 import { speeches } from "../configs/speeches.config";
 import { team } from "../models/team.model";
 import { student } from "../models/student.model";
@@ -167,4 +167,37 @@ export default class TeamController extends BaseController {
         });
         return res.status(200).send(dispatcher(res,student_res, 'success'));
     };
+    /**
+     * 
+     * Add check to see if team with same name and same emntor doesnt exits only then creeate a team 
+     * @param req 
+     * @param res 
+     * @param next 
+     * @returns 
+     */
+    protected async createData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            const { model } = req.params;
+            if (model) {
+                this.model = model;
+            };
+            const modelLoaded = await this.loadModel(model);
+            const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
+            const data = await this.crudService.create(modelLoaded, payload);
+            // console.log(data)
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
+            // }
+            if(!data){
+                throw badRequest()
+            }
+            if ( data instanceof Error) {
+                throw data;
+            }
+            
+            return res.status(201).send(dispatcher(res,data, 'created'));
+        } catch (error) {
+            next(error);
+        }
+    }
 }
