@@ -154,12 +154,17 @@ export default class CRUDController implements IController {
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
             const data = await this.crudService.create(modelLoaded, payload);
+            // console.log(data)
             // if (!data) {
             //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
-            if (!data || data instanceof Error) {
-                throw badRequest(data.message)
+            if(!data){
+                throw badRequest()
             }
+            if ( data instanceof Error) {
+                throw data;
+            }
+            
             return res.status(201).send(dispatcher(res,data, 'created'));
         } catch (error) {
             next(error);
@@ -198,8 +203,11 @@ export default class CRUDController implements IController {
             // if (!data) {
             //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
-            if (!data || data instanceof Error) {
-                throw badRequest(data.message)
+            if(!data ){
+                throw badRequest()
+            }
+            if (data instanceof Error) {
+                throw data;
             }
             return res.status(201).send(dispatcher(res,data, 'created'));
         } catch (error) {
@@ -222,8 +230,11 @@ export default class CRUDController implements IController {
             // if (!data) {
             //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
-            if (!data || data instanceof Error) {
-                throw badRequest(data.message)
+            if(!data){
+                throw badRequest()
+            }
+            if (data instanceof Error) {
+                throw data;
             }
             return res.status(200).send(dispatcher(res,data, 'updated'));
         } catch (error) {
@@ -271,8 +282,11 @@ export default class CRUDController implements IController {
             // if (!data) {
             //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
-            if (!data || data instanceof Error) {
-                throw badRequest(data.message)
+            if(!data){
+                throw badRequest()
+            }
+            if (data instanceof Error) {
+                throw data;
             }
             return res.status(200).send(dispatcher(res,data, 'updated'));
         } catch (error) {
@@ -292,8 +306,11 @@ export default class CRUDController implements IController {
             // if (!data) {
             //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
-            if (!data || data instanceof Error) {
-                throw badRequest(data.message)
+            if(!data){
+                throw badRequest()
+            }
+            if (data instanceof Error) {
+                throw data
             }
             return res.status(200).send(dispatcher(res,data, 'deleted'));
         } catch (error) {

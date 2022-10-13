@@ -1,6 +1,8 @@
 import HttpStatus from 'http-status-codes';
 import { JsonWebTokenError, NotBeforeError, TokenExpiredError } from 'jsonwebtoken';
+
 import { unknown, ZodError } from 'zod';
+import {BaseError as SequelizeBaseError}  from 'sequelize';
 import HttpException from './exceptions/http.exception';
 
 /**
@@ -40,6 +42,20 @@ export default function buildError(err:any) {
     };
   }
   
+  if(err instanceof SequelizeBaseError){
+    let msg=err.name;
+    //@ts-ignore
+    if(err.errors && err.errors.length>0){
+      //@ts-ignore
+      msg = err.errors[0].message;
+    }
+    return {
+      code: HttpStatus.METHOD_FAILURE,
+      message: msg,
+      data:{},
+      error:err,
+    };
+  }
   // HTTP errors
   if (err.isBoom) {
     return {
