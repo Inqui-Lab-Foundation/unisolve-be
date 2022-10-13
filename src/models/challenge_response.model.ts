@@ -58,9 +58,9 @@ challenge_response.init(
             allowNull: true
         },
         status: {
-            type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
+            type: DataTypes.ENUM(...Object.values(constents.challenges_flags.list)),
             allowNull: false,
-            defaultValue: constents.common_status_flags.default
+            defaultValue: constents.challenges_flags.default
         },
         created_by: {
             type: DataTypes.INTEGER,
