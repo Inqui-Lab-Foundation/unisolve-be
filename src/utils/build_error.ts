@@ -52,8 +52,8 @@ export default function buildError(err:any) {
     return {
       code: HttpStatus.METHOD_FAILURE,
       message: msg,
-      data:err,
-      error:err.name,
+      data:{},
+      error:err,
     };
   }
   // HTTP errors
