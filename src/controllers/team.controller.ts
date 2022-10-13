@@ -114,7 +114,7 @@ export default class TeamController extends BaseController {
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
                 } catch (error: any) {
-                    return res.status(500).send(dispatcher(res,data, 'error'))
+                    return res.status(500).send(dispatcher(res, data, 'error'))
                 }
 
             }
@@ -127,7 +127,7 @@ export default class TeamController extends BaseController {
                 } else {
                     throw notFound()
                 }
-                res.status(200).send(dispatcher(res,null, "error", speeches.DATA_NOT_FOUND));
+                res.status(200).send(dispatcher(res, null, "error", speeches.DATA_NOT_FOUND));
                 // if(data!=null){
                 //     throw 
                 (data.message)
@@ -136,7 +136,7 @@ export default class TeamController extends BaseController {
                 // }
             }
 
-            return res.status(200).send(dispatcher(res,data, 'success'));
+            return res.status(200).send(dispatcher(res, data, 'success'));
         } catch (error) {
             next(error);
         }
@@ -145,11 +145,11 @@ export default class TeamController extends BaseController {
         // accept the team_id from the params and find the students details, user_id
         const team_id = req.params.id;
         if (!team_id || team_id === "") {
-            return res.status(400).send(dispatcher(res,null, 'error', speeches.TEAM_NAME_ID));
+            return res.status(400).send(dispatcher(res, null, 'error', speeches.TEAM_NAME_ID));
         }
         const team_res = await this.crudService.findOne(team, { where: { team_id } });
         if (!team_res) {
-            return res.status(400).send(dispatcher(res,null, 'error', speeches.TEAM_NOT_FOUND));
+            return res.status(400).send(dispatcher(res, null, 'error', speeches.TEAM_NOT_FOUND));
         }
         const where: any = { team_id };
         let whereClauseStatusPart: any = {};
@@ -165,7 +165,7 @@ export default class TeamController extends BaseController {
                 ]
             }
         });
-        return res.status(200).send(dispatcher(res,student_res, 'success'));
+        return res.status(200).send(dispatcher(res, student_res, 'success'));
     };
     /**
      * 
@@ -183,24 +183,31 @@ export default class TeamController extends BaseController {
             };
             const modelLoaded = await this.loadModel(model);
             const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
-            const teamNameCheck = team.findOne({where:{
-                mentor_id:payload.mentor_id,
-                team_name:payload.team_name
-            }})
-            ///add check if teamNameCheck is not an error and has data then return and err
-            const data = await this.crudService.create(modelLoaded, payload);
-            // console.log(data)
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
-            if(!data){
-                throw badRequest()
+            const teamNameCheck: any = await team.findOne({
+                where: {
+                    mentor_id: payload.mentor_id,
+                    team_name: payload.team_name
+                }
+            })
+            console.log(teamNameCheck);
+            if (teamNameCheck) {
+                throw badRequest('code unique');
+            } else {
+                ///add check if teamNameCheck is not an error and has data then return and err
+                const data = await this.crudService.create(modelLoaded, payload);
+                // console.log(data)
+                // if (!data) {
+                //     return res.status(404).send(dispatcher(res,data, 'error'));
+                // }
+                if (!data) {
+                    throw badRequest()
+                }
+                if (data instanceof Error) {
+                    throw data;
+                }
+
+                return res.status(201).send(dispatcher(res, data, 'created'));
             }
-            if ( data instanceof Error) {
-                throw data;
-            }
-            
-            return res.status(201).send(dispatcher(res,data, 'created'));
         } catch (error) {
             next(error);
         }
