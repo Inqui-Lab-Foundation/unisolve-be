@@ -1,13 +1,8 @@
-// import * as envComfig from "./../../../../node_modules/dotenv/config";
 import http from 'k6/http';
 
 import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 import { textSummary } from "https://jslib.k6.io/k6-summary/0.0.1/index.js";
 import { check, group, sleep } from 'k6';
-// import sequelize from './../../../../node_modules/';
-// import database from './../../dbconnection.util';
-// import { mentor } from '../../../models/mentor.model';
-
 // const options = {
 //   vus: 5,
 //   duration: '600ms',
@@ -19,9 +14,9 @@ export const options = {
       executor: 'ramping-vus',
       startVUs: 0,
       stages: [
-        { duration: '60s', target: 50 },
-        // { duration: '600s', target: 500 },
-        // { duration: '10s', target: 5000 },
+        { duration: '120s', target: 10 },
+        { duration: '600s', target: 100 },
+        { duration: '1500s', target: 500 },
       ],
       gracefulRampDown: '0s',
     },
@@ -49,9 +44,9 @@ const SLEEP_DURATION = 5;
 
 // let baseUrl = "http://127.0.0.1:3002/api/v1"
 // let baseUrl = "https://apidev.inquitech.in/api/v1"
-// let baseUrl = "https://apiprod.inquitech.in/api/v1"
+let baseUrl = "https://apiprod.inquitech.in/api/v1"
 // let baseUrl = "http://15.207.254.154:3002/api/v1"//dev
-let baseUrl = "http://3.7.46.202:3002/api/v1"//prod
+// let baseUrl = "http://3.109.59.130:3002/api/v1"//prod
 
 
 export default function () {
@@ -101,13 +96,6 @@ export default function () {
     const user_id = register_response.json()["data"][0]['user_id'];
     console.log("user_id",user_id)
     sleep(SLEEP_DURATION);
-
-    //updating the flag /// not working ...!!
-    // mentor.update(
-    //   { reg_status: 3 },
-    //   { mentor_id: register_response.data.user_id }
-    // );
-    // sleep(SLEEP_DURATION);
     
     // mentor verify 
     
@@ -176,9 +164,7 @@ export default function () {
     }else{
       console.log(getTimeStamp()+" login failed : response ==",login_response);
     }
-    
 
-    
   });
 }
 
