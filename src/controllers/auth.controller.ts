@@ -24,6 +24,7 @@ import { student } from '../models/student.model';
 import { evaluater } from '../models/evaluater.model';
 import { badRequest } from 'boom';
 import { nanoid } from 'nanoid'
+import roadMapMasterObject from '../configs/roadMapConfig';
 // import { constents } from '../configs/constents.config';
 
 export default class AuthController implements IController {
@@ -41,13 +42,15 @@ export default class AuthController implements IController {
     // we are disabling this controller, using individual login controllers students/login, mentors/login, evaluater/login, admins/login
 
     private initializeRoutes(): void {
-        this.router.post(`${this.path}/login`, this.login);
-        this.router.get(`${this.path}/logout`, this.logout);
-        this.router.post(`${this.path}/register`, this.register);
-        this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword.bind(this));
-        this.router.put(`${this.path}/updatePassword`, validationMiddleware(authValidations.changePassword), this.updatePassword.bind(this));
+        // this.router.post(`${this.path}/login`, this.login);
+        // this.router.get(`${this.path}/logout`, this.logout);
+        // this.router.post(`${this.path}/register`, this.register);
+        // this.router.put(`${this.path}/changePassword`, validationMiddleware(authValidations.changePassword), this.changePassword.bind(this));
+        // this.router.put(`${this.path}/updatePassword`, validationMiddleware(authValidations.changePassword), this.updatePassword.bind(this));
         this.router.post(`${this.path}/dynamicSignupForm`, validationMiddleware(authValidations.dynamicForm), this.dynamicSignupForm);
         this.router.get(`${this.path}/dynamicSignupForm`, this.getSignUpConfig);
+        this.router.post(`${this.path}/roadMap`, validationMiddleware(authValidations.roadMap), this.roadMap);
+        this.router.get(`${this.path}/roadMap`, this.getRoadMap);
         this.router.post(`${this.path}/:model/bulkUpload`, this.bulkUpload.bind(this))
         this.router.get(`${this.path}/clearUserResponse/:user_id`, this.clearUserResponse.bind(this))
     }
@@ -80,7 +83,7 @@ export default class AuthController implements IController {
                 }
             });
             if (!user_res) {
-                return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
+                return res.status(404).send(dispatcher(res,user_res, 'error', speeches.USER_NOT_FOUND));
             } else {
                 // user status checking
                 let stop_procedure: boolean = false;
@@ -112,10 +115,10 @@ export default class AuthController implements IController {
                     }
                 }
                 if (stop_procedure) {
-                    return res.status(401).send(dispatcher(error_message, 'error', speeches.USER_RISTRICTED, 401));
+                    return res.status(401).send(dispatcher(res,error_message, 'error', speeches.USER_RISTRICTED, 401));
                 }
                 if (stop_issuing_token) {
-                    return res.status(401).send(dispatcher(error_message, 'error', speeches.USER_ROLE_CHECK, 401));
+                    return res.status(401).send(dispatcher(res,error_message, 'error', speeches.USER_ROLE_CHECK, 401));
                 }
                 await this.crudService.update(user, {
                     is_loggedin: "YES",
@@ -144,7 +147,7 @@ export default class AuthController implements IController {
                 //     status: constents.notification_status_flags.list.PUBLISHED,
                 //     created_by: user_res.user_id
                 // });
-                return res.status(200).send(dispatcher({
+                return res.status(200).send(dispatcher(res,{
                     user_id: user_res.dataValues.user_id,
                     name: user_res.dataValues.username,
                     full_name: user_res.dataValues.full_name,
@@ -165,7 +168,7 @@ export default class AuthController implements IController {
             const update_res = await this.crudService.update(user, {
                 is_loggedin: "NO"
             }, { where: { user_id: res.locals.user_id } });
-            return res.status(200).send(dispatcher(speeches.LOGOUT_SUCCESS, 'success'));
+            return res.status(200).send(dispatcher(res,speeches.LOGOUT_SUCCESS, 'success'));
         } catch (error) {
             next(error);
         }
@@ -178,7 +181,7 @@ export default class AuthController implements IController {
             const user_res: any = await this.crudService.findOne(user, {
                 where: { username: req.body.username }
             });
-            if (user_res) return res.status(406).send(dispatcher(speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
+            if (user_res) return res.status(406).send(dispatcher(res,speeches.USER_ALREADY_EXISTED, 'error', speeches.NOT_ACCEPTABLE, 406));
             const result = await this.crudService.create(user, req.body);
             // user role checking
             let profile: any;
@@ -204,7 +207,7 @@ export default class AuthController implements IController {
                 default:
                     profile = await this.crudService.create(admin, whereClass);
             };
-            return res.status(201).send(dispatcher(result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+            return res.status(201).send(dispatcher(res,result, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
         } catch (error) {
             next(error);
         }
@@ -225,17 +228,17 @@ export default class AuthController implements IController {
     //             }
     //         });
     //         if (!user_res) {
-    //             return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_NOT_FOUND));
+    //             return res.status(404).send(dispatcher(res,user_res, 'error', speeches.USER_NOT_FOUND));
     //         }
     //         //comparing the password with hash
     //         const match = bcrypt.compareSync(req.body.old_password, user_res.dataValues.password);
     //         if (match === false) {
-    //             return res.status(404).send(dispatcher(user_res, 'error', speeches.USER_PASSWORD));
+    //             return res.status(404).send(dispatcher(res,user_res, 'error', speeches.USER_PASSWORD));
     //         } else {
     //             const result = await this.crudService.update(user, {
     //                 password: await bcrypt.hashSync(req.body.new_password, process.env.SALT || baseConfig.SALT)
     //             }, { where: { user_id: user_res.dataValues.user_id } });
-    //             return res.status(202).send(dispatcher(result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+    //             return res.status(202).send(dispatcher(res,result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
     //         }
     //     } catch (error) {
     //         next(error);
@@ -246,19 +249,54 @@ export default class AuthController implements IController {
         try {
             const result: any = dynamicForm.getFormObject(req.body);
             if (result.length <= 0) {
-                return res.status(406).send(dispatcher(speeches.FILE_EMPTY, 'error', speeches.NOT_ACCEPTABLE, 406));
+                return res.status(406).send(dispatcher(res,speeches.FILE_EMPTY, 'error', speeches.NOT_ACCEPTABLE, 406));
             }
             writeFileSync(path.join(process.cwd(), 'resources', 'configs', 'singUp.json'), JSON.stringify(result), {
                 encoding: "utf8",
                 flag: "w",
                 mode: 0o666
             });
-            return res.status(200).send(dispatcher(result, 'success', speeches.CREATED_FILE));
+            return res.status(200).send(dispatcher(res,result, 'success', speeches.CREATED_FILE));
         } catch (error) {
             next(error);
         }
     }
 
+    private roadMap  = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const result: any = req.body;
+            if (result.length <= 0) {
+                return res.status(406).send(dispatcher(res,speeches.FILE_EMPTY, 'error', speeches.NOT_ACCEPTABLE, 406));
+            }
+            writeFileSync(path.join(process.cwd(), 'resources', 'configs', 'roadMap.json'), JSON.stringify(result), {
+                encoding: "utf8",
+                flag: "w",
+                mode: 0o666
+            });
+            return res.status(200).send(dispatcher(res,result, 'success', speeches.CREATED_FILE));
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    private getRoadMap = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        const options = {
+            root: path.join(process.cwd(), 'resources', 'configs'),
+            headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+            }
+        };
+        const filePath = path.join(process.cwd(), 'resources', 'configs', 'roadMap.json');
+        if (filePath === 'Error') {
+            return res.status(404).send(dispatcher(res,speeches.FILE_EMPTY, 'error', speeches.DATA_NOT_FOUND));
+        }
+        const file: any = readFileSync(path.join(process.cwd(), 'resources', 'configs', 'roadMap.json'), {
+            encoding: 'utf8',
+            flag: 'r'
+        })
+        return res.status(200).send(dispatcher(res,JSON.parse(file), 'success', speeches.FETCH_FILE))
+    }
     private getSignUpConfig = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         const options = {
             root: path.join(process.cwd(), 'resources', 'configs'),
@@ -269,13 +307,13 @@ export default class AuthController implements IController {
         };
         const filePath = path.join(process.cwd(), 'resources', 'configs', 'singUp.json');
         if (filePath === 'Error') {
-            return res.status(404).send(dispatcher(speeches.FILE_EMPTY, 'error', speeches.DATA_NOT_FOUND));
+            return res.status(404).send(dispatcher(res,speeches.FILE_EMPTY, 'error', speeches.DATA_NOT_FOUND));
         }
         const file: any = readFileSync(path.join(process.cwd(), 'resources', 'configs', 'singUp.json'), {
             encoding: 'utf8',
             flag: 'r'
         })
-        return res.status(200).send(dispatcher(JSON.parse(file), 'success', speeches.FETCH_FILE))
+        return res.status(200).send(dispatcher(res,JSON.parse(file), 'success', speeches.FETCH_FILE))
     }
 
     protected async bulkUpload(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -312,12 +350,12 @@ export default class AuthController implements IController {
             default: loadMode = user;
         }
 
-        if (file === undefined) return res.status(400).send(dispatcher(null, 'error', speeches.FILE_REQUIRED, 400));
-        if (file.type !== 'text/csv') return res.status(400).send(dispatcher(null, 'error', speeches.FILE_REQUIRED, 400));
+        if (file === undefined) return res.status(400).send(dispatcher(res,null, 'error', speeches.FILE_REQUIRED, 400));
+        if (file.type !== 'text/csv') return res.status(400).send(dispatcher(res,null, 'error', speeches.FILE_REQUIRED, 400));
         //parsing the data
         const stream = fs.createReadStream(file.path).pipe(csv.parse({ headers: true }));
         //error event
-        stream.on('error', (error) => res.status(400).send(dispatcher(error, 'error', speeches.CSV_SEND_ERROR, 400)));
+        stream.on('error', (error) => res.status(400).send(dispatcher(res,error, 'error', speeches.CSV_SEND_ERROR, 400)));
         //data event;
         stream.on('data', async (data: any) => {
             dataLength = Object.entries(data).length;
@@ -345,12 +383,12 @@ export default class AuthController implements IController {
             if (counter > 0) {
                 await this.crudService.bulkCreate(loadMode, bulkData)
                     .then((result) => {
-                        return res.send(dispatcher({ data: result, createdEntities: counter, existedEntities }, 'success', speeches.CREATED_FILE, 200));
+                        return res.send(dispatcher(res,{ data: result, createdEntities: counter, existedEntities }, 'success', speeches.CREATED_FILE, 200));
                     }).catch((error: any) => {
-                        return res.status(500).send(dispatcher(error, 'error', speeches.CSV_SEND_INTERNAL_ERROR, 500));
+                        return res.status(500).send(dispatcher(res,error, 'error', speeches.CSV_SEND_INTERNAL_ERROR, 500));
                     })
             } else if (existedEntities > 0) {
-                return res.status(400).send(dispatcher({ createdEntities: counter, existedEntities }, 'error', speeches.CSV_DATA_EXIST, 400));
+                return res.status(400).send(dispatcher(res,{ createdEntities: counter, existedEntities }, 'error', speeches.CSV_DATA_EXIST, 400));
             }
         });
     }
@@ -358,28 +396,28 @@ export default class AuthController implements IController {
     private async changePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const result = await this.authService.changePassword(req.body, res);
         if (!result) {
-            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+            return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_NOT_FOUND));
         } else if (result.error) {
-            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+            return res.status(404).send(dispatcher(res,result.error, 'error', result.error));
         }
         else if (result.match) {
-            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
+            return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_PASSWORD));
         } else {
-            return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+            return res.status(202).send(dispatcher(res,result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
 
     private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const result = await this.authService.updatePassword(req.body, res);
         if (!result) {
-            return res.status(404).send(dispatcher(null, 'error', speeches.USER_NOT_FOUND));
+            return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_NOT_FOUND));
         } else if (result.error) {
-            return res.status(404).send(dispatcher(result.error, 'error', result.error));
+            return res.status(404).send(dispatcher(res,result.error, 'error', result.error));
         }
         else if (result.match) {
-            return res.status(404).send(dispatcher(null, 'error', speeches.USER_PASSWORD));
+            return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_PASSWORD));
         } else {
-            return res.status(202).send(dispatcher(result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+            return res.status(202).send(dispatcher(res,result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
 
@@ -390,7 +428,7 @@ export default class AuthController implements IController {
             // if (!data || data instanceof Error) {
             //     throw badRequest(data.message)
             // }
-            return res.status(200).send(dispatcher(data, 'deleted'));
+            return res.status(200).send(dispatcher(res,data, 'deleted'));
         } catch (error) {
             next(error)
         }

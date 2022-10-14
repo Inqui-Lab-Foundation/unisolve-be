@@ -155,12 +155,12 @@ export default class QuizSurveyController extends BaseController {
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
                 } catch (error: any) {
-                    return res.status(500).send(dispatcher(data, 'error'))
+                    return res.status(500).send(dispatcher(res,data, 'error'))
                 }
 
             }
             // if (!data) {
-            //     return res.status(404).send(dispatcher(data, 'error'));
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
             // }
             if (!data || data instanceof Error) {
                 if (data != null) {
@@ -168,7 +168,7 @@ export default class QuizSurveyController extends BaseController {
                 } else {
                     throw notFound()
                 }
-                res.status(200).send(dispatcher(null,"error",speeches.DATA_NOT_FOUND));
+                res.status(200).send(dispatcher(res,null,"error",speeches.DATA_NOT_FOUND));
                 // if(data!=null){
                 //     throw 
                 (data.message)
@@ -177,7 +177,7 @@ export default class QuizSurveyController extends BaseController {
                 // }
             }
 
-            return res.status(200).send(dispatcher(data, 'success'));
+            return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
             next(error);
         }
@@ -222,7 +222,7 @@ export default class QuizSurveyController extends BaseController {
             user_response =  JSON.parse(quizRes.dataValues.response);
             // console.log(user_response);
             let questionNosAsweredArray = Object.keys(user_response);
-            questionNosAsweredArray = questionNosAsweredArray.sort((a,b) => (a > b ? -1 : 1));
+            questionNosAsweredArray = questionNosAsweredArray.sort((a,b) => (Number(a) > Number(b) ? -1 : 1));
             const noOfQuestionsAnswered = Object.keys(user_response).length
             // console.log(noOfQuestionsAnswered)
             const lastQuestionAnsewered = user_response[questionNosAsweredArray[0]]//we have assumed that this length will always have atleast 1 item ; this could potentially be a source of bug, but is not since this should always be true based on above checks ..
@@ -271,6 +271,9 @@ export default class QuizSurveyController extends BaseController {
             if(nextQuestionsToChooseFrom.dataValues.option_d){
                 optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_d)
             }
+            if(nextQuestionsToChooseFrom.dataValues.option_e){
+                optionsArr.push(nextQuestionsToChooseFrom.dataValues.option_e)
+            }
             
             
             resultQuestion["quiz_id"] = nextQuestionsToChooseFrom.dataValues.quiz_id;
@@ -282,7 +285,7 @@ export default class QuizSurveyController extends BaseController {
             resultQuestion["level"] = nextQuestionsToChooseFrom.dataValues.level;
             resultQuestion["type"] = nextQuestionsToChooseFrom.dataValues.type;
 
-            res.status(200).send(dispatcher(resultQuestion))
+            res.status(200).send(dispatcher(res,resultQuestion))
         }else{
             //update worksheet topic progress for this user to completed..!!
             // if(!boolStatusWhereClauseRequired || 
@@ -291,7 +294,7 @@ export default class QuizSurveyController extends BaseController {
             // }
             
             //send response that quiz is completed..!!
-            res.status(200).send(dispatcher("Quiz has been completed no more questions to display"))
+            res.status(200).send(dispatcher(res,"Quiz has been completed no more questions to display"))
         }
         
     }
@@ -314,7 +317,7 @@ export default class QuizSurveyController extends BaseController {
             }
 
             const result =  await this.insertSingleResponse(user_id,quiz_survey_id,quiz_survey_question_id,selected_option);
-            res.status(200).send(dispatcher(result))
+            res.status(200).send(dispatcher(res,result))
         }catch(err){
             next(err)
         }
@@ -419,19 +422,28 @@ export default class QuizSurveyController extends BaseController {
             }
             const results:any = []
             let result:any={}
-            await Promise.all(
-                responses.map( async (element:any) => {
-                    // console.log(element)
-                    result =   await this.insertSingleResponse(user_id,quiz_survey_id,element.quiz_survey_question_id,element.selected_option)    
-                    if(!result|| result instanceof Error){
-                      throw badRequest();
-                    }else{
-                      results.push(result);
-                    }
-                  }
-                )
-            );
-            res.status(200).send(dispatcher(result))
+            for(const element of responses){
+                // console.log(element);
+                result =   await this.insertSingleResponse(user_id,quiz_survey_id,element.quiz_survey_question_id,element.selected_option)    
+                if(!result|| result instanceof Error){
+                    throw badRequest();
+                }else{
+                    results.push(result);
+                }
+            }
+            // await Promise.all(
+            //     responses.map( async (element:any) => {
+            //         // console.log(element)
+            //         result =   await this.insertSingleResponse(user_id,quiz_survey_id,element.quiz_survey_question_id,element.selected_option)    
+            //         if(!result|| result instanceof Error){
+            //           throw badRequest();
+            //         }else{
+            //           results.push(result);
+            //         }
+            //       }
+            //     )
+            // );
+            res.status(200).send(dispatcher(res,result))
 
         }catch(err){
             next(err)

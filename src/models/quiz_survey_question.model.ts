@@ -14,6 +14,7 @@ export class quiz_survey_question extends Model<InferAttributes<quiz_survey_ques
     declare option_b: string;
     declare option_c: string;
     declare option_d: string;
+    declare option_e: string;
     declare type: Enumerator;
     declare status: Enumerator;
     declare created_by: number;
@@ -63,6 +64,10 @@ quiz_survey_question.init(
             allowNull: true
         },
         option_d: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
+        option_e: {
             type: DataTypes.TEXT,
             allowNull: true
         },

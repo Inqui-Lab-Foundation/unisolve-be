@@ -137,5 +137,5 @@ mentor.init(
 
 mentor.belongsTo(user, { foreignKey: 'user_id', constraints: false });
 user.hasOne(mentor, { foreignKey: 'user_id', constraints: false, scope: { role: 'MENTOR' } });
-mentor.belongsTo(organization, { foreignKey: 'organization_code', constraints: false });
-organization.hasOne(mentor, { foreignKey: 'organization_code', constraints: false, scope: { role: 'MENTOR' } });
+mentor.belongsTo(organization, { targetKey: 'organization_code',foreignKey: 'organization_code', constraints: false });
+organization.hasOne(mentor, { sourceKey:'organization_code',foreignKey: 'organization_code', constraints: false});

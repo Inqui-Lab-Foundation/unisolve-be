@@ -16,6 +16,11 @@ import { options } from "./docs/options";
 import * as errorHandler from "./middlewares/errorHandler.middleware";
 import { constents } from "./configs/constents.config";
 import { CronManager } from "./jobs/cronManager";
+import DashboardMapStatsJob from "./jobs/dashboardMapStats.jobs";
+import BadgesJob from "./jobs/badges.jobs";
+import { translationMiddleware } from "./middlewares/translation.middleware";
+import TranslationService from "./services/translation.service";
+import http from "http";
 // import fs from 'fs';
 // import BadgesJob from "./jobs/badges.jobs";
 // import https from 'https'
@@ -28,7 +33,7 @@ export default class App {
     constructor(controllers: IController[], port: number) {
         this.app = express();
         this.port = port;
-
+        this.increaseSimulatenousHttpSockets();
         this.initializeMiddlewares();
         this.initializeHomeRoute();
         this.serveStaticFiles();
@@ -37,11 +42,20 @@ export default class App {
         // this.initializeRabitMqBroker();
         this.doLogIt(constents.log_levels.list.INBOUND);
         this.initializeRouteProtectionMiddleware();
+        ///make sure translation middleware is called after route protection middleware because
+        // translation middleware adds data to res.locals which is overidden in route protection middleware
+        this.initializeTranslations();
         this.initializeControllers(controllers, "/api", "v1");
         this.doLogIt(constents.log_levels.list.OUTBOUND);
         this.initializeErrorHandling();//make sure this is the last thing in here 
         this.initializeDatabase();
         this.initializeJobs();
+    }
+
+    private increaseSimulatenousHttpSockets(){
+        // http.globalAgent.maxSockets = 100;
+        // You could also set it to unlimited (Node v0.12 does by default):
+        http.globalAgent.maxSockets = Infinity;
     }
     private doLogIt(flag: string) {
         this.app.use(async (req: Request, res: Response, next: NextFunction) => {
@@ -66,7 +80,9 @@ export default class App {
     private initializeJobs(): void {
         const cronManager = CronManager.getInstance()
         // cronManager.addJob(new BadgesJob());
-        // cronManager.startAll();
+        cronManager.addJob(new DashboardMapStatsJob())
+        // new DashboardMapStats().executeJob()
+        cronManager.startAll();
     }
 
     private initializeMiddlewares(): void {
@@ -75,14 +91,18 @@ export default class App {
             crossOriginResourcePolicy: false,
         }));  
         this.app.use(cors());
-        this.app.use(express.json());
-        this.app.use(express.urlencoded({ extended: true }));
+        this.app.use(express.json({limit: '50mb'}));
+        this.app.use(express.urlencoded({limit: '50mb',extended: true }));
+        // this.app.use(express.json());
+        // this.app.use(express.urlencoded({ extended: true }));
         this.app.use(formData.parse({
             uploadDir: os.tmpdir(),
             autoClean: true
         }));
          // compression for gzip
         this.app.use(compression());
+
+        this.app.use(translationMiddleware)
     }
 
     private initializeHomeRoute(): void {
@@ -148,6 +168,11 @@ export default class App {
 
     private initializeRouteProtectionMiddleware(): void {
         this.app.use(routeProtectionMiddleware);
+    }
+    
+    private initializeTranslations(){
+        const translationService = new TranslationService(constents.translations_flags.default_locale,true)
+        this.app.use(translationMiddleware)
     }
 
     private initializeControllers(controllers: IController[], prefix: string = "/api", version: string = "v1"): void {

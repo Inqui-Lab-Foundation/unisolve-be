@@ -38,6 +38,16 @@ export const constents = {
     },
     default: 'ACTIVE'
   },
+  organization_status_flags: {
+    list: {
+      'NEW': 'NEW',
+      'ACTIVE': 'ACTIVE',
+      'INACTIVE': 'INACTIVE',
+      'DELETED': 'DELETED',
+      'LOCKED': 'LOCKED'
+    },
+    default: 'ACTIVE'
+  },
   support_tickets_status_flags: {
     list: {
       'OPEN': 'OPEN',
@@ -113,7 +123,8 @@ export const constents = {
       'VIDEO': 'VIDEO',
       'WORKSHEET': 'WORKSHEET',
       'QUIZ': 'QUIZ',
-      'ATTACHMENT': 'ATTACHMENT'
+      'ATTACHMENT': 'ATTACHMENT',
+      'CERTIFICATE': 'CERTIFICATE'
     },
     default: 'VIDEO',
   },
@@ -133,6 +144,19 @@ export const constents = {
       '3': '3',
     },
     default: '0'
+  },
+  challenges_flags: {
+    list: {
+      "DRAFT": "DRAFT",
+      "SUBMITTED": "SUBMITTED",
+      "EVALUATION": "EVALUATION",
+      "SELECTEDROUND1": "SELECTEDROUND1",
+      "REJECTEDROUND1": "REJECTEDROUND1"
+    },
+    default: "DRAFT"
+  },
+  translations_flags:{
+    default_locale: "en"
   },
   default_image_path: "/images/default.jpg"
 

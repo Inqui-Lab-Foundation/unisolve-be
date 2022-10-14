@@ -32,7 +32,7 @@ export default class MentorCourseController extends BaseController {
     }
     protected testRoute(req: Request, res: Response, next: NextFunction) {
         // console.log("came here");
-        return res.status(200).json(dispatcher("this was a success ....!!!"));
+        return res.status(200).json(dispatcher(res,"this was a success ....!!!"));
     }
 
 
@@ -102,9 +102,9 @@ export default class MentorCourseController extends BaseController {
             }
 
             if (!data) {
-                return res.status(404).send(dispatcher(data, 'error'));
+                return res.status(404).send(dispatcher(res,data, 'error'));
             }
-            return res.status(200).send(dispatcher(data, 'success'));
+            return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
             next(error);
         }
@@ -214,7 +214,7 @@ export default class MentorCourseController extends BaseController {
             }],
             order: [
                 // [{model: course_module, as: 'course_modules'},{model: course_topic, as: 'course_topics'},'topic_type_order', 'ASC'],
-                db.literal(`\`mentor_course_topics.topic_type_order\` ASC`),
+                // db.literal(`\`mentor_course_topics.topic_type_order\` ASC`),
                 [mentor_course_topic,'mentor_course_topic_id', 'ASC'],
             ],
         });

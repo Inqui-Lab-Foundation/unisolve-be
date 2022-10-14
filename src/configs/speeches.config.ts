@@ -54,7 +54,9 @@ export const speeches = {
 
     //quiz submit response keys
     QUIZ_ID_REQUIRED: "Quiz ID is required, it should not be empty.",
+    CHALLENGE_ID_REQUIRED: "Challenge ID is required, it should not be empty.",
     QUIZ_QUESTION_ID_REQUIRED: "QUIZ QUESTION ID is required, it should not be empty.",
+    CHALLENGE_QUESTION_ID_REQUIRED: "CHALLENGE QUESTION ID is required, it should not be empty.",
     QUESTION_REQUIRED: "QUESTION is required, it should not be empty.",
     SELCTED_OPTION_REQUIRED: "Selected option is required, it should not be empty.",
     CORRECT_ANSWER_REQUIRED: "Correct answer is required, it should not be empty.",
@@ -94,8 +96,21 @@ export const speeches = {
     FAQ_ANSWER: "Answer is required.",
     ORG_CODE_REQUIRED: "Organization code is required.",
     ORG_CODE_NOT_EXISTS: "Organization code does not exists.",
+    ORG_NAME_REQUIRED: "Organization name is required.",
+    
+    PRINCIPAL_NAME_REQ: "principal name  is required.",
+    PRINCIPAL_EMAIL_REQ: "principal email  is required.",
+    PRINCIPAL_MOBILE_REQ: "principal mobile  is required.",
+    CITY_REQ: "city is required.",
+    STATE_REQ: "state is required.",
+    DISTRICT_REQ: "district is required.",
+    COUNTRY_REQ: "country  is required.",
+
     OTP_FAIL: "Wrong OTP Detected.",
     OTP_FOUND: "OTP matched.",
     QUERY_CATEGORY: "Category is required",
-    QUERY_DETAILS: "Query cannot be null"
+    QUERY_DETAILS: "Query cannot be null",
+
+    TEACHER_OBJECT: "Teacher object required",
+    STUDENT_OBJECT: "Student object required",
 }

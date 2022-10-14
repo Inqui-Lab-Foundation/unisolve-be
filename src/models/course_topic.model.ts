@@ -5,6 +5,8 @@ import topicAttributes from '../interfaces/courseTopics.model.interface';
 import db from '../utils/dbconnection.util';
 import { course_module } from './course_module.model';
 import { user } from './user.model';
+import { video } from './video.model';
+const uppercaseFirst = (str:any) => `${str[0].toUpperCase()}${str.substr(1)}`;
 
 export class course_topic extends Model<courseTopicsAttribute> {
     /**
@@ -82,3 +84,13 @@ course_topic.init(
 
 course_topic.belongsTo(course_module, { foreignKey: 'course_module_id', as: 'course_topics' });
 course_module.hasMany(course_topic, { foreignKey: 'course_module_id' });
+
+course_topic.belongsTo(video,{ 
+    foreignKey: 'topic_type_id',
+    constraints: false})
+video.hasMany(course_topic,{ 
+    foreignKey: 'topic_type_id',
+    constraints: false,
+    scope:{
+        topic_type:"VIDEO"
+    } })

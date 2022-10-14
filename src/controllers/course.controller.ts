@@ -30,7 +30,7 @@ export default class CourseController extends BaseController {
     }
     protected testRoute(req: Request, res: Response, next: NextFunction) {
         // console.log("came here");
-        return res.status(200).json(dispatcher("this was a success ....!!!"));
+        return res.status(200).json(dispatcher(res,"this was a success ....!!!"));
     }
 
 
@@ -112,9 +112,9 @@ export default class CourseController extends BaseController {
             }
 
             if (!data) {
-                return res.status(404).send(dispatcher(data, 'error'));
+                return res.status(404).send(dispatcher(res,data, 'error'));
             }
-            return res.status(200).send(dispatcher(data, 'success'));
+            return res.status(200).send(dispatcher(res,data, 'success'));
         } catch (error) {
             next(error);
         }
