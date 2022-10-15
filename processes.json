@@ -2,8 +2,8 @@
     {
         "name": "unisolve",
         "script": "./dist/src/index.js",
-        "exec_mode": "fork",
-        "instances": 1,
+        "exec_mode": "cluster",
+        "instances": "max",
         "env": {
             "NODE_ENV": "production",
             "PORT": "3002"
