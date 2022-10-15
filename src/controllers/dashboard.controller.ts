@@ -13,6 +13,9 @@ import DashboardService from '../services/dashboard.service';
 import { mentor } from '../models/mentor.model';
 import { organization } from '../models/organization.model';
 import { constents } from '../configs/constents.config';
+import path from 'path';
+import { readFileSync } from 'fs';
+import { internal } from 'boom';
 
 export default class DashboardController extends BaseController {
     model = ""; ///this u will override in every function in this controller ...!!!
@@ -34,14 +37,19 @@ export default class DashboardController extends BaseController {
         
 
         //mentor stats...
-        this.router.get(`${this.path}/mentorStats/:mentor_id`, this.getMentorStats.bind(this))
-        this.router.get(`${this.path}/mentorStats/:mentor_id/progessOverall`, this.getMentorStatsProgressOverall.bind(this))
+        this.router.get(`${this.path}/mentorStats/:mentor_user_id`, this.getMentorStats.bind(this))
+        // this.router.get(`${this.path}/mentorStats/:mentor_id/progessOverall`, this.getMentorStatsProgressOverall.bind(this))
 
         super.initializeRoutes();
     }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////// MENTOR STATS
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     private async getMentorStats(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try{
-            const {mentor_id} = req.params;
+            const {mentor_user_id} = req.params;
             const paramStatus:any= req.query.status;
             let whereClauseStatusPart:any = {};
             let whereClauseStatusPartLiteral = "1=1";
@@ -54,7 +62,7 @@ export default class DashboardController extends BaseController {
 
             const mentor_stats = await mentor.findOne({
                 where:{
-                    mentor_id:mentor_id,
+                    user_id:mentor_user_id,
                 },
                 attributes:[
                     [
@@ -68,7 +76,7 @@ export default class DashboardController extends BaseController {
                             from teams as t
                             where 
                             ${addWhereClauseStatusPart?"t."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
-                            and t.mentor_id=\`mentor\`.\`mentor_id\`)
+                            and t.mentor_id=\`mentor\`.\`user_id\`)
                             )`),
                         "students_count"
                     ],
@@ -81,7 +89,7 @@ export default class DashboardController extends BaseController {
                             from teams as t
                             where 
                             ${addWhereClauseStatusPart?"t."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
-                            and t.mentor_id=\`mentor\`.\`mentor_id\`) 
+                            and t.mentor_id=\`mentor\`.\`user_id\`) 
                         and c.status not in ('DRAFT')
                         )`),
                         "ideas_count"
@@ -92,7 +100,7 @@ export default class DashboardController extends BaseController {
                         from teams as t
                         where 
                         ${addWhereClauseStatusPart?"t."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
-                        and t.mentor_id=\`mentor\`.\`mentor_id\`
+                        and t.mentor_id=\`mentor\`.\`user_id\`
                         )`),
                         "teams_count"
                     ]
@@ -121,11 +129,74 @@ export default class DashboardController extends BaseController {
     
     private async getMentorStatsProgressOverall(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try{
+            const options = {
+                root: path.join(process.cwd(), 'resources', 'configs'),
+                headers: {
+                    'x-timestamp': Date.now(),
+                    'x-sent': true
+                }
+            };
+            const filePath = path.join(process.cwd(), 'resources', 'configs', 'roadMap.json');
+            if (filePath === 'Error') {
+                return res.status(404).send(dispatcher(res,speeches.FILE_EMPTY, 'error', speeches.DATA_NOT_FOUND));
+            }
+            var file: any = readFileSync(path.join(process.cwd(), 'resources', 'configs', 'roadMap.json'), {
+                encoding: 'utf8',
+                flag: 'r'
+            })
+
+            if(file instanceof Error){
+                throw file;
+            }
+            
+            // if(!file){
+            //     file=JSON.parse(file)
+            //     console.log("file",file)
+            //     if(!file.teacher || typeof file.teacher !='object'){
+            //         throw internal(speeches.ROADMAP_FILE_CORRUPTED)
+            //     }
+            // }
+            console.log(file.teacher);
+            const teacherStepsTotal = Object.keys(file.teacher);
+            const totalNoOfSteps = teacherStepsTotal.length;
+            let totalNoOfCompletedSteps = 0;
+            for(var i=0;i<totalNoOfSteps;i++){
+                const step = file.teacher[teacherStepsTotal[i]];
+                if(!step.start_date|| step.end_date){
+                    continue;
+                }
+                try{
+                    const startDate = new Date(step.start_date).getTime();
+                    const endDate = new Date(step.end_date).getTime();
+                    const currDate =  new Date().getTime();
+                    if(currDate<<endDate&& currDate>>startDate){
+                        totalNoOfCompletedSteps++;
+                    }
+
+                }catch(err){
+                    continue;
+                }
+
+            }
+
+            const result ={
+                "total_steps":totalNoOfSteps,
+                "completed_steps":totalNoOfCompletedSteps,
+                "progress":((totalNoOfCompletedSteps/totalNoOfSteps)* 100)
+            }
+
+            res.send(dispatcher(res,result,"success"))
 
         }catch(err){
             next(err)
         }
     }
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////// MAPP STATS
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     private async refreshMapStats(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try{
             const job = new DashboardMapStatsJob()
