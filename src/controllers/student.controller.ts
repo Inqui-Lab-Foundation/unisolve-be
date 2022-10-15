@@ -10,7 +10,7 @@ import ValidationsHolder from '../validations/validationHolder';
 import validationMiddleware from '../middlewares/validation.middleware';
 import { constents } from '../configs/constents.config';
 import { Op } from 'sequelize';
-import { notFound } from 'boom';
+import { badRequest, notFound } from 'boom';
 
 export default class StudentController extends BaseController {
     model = "student";
@@ -190,5 +190,31 @@ export default class StudentController extends BaseController {
         } catch (error) {
             next(error);
         }
-    }   
+    }
+    protected async updateData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            const { model, id } = req.params;
+            if (model) {
+                this.model = model;
+            };
+            const user_id = res.locals.user_id
+            const where: any = {};
+            where[`${this.model}_id`] = req.params.id;
+            const modelLoaded = await this.loadModel(model);
+            const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
+            const data = await this.crudService.update(modelLoaded, payload, { where: where });
+            // if (!data) {
+            //     return res.status(404).send(dispatcher(res,data, 'error'));
+            // }
+            if(!data){
+                throw badRequest()
+            }
+            if (data instanceof Error) {
+                throw data;
+            }
+            return res.status(200).send(dispatcher(res,data, 'updated'));
+        } catch (error) {
+            next(error);
+        }
+    }
 }
