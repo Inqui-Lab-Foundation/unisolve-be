@@ -37,7 +37,7 @@ export default class DashboardController extends BaseController {
         
 
         //mentor stats...
-        this.router.get(`${this.path}/mentorStats/:mentor_id`, this.getMentorStats.bind(this))
+        this.router.get(`${this.path}/mentorStats/:mentor_user_id`, this.getMentorStats.bind(this))
         // this.router.get(`${this.path}/mentorStats/:mentor_id/progessOverall`, this.getMentorStatsProgressOverall.bind(this))
 
         super.initializeRoutes();
@@ -49,7 +49,7 @@ export default class DashboardController extends BaseController {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     private async getMentorStats(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try{
-            const {mentor_id} = req.params;
+            const {mentor_user_id} = req.params;
             const paramStatus:any= req.query.status;
             let whereClauseStatusPart:any = {};
             let whereClauseStatusPartLiteral = "1=1";
@@ -62,7 +62,7 @@ export default class DashboardController extends BaseController {
 
             const mentor_stats = await mentor.findOne({
                 where:{
-                    mentor_id:mentor_id,
+                    user_id:mentor_user_id,
                 },
                 attributes:[
                     [
@@ -76,7 +76,7 @@ export default class DashboardController extends BaseController {
                             from teams as t
                             where 
                             ${addWhereClauseStatusPart?"t."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
-                            and t.mentor_id=\`mentor\`.\`mentor_id\`)
+                            and t.mentor_id=\`mentor\`.\`user_id\`)
                             )`),
                         "students_count"
                     ],
@@ -89,7 +89,7 @@ export default class DashboardController extends BaseController {
                             from teams as t
                             where 
                             ${addWhereClauseStatusPart?"t."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
-                            and t.mentor_id=\`mentor\`.\`mentor_id\`) 
+                            and t.mentor_id=\`mentor\`.\`user_id\`) 
                         and c.status not in ('DRAFT')
                         )`),
                         "ideas_count"
@@ -100,7 +100,7 @@ export default class DashboardController extends BaseController {
                         from teams as t
                         where 
                         ${addWhereClauseStatusPart?"t."+whereClauseStatusPartLiteral:whereClauseStatusPartLiteral}
-                        and t.mentor_id=\`mentor\`.\`mentor_id\`
+                        and t.mentor_id=\`mentor\`.\`user_id\`
                         )`),
                         "teams_count"
                     ]
