@@ -47,8 +47,9 @@ export const studentResetPasswordSchema = Joi.object().keys({
 
 export const studentUpdateSchema = Joi.object().keys({
     status: Joi.string().valid(...Object.values(constents.common_status_flags.list)),
-    // full_name: Joi.string(),
+    full_name: Joi.string(),
     Age: Joi.string(),
     Grade: Joi.string(),
+    team_id: Joi.string(),
     Gender: Joi.string().valid(...Object.values(constents.gender_flags.list))
 });

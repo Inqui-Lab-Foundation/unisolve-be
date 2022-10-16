@@ -9,8 +9,11 @@ import BaseController from './base.controller';
 import ValidationsHolder from '../validations/validationHolder';
 import validationMiddleware from '../middlewares/validation.middleware';
 import { constents } from '../configs/constents.config';
+import CryptoJS from 'crypto-js';
 import { Op } from 'sequelize';
 import { badRequest, notFound } from 'boom';
+import { user } from '../models/user.model';
+import { team } from '../models/team.model';
 
 export default class StudentController extends BaseController {
     model = "student";
@@ -35,19 +38,46 @@ export default class StudentController extends BaseController {
         this.router.post(`${this.path}/resetPassword`, validationMiddleware(studentResetPasswordSchema), this.resetPassword.bind(this));
         super.initializeRoutes();
     }
+    private HashPassword(value: any): any {
+        const key = CryptoJS.enc.Hex.parse('253D3FB468A0E24677C28A624BE0F939');
+        const iv = CryptoJS.enc.Hex.parse('00000000000000000000000000000000');
+        const hashedPassword = CryptoJS.AES.encrypt(value, key, {
+            iv: iv,
+            padding: CryptoJS.pad.NoPadding
+        }).toString();
+        return hashedPassword;
+    }
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        const generatedUUID = this.nanoid()
-        if (!req.body.username || req.body.username === "") {
-            req.body.username = generatedUUID
-            req.body['UUID'] = generatedUUID;
-        }
-        if (!req.body.password || req.body.password === "") req.body.password = this.password;
+        const { team_id } = req.body;
+        const generatedUUID = this.nanoid();
+        const hashedPassword = this.HashPassword(generatedUUID);
+        let trimmedTeamName: any;
+        let trimmedStudentName: any;
+        trimmedStudentName = req.body.full_name.replace(/[\n\r\s\t]+/g, '');
         if (!req.body.role || req.body.role !== 'STUDENT') {
-            return res.status(406).send(dispatcher(res,null, 'error', speeches.USER_ROLE_REQUIRED, 406));
+            return res.status(406).send(dispatcher(res, null, 'error', speeches.USER_ROLE_REQUIRED, 406));
         }
+        if (!req.body.team_id) {
+            return res.status(406).send(dispatcher(res, null, 'error', speeches.USER_TEAMID_REQUIRED, 406));
+        }
+        const teamDetails = await this.authService.crudService.findOne(team, { where: { team_id } });
+        if (!teamDetails) {
+            return res.status(406).send(dispatcher(res, null, 'error', speeches.TEAM_NOT_FOUND, 406));
+        } else {
+            trimmedTeamName = teamDetails.dataValues.team_name.replace(/[\n\r\s\t\_]+/g, '');
+        }
+        // console.log(trimmedTeamName, trimmedStudentName);
+        if (!req.body.username || req.body.username === "") {
+            req.body.username = trimmedTeamName + '_' + trimmedStudentName
+            req.body['UUID'] = hashedPassword;
+        }
+        if (!req.body.password || req.body.password === "") req.body.password = hashedPassword;
+        console.log(hashedPassword);
+        // console.log(req.body);
         const result = await this.authService.register(req.body);
-        if (result.user_res) return res.status(406).send(dispatcher(res,result.user_res.dataValues, 'error', speeches.STUDENT_EXISTS, 406));
-        return res.status(201).send(dispatcher(res,result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        if (result.user_res) return res.status(406).send(dispatcher(res, result.user_res.dataValues, 'error', speeches.STUDENT_EXISTS, 406));
+        result.profile.dataValues['password'] = generatedUUID;
+        return res.status(201).send(dispatcher(res, result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         let teamDetails: any;
@@ -56,9 +86,9 @@ export default class StudentController extends BaseController {
         req.body['role'] = 'STUDENT'
         result = await this.authService.login(req.body);
         if (!result) {
-            return res.status(404).send(dispatcher(res,result, 'error', speeches.USER_NOT_FOUND));
+            return res.status(404).send(dispatcher(res, result, 'error', speeches.USER_NOT_FOUND));
         } else if (result.error) {
-            return res.status(401).send(dispatcher(res,result.error, 'error', speeches.USER_RISTRICTED, 401));
+            return res.status(401).send(dispatcher(res, result.error, 'error', speeches.USER_RISTRICTED, 401));
         } else {
             studentDetails = await this.authService.getServiceDetails('student', { user_id: result.data.user_id });
             teamDetails = await this.authService.getServiceDetails('team', { team_id: studentDetails.dataValues.team_id });
@@ -71,7 +101,7 @@ export default class StudentController extends BaseController {
                 result.data['mentor_id'] = teamDetails.dataValues.mentor_id;
                 result.data['team_name'] = teamDetails.dataValues.team_name;
             }
-            return res.status(200).send(dispatcher(res,result.data, 'success', speeches.USER_LOGIN_SUCCESS));
+            return res.status(200).send(dispatcher(res, result.data, 'success', speeches.USER_LOGIN_SUCCESS));
         }
     }
     private async logout(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -79,46 +109,33 @@ export default class StudentController extends BaseController {
         if (result.error) {
             next(result.error);
         } else {
-            return res.status(200).send(dispatcher(res,speeches.LOGOUT_SUCCESS, 'success'));
+            return res.status(200).send(dispatcher(res, speeches.LOGOUT_SUCCESS, 'success'));
         }
     }
     private async changePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         const result = await this.authService.changePassword(req.body, res);
         if (!result) {
-            return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_NOT_FOUND));
+            return res.status(404).send(dispatcher(res, null, 'error', speeches.USER_NOT_FOUND));
         } else if (result.error) {
-            return res.status(404).send(dispatcher(res,result.error, 'error', result.error));
+            return res.status(404).send(dispatcher(res, result.error, 'error', result.error));
         }
         else if (result.match) {
-            return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_PASSWORD));
+            return res.status(404).send(dispatcher(res, null, 'error', speeches.USER_PASSWORD));
         } else {
-            return res.status(202).send(dispatcher(res,result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+            return res.status(202).send(dispatcher(res, result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
-    // private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-    //     const result = await this.authService.updatePassword(req.body, res);
-    //     if (!result) {
-    //         return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_NOT_FOUND));
-    //     } else if (result.error) {
-    //         return res.status(404).send(dispatcher(res,result.error, 'error', result.error));
-    //     }
-    //     else if (result.match) {
-    //         return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_PASSWORD));
-    //     } else {
-    //         return res.status(202).send(dispatcher(res,result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
-    //     }
-    // }
     private async resetPassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         // accept the user_id or user_name from the req.body and update the password in the user table
         const generatedUUID = this.nanoid()
         req.body['generatedPassword'] = generatedUUID;
         const result = await this.authService.restPassword(req.body, res);
         if (!result) {
-            return res.status(404).send(dispatcher(res,result.user_res, 'error', speeches.USER_NOT_FOUND));
+            return res.status(404).send(dispatcher(res, result.user_res, 'error', speeches.USER_NOT_FOUND));
         } else if (result.match) {
-            return res.status(404).send(dispatcher(res,result.match, 'error', speeches.USER_PASSWORD));
+            return res.status(404).send(dispatcher(res, result.match, 'error', speeches.USER_PASSWORD));
         } else {
-            return res.status(202).send(dispatcher(res,result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+            return res.status(202).send(dispatcher(res, result, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
         }
     }
     protected async getData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
@@ -164,7 +181,7 @@ export default class StudentController extends BaseController {
                     const result = this.getPagingData(responseOfFindAndCountAll, page, limit);
                     data = result;
                 } catch (error: any) {
-                    return res.status(500).send(dispatcher(res,data, 'error'))
+                    return res.status(500).send(dispatcher(res, data, 'error'))
                 }
 
             }
@@ -177,7 +194,7 @@ export default class StudentController extends BaseController {
                 } else {
                     throw notFound()
                 }
-                res.status(200).send(dispatcher(res,null, "error", speeches.DATA_NOT_FOUND));
+                res.status(200).send(dispatcher(res, null, "error", speeches.DATA_NOT_FOUND));
                 // if(data!=null){
                 //     throw 
                 (data.message)
@@ -186,7 +203,7 @@ export default class StudentController extends BaseController {
                 // }
             }
 
-            return res.status(200).send(dispatcher(res,data, 'success'));
+            return res.status(200).send(dispatcher(res, data, 'success'));
         } catch (error) {
             next(error);
         }
@@ -199,22 +216,55 @@ export default class StudentController extends BaseController {
             };
             const user_id = res.locals.user_id
             const where: any = {};
+            let trimmedTeamName: any;
+            let trimmedStudentName: any;
+            trimmedStudentName = req.body.full_name.replace(/[\n\r\s\t]+/g, '');
+            const teamDetails = await this.authService.crudService.findOne(team, { where: { team_id: req.body.team_id } });
+            if (!teamDetails) {
+                return res.status(406).send(dispatcher(res, null, 'error', speeches.TEAM_NOT_FOUND, 406));
+            } else {
+                trimmedTeamName = teamDetails.dataValues.team_name.replace(/[\n\r\s\t\_]+/g, '');
+            }
             where[`${this.model}_id`] = req.params.id;
             const modelLoaded = await this.loadModel(model);
-            const payload = this.autoFillTrackingColumns(req, res, modelLoaded)
-            const data = await this.crudService.update(modelLoaded, payload, { where: where });
-            // if (!data) {
-            //     return res.status(404).send(dispatcher(res,data, 'error'));
-            // }
-            if(!data){
+            const payload = this.autoFillTrackingColumns(req, res, modelLoaded);
+            const student_data = await this.crudService.update(modelLoaded, payload, { where: where });
+            const studentDetails = await this.crudService.findOne(modelLoaded, { where });
+            if (!studentDetails) {
                 throw badRequest()
             }
-            if (data instanceof Error) {
-                throw data;
+            if (studentDetails instanceof Error) {
+                throw studentDetails;
             }
-            return res.status(200).send(dispatcher(res,data, 'updated'));
+            const user_data = await this.crudService.update(user, {
+                full_name: payload.full_name,
+                username: trimmedTeamName + '_' + trimmedStudentName
+            }, { where: { user_id: studentDetails.dataValues.user_id } });
+            if (!student_data || !user_data) {
+                throw badRequest()
+            }
+            if (student_data instanceof Error) {
+                throw student_data;
+            }
+            if (user_data instanceof Error) {
+                throw user_data;
+            }
+            return res.status(200).send(dispatcher(res, student_data, 'updated'));
         } catch (error) {
             next(error);
         }
     }
 }
+        // private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        //     const result = await this.authService.updatePassword(req.body, res);
+        //     if (!result) {
+        //         return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_NOT_FOUND));
+        //     } else if (result.error) {
+        //         return res.status(404).send(dispatcher(res,result.error, 'error', result.error));
+        //     }
+        //     else if (result.match) {
+        //         return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_PASSWORD));
+        //     } else {
+        //         return res.status(202).send(dispatcher(res,result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+        //     }
+        // }
