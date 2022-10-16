@@ -19,7 +19,7 @@ export default class StudentController extends BaseController {
     model = "student";
     authService: authService = new authService;
     private password = process.env.GLOBAL_PASSWORD;
-    private nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 6);
+    private nanoid = customAlphabet('0123456789', 6);
 
     protected initializePath(): void {
         this.path = '/students';
@@ -53,7 +53,7 @@ export default class StudentController extends BaseController {
         const hashedPassword = this.HashPassword(generatedUUID);
         let trimmedTeamName: any;
         let trimmedStudentName: any;
-        trimmedStudentName = req.body.full_name.replace(/[\n\r\s\t]+/g, '');
+        trimmedStudentName = req.body.full_name.replace(/[\n\r\s\t]+/g, '').toLowerCase();
         if (!req.body.role || req.body.role !== 'STUDENT') {
             return res.status(406).send(dispatcher(res, null, 'error', speeches.USER_ROLE_REQUIRED, 406));
         }
@@ -64,7 +64,7 @@ export default class StudentController extends BaseController {
         if (!teamDetails) {
             return res.status(406).send(dispatcher(res, null, 'error', speeches.TEAM_NOT_FOUND, 406));
         } else {
-            trimmedTeamName = teamDetails.dataValues.team_name.replace(/[\n\r\s\t\_]+/g, '');
+            trimmedTeamName = teamDetails.dataValues.team_name.replace(/[\n\r\s\t\_]+/g, '').toLowerCase();
         }
         // console.log(trimmedTeamName, trimmedStudentName);
         if (!req.body.username || req.body.username === "") {
@@ -218,12 +218,12 @@ export default class StudentController extends BaseController {
             const where: any = {};
             let trimmedTeamName: any;
             let trimmedStudentName: any;
-            trimmedStudentName = req.body.full_name.replace(/[\n\r\s\t]+/g, '');
+            trimmedStudentName = req.body.full_name.replace(/[\n\r\s\t]+/g, '').toLowerCase();
             const teamDetails = await this.authService.crudService.findOne(team, { where: { team_id: req.body.team_id } });
             if (!teamDetails) {
                 return res.status(406).send(dispatcher(res, null, 'error', speeches.TEAM_NOT_FOUND, 406));
             } else {
-                trimmedTeamName = teamDetails.dataValues.team_name.replace(/[\n\r\s\t\_]+/g, '');
+                trimmedTeamName = teamDetails.dataValues.team_name.replace(/[\n\r\s\t\_]+/g, '').toLowerCase();
             }
             where[`${this.model}_id`] = req.params.id;
             const modelLoaded = await this.loadModel(model);
