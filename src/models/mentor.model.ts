@@ -89,7 +89,7 @@ mentor.init(
         mobile: {
             type: DataTypes.STRING,
             unique: {
-                name: 'G',
+                name: 'unique check',
                 msg: speeches.MENTOR_EXISTS
             }
         },
