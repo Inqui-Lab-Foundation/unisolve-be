@@ -254,7 +254,6 @@ export default class authService {
         // return Math.floor(1000 + Math.random() * 9000)
         return this.otp;
     }
-
     async triggerOtpMsg(mobile: any, otp: any) {
         const resObj = {
             Message: `Your verification code is ${otp}`,
