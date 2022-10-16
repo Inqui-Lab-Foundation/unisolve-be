@@ -6,6 +6,7 @@ import { notification } from './notification.model';
 import { baseConfig } from '../configs/base.config';
 import { user } from './user.model';
 import { organization } from './organization.model';
+import { speeches } from '../configs/speeches.config';
 
 
 export class mentor extends Model<InferAttributes<mentor>, InferCreationAttributes<mentor>> {
@@ -86,7 +87,11 @@ mentor.init(
             type: DataTypes.STRING
         },
         mobile: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            unique: {
+                name: 'unique check',
+                msg: speeches.MENTOR_EXISTS
+            }
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),

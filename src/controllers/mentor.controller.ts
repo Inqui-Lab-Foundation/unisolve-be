@@ -56,6 +56,10 @@ export default class MentorController extends BaseController {
             return res.status(406).send(dispatcher(res, result.user_res.dataValues, 'error', speeches.MENTOR_EXISTS, 406));
         }
         this.authService.triggerOtpMsg(req.body.mobile, otp); //async function but no need to await ...since we yet do not care about the outcome of the sms trigger ....!!this may need to change later on ...!!
+        //TODO: mobile validate check.
+        if (!result.profile) {
+            return res.status(406).send(dispatcher(res, result.profile, 'error', speeches.MOBILE_EXISTS, 406));
+        }
         const data = result.profile.dataValues;
         data['otp'] = otp;
         console.log(data);
