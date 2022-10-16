@@ -10,6 +10,7 @@ import { badRequest, notFound } from "boom";
 import { speeches } from "../configs/speeches.config";
 import { team } from "../models/team.model";
 import { student } from "../models/student.model";
+import { user } from "../models/user.model";
 
 export default class TeamController extends BaseController {
 
@@ -159,12 +160,20 @@ export default class TeamController extends BaseController {
         }
         const student_res = await this.crudService.findAll(student, {
             where: {
+                //TODO: replace the UUID with password name, and attach the username in a single object
+                // attributes: ['UUID', 'password'],
                 [Op.and]: [
                     whereClauseStatusPart,
                     where
-                ]
-            }
+                ],
+            }, include: [{
+                required: false,
+                model: user,
+                attributes: ["username"]
+            }]
         });
+        // console.log(student_res[0].dataValues.UUID)
+        // student_res.dataValues['password'] = "";
         return res.status(200).send(dispatcher(res, student_res, 'success'));
     };
     /**

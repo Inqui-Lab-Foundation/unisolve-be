@@ -19,7 +19,7 @@ export default class StudentController extends BaseController {
     model = "student";
     authService: authService = new authService;
     private password = process.env.GLOBAL_PASSWORD;
-    private nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789', 6);
+    private nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ', 6);
 
     protected initializePath(): void {
         this.path = '/students';
@@ -69,14 +69,14 @@ export default class StudentController extends BaseController {
         // console.log(trimmedTeamName, trimmedStudentName);
         if (!req.body.username || req.body.username === "") {
             req.body.username = trimmedTeamName + '_' + trimmedStudentName
-            req.body['UUID'] = hashedPassword;
+            req.body['UUID'] = generatedUUID;
+            req.body.qualification = hashedPassword
         }
         if (!req.body.password || req.body.password === "") req.body.password = hashedPassword;
         console.log(hashedPassword);
-        // console.log(req.body);
         const result = await this.authService.register(req.body);
         if (result.user_res) return res.status(406).send(dispatcher(res, result.user_res.dataValues, 'error', speeches.STUDENT_EXISTS, 406));
-        result.profile.dataValues['password'] = generatedUUID;
+        // result.profile.dataValues['password'] = generatedUUID;
         return res.status(201).send(dispatcher(res, result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
