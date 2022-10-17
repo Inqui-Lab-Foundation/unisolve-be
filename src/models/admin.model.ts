@@ -109,6 +109,15 @@ admin.init(
     }
 );
 
-admin.belongsTo(user, { foreignKey: 'user_id' , constraints: false});
-user.hasOne(admin, { foreignKey: 'user_id', constraints: false, scope: { role: 'ADMIN' }});
-user.hasOne(admin, { foreignKey: 'user_id', constraints: false, scope: { role: 'EVALUATER' }});
+// admin.belongsTo(user, { foreignKey: 'user_id', constraints: false });
+// user.hasOne(admin, { foreignKey: 'user_id', constraints: false, scope: { role: 'ADMIN' } });
+// user.hasOne(admin, { foreignKey: 'user_id', constraints: false, scope: { role: 'EVALUATER' } });
+//admin association
+user.hasOne(admin, {
+    foreignKey: 'user_id',
+    constraints: false,
+    scope: {
+        role: 'ADMIN'
+    }
+});
+admin.belongsTo(user, { foreignKey: 'user_id', constraints: false })
