@@ -144,7 +144,14 @@ student.init(
     }
 );
 
-// student.belongsTo(user, { foreignKey: 'user_id', constraints: false });
-// user.hasOne(student, { foreignKey: 'user_id', constraints: false, scope: { role: 'STUDENT' } });
-student.belongsTo(user, { foreignKey: 'user_id' });
-user.hasMany(student, { foreignKey: 'user_id' });
+student.belongsTo(user, {
+    foreignKey: 'user_id',
+    constraints: false,
+    scope: {
+        role: 'STUDENT'
+    }
+})
+user.hasOne(student, {
+    foreignKey: 'user_id',
+    constraints: false
+});
