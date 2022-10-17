@@ -119,5 +119,14 @@ evaluater.init(
     }
 );
 
-evaluater.belongsTo(user, { foreignKey: 'user_id' , constraints: false});
-user.hasOne(evaluater, { foreignKey: 'user_id', constraints: false, scope: { role: 'EVALUATER' }});
+// evaluater.belongsTo(user, { foreignKey: 'user_id', constraints: false });
+// user.hasOne(evaluater, { foreignKey: 'user_id', constraints: false, scope: { role: 'EVALUATER' } });
+//evaluater association
+user.hasOne(evaluater, {
+    foreignKey: 'user_id',
+    constraints: false,
+    scope: {
+        role: 'EVALUATER'
+    }
+});
+evaluater.belongsTo(user, { foreignKey: 'user_id', constraints: false })
