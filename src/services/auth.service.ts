@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { nanoid } from 'nanoid';
-import { Op } from 'sequelize';
+import { InstanceError, Op } from 'sequelize';
 
 import jwtUtil from '../utils/jwt.util';
 import CRUDService from "./crud.service";
@@ -22,6 +22,7 @@ import AWS from 'aws-sdk';
 import axios from 'axios';
 import { includes } from 'lodash';
 import { func } from 'joi';
+import { badRequest } from 'boom';
 export default class authService {
 
     crudService: CRUDService = new CRUDService;
@@ -123,16 +124,17 @@ export default class authService {
     async login(requestBody: any) {
         const result: any = {};
         try {
-            const user_res: any = await this.crudService.findOne(user, {
+            const user_res: any = await this.crudService.findOnePassword(user, {
                 where: {
                     username: requestBody.username,
-                    password: await bcrypt.hashSync(requestBody.password, process.env.SALT || baseConfig.SALT),
                     role: requestBody.role
-                }
+                }, include: [mentor, student]
             });
-            if (!user_res) {
-                return false;
-            } else {
+            if (!user_res) return false;
+            else if (user_res instanceof Error) throw user_res
+            // else if (!user_res.mentor) 
+            else if (user_res.dataValues.password !== await bcrypt.hashSync(requestBody.password, process.env.SALT || baseConfig.SALT)) throw badRequest('invalid password');
+            else {
                 // user status checking
                 let stop_procedure: boolean = false;
                 let error_message: string = '';
@@ -178,13 +180,14 @@ export default class authService {
                 //     status: constents.notification_status_flags.list.PUBLISHED,
                 //     created_by: user_res.user_id
                 // });
-
                 result['data'] = {
                     user_id: user_res.dataValues.user_id,
                     name: user_res.dataValues.username,
                     full_name: user_res.dataValues.full_name,
                     status: user_res.dataValues.status,
                     role: user_res.dataValues.role,
+                    mentor: user_res.mentor,
+                    student: user_res.student,
                     token,
                     type: 'Bearer',
                     expire: process.env.TOKEN_DEFAULT_TIMEOUT
