@@ -77,8 +77,8 @@ export default class MentorController extends BaseController {
     }
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        req.body['role'] = 'MENTOR'
         try {
-            req.body['role'] = 'MENTOR'
             const result = await this.authService.login(req.body);
             if (!result) throw notFound(speeches.USER_NOT_FOUND);
             else if (result.error) throw result.error;

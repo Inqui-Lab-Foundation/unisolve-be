@@ -125,14 +125,12 @@ export default class authService {
         const result: any = {};
         try {
             const user_res: any = await this.crudService.findOnePassword(user, {
-                where: {
-                    username: requestBody.username,
-                    role: requestBody.role
-                }, include: [mentor, student]
+                where: { username: requestBody.username, role: requestBody.role },
+                include: [mentor, student, mentor, evaluater, admin]
             });
+            console.log(user_res);
             if (!user_res) return false;
             else if (user_res instanceof Error) throw user_res
-            // else if (!user_res.mentor) 
             else if (user_res.dataValues.password !== await bcrypt.hashSync(requestBody.password, process.env.SALT || baseConfig.SALT)) throw badRequest('invalid password');
             else {
                 // user status checking
@@ -157,10 +155,8 @@ export default class authService {
                     is_loggedin: "YES",
                     last_login: new Date().toLocaleString()
                 }, { where: { user_id: user_res.user_id } });
-
                 user_res.is_loggedin = "YES";
                 const token = await jwtUtil.createToken(user_res.dataValues, `${process.env.PRIVATE_KEY}`);
-
                 // await sendNotification({
                 //     notification_type: constents.notification_types.list.PUSH,
                 //     target_audience: user_res.user_id, // Keep 'ALL' for all users
@@ -170,7 +166,6 @@ export default class authService {
                 //     status: constents.notification_status_flags.list.PUBLISHED,
                 //     created_by: user_res.user_id
                 // });
-
                 // await sendNotification({
                 //     notification_type: constents.notification_types.list.EMAIL,
                 //     target_audience: user_res.email, // Keep 'ALL' for all users
@@ -188,6 +183,8 @@ export default class authService {
                     role: user_res.dataValues.role,
                     mentor: user_res.mentor,
                     student: user_res.student,
+                    evaluater: user_res.evaluater,
+                    admin: user_res.admin,
                     token,
                     type: 'Bearer',
                     expire: process.env.TOKEN_DEFAULT_TIMEOUT

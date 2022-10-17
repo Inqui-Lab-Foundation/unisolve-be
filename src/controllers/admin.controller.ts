@@ -5,6 +5,7 @@ import dispatcher from '../utils/dispatch.util';
 import authService from '../services/auth.service';
 import BaseController from './base.controller';
 import ValidationsHolder from '../validations/validationHolder';
+import { locked, notFound } from 'boom';
 
 export default class AdminController extends BaseController {
     model = "admin";
@@ -31,53 +32,48 @@ export default class AdminController extends BaseController {
         if (!req.body.username || req.body.username === "") req.body.username = req.body.full_name.replace(/\s/g, '');
         if (!req.body.password || req.body.password === "") req.body.password = this.password;
         if (!req.body.role || req.body.role !== 'ADMIN') {
-            return res.status(406).send(dispatcher(res,null, 'error', speeches.USER_ROLE_REQUIRED, 406));
+            return res.status(406).send(dispatcher(res, null, 'error', speeches.USER_ROLE_REQUIRED, 406));
         }
         const result = await this.authService.register(req.body);
-        if (result.user_res) return res.status(406).send(dispatcher(res,result.user_res.dataValues, 'error', speeches.EVALUATER_EXISTS, 406));
-        return res.status(201).send(dispatcher(res,result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        if (result.user_res) return res.status(406).send(dispatcher(res, result.user_res.dataValues, 'error', speeches.EVALUATER_EXISTS, 406));
+        return res.status(201).send(dispatcher(res, result.profile.dataValues, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        let adminDetails: any;
         req.body['role'] = 'ADMIN'
-        const result = await this.authService.login(req.body);
-        if (!result) {
-            return res.status(404).send(dispatcher(res,result, 'error', speeches.USER_NOT_FOUND));
-        } else if (result.error) {
-            return res.status(401).send(dispatcher(res,result.error, 'error', speeches.USER_RISTRICTED, 401));
-        } else {
-            adminDetails = await this.authService.getServiceDetails('admin', { user_id: result.data.user_id });
-            if (!adminDetails) {
-                result.data['admin_id'] = null;
-            } else {
-                result.data['admin_id'] = adminDetails.dataValues.admin_id;
-            }
-            return res.status(200).send(dispatcher(res,result.data, 'success', speeches.USER_LOGIN_SUCCESS));
-        }
+        try {
+            const result = await this.authService.login(req.body);
+            if (!result) throw notFound(speeches.USER_NOT_FOUND);
+            else if (result.error) throw result.error;
+            else if (!result.data || !result.data.admin || !result.data.admin.dataValues) throw locked(speeches.USER_LOCKED)
+            result.data['admin_id'] = result.data.admin.dataValues.admin_id;
+            return res.status(200).send(dispatcher(res, result.data, 'success', speeches.USER_LOGIN_SUCCESS));
+        } catch(error) {
+        next(error)
+    }
+}
+
+    private async logout(req: Request, res: Response, next: NextFunction): Promise < Response | void> {
+    const result = await this.authService.logout(req.body, res);
+    if(result.error) {
+    next(result.error);
+} else {
+    return res.status(200).send(dispatcher(res, speeches.LOGOUT_SUCCESS, 'success'));
+}
     }
 
-    private async logout(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        const result = await this.authService.logout(req.body, res);
-        if (result.error) {
-            next(result.error);
-        } else {
-            return res.status(200).send(dispatcher(res,speeches.LOGOUT_SUCCESS, 'success'));
-        }
-    }
-
-    private async changePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        const result = await this.authService.changePassword(req.body, res);
-        if (!result) {
-            return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_NOT_FOUND));
-        } else if (result.error) {
-            return res.status(404).send(dispatcher(res,result.error, 'error', result.error));
-        }
+    private async changePassword(req: Request, res: Response, next: NextFunction): Promise < Response | void> {
+    const result = await this.authService.changePassword(req.body, res);
+    if(!result) {
+        return res.status(404).send(dispatcher(res, null, 'error', speeches.USER_NOT_FOUND));
+    } else if(result.error) {
+    return res.status(404).send(dispatcher(res, result.error, 'error', result.error));
+}
         else if (result.match) {
-            return res.status(404).send(dispatcher(res,null, 'error', speeches.USER_PASSWORD));
-        } else {
-            return res.status(202).send(dispatcher(res,result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
-        }
+    return res.status(404).send(dispatcher(res, null, 'error', speeches.USER_PASSWORD));
+} else {
+    return res.status(202).send(dispatcher(res, result.data, 'accepted', speeches.USER_PASSWORD_CHANGE, 202));
+}
     }
 
     // private async updatePassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {

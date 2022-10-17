@@ -115,9 +115,12 @@ admin.init(
 //admin association
 user.hasOne(admin, {
     foreignKey: 'user_id',
+    constraints: false
+});
+admin.belongsTo(user, {
+    foreignKey: 'user_id',
     constraints: false,
     scope: {
         role: 'ADMIN'
     }
-});
-admin.belongsTo(user, { foreignKey: 'user_id', constraints: false })
+})
