@@ -77,15 +77,13 @@ export default class MentorController extends BaseController {
     }
 
     private async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-        req.body['role'] = 'MENTOR'
         try {
+            req.body['role'] = 'MENTOR'
             const result = await this.authService.login(req.body);
-            console.log("result:", result.data.mentor.dataValues)
             if (!result) throw notFound(speeches.USER_NOT_FOUND);
             else if (result.error) throw result.error;
             else if (!result.data || !result.data.mentor || !result.data.mentor.dataValues || result.data.mentor.dataValues.reg_status !== '3') throw locked(speeches.USER_REG_STATUS);
-            result.data['mentor_id'] = result.data.mentor.dataValues.mentor_id;
-            result.data['reg_status'] = result.data.mentor.dataValues.reg_statue;
+            delete result.data.student; delete result.data.admin; delete result.data.evaluater;
             return res.status(200).send(dispatcher(res, result.data, 'success', speeches.USER_LOGIN_SUCCESS));
         } catch (error) {
             next(error);
