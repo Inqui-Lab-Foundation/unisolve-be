@@ -8,10 +8,7 @@ export const tableName = "mentors";
 export const up: Migration = async ({ context: sequelize }) => {
 	await sequelize.getQueryInterface().changeColumn(tableName, 'mobile', {
 		type: DataTypes.STRING,
-		unique: {
-			name: 'unique check',
-			msg: speeches.MENTOR_EXISTS
-		}
+		unique: true
 	});
 };
 

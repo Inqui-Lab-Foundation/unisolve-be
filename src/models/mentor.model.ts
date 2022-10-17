@@ -88,10 +88,7 @@ mentor.init(
         },
         mobile: {
             type: DataTypes.STRING,
-            unique: {
-                name: 'unique check',
-                msg: speeches.MENTOR_EXISTS
-            }
+            unique: true
         },
         status: {
             type: DataTypes.ENUM(...Object.values(constents.common_status_flags.list)),
