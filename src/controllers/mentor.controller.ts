@@ -10,7 +10,7 @@ import dispatcher from '../utils/dispatch.util';
 import authService from '../services/auth.service';
 import BaseController from './base.controller';
 import ValidationsHolder from '../validations/validationHolder';
-import { badRequest } from 'boom';
+import Boom, { badRequest, locked, notFound } from 'boom';
 import { mentor } from '../models/mentor.model';
 import { where } from 'sequelize/types';
 
@@ -80,28 +80,15 @@ export default class MentorController extends BaseController {
         req.body['role'] = 'MENTOR'
         try {
             const result = await this.authService.login(req.body);
-            // console.log(result);
-            if (!result) {
-                return res.status(404).send(dispatcher(res, result, 'error', speeches.USER_NOT_FOUND));
-            }
-            // else if (result.error) {
-            //     return res.status(401).send(dispatcher(res, result.error, 'error', speeches.USER_RISTRICTED, 401));
-        // }
-            else {
-                // mentorDetails = await this.authService.getServiceDetails('mentor', { user_id: result.data.user_id });
-                // result.data['mentor_id'] = mentorDetails.dataValues.mentor_id
-                const mentorData = await this.authService.crudService.findOne(mentor, { where: { user_id: result.data.user_id } });
-                if (!mentorData || mentorData instanceof Error) {
-                    return res.status(404).send(dispatcher(res, null, 'error', speeches.USER_REG_STATUS));
-                }
-                if (mentorData.dataValues.reg_status !== '3') {
-                    return res.status(404).send(dispatcher(res, null, 'error', speeches.USER_REG_STATUS));
-                }
-                result.data['mentor_id'] = mentorData.dataValues.mentor_id;
-                return res.status(200).send(dispatcher(res, result.data, 'success', speeches.USER_LOGIN_SUCCESS));
-            }
+            console.log("result:", result.data.mentor.dataValues)
+            if (!result) throw notFound(speeches.USER_NOT_FOUND);
+            else if (result.error) throw result.error;
+            else if (!result.data || !result.data.mentor || !result.data.mentor.dataValues || result.data.mentor.dataValues.reg_status !== '3') throw locked(speeches.USER_REG_STATUS);
+            result.data['mentor_id'] = result.data.mentor.dataValues.mentor_id;
+            result.data['reg_status'] = result.data.mentor.dataValues.reg_statue;
+            return res.status(200).send(dispatcher(res, result.data, 'success', speeches.USER_LOGIN_SUCCESS));
         } catch (error) {
-            return res.status(401).send(dispatcher(res, error, 'error', speeches.USER_RISTRICTED, 401));
+            next(error);
         }
     }
 
