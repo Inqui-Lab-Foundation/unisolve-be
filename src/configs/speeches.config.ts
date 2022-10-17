@@ -114,5 +114,7 @@ export const speeches = {
 
     TEACHER_OBJECT: "Teacher object required",
     STUDENT_OBJECT: "Student object required",
+    STUDENT_DETAILS_NOT_FOUND: "Student details not found",
+    TEAM_DETAILS_NOT_FOUND: "Team details not found",
     ROADMAP_FILE_CORRUPTED:"Roadmao file is corrupted, Please contact the administrator.",
 }
