@@ -4,6 +4,10 @@ import { constents } from '../configs/constents.config';
 import db from '../utils/dbconnection.util';
 import { notification } from './notification.model';
 import { baseConfig } from '../configs/base.config';
+import { student } from './student.model';
+import { mentor } from './mentor.model';
+import { evaluater } from './evaluater.model';
+import { admin } from './admin.model';
 
 export class user extends Model<InferAttributes<user>, InferCreationAttributes<user>> {
     declare user_id: CreationOptional<number>;
@@ -24,33 +28,7 @@ export class user extends Model<InferAttributes<user>, InferCreationAttributes<u
     static associate(models: any) {
         // define association here
         user.hasMany(notification, { sourceKey: 'notification_id', as: 'notifications' });
-
     }
-
-    // static toJSON(user: userAttributes) {
-    //     return {
-    //         user_id: user.user_id,
-    //         email: user.email,
-    //         password: user.password,
-    //         full_name: user.full_name,
-    //         image: user.image,
-    //         date_of_birth: user.date_of_birth,
-    //         mobile: user.mobile,
-    //         team_id: user.team_id,
-    //         org_name: user.org_name,
-    //         qualification: user.qualification,
-    //         stream: user.stream,
-    //         city: user.city,
-    //         district: user.district,
-    //         state: user.state,
-    //         country: user.country,
-    //         role: user.role,
-    //         is_loggedin: user.is_loggedin,
-    //         last_login: user.last_login,
-    //         status: user.status,
-    //         created_by: user.created_by,
-    //         updated_by: user.updated_by,
-    // }
 }
 
 user.init(
@@ -62,6 +40,7 @@ user.init(
         },
         username: {
             type: DataTypes.STRING,
+            unique: true,
             allowNull: false,
         },
         full_name: {
@@ -117,7 +96,7 @@ user.init(
         updatedAt: 'updated_at',
         createdAt: 'created_at',
         hooks: {
-            beforeCreate: async (user:any) => {
+            beforeCreate: async (user: any) => {
                 if (user.password) {
                     user.password = await bcrypt.hashSync(user.password, process.env.SALT || baseConfig.SALT);
                 }
