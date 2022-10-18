@@ -10,9 +10,14 @@ import dispatcher from '../utils/dispatch.util';
 import authService from '../services/auth.service';
 import BaseController from './base.controller';
 import ValidationsHolder from '../validations/validationHolder';
-import { badRequest } from 'boom';
+import { badRequest, internal } from 'boom';
 import { mentor } from '../models/mentor.model';
 import { where } from 'sequelize/types';
+import { mentor_topic_progress } from '../models/mentor_topic_progress.model';
+import { quiz_survey_response } from '../models/quiz_survey_response.model';
+import { quiz_response } from '../models/quiz_response.model';
+import { team } from '../models/team.model';
+import { student } from '../models/student.model';
 
 export default class MentorController extends BaseController {
     model = "mentor";
@@ -36,6 +41,7 @@ export default class MentorController extends BaseController {
         this.router.put(`${this.path}/updatePassword`, this.updatePassword.bind(this));
         this.router.put(`${this.path}/verifyUser`, this.verifyUser.bind(this));
         this.router.put(`${this.path}/updateMobile`, this.updateMobile.bind(this));
+        this.router.delete(`${this.path}/:mentor_user_id/deleteAllData`, this.deleteAllData.bind(this));
         super.initializeRoutes();
     }
     // TODO: update the register flow by adding a flag called reg_statue in mentor tables
@@ -175,6 +181,109 @@ export default class MentorController extends BaseController {
                 return res.status(404).send(dispatcher(res, result.error, 'error', result.error));
             } else {
                 return res.status(202).send(dispatcher(res, result.data, 'accepted', speeches.USER_MOBILE_CHANGE, 202));
+            }
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    //TODO: test this api and debug and fix any issues in testing if u see any ...!!
+    private async deleteAllData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            const { mentor_user_id } = req.params;
+            // const { mobile } = req.body;
+            if (!mentor_user_id) {
+                throw badRequest(speeches.USER_USERID_REQUIRED);
+            }
+
+            //get mentor details
+            const mentorResult:any = await this.crudService.findOne(mentor,{where:{user_id:mentor_user_id}})
+            if(!mentorResult){
+                throw internal(speeches.DATA_CORRUPTED)
+            }
+            if(mentorResult instanceof Error){
+                throw mentorResult
+            }
+
+            const deleteMentorResponseResult = await this.authService.bulkDeleteMentorResponse(mentor_user_id)
+            if(!deleteMentorResponseResult){
+                throw internal("error while deleting mentor response")
+            }
+            if(deleteMentorResponseResult instanceof Error){
+                throw deleteMentorResponseResult
+            }
+
+            //get team details
+            const teamResult:any = await team.findAll({
+                attributes:["team_id"],
+                where:{mentor_id:mentor_user_id},
+                raw:true
+            })
+            if(!teamResult){
+                throw internal(speeches.DATA_CORRUPTED)
+            }
+            if(teamResult instanceof Error){
+                throw teamResult
+            }
+            
+            const arrayOfteams = teamResult.map((teamSingleresult:any)=>{
+                return teamSingleresult.team_id;
+            })
+            // console.log("teamResult",teamResult)
+            // console.log("arrayOfteams",arrayOfteams)
+            if(arrayOfteams&& arrayOfteams.length>0){
+                const studentUserIds = await student.findAll({
+                    where:{team_id:arrayOfteams},
+                    raw:true,
+                    attributes:["user_id"]
+                })
+                
+                if(studentUserIds && !(studentUserIds instanceof Error)){
+                    
+                    // console.log("studentUserIds",studentUserIds)
+                    const arrayOfStudentuserIds = studentUserIds.map((student)=>student.user_id)
+                    // console.log("arrayOfStudentuserIds",arrayOfStudentuserIds)
+
+                    for(var i =0;i<arrayOfStudentuserIds.length;i++) {
+                        const deletStudentResponseData = await this.authService.bulkDeleteUserResponse(arrayOfStudentuserIds[i])
+                        if(deletStudentResponseData instanceof Error){
+                            throw deletStudentResponseData;
+                        }
+                    };
+                    const resultBulkDeleteStudents = await this.authService.bulkDeleteUserWithStudentDetails(arrayOfStudentuserIds)
+                    // console.log("resultBulkDeleteStudents",resultBulkDeleteStudents)
+                    // if(!resultBulkDeleteStudents){
+                    //     throw internal("error while deleteing students")
+                    // }
+                    if(resultBulkDeleteStudents instanceof Error){
+                        throw resultBulkDeleteStudents
+                    }
+                }
+                
+                const resultTeamDelete = await this.crudService.delete(team,{where:{team_id:arrayOfteams}})
+                // if(!resultTeamDelete){
+                //     throw internal("error while deleting team")
+                // }
+                if(resultTeamDelete instanceof Error){
+                    throw resultTeamDelete
+                }
+            }
+            let resultmentorDelete:any={};
+            resultmentorDelete = await this.authService.bulkDeleteUserWithMentorDetails([mentor_user_id])
+            // if(!resultmentorDelete){
+            //     throw internal("error while deleting mentor")
+            //}
+            if(resultmentorDelete instanceof Error){
+                throw resultmentorDelete
+            }
+
+            // if (!resultmentorDelete) {
+            //     return res.status(404).send(dispatcher(res, null, 'error', speeches.USER_NOT_FOUND));
+            // } else 
+            if (resultmentorDelete.error) {
+                return res.status(404).send(dispatcher(res, resultmentorDelete.error, 'error', resultmentorDelete.error));
+            } else {
+                return res.status(202).send(dispatcher(res, resultmentorDelete.dataValues, 'success', speeches.USER_DELETED, 202));
             }
         } catch (error) {
             next(error)

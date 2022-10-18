@@ -21,7 +21,9 @@ import { worksheet_response } from "../models/worksheet_response.model";
 import AWS from 'aws-sdk';
 import axios from 'axios';
 import { includes } from 'lodash';
-import { func } from 'joi';
+import { func, invalid } from 'joi';
+import { mentor_topic_progress } from '../models/mentor_topic_progress.model';
+import { internal, notFound } from 'boom';
 export default class authService {
 
     crudService: CRUDService = new CRUDService;
@@ -43,8 +45,16 @@ export default class authService {
                 include: {
                     model: mentor,
                     attributes: [
-                        'full_name'
-                    ]
+                        'user_id',
+                        'full_name',
+                        'mobile',
+                    ],
+                    include:{
+                        model:user,
+                        attributes:[
+                            'username'
+                        ]
+                    }
                 }
             })
             return org;
@@ -425,6 +435,109 @@ export default class authService {
                 result[`${data}`] = deleted
             }
             return result;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async bulkDeleteMentorResponse(user_id: any) {
+        try {
+            let result: any = {};
+            let models = [
+                quiz_response,
+                quiz_survey_response,
+                mentor_topic_progress,
+                //worksheet_response,
+                //reflective_quiz_response,
+                ];
+            for (let i = 0; i < models.length; i++) {
+                let deleted = await this.crudService.delete(models[i], { where: { user_id } });
+                let data = models[i].tableName;
+                result[`${data}`] = deleted
+            }
+            return result;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async deleteUserWithDetails(user_id: any,user_role=null) {
+        try {
+            let role :any = user_role
+            if(user_role==null){
+                const userResult = await this.crudService.findOne(user,{where:{user_id:user_id}})
+                if(!userResult){
+                    throw notFound()
+                }
+                if(userResult instanceof Error){
+                    return userResult;
+                }
+                if(!userResult.dataValues|| !userResult.dataValues.role){
+                    return invalid(speeches.INTERNAL);
+                }
+                 role = userResult.dataValues.role;    
+            }
+            const allModels:any = {"STUDENT":student, "MENTOR":mentor, "ADMIN":admin,"EVALUATER":evaluater}
+            const UserDetailsModel = allModels[role];      
+
+            const userDetailsDeleteresult  = await this.crudService.delete(UserDetailsModel,{where:{user_id:user_id}})
+            if(!userDetailsDeleteresult){
+                throw internal("something went wrong while deleting user details")
+            }
+            if(userDetailsDeleteresult instanceof Error){
+                throw userDetailsDeleteresult;
+            }
+
+            const userDeleteResult = await this.crudService.delete(user,{where:{user_id:user_id}})
+            if(!userDeleteResult){
+                throw internal("something went wrong while deleting user")
+            }
+            if(userDeleteResult instanceof Error){
+                throw userDeleteResult;
+            }
+            return {userDeleteResult,userDetailsDeleteresult};
+        } catch (error) {
+            return error;
+        }
+    }
+
+    async bulkDeleteUserWithStudentDetails(arrayOfUserIds: any) {
+        return await this.bulkDeleteUserWithDetails(student,arrayOfUserIds)
+    }
+
+    async bulkDeleteUserWithMentorDetails(arrayOfUserIds: any) {
+        return await this.bulkDeleteUserWithDetails(mentor,arrayOfUserIds)
+    }
+
+    async bulkDeleteUserWithDetails(argUserDetailsModel:any,arrayOfUserIds: any) {
+        try {
+            
+            // const allModels:any = {"STUDENT":student, "MENTOR":mentor, "ADMIN":admin,"EVALUATER":evaluater}
+            const UserDetailsModel = argUserDetailsModel
+            const resultUserDetailsDelete  = await this.crudService.delete(UserDetailsModel,{
+                where:{user_id: arrayOfUserIds},
+                force: true
+            })
+            // console.log("resultUserDetailsDelete",resultUserDetailsDelete)
+            // if(!resultUserDetailsDelete){
+            //     throw internal("something went wrong while deleting user detais ")
+            // }
+            if(resultUserDetailsDelete instanceof Error){
+                throw resultUserDetailsDelete;
+            }
+
+            const resultUserDelete  = await this.crudService.delete(user,{
+                where:{user_id:arrayOfUserIds},
+                force: true
+            })
+            // console.log("resultUserDelete",resultUserDelete)
+            // if(!resultUserDelete){
+            //     throw internal("something went wrong while deleting user")
+            // }
+            if(resultUserDelete instanceof Error){
+                throw resultUserDetailsDelete;
+            }
+            return resultUserDelete;
         } catch (error) {
             return error;
         }

@@ -18,6 +18,8 @@ export const speeches = {
     UNAUTHORIZED_ACCESS: "Unauthorized Access! Kindly provide a valid token",
     TOKEN_EXPIRED: "Token Expired! Kindly provide a valid token",
     BAD_REQUEST: "Bad Request",
+    INTERNAL: "Interval Error Occured",
+    DATA_CORRUPTED: "Data Corrupted, contact your administrator",
     NOT_ACCEPTABLE: "Not Acceptable",
     DATA_NOT_FOUND: "Data not found",
     UPLOAD_FAILD: "File upload failed",
