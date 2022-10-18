@@ -26,10 +26,8 @@ import { badRequest } from 'boom';
 export default class authService {
 
     crudService: CRUDService = new CRUDService;
-    private password = process.env.GLOBAL_PASSWORD;
     private aws_access_key = process.env.AWS_ACCESS_KEY_ID;
     private aws_secret_key = process.env.AWS_SECRET_ACCESS_KEY;
-    private aws_region = process.env.AWS_REGION;
     private otp = '112233';
 
     async checkOrgDetails(organization_code: any) {
@@ -82,7 +80,6 @@ export default class authService {
     async register(requestBody: any) {
         let response: any = {};
         let profile: any;
-        let reg_statue: any = requestBody.reg_statue;
         try {
             const user_res = await this.crudService.findOne(user, { where: { username: requestBody.username } });
             if (user_res) {
@@ -123,12 +120,44 @@ export default class authService {
     }
     async login(requestBody: any) {
         const result: any = {};
+        let jointNeedToBeIncluded: any = null;
+        let requiredAttributesFromJoint: any = [];
+        switch (requestBody.role) {
+            case 'STUDENT': {
+                jointNeedToBeIncluded = student; break;
+            }
+            case 'MENTOR': {
+                jointNeedToBeIncluded = mentor;
+                requiredAttributesFromJoint = ["mentor_id", "reg_status"]
+                break;
+            }
+            case 'EVALUATER': {
+                jointNeedToBeIncluded = evaluater; break;
+            }
+            case 'ADMIN': {
+                jointNeedToBeIncluded = admin; break;
+            }
+            default: jointNeedToBeIncluded = null
+        }
+        console.log(requiredAttributesFromJoint)
         try {
             const user_res: any = await this.crudService.findOnePassword(user, {
+                attributes: [
+                    "user_id",
+                    "username",
+                    "full_name",
+                    "password",
+                    "status",
+                    "role",
+                    "is_loggedIn",
+                    "last_login"
+                ],
                 where: { username: requestBody.username, role: requestBody.role },
-                include: [mentor, student, mentor, evaluater, admin]
+                include: {
+                    model: jointNeedToBeIncluded,
+                    attributes: requiredAttributesFromJoint
+                }
             });
-            console.log(user_res);
             if (!user_res) return false;
             else if (user_res instanceof Error) throw user_res
             else if (user_res.dataValues.password !== await bcrypt.hashSync(requestBody.password, process.env.SALT || baseConfig.SALT)) throw badRequest('invalid password');
@@ -181,16 +210,27 @@ export default class authService {
                     full_name: user_res.dataValues.full_name,
                     status: user_res.dataValues.status,
                     role: user_res.dataValues.role,
-                    mentor: user_res.mentor,
-                    student: user_res.student,
-                    evaluater: user_res.evaluater,
-                    admin: user_res.admin,
-                    token,
                     type: 'Bearer',
-                    expire: process.env.TOKEN_DEFAULT_TIMEOUT
+                    expire: process.env.TOKEN_DEFAULT_TIMEOUT,
+                    token,
                 }
+                result.data[requestBody.role] = user_res.dataValues.mentor.dataValues
+                // console.log(result.data);
                 return result
             }
+            // {
+            //     user_id: 3,
+            //         name: 'Mentor@unisolve.org',
+            //             full_name: 'default Mentor User fullName',
+            //                 status: 'ACTIVE',
+            //                     role: 'MENTOR',
+            //                         type: 'Bearer',
+            //                             expire: '3d',
+            //                                 token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJ1c2VybmFtZSI6Ik1lbnRvckB1bmlzb2x2ZS5vcmciLCJmdWxsX25hbWUiOiJkZWZhdWx0IE1lbnRvciBVc2VyIGZ1bGxOYW1lIiwicGFzc3dvcmQiOiIkMmEkMTAkaVhQNXVuWlQ2c3lORkFsUFl2em9QdWdPdTd4U2g3ZTJieTl5SkFDSmcucGRZR0Vmbzg2TkciLCJzdGF0dXMiOiJBQ1RJVkUiLCJyb2xlIjoiTUVOVE9SIiwiaXNfbG9nZ2VkSW4iOiJZRVMiLCJsYXN0X2xvZ2luIjoiMjAyMi0xMC0xMFQxNzoxNDowNS4wMDBaIiwibWVudG9yIjp7Im1lbnRvcl9pZCI6MSwicmVnX3N0YXR1cyI6IjMifSwiaXNfbG9nZ2VkaW4iOiJZRVMiLCJpYXQiOjE2NjYwNjgxODMsImV4cCI6MTY2NjMyNzM4M30.HO9nwcJKfe3JNLsCNfaQka2K3IpYIaR-blVbP0nWdPE',
+            //                                     MENTOR: { mentor_id: 1, reg_status: '3' }
+            //             Executing(default ): SELECT`user`.`user_id`, `user`.`username`, `user`.`full_name`, `user`.`password`, `user`.`status`, `user`.`role`, `user`.`is_loggedIn`, `user`.`last_login`, `mentor`.`mentor_id` AS`mentor.mentor_id`, `mentor`.`reg_status` AS `mentor.reg_status` FROM `users` AS `user` LEFT 
+            // OUTER JOIN `mentors` AS `mentor` ON`user`.`user_id` = `mentor`.`user_id` WHERE`user`.`username` = 'Mentor@unisolve.org' AND`user`.`role` = 'MENTOR';
+            // }
         } catch (error) {
             result['error'] = error;
             return result;
@@ -270,19 +310,6 @@ export default class authService {
             }
         };
         // try {
-        const resp: any = await new AWS.SNS({
-            apiVersion: '2010-03-31',
-            accessKeyId: this.aws_access_key,
-            secretAccessKey: this.aws_secret_key,
-            region: 'ap-south-1'
-        }).publish(resObj, function (error: any, data: any) {
-            if (error) {
-                console.log(error);
-                return error;
-            }
-            console.log(data);
-            return { MessageID: data.MessageId, OTP: otp }
-        })
         //.promise();
         // resp.then(
         //     function (data: any) {
