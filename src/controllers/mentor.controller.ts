@@ -56,24 +56,27 @@ export default class MentorController extends BaseController {
             return res.status(406).send(dispatcher(res, null, 'error', speeches.USER_ROLE_REQUIRED, 406));
         }
         req.body['reg_status'] = 1;
-        const result = await this.authService.register(req.body);
-        if (result.user_res) {
-            return res.status(406).send(dispatcher(res, result.user_res.dataValues, 'error', speeches.MENTOR_EXISTS, 406));
+        const result: any = await this.authService.mentorRegister(req.body);
+        // console.log(result.output.payload.message);
+        if (result && result.output && result.output.payload &&  result.output.payload.message == 'Email') {
+            return res.status(406).send(dispatcher(res, result.data, 'error', speeches.MENTOR_EXISTS, 406));
         }
-        //TODO: mobile validate check.
-        if (!result.profile) {
-            return res.status(406).send(dispatcher(res, result.profile, 'error', speeches.MOBILE_EXISTS, 406));
+        if (result && result.output && result.output.payload && result.output.payload.message == 'Mobile') {
+            return res.status(406).send(dispatcher(res, result.data, 'error', speeches.MOBILE_EXISTS, 406));
         }
-        // const otp = await this.authService.generateOtp();
-        const otp = await this.authService.triggerOtpMsg(req.body.mobile); //async function but no need to await ...since we yet do not care about the outcome of the sms trigger ....!!this may need to change later on ...!!
-        const updatePassword = await this.authService.crudService.update(user,
-            { password: otp },
-            { where: { user_id: result.profile.dataValues.user_id } });
-        console.log("updatePassword: ", updatePassword)
-        const data = result.profile.dataValues;
-        data['otp'] = otp;
-        console.log(data);
-        return res.status(201).send(dispatcher(res, data, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        // if (!result) {
+        //     return res.status(406).send(dispatcher(res, result.profile, 'error', speeches.MOBILE_EXISTS, 406));
+        // }
+        // // const otp = await this.authService.generateOtp();
+        // const otp = await this.authService.triggerOtpMsg(req.body.mobile); //async function but no need to await ...since we yet do not care about the outcome of the sms trigger ....!!this may need to change later on ...!!
+        // const updatePassword = await this.authService.crudService.update(user,
+        //     { password: otp },
+        //     { where: { user_id: result.profile.dataValues.user_id } });
+        // console.log("updatePassword: ", updatePassword)
+        // const data = result.profile.dataValues;
+        // data['otp'] = otp;
+        // console.log(data);
+        return res.status(201).send(dispatcher(res, 'data', 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
     // TODO: Update flag reg_status on success validate the OTP

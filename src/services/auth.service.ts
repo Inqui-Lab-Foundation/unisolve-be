@@ -24,7 +24,7 @@ import CryptoJS from 'crypto-js';
 import { includes } from 'lodash';
 import { func, invalid } from 'joi';
 import { mentor_topic_progress } from '../models/mentor_topic_progress.model';
-import { internal, notFound } from 'boom';
+import { badRequest, internal, notAcceptable, notFound } from 'boom';
 export default class authService {
 
     crudService: CRUDService = new CRUDService;
@@ -85,6 +85,32 @@ export default class authService {
             if (details instanceof Error) {
                 return 'not'
             } return details;
+        } catch (error) {
+            return error;
+        }
+    }
+    async mentorRegister(requestBody: any) {
+        let response: any;
+        try {
+            const user_data = await this.crudService.findOne(user, { where: { username: requestBody.username } });
+            if (user_data) {
+                console.log('email')
+                throw badRequest('Email');
+            } else {
+                const mentor_data = await this.crudService.findOne(mentor, { where: { mobile: requestBody.mobile } })
+                if (mentor_data) {
+                    console.log('mobile')
+                    throw badRequest('Mobile')
+                } else {
+                    console.log('first')
+                    let createUserAccount = await this.crudService.create(user, requestBody);
+                    let conditions = { ...requestBody, user_id: createUserAccount.dataValues.user_id };
+                    let createMentorAccount = await this.crudService.create(mentor, conditions);
+                    createMentorAccount.dataValues['username'] = createUserAccount.dataValues.username;
+                    response = createMentorAccount;
+                    return response;
+                }
+            }
         } catch (error) {
             return error;
         }
@@ -356,7 +382,7 @@ export default class authService {
             return result;
         }
     }
-    async HashPassword(value: any){
+    async HashPassword(value: any) {
         const key = CryptoJS.enc.Hex.parse('253D3FB468A0E24677C28A624BE0F939');
         const iv = CryptoJS.enc.Hex.parse('00000000000000000000000000000000');
         const hashedPassword = CryptoJS.AES.encrypt(value, key, {
@@ -437,7 +463,7 @@ export default class authService {
             return result;
         }
     }
-    
+
     async updatePassword(requestBody: any, responseBody: any) {
         const res = await this.changePassword(requestBody, responseBody);
         console.log(res);
