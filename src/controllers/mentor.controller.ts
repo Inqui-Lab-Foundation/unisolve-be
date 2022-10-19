@@ -64,18 +64,16 @@ export default class MentorController extends BaseController {
         if (result && result.output && result.output.payload && result.output.payload.message == 'Mobile') {
             return res.status(406).send(dispatcher(res, result.data, 'error', speeches.MOBILE_EXISTS, 406));
         }
-        // if (!result) {
-        //     return res.status(406).send(dispatcher(res, result.profile, 'error', speeches.MOBILE_EXISTS, 406));
-        // }
-        // // const otp = await this.authService.generateOtp();
-        // const otp = await this.authService.triggerOtpMsg(req.body.mobile); //async function but no need to await ...since we yet do not care about the outcome of the sms trigger ....!!this may need to change later on ...!!
-        // const updatePassword = await this.authService.crudService.update(user,
-        //     { password: otp },
-        //     { where: { user_id: result.profile.dataValues.user_id } });
-        // console.log("updatePassword: ", updatePassword)
-        // const data = result.profile.dataValues;
-        // data['otp'] = otp;
-        // console.log(data);
+        if (!result) {
+            return res.status(406).send(dispatcher(res, result.profile, 'error', speeches.MOBILE_EXISTS, 406));
+        }
+        // const otp = await this.authService.generateOtp();
+        const otp = await this.authService.triggerOtpMsg(req.body.mobile); //async function but no need to await ...since we yet do not care about the outcome of the sms trigger ....!!this may need to change later on ...!!
+        const updatePassword = await this.authService.crudService.update(user,
+            { password: otp },
+            { where: { user_id: result.profile.dataValues.user_id } });
+        const data = result.profile.dataValues;
+        data['otp'] = otp;
         return res.status(201).send(dispatcher(res, 'data', 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
