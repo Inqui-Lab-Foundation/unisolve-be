@@ -72,7 +72,7 @@ export default class MentorController extends BaseController {
             { where: { user_id: result.dataValues.user_id } });
         const data = result.dataValues;
         data['otp'] = otp;
-        return res.status(201).send(dispatcher(res, 'data', 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
+        return res.status(201).send(dispatcher(res, data, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
     // TODO: Update flag reg_status on success validate the OTP
