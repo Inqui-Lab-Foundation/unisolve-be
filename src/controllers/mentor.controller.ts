@@ -56,9 +56,10 @@ export default class MentorController extends BaseController {
             return res.status(406).send(dispatcher(res, null, 'error', speeches.USER_ROLE_REQUIRED, 406));
         }
         req.body['reg_status'] = 1;
+        if (!req.body.password || req.body.password == null) req.body.password = '';
         const result: any = await this.authService.mentorRegister(req.body);
         // console.log(result.output.payload.message);
-        if (result && result.output && result.output.payload &&  result.output.payload.message == 'Email') {
+        if (result && result.output && result.output.payload && result.output.payload.message == 'Email') {
             return res.status(406).send(dispatcher(res, result.data, 'error', speeches.MENTOR_EXISTS, 406));
         }
         if (result && result.output && result.output.payload && result.output.payload.message == 'Mobile') {
