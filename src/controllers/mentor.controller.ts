@@ -71,7 +71,6 @@ export default class MentorController extends BaseController {
             { password: otp },
             { where: { user_id: result.dataValues.user_id } });
         const data = result.dataValues;
-        data['otp'] = otp;
         return res.status(201).send(dispatcher(res, data, 'success', speeches.USER_REGISTERED_SUCCESSFULLY, 201));
     }
 
