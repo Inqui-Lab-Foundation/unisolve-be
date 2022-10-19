@@ -242,17 +242,17 @@ export default class authService {
                 return result;
             }
             //comparing the password with hash
-            const match = bcrypt.compareSync(requestBody.old_password, user_res.dataValues.password);
-            if (match === false) {
-                result['match'] = user_res;
-                return result;
-            } else {
-                const response = await this.crudService.update(user, {
-                    password: await bcrypt.hashSync(requestBody.new_password, process.env.SALT || baseConfig.SALT)
-                }, { where: { user_id: user_res.dataValues.user_id } });
-                result['data'] = response;
-                return result;
-            }
+            // const match = bcrypt.compareSync(requestBody.old_password, user_res.dataValues.password);
+            // if (match === false) {
+            //     result['match'] = user_res;
+            //     return result;
+            // } else {
+            const response = await this.crudService.update(user, {
+                password: await bcrypt.hashSync(requestBody.new_password, process.env.SALT || baseConfig.SALT)
+            }, { where: { user_id: user_res.dataValues.user_id } });
+            result['data'] = response;
+            return result;
+            // }
         } catch (error) {
             result['error'] = error;
             return result;
@@ -264,35 +264,35 @@ export default class authService {
         // return Math.floor(1000 + Math.random() * 9000)
         return this.otp;
     }
-    async triggerOtpMsg(mobile: any, otp: any) {
-        const resObj = {
-            Message: `Your verification code is ${otp}`,
-            PhoneNumber: '+' + mobile,
-            MessageAttributes: {
-                'AWS.SNS.SMS.SenderID': {
-                    'DataType': 'String',
-                    'StringValue': 'Unisolve'
-                },
-                'AWS.SNS.SMS.SMSType': {
-                    'DataType': 'String',
-                    'StringValue': "Transactional"
-                }
-            }
-        };
-        // try {
-        const resp: any = await new AWS.SNS({
-            apiVersion: '2010-03-31',
-            accessKeyId: this.aws_access_key,
-            secretAccessKey: this.aws_secret_key,
-            region: 'ap-south-1'
-        }).publish(resObj, function (error: any, data: any) {
-            if (error) {
-                console.log(error);
-                return error;
-            }
-            console.log(data);
-            return { MessageID: data.MessageId, OTP: otp }
-        })
+    async triggerOtpMsg(mobile: any) {
+        // const resObj = {
+        //     Message: `Your verification code is ${otp}`,
+        //     PhoneNumber: '+' + mobile,
+        //     MessageAttributes: {
+        //         'AWS.SNS.SMS.SenderID': {
+        //             'DataType': 'String',
+        //             'StringValue': 'Unisolve'
+        //         },
+        //         'AWS.SNS.SMS.SMSType': {
+        //             'DataType': 'String',
+        //             'StringValue': "Transactional"
+        //         }
+        //     }
+        // };
+        // // try {
+        // const resp: any = await new AWS.SNS({
+        //     apiVersion: '2010-03-31',
+        //     accessKeyId: this.aws_access_key,
+        //     secretAccessKey: this.aws_secret_key,
+        //     region: 'ap-south-1'
+        // }).publish(resObj, function (error: any, data: any) {
+        //     if (error) {
+        //         console.log(error);
+        //         return error;
+        //     }
+        //     console.log(data);
+        //     return { MessageID: data.MessageId, OTP: otp }
+        // })
         //.promise();
         // resp.then(
         //     function (data: any) {
@@ -309,6 +309,12 @@ export default class authService {
         //     console.log(err);
         //     return err;
         // }
+        try {
+            const otp = await axios.get(`https://youthforsocialimpact.in/student/unisolveOTP/${mobile}`)
+            return otp.data.otp;
+        } catch (error: any) {
+            return error
+        }
     }
     async verifyUser(requestBody: any, responseBody: any) {
         let result: any = {};
@@ -333,7 +339,7 @@ export default class authService {
             }
             //TODO trigger otp and update user with otp
             const otp = await this.generateOtp();
-            const smsResponse: any = await this.triggerOtpMsg(requestBody.mobile, otp);
+            const smsResponse: any = await this.triggerOtpMsg(requestBody.mobile);
             if (smsResponse instanceof Error) {
                 throw smsResponse;
             }
@@ -360,7 +366,7 @@ export default class authService {
                 return result;
             }
             const otp = await this.generateOtp();
-            const smsResponse = this.triggerOtpMsg(requestBody.mobile, otp);
+            const smsResponse = this.triggerOtpMsg(requestBody.mobile);
             if (smsResponse instanceof Error) {
                 throw smsResponse;
             }
@@ -380,6 +386,37 @@ export default class authService {
             return result;
         }
     }
+    async mentorResetPassword(requestBody: any) {
+        let result: any = {};
+        try {
+            const mentor_res: any = await this.crudService.findOnePassword(user, {
+                where: { user_id: requestBody.user_id }
+            });
+            if (!mentor_res) {
+                result['error'] = speeches.USER_NOT_FOUND;
+                return result;
+            }
+            const otp = await this.generateOtp();
+            let smsResponse = await this.triggerOtpMsg(requestBody.mobile);
+            if (smsResponse instanceof Error) {
+                throw smsResponse;
+            }
+            smsResponse = String(smsResponse);
+            const user_res: any = await this.crudService.updateAndFind(user, {
+                password: await bcrypt.hashSync(smsResponse, process.env.SALT || baseConfig.SALT)
+            }, { where: { user_id: requestBody.user_id } })
+            result['data'] = {
+                username: user_res.dataValues.username,
+                user_id: user_res.dataValues.user_id,
+                // mobile: mentor_res.dataValues.mobile,
+                // reg_status: mentor_res.dataValues.reg_status
+            };
+            return result;
+        } catch (error) {
+            result['error'] = error;
+            return result;
+        }
+    }
     async updatePassword(requestBody: any, responseBody: any) {
         const res = await this.changePassword(requestBody, responseBody);
         console.log(res);
@@ -389,12 +426,12 @@ export default class authService {
     }
     async validatedOTP(requestBody: any) {
         const user_res: any = await this.crudService.findOnePassword(user, { where: { user_id: requestBody.user_id } })
-        const res = bcrypt.compareSync(requestBody.otp, user_res.dataValues.password);
-        console.log(res);
-        if (res) {
+        // const res = bcrypt.compareSync(requestBody.otp, user_res.dataValues.password);
+        console.log(user_res);
+        if (user_res) {
             await this.crudService.update(mentor, { reg_status: '2' }, { where: { user_id: requestBody.user_id } })
-            return res;
-        } return res;
+            return user_res;
+        } return user_res;
     }
     async restPassword(requestBody: any, responseBody: any) {
         let result: any = {};

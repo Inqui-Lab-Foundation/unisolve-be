@@ -20,7 +20,8 @@ import DashboardMapStatsJob from "./jobs/dashboardMapStats.jobs";
 import BadgesJob from "./jobs/badges.jobs";
 import { translationMiddleware } from "./middlewares/translation.middleware";
 import TranslationService from "./services/translation.service";
-import http from "http";
+import http, { request } from "http";
+import axios from "axios";
 // import fs from 'fs';
 // import BadgesJob from "./jobs/badges.jobs";
 // import https from 'https'
@@ -128,24 +129,21 @@ export default class App {
         this.app.use("/assets/courses", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'courses')));
         this.app.use("/assets/reflectiveQuiz", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', "reflective_quiz")));
         this.app.use("/script", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', "otpScript.html")));
-        this.app.use("/otpScript", (Request, Response, NextFunction) => {
-            return Response.redirect('https://veup.versatilesmshub.com/api/sendsms.php?api=0a227d90ef8cd9f7b2361b33abb3f2c8&senderid=YFSITS&channel=Trans&DCS=0&flashsms=0&number=8886860992&text=Dear%20Student,%20A%20request%20for%20password%20reset%20had%20been%20generated.%20Your%20OTP%20for%20the%20same%20is%20112233%20-Team%20Youth%20for%20Social%20Impact&SmsCampaignId=1&EntityID=1701164847193907676&DLT_TE_ID=1507165035646232522');
-            NextFunction();
-        });
-}
+        // this.app.use(
+    }
 
     private initializeDocs(): void {
-    this.app.use("/docs", swaggerUi.serve, swaggerUi.setup(options));
-    this.app.use("/docs.json", (req: Request, res: Response, next: NextFunction) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(options);
-        next();
-    });
-}
+        this.app.use("/docs", swaggerUi.serve, swaggerUi.setup(options));
+        this.app.use("/docs.json", (req: Request, res: Response, next: NextFunction) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(options);
+            next();
+        });
+    }
 
     private initializeHealthCheck(): void {
-    this.app.get("/healthcheck", healthCheckMiddleware);
-}
+        this.app.get("/healthcheck", healthCheckMiddleware);
+    }
 
     // private initializeRabitMqBroker(): void {
     //     amqp.connect(process.env.RABBITMQ_URL || '', (err: any, conn: any) => {
@@ -171,73 +169,73 @@ export default class App {
     // }
 
     private initializeRouteProtectionMiddleware(): void {
-    this.app.use(routeProtectionMiddleware);
-}
-    
-    private initializeTranslations(){
-    const translationService = new TranslationService(constents.translations_flags.default_locale, true)
-    this.app.use(translationMiddleware)
-}
+        this.app.use(routeProtectionMiddleware);
+    }
+
+    private initializeTranslations() {
+        const translationService = new TranslationService(constents.translations_flags.default_locale, true)
+        this.app.use(translationMiddleware)
+    }
 
     private initializeControllers(controllers: IController[], prefix: string = "/api", version: string = "v1"): void {
-    controllers.forEach((controller: IController) => {
-        this.app.use(`${prefix}/${version}`, controller.router);
-    });
-}
+        controllers.forEach((controller: IController) => {
+            this.app.use(`${prefix}/${version}`, controller.router);
+        });
+    }
 
     private initializeErrorHandling(): void {
-    // Error Middleware
-    this.app.use(errorHandler.genericErrorHandler);
-    this.app.use(errorHandler.notFound);
+        // Error Middleware
+        this.app.use(errorHandler.genericErrorHandler);
+        this.app.use(errorHandler.notFound);
 
-    // Catch unhandled rejections
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
-        process.on('UnhandledRejection', async err => {
-            await logIt(constents.log_levels.list.ERROR, `Unhandled rejection. Error-object: ${err}`);
-            res.send(err).end()
+        // Catch unhandled rejections
+        this.app.use((req: Request, res: Response, next: NextFunction) => {
+            process.on('UnhandledRejection', async err => {
+                await logIt(constents.log_levels.list.ERROR, `Unhandled rejection. Error-object: ${err}`);
+                res.send(err).end()
+            });
         });
-    });
 
-    // Catch uncaught exceptions
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
-        process.on('Uncaught exception', async err => {
-            ;
-            await logIt(constents.log_levels.list.ERROR, `Uncaught exception. Error-object: ${err}`);
-            res.send(err).end()
+        // Catch uncaught exceptions
+        this.app.use((req: Request, res: Response, next: NextFunction) => {
+            process.on('Uncaught exception', async err => {
+                ;
+                await logIt(constents.log_levels.list.ERROR, `Uncaught exception. Error-object: ${err}`);
+                res.send(err).end()
+            });
         });
-    });
-}
+    }
 
     private showRoutes(): void {
-    var route, routes: any[] = [];
-    this.app._router.stack.forEach(function (middleware: any) {
-        if (middleware.route) { // routes registered directly on the app
-            routes.push(middleware.route);
-        } else if (middleware.name === 'router') { // router middleware 
-            middleware.handle.stack.forEach(function (handler: any) {
-                route = handler.route;
-                route && routes.push(route);
-            });
-        }
-    });
-    console.log(
-        `=================================================================
+        var route, routes: any[] = [];
+        this.app._router.stack.forEach(function (middleware: any) {
+            if (middleware.route) { // routes registered directly on the app
+                routes.push(middleware.route);
+            } else if (middleware.name === 'router') { // router middleware 
+                middleware.handle.stack.forEach(function (handler: any) {
+                    route = handler.route;
+                    route && routes.push(route);
+                });
+            }
+        });
+        console.log(
+            `=================================================================
 Available Routes:
 =================================================================`);
-    console.log(`Base Path: http://localhost:${this.port}/api/v1`);
-    console.log(`Course Images: http://localhost:${this.port}/courses`);
-    console.log(`Poster Images: http://localhost:${this.port}/posters`);
-    console.log(`Standard Images: http://localhost:${this.port}/images`);
-    console.table(routes);
-}
+        console.log(`Base Path: http://localhost:${this.port}/api/v1`);
+        console.log(`Course Images: http://localhost:${this.port}/courses`);
+        console.log(`Poster Images: http://localhost:${this.port}/posters`);
+        console.log(`Standard Images: http://localhost:${this.port}/images`);
+        console.table(routes);
+    }
 
     public listen(): void {
-    this.app.listen(this.port, async () => {
-        await logIt(constents.log_levels.list.INFO, `App is running at http://${process.env.APP_HOST_NAME}:${this.port}`);
-        if (process.env.SHOW_ROUTES === "true") {
-            this.showRoutes();
-        }
-    });
-}
+        this.app.listen(this.port, async () => {
+            await logIt(constents.log_levels.list.INFO, `App is running at http://${process.env.APP_HOST_NAME}:${this.port}`);
+            if (process.env.SHOW_ROUTES === "true") {
+                this.showRoutes();
+            }
+        });
+    }
 
 }
