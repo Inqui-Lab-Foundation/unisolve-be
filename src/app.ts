@@ -20,7 +20,8 @@ import DashboardMapStatsJob from "./jobs/dashboardMapStats.jobs";
 import BadgesJob from "./jobs/badges.jobs";
 import { translationMiddleware } from "./middlewares/translation.middleware";
 import TranslationService from "./services/translation.service";
-import http from "http";
+import http, { request } from "http";
+import axios from "axios";
 // import fs from 'fs';
 // import BadgesJob from "./jobs/badges.jobs";
 // import https from 'https'
@@ -52,7 +53,7 @@ export default class App {
         this.initializeJobs();
     }
 
-    private increaseSimulatenousHttpSockets(){
+    private increaseSimulatenousHttpSockets() {
         // http.globalAgent.maxSockets = 100;
         // You could also set it to unlimited (Node v0.12 does by default):
         http.globalAgent.maxSockets = Infinity;
@@ -89,17 +90,17 @@ export default class App {
         // helmet for secure headers
         this.app.use(helmet({
             crossOriginResourcePolicy: false,
-        }));  
+        }));
         this.app.use(cors());
-        this.app.use(express.json({limit: '50mb'}));
-        this.app.use(express.urlencoded({limit: '50mb',extended: true }));
+        this.app.use(express.json({ limit: '50mb' }));
+        this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
         // this.app.use(express.json());
         // this.app.use(express.urlencoded({ extended: true }));
         this.app.use(formData.parse({
             uploadDir: os.tmpdir(),
             autoClean: true
         }));
-         // compression for gzip
+        // compression for gzip
         this.app.use(compression());
 
         this.app.use(translationMiddleware)
@@ -121,7 +122,6 @@ export default class App {
     }
 
     private serveStaticFiles(): void {
-
         this.app.use("/assets", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads')));
         this.app.use("/assets/defaults", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'default')));
         this.app.use("/posters", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'posters')));
@@ -169,9 +169,9 @@ export default class App {
     private initializeRouteProtectionMiddleware(): void {
         this.app.use(routeProtectionMiddleware);
     }
-    
-    private initializeTranslations(){
-        const translationService = new TranslationService(constents.translations_flags.default_locale,true)
+
+    private initializeTranslations() {
+        const translationService = new TranslationService(constents.translations_flags.default_locale, true)
         this.app.use(translationMiddleware)
     }
 

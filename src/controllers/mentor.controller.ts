@@ -42,6 +42,7 @@ export default class MentorController extends BaseController {
         this.router.put(`${this.path}/verifyUser`, this.verifyUser.bind(this));
         this.router.put(`${this.path}/updateMobile`, this.updateMobile.bind(this));
         this.router.delete(`${this.path}/:mentor_user_id/deleteAllData`, this.deleteAllData.bind(this));
+        this.router.put(`${this.path}/resetPassword`, this.resetPassword.bind(this));
         super.initializeRoutes();
     }
     // TODO: update the register flow by adding a flag called reg_statue in mentor tables
@@ -54,18 +55,21 @@ export default class MentorController extends BaseController {
         if (!req.body.role || req.body.role !== 'MENTOR') {
             return res.status(406).send(dispatcher(res, null, 'error', speeches.USER_ROLE_REQUIRED, 406));
         }
-        const otp = await this.authService.generateOtp();
-        req.body.password = otp;
         req.body['reg_status'] = 1;
         const result = await this.authService.register(req.body);
         if (result.user_res) {
             return res.status(406).send(dispatcher(res, result.user_res.dataValues, 'error', speeches.MENTOR_EXISTS, 406));
         }
-        this.authService.triggerOtpMsg(req.body.mobile, otp); //async function but no need to await ...since we yet do not care about the outcome of the sms trigger ....!!this may need to change later on ...!!
         //TODO: mobile validate check.
         if (!result.profile) {
             return res.status(406).send(dispatcher(res, result.profile, 'error', speeches.MOBILE_EXISTS, 406));
         }
+        // const otp = await this.authService.generateOtp();
+        const otp = await this.authService.triggerOtpMsg(req.body.mobile); //async function but no need to await ...since we yet do not care about the outcome of the sms trigger ....!!this may need to change later on ...!!
+        const updatePassword = await this.authService.crudService.update(user,
+            { password: otp },
+            { where: { user_id: result.profile.dataValues.user_id } });
+        console.log("updatePassword: ", updatePassword)
         const data = result.profile.dataValues;
         data['otp'] = otp;
         console.log(data);
@@ -92,7 +96,7 @@ export default class MentorController extends BaseController {
             }
             // else if (result.error) {
             //     return res.status(401).send(dispatcher(res, result.error, 'error', speeches.USER_RISTRICTED, 401));
-        // }
+            // }
             else {
                 // mentorDetails = await this.authService.getServiceDetails('mentor', { user_id: result.data.user_id });
                 // result.data['mentor_id'] = mentorDetails.dataValues.mentor_id
@@ -186,7 +190,6 @@ export default class MentorController extends BaseController {
             next(error)
         }
     }
-
     //TODO: test this api and debug and fix any issues in testing if u see any ...!!
     private async deleteAllData(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         try {
@@ -197,56 +200,56 @@ export default class MentorController extends BaseController {
             }
 
             //get mentor details
-            const mentorResult:any = await this.crudService.findOne(mentor,{where:{user_id:mentor_user_id}})
-            if(!mentorResult){
+            const mentorResult: any = await this.crudService.findOne(mentor, { where: { user_id: mentor_user_id } })
+            if (!mentorResult) {
                 throw internal(speeches.DATA_CORRUPTED)
             }
-            if(mentorResult instanceof Error){
+            if (mentorResult instanceof Error) {
                 throw mentorResult
             }
 
             const deleteMentorResponseResult = await this.authService.bulkDeleteMentorResponse(mentor_user_id)
-            if(!deleteMentorResponseResult){
+            if (!deleteMentorResponseResult) {
                 throw internal("error while deleting mentor response")
             }
-            if(deleteMentorResponseResult instanceof Error){
+            if (deleteMentorResponseResult instanceof Error) {
                 throw deleteMentorResponseResult
             }
 
             //get team details
-            const teamResult:any = await team.findAll({
-                attributes:["team_id"],
-                where:{mentor_id:mentor_user_id},
-                raw:true
+            const teamResult: any = await team.findAll({
+                attributes: ["team_id"],
+                where: { mentor_id: mentor_user_id },
+                raw: true
             })
-            if(!teamResult){
+            if (!teamResult) {
                 throw internal(speeches.DATA_CORRUPTED)
             }
-            if(teamResult instanceof Error){
+            if (teamResult instanceof Error) {
                 throw teamResult
             }
-            
-            const arrayOfteams = teamResult.map((teamSingleresult:any)=>{
+
+            const arrayOfteams = teamResult.map((teamSingleresult: any) => {
                 return teamSingleresult.team_id;
             })
             // console.log("teamResult",teamResult)
             // console.log("arrayOfteams",arrayOfteams)
-            if(arrayOfteams&& arrayOfteams.length>0){
+            if (arrayOfteams && arrayOfteams.length > 0) {
                 const studentUserIds = await student.findAll({
-                    where:{team_id:arrayOfteams},
-                    raw:true,
-                    attributes:["user_id"]
+                    where: { team_id: arrayOfteams },
+                    raw: true,
+                    attributes: ["user_id"]
                 })
-                
-                if(studentUserIds && !(studentUserIds instanceof Error)){
-                    
+
+                if (studentUserIds && !(studentUserIds instanceof Error)) {
+
                     // console.log("studentUserIds",studentUserIds)
-                    const arrayOfStudentuserIds = studentUserIds.map((student)=>student.user_id)
+                    const arrayOfStudentuserIds = studentUserIds.map((student) => student.user_id)
                     // console.log("arrayOfStudentuserIds",arrayOfStudentuserIds)
 
-                    for(var i =0;i<arrayOfStudentuserIds.length;i++) {
+                    for (var i = 0; i < arrayOfStudentuserIds.length; i++) {
                         const deletStudentResponseData = await this.authService.bulkDeleteUserResponse(arrayOfStudentuserIds[i])
-                        if(deletStudentResponseData instanceof Error){
+                        if (deletStudentResponseData instanceof Error) {
                             throw deletStudentResponseData;
                         }
                     };
@@ -255,25 +258,25 @@ export default class MentorController extends BaseController {
                     // if(!resultBulkDeleteStudents){
                     //     throw internal("error while deleteing students")
                     // }
-                    if(resultBulkDeleteStudents instanceof Error){
+                    if (resultBulkDeleteStudents instanceof Error) {
                         throw resultBulkDeleteStudents
                     }
                 }
-                
-                const resultTeamDelete = await this.crudService.delete(team,{where:{team_id:arrayOfteams}})
+
+                const resultTeamDelete = await this.crudService.delete(team, { where: { team_id: arrayOfteams } })
                 // if(!resultTeamDelete){
                 //     throw internal("error while deleting team")
                 // }
-                if(resultTeamDelete instanceof Error){
+                if (resultTeamDelete instanceof Error) {
                     throw resultTeamDelete
                 }
             }
-            let resultmentorDelete:any={};
+            let resultmentorDelete: any = {};
             resultmentorDelete = await this.authService.bulkDeleteUserWithMentorDetails([mentor_user_id])
             // if(!resultmentorDelete){
             //     throw internal("error while deleting mentor")
             //}
-            if(resultmentorDelete instanceof Error){
+            if (resultmentorDelete instanceof Error) {
                 throw resultmentorDelete
             }
 
@@ -284,6 +287,24 @@ export default class MentorController extends BaseController {
                 return res.status(404).send(dispatcher(res, resultmentorDelete.error, 'error', resultmentorDelete.error));
             } else {
                 return res.status(202).send(dispatcher(res, resultmentorDelete.dataValues, 'success', speeches.USER_DELETED, 202));
+            }
+        } catch (error) {
+            next(error)
+        }
+    }
+    private async resetPassword(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+        try {
+            const { mobile } = req.body;
+            if (!mobile) {
+                throw badRequest(speeches.MOBILE_NUMBER_REQUIRED);
+            }
+            const result = await this.authService.mentorResetPassword(req.body);
+            if (!result) {
+                return res.status(404).send(dispatcher(res, null, 'error', speeches.USER_NOT_FOUND));
+            } else if (result.error) {
+                return res.status(404).send(dispatcher(res, result.error, 'error', result.error));
+            } else {
+                return res.status(202).send(dispatcher(res, result.data, 'accepted', speeches.USER_MOBILE_CHANGE, 202));
             }
         } catch (error) {
             next(error)
