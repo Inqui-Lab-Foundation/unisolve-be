@@ -475,7 +475,7 @@ export default class authService {
         if (res) {
             await this.crudService.update(mentor, { reg_status: '2' }, { where: { user_id: requestBody.user_id } })
             return user_res;
-        } return user_res;
+        } return false;
     }
     async restPassword(requestBody: any, responseBody: any) {
         let result: any = {};
