@@ -107,6 +107,7 @@ export default class authService {
                     let conditions = { ...requestBody, user_id: createUserAccount.dataValues.user_id };
                     let createMentorAccount = await this.crudService.create(mentor, conditions);
                     createMentorAccount.dataValues['username'] = createUserAccount.dataValues.username;
+                    createMentorAccount.dataValues['user_id'] = createUserAccount.dataValues.user_id;
                     response = createMentorAccount;
                     return response;
                 }
