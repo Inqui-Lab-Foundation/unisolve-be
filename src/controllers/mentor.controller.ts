@@ -45,15 +45,6 @@ export default class MentorController extends BaseController {
         this.router.put(`${this.path}/resetPassword`, this.resetPassword.bind(this));
         super.initializeRoutes();
     }
-    // private async otp(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
-    //     try {
-    //         // const body = request.params.mobile
-    //         const otp = await axios.get(`https://youthforsocialimpact.in/student/unisolveOTP/${8885860992}`)
-    //         return res.send(otp.data)
-    //     } catch (error) {
-    //         return res.send(error)
-    //     }
-    // }
     // TODO: update the register flow by adding a flag called reg_statue in mentor tables
     private async register(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
         if (!req.body.organization_code || req.body.organization_code === "") return res.status(406).send(dispatcher(res, speeches.ORG_CODE_REQUIRED, 'error', speeches.NOT_ACCEPTABLE, 406));

@@ -128,8 +128,6 @@ export default class App {
         this.app.use("/images", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'images')));
         this.app.use("/assets/courses", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', 'courses')));
         this.app.use("/assets/reflectiveQuiz", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', "reflective_quiz")));
-        this.app.use("/script", express.static(path.join(process.cwd(), 'resources', 'static', 'uploads', "otpScript.html")));
-        // this.app.use(
     }
 
     private initializeDocs(): void {
