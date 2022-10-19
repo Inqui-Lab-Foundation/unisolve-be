@@ -471,9 +471,8 @@ export default class authService {
     }
     async validatedOTP(requestBody: any) {
         const user_res: any = await this.crudService.findOnePassword(user, { where: { user_id: requestBody.user_id } })
-        // const res = bcrypt.compareSync(requestBody.otp, user_res.dataValues.password);
-        console.log(user_res);
-        if (user_res) {
+        const res = bcrypt.compareSync(requestBody.otp, user_res.dataValues.password);
+        if (res) {
             await this.crudService.update(mentor, { reg_status: '2' }, { where: { user_id: requestBody.user_id } })
             return user_res;
         } return user_res;
