@@ -55,7 +55,7 @@ export default class MentorController extends BaseController {
         if (!req.body.role || req.body.role !== 'MENTOR') {
             return res.status(406).send(dispatcher(res, null, 'error', speeches.USER_ROLE_REQUIRED, 406));
         }
-        req.body['reg_status'] = 3;
+        req.body['reg_status'] = '3';
         if (!req.body.password || req.body.password == null) req.body.password = '';
         const result: any = await this.authService.mentorRegister(req.body);
         // console.log(result.output.payload.message);
