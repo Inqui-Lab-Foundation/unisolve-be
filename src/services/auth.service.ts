@@ -473,7 +473,7 @@ export default class authService {
         const user_res: any = await this.crudService.findOnePassword(user, { where: { user_id: requestBody.user_id } })
         const res = bcrypt.compareSync(requestBody.otp, user_res.dataValues.password);
         if (res) {
-            await this.crudService.update(mentor, { reg_status: '2' }, { where: { user_id: requestBody.user_id } })
+            await this.crudService.update(mentor, { reg_status: '3' }, { where: { user_id: requestBody.user_id } })
             return user_res;
         } return false;
     }
